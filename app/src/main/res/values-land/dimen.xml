@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="vertical_card_margin">32dp</dimen>
+    <dimen name="horizontal_card_margin">32dp</dimen>
+    <dimen name="button_position">-56dp</dimen>
+</resources>

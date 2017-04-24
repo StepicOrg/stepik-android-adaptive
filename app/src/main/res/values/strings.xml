@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">AdaptivePDD</string>
+    <string name="login_button">Login with Stepik</string>
+    <string name="attempt_button">Solve</string>
+    <string name="make_submission">Submit</string>
+    <string name="menu">Menu</string>
+    <string name="too_easy">EASY</string>
+    <string name="too_hard">HARD</string>
+</resources>

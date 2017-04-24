@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">AdaptivePDD</string>
+    <string name="login_button">Войти через Stepik API</string>
+    <string name="attempt_button">Решить</string>
+    <string name="make_submission">Отправить</string>
+    <string name="menu">Меню</string>
+    <string name="too_easy">СЛИШКОМ ПРОСТО</string>
+    <string name="too_hard">СЛИШКОМ СЛОЖНО</string>
+</resources>
