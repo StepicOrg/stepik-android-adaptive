@@ -22,9 +22,9 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public final class API {
     private final static String TAG = "API";
 
-    private static final String CLIENT_ID = "???";
-    private static final String CLIENT_SECRET = "???";
-    public static final String REDIRECT_URI = "???";
+    private static final String CLIENT_ID = "8030bQmbcsVo3j70ImSe1x4jujlZr9Lm9FOwZ5Pb";
+    private static final String CLIENT_SECRET = "1AphQOnuKmM4ROsNAfvo3GZoeUfSwEUsOfvDmibcBygd4IxAGQHbtPmZj3t6Yjr4X8Iz1dO231lrstzooofa07TliQxWljDlrlduuSNgD2BzhCyqxsOX0LWvxwZNVslN";
+    public static final String REDIRECT_URI = "http://test/success/";
 
     private static final String HOST = "https://stepik.org/";
 

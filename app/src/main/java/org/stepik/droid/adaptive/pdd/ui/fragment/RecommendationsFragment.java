@@ -23,6 +23,7 @@ import org.stepik.droid.adaptive.pdd.data.model.RecommendationReaction;
 import org.stepik.droid.adaptive.pdd.data.model.Step;
 import org.stepik.droid.adaptive.pdd.data.model.Submission;
 import org.stepik.droid.adaptive.pdd.databinding.FragmentRecommendationsBinding;
+import org.stepik.droid.adaptive.pdd.ui.adapter.NavigationDrawerAdapter;
 import org.stepik.droid.adaptive.pdd.ui.adapter.QuizCardAdapter;
 import org.stepik.droid.adaptive.pdd.ui.listener.OnCardSwipeListener;
 
@@ -39,6 +40,7 @@ public final class RecommendationsFragment extends Fragment {
     private final static String TAG = "RecommendationsFragment";
     private FragmentRecommendationsBinding binding;
     private QuizCardAdapter quizCardAdapter;
+    private NavigationDrawerAdapter navigationDrawerAdapter;
 
     private Step step;
 
@@ -55,6 +57,7 @@ public final class RecommendationsFragment extends Fragment {
     public View onCreateView(final LayoutInflater inflater, @Nullable final ViewGroup container, @Nullable final Bundle savedInstanceState) {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_recommendations, container, false);
         quizCardAdapter.bind(binding);
+        navigationDrawerAdapter.bind(binding);
 
         binding.fragmentRecommendationsSolve.setOnClickListener((v) -> loadAttempt());
         binding.fragmentRecommendationsSubmit.setOnClickListener((v) -> makeSubmission());
@@ -80,6 +83,7 @@ public final class RecommendationsFragment extends Fragment {
         viewDisposable.dispose();
 
         quizCardAdapter.unbind();
+        navigationDrawerAdapter.unbind();
 
         binding.unbind();
         binding = null;
@@ -132,6 +136,7 @@ public final class RecommendationsFragment extends Fragment {
     public void onAttach(final Context context) {
         super.onAttach(context);
         quizCardAdapter = new QuizCardAdapter(context, this::onCardSwipe);
+        navigationDrawerAdapter = new NavigationDrawerAdapter();
     }
 
     private void onCardSwipe(final OnCardSwipeListener.SWIPE_DIRECTION swipeDirection) {

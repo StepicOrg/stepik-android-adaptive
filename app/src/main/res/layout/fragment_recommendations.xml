@@ -2,7 +2,7 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <android.support.v4.widget.DrawerLayout
-        android:id="@+id/timeline_fragment_drawer_layout"
+        android:id="@+id/fragment_recommendations_drawer_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:fitsSystemWindows="true">
@@ -17,17 +17,19 @@
                 android:layout_height="wrap_content"
                 android:fitsSystemWindows="true"
                 android:background="@color/primaryBackground"
-                app:elevation="0dp"
-                android:padding="16dp">
+                app:elevation="0dp">
 
-                <ImageView
+                <ImageButton
                     style="@style/Widget.AppCompat.ImageButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:tint="@color/colorAccent"
                     android:contentDescription="@string/menu"
-                    android:background="@color/primaryBackground"
-                    app:srcCompat="@drawable/ic_menu" />
+                    android:background="?attr/selectableItemBackground"
+                    app:srcCompat="@drawable/ic_menu"
+                    android:id="@+id/fragment_recommendations_menu_button"
+                    android:padding="16dp"
+                    />
 
 
             </android.support.design.widget.AppBarLayout>
@@ -163,7 +165,7 @@
             android:fitsSystemWindows="true"
             app:headerLayout="@layout/drawer_header"
             app:menu="@menu/drawer_menu"
-            android:id="@+id/fragment_home_navigation"
+            android:id="@+id/fragment_recommendations_navigation"
             />
 
     </android.support.v4.widget.DrawerLayout>

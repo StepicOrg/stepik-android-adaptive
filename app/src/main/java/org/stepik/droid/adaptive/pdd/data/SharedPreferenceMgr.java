@@ -3,6 +3,7 @@ package org.stepik.droid.adaptive.pdd.data;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
+import android.util.Log;
 
 import com.google.gson.Gson;
 
@@ -58,6 +59,14 @@ public final class SharedPreferenceMgr {
 
         saveString(PROFILE, json);
         saveLong(PROFILE_ID, profile.getId());
+    }
+
+    public Profile getProfile() {
+        final String json = getString(PROFILE);
+        if (json == null) return null;
+
+        final Gson gson = new Gson();
+        return gson.fromJson(json, Profile.class);
     }
 
 

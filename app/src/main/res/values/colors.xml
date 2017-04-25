@@ -9,4 +9,6 @@
     <color name="colorRadioButton">#3EA0AB</color>
     <color name="colorGrayBackground">#D9D9D9</color>
     <color name="colorGrayText">#555</color>
+    <color name="colorDarkGrayText">#333</color>
+    <color name="colorSeparator">#DCDCDC</color>
 </resources>
