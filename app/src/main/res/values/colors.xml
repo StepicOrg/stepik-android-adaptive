@@ -4,6 +4,7 @@
     <color name="colorPrimaryDark">#46B6C2</color>
     <!--<color name="colorPrimaryDark">#3EA3AD</color>-->
     <color name="colorAccent">#4cc6d3</color>
+    <color name="colorAccentDisabled">#7FD7E1</color>
     <color name="colorWrong">#FC576B</color>
     <color name="primaryBackground">#F1F1F1</color>
     <color name="colorRadioButton">#3EA0AB</color>

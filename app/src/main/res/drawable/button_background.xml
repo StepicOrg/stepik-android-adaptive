@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:state_enabled="true">
+    <item>
         <shape
             xmlns:android="http://schemas.android.com/apk/res/android">
             <corners
@@ -11,19 +11,6 @@
                 android:right="16dp"/>
 
             <solid android:color="@color/colorAccent"/>
-        </shape>
-    </item>
-    <item android:state_enabled="false">
-        <shape
-            xmlns:android="http://schemas.android.com/apk/res/android">
-            <corners
-                android:radius="64dp" />
-
-            <padding
-                android:left="16dp"
-                android:right="16dp"/>
-
-            <solid android:color="@color/colorGrayBackground"/>
         </shape>
     </item>
 </selector>
