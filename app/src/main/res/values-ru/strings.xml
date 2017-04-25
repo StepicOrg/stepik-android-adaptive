@@ -5,9 +5,9 @@
     <string name="attempt_button">Решить</string>
     <string name="make_submission">Отправить</string>
     <string name="menu">Меню</string>
-    <string name="too_easy">СЛИШКОМ ПРОСТО</string>
-    <string name="too_hard">СЛИШКОМ СЛОЖНО</string>
+    <string name="too_easy">ПРОСТО</string>
+    <string name="too_hard">СЛОЖНО</string>
     <string name="settings">Настройки</string>
     <string name="stats">Статистика</string>
-    <string name="logout">Выйти из профиля</string>
+    <string name="logout">Выход</string>
 </resources>
