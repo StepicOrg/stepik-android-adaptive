@@ -34,10 +34,9 @@
 
             </android.support.design.widget.AppBarLayout>
 
-            <org.stepik.droid.adaptive.pdd.ui.view.QuizCardLayout
+            <FrameLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:id="@+id/fragment_recommendations_layout">
+                android:layout_height="match_parent">
 
                 <ProgressBar
                     android:layout_width="wrap_content"
@@ -77,7 +76,7 @@
                     android:id="@+id/fragment_recommendations_hard_reaction"
                     />
 
-                <RelativeLayout
+                <org.stepik.droid.adaptive.pdd.ui.view.QuizCardView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
@@ -153,8 +152,8 @@
                         android:layout_marginBottom="12dp"
                         android:visibility="gone"/>
 
-                </RelativeLayout>
-            </org.stepik.droid.adaptive.pdd.ui.view.QuizCardLayout>
+                </org.stepik.droid.adaptive.pdd.ui.view.QuizCardView>
+            </FrameLayout>
         </android.support.design.widget.CoordinatorLayout>
 
         <android.support.design.widget.NavigationView

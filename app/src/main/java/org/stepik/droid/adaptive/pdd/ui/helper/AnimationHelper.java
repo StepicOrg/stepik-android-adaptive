@@ -9,7 +9,7 @@ import android.view.animation.OvershootInterpolator;
 import android.widget.RelativeLayout;
 
 public final class AnimationHelper {
-    private static final long ANIMATION_DURATION = 450;
+    public static final long ANIMATION_DURATION = 450;
 
     public static OvershootInterpolator OvershootInterpolator2F = new OvershootInterpolator(2f);
 
