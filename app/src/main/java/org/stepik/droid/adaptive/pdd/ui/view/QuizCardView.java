@@ -45,8 +45,8 @@ public final class QuizCardView extends RelativeLayout {
         this.screenHeight = Resources.getSystem().getDisplayMetrics().heightPixels;
         this.screenWidth = Resources.getSystem().getDisplayMetrics().widthPixels;
 
-        MIN_SWIPE_TRANSLATION = this.screenWidth / 4;
-        MIN_FLING_TRANSLATION = this.screenWidth / 6;
+        MIN_SWIPE_TRANSLATION = this.screenWidth / 2;
+        MIN_FLING_TRANSLATION = this.screenWidth / 4;
     }
 
     @Override

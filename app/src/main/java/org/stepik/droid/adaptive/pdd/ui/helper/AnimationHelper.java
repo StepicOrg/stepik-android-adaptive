@@ -11,6 +11,7 @@ import android.widget.RelativeLayout;
 
 public final class AnimationHelper {
     public static final long ANIMATION_DURATION = 450;
+    public static final long ANIMATION_DURATION_FAST = 300;
 
     public static OvershootInterpolator OvershootInterpolator2F = new OvershootInterpolator(2f);
 
@@ -43,7 +44,7 @@ public final class AnimationHelper {
                 .scaleX(1)
                 .scaleY(1)
                 .setInterpolator(new AccelerateDecelerateInterpolator())
-                .setDuration(ANIMATION_DURATION);
+                .setDuration(ANIMATION_DURATION_FAST);
     }
 
     public static ViewPropertyAnimator createReactionDisappearAnimation(final View view) {

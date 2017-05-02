@@ -4,12 +4,13 @@ import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.res.Resources;
+import android.support.design.widget.Snackbar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.util.Log;
 import android.view.View;
-import android.view.ViewPropertyAnimator;
 import android.webkit.WebSettings;
 
+import org.stepik.droid.adaptive.pdd.R;
 import org.stepik.droid.adaptive.pdd.data.model.Attempt;
 import org.stepik.droid.adaptive.pdd.data.model.Submission;
 import org.stepik.droid.adaptive.pdd.databinding.FragmentRecommendationsBinding;
@@ -19,16 +20,17 @@ import org.stepik.droid.adaptive.pdd.ui.helper.LayoutHelper;
 import org.stepik.droid.adaptive.pdd.ui.listener.OnCardSwipeListener;
 import org.stepik.droid.adaptive.pdd.ui.view.QuizCardView;
 
-public final class QuizCardAdapter {
-    private static final long ANIMATION_DURATION = 450;
-    private static final long ANIMATION_DURATION_FAST = 300;
+import java.util.concurrent.TimeUnit;
 
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.subjects.PublishSubject;
+
+public final class QuizCardAdapter {
     private static final int ANSWER_ANIMATION_START = -160;
     private static final int ANSWER_ANIMATION_END = -32;
     private static final int SOLVE_BUTTON_OFFSET = 24;
 
-    private ViewPropertyAnimator animatorHard;
-    private ViewPropertyAnimator animatorEasy;
 
     private ValueAnimator answerAnimator, answerAnimatorReverse;
 
@@ -39,6 +41,9 @@ public final class QuizCardAdapter {
     private final OnCardSwipeListener listener;
     private final AttemptAnswersAdapter attemptAnswersAdapter;
     private final Context context;
+
+    private final PublishSubject<Float> scrollSubject = PublishSubject.create();
+    private Disposable scrollDisposable;
 
     private final int screenHeight;
 
@@ -53,7 +58,6 @@ public final class QuizCardAdapter {
     }
 
     private State state = State.PENDING_FOR_NEXT_RECOMMENDATION;
-
 
     
     public QuizCardAdapter(final Context context, final OnCardSwipeListener listener) {
@@ -78,6 +82,18 @@ public final class QuizCardAdapter {
                 setUIState(State.RECOMMENDATION_LOADED)));
         binding.fragmentRecommendationsQuestion.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
 
+        scrollDisposable = scrollSubject
+            .throttleFirst(AnimationHelper.ANIMATION_DURATION_FAST, TimeUnit.MILLISECONDS, AndroidSchedulers.mainThread())
+            .subscribe((scrollProgress) -> {
+                if (Math.abs(scrollProgress) > 0.5) {
+                    AnimationHelper.createReactionAppearAnimation(
+                            scrollProgress < 0 ? binding.fragmentRecommendationsEasyReaction : binding.fragmentRecommendationsHardReaction
+                    );
+                } else {
+                    hideReactionAnimation(0);
+                }
+            });
+
         binding.fragmentRecommendationsContainer.setQuizCardFlingListener(new QuizCardView.QuizCardFlingListener() {
             @Override
             public void onFlingDown() {
@@ -88,21 +104,7 @@ public final class QuizCardAdapter {
 
             @Override
             public void onScroll(final float scrollProgress) {
-                if (Math.abs(scrollProgress) > 0.5) {
-                    if (scrollProgress < 0) {
-                        if (animatorEasy == null) {
-                            animatorEasy = AnimationHelper
-                                    .createReactionAppearAnimation(binding.fragmentRecommendationsEasyReaction);
-                        }
-                    } else {
-                        if (animatorHard == null) {
-                            animatorHard = AnimationHelper
-                                    .createReactionAppearAnimation(binding.fragmentRecommendationsHardReaction);
-                        }
-                    }
-                } else {
-                    hideReactionAnimation(0);
-                }
+                scrollSubject.onNext(scrollProgress);
             }
 
             @Override
@@ -112,22 +114,22 @@ public final class QuizCardAdapter {
 
             @Override
             public void onSwipeLeft() {
-                animatorEasy = AnimationHelper.createReactionAppearAnimation(binding.fragmentRecommendationsEasyReaction)
-                        .withEndAction(() -> hideReactionAnimation(ANIMATION_DURATION * 2));
+                AnimationHelper.createReactionAppearAnimation(binding.fragmentRecommendationsEasyReaction)
+                        .withEndAction(() -> hideReactionAnimation(AnimationHelper.ANIMATION_DURATION * 2));
                 listener.onCardSwipe(OnCardSwipeListener.SWIPE_DIRECTION.LEFT);
             }
 
             @Override
             public void onSwipeRight() {
-                animatorHard = AnimationHelper.createReactionAppearAnimation(binding.fragmentRecommendationsHardReaction)
-                        .withEndAction(() -> hideReactionAnimation(ANIMATION_DURATION * 2));
+                AnimationHelper.createReactionAppearAnimation(binding.fragmentRecommendationsHardReaction)
+                        .withEndAction(() -> hideReactionAnimation(AnimationHelper.ANIMATION_DURATION * 2));
                 listener.onCardSwipe(OnCardSwipeListener.SWIPE_DIRECTION.RIGHT);
             }
 
             @Override
             public void onSwipeDown() {
                 AnimationHelper.createReactionAppearAnimation(binding.fragmentRecommendationsCorrectReaction)
-                        .withEndAction(() -> hideReactionAnimation(ANIMATION_DURATION * 2));
+                        .withEndAction(() -> hideReactionAnimation(AnimationHelper.ANIMATION_DURATION * 2));
             }
         });
 
@@ -141,11 +143,11 @@ public final class QuizCardAdapter {
                 LayoutHelper.pxFromDp(context, ANSWER_ANIMATION_START),
                 LayoutHelper.pxFromDp(context, ANSWER_ANIMATION_END)
         );
-        answerAnimator.setDuration(ANIMATION_DURATION_FAST);
+        answerAnimator.setDuration(AnimationHelper.ANIMATION_DURATION_FAST);
         answerAnimator.addUpdateListener(answerAnimatorUpdateListener);
 
         answerAnimatorReverse = ValueAnimator.ofInt();
-        answerAnimatorReverse.setDuration(ANIMATION_DURATION_FAST);
+        answerAnimatorReverse.setDuration(AnimationHelper.ANIMATION_DURATION_FAST);
         answerAnimatorReverse.addUpdateListener((anm) ->
                 binding.fragmentRecommendationsAnswersContainer.setAlpha(1f - (float) anm.getCurrentPlayTime() / anm.getDuration()));
         answerAnimatorReverse.addUpdateListener(answerAnimatorUpdateListener);
@@ -159,6 +161,7 @@ public final class QuizCardAdapter {
     }
 
     public void unbind() {
+        scrollDisposable.dispose();
         binding = null;
     }
 
@@ -185,18 +188,10 @@ public final class QuizCardAdapter {
     }
 
     private void hideReactionAnimation(final long delay) {
-        if (animatorEasy != null) {
-            AnimationHelper.createReactionDisappearAnimation(binding.fragmentRecommendationsEasyReaction)
-                    .setStartDelay(delay);
-            animatorEasy = null;
-        }
-
-        if (animatorHard != null) {
-            AnimationHelper.createReactionDisappearAnimation(binding.fragmentRecommendationsHardReaction)
-                    .setStartDelay(delay);
-            animatorHard = null;
-        }
-
+        AnimationHelper.createReactionDisappearAnimation(binding.fragmentRecommendationsEasyReaction)
+                .setStartDelay(delay);
+        AnimationHelper.createReactionDisappearAnimation(binding.fragmentRecommendationsHardReaction)
+                .setStartDelay(delay);
         AnimationHelper.createReactionDisappearAnimation(binding.fragmentRecommendationsCorrectReaction)
                 .setStartDelay(delay);
     }
@@ -217,7 +212,7 @@ public final class QuizCardAdapter {
         final ObjectAnimator animator =
                 ObjectAnimator.ofFloat(binding.fragmentRecommendationsContainer, "translationY", 0);
         animator.setInterpolator(AnimationHelper.OvershootInterpolator2F);
-        animator.setDuration(ANIMATION_DURATION);
+        animator.setDuration(AnimationHelper.ANIMATION_DURATION);
         animator.addUpdateListener((anm) ->
             LayoutHelper.wrapWebView(binding.fragmentRecommendationsCard,
                     binding.fragmentRecommendationsQuestion, SOLVE_BUTTON_OFFSET));
@@ -261,7 +256,7 @@ public final class QuizCardAdapter {
 
         binding.fragmentRecommendationsSubmit.animate()
                 .alpha(0)
-                .setDuration(ANIMATION_DURATION_FAST)
+                .setDuration(AnimationHelper.ANIMATION_DURATION_FAST)
                 .withEndAction(binding.fragmentRecommendationsContainer::swipeDown);
     }
 
@@ -271,6 +266,7 @@ public final class QuizCardAdapter {
         binding.fragmentRecommendationsAnswersProgress.setVisibility(View.GONE);
         binding.fragmentRecommendationsAnswers.setVisibility(View.VISIBLE);
 
+        Snackbar.make(binding.getRoot(), R.string.wrong, Snackbar.LENGTH_SHORT).show();
     }
 
     public void setUIState(final State state) {
