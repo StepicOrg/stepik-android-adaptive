@@ -103,7 +103,7 @@ public final class QuizCardView extends RelativeLayout {
         final float x = getTranslationX();
 //        final float y = getTranslationY();
 
-        if (Math.abs(x) > MIN_FLING_TRANSLATION && Math.abs(vx) > MIN_FLING_VELOCITY && 2 * Math.abs(vx) > Math.abs(vy)
+        if (Math.abs(x) > MIN_FLING_TRANSLATION && Math.abs(vx) > MIN_FLING_VELOCITY && Math.abs(vx) > Math.abs(vy)
                 || Math.abs(x) > MIN_SWIPE_TRANSLATION) {
 
             if (x > 0) {
@@ -113,7 +113,7 @@ public final class QuizCardView extends RelativeLayout {
             }
             AnimationHelper.createTransitionAnimation(this, Math.signum(x) * 2 * screenWidth, 0).withEndAction(listener::onSwiped);
         } else {
-            if (vy > MIN_FLING_VELOCITY / 2) {
+            if (vy < -MIN_FLING_VELOCITY) {
                 listener.onFlingDown();
             }
 
