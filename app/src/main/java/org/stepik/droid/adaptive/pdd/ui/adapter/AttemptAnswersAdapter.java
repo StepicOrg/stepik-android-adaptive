@@ -1,6 +1,11 @@
 package org.stepik.droid.adaptive.pdd.ui.adapter;
 
+import android.content.Context;
 import android.databinding.DataBindingUtil;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
@@ -81,15 +86,22 @@ class AttemptAnswersAdapter extends RecyclerView.Adapter<AttemptAnswersAdapter.A
     public void onBindViewHolder(final AttemptAnswerViewHolder holder, int position) {
         if (options != null) {
             holder.binding.itemAnswerText.setText(options.get(position));
+
+            final Context context = holder.binding.getRoot().getContext();
+
+            int selectionImageDrawableId;
             if (attempt.getDataset().is_multiple_choice()) {
-                holder.binding.itemAnswerSelectionImage.setImageResource(
-                        selection[position] ? R.drawable.ic_check_box_filled : R.drawable.ic_check_box
-                );
+                selectionImageDrawableId = selection[position] ? R.drawable.ic_check_box_filled : R.drawable.ic_check_box;
             } else {
-                holder.binding.itemAnswerSelectionImage.setImageResource(
-                        selection[position] ? R.drawable.ic_radio_button_filled : R.drawable.ic_radio_button
-                );
+                selectionImageDrawableId = selection[position] ? R.drawable.ic_radio_button_filled : R.drawable.ic_radio_button;
             }
+
+            final Drawable selectionImageDrawable =
+                    DrawableCompat.wrap(ContextCompat.getDrawable(context, selectionImageDrawableId));
+            DrawableCompat.setTint(selectionImageDrawable,
+                    context.getResources().getColor(selection[position] ? R.color.colorAccent : R.color.colorRadioButtonDefault));
+            holder.binding.itemAnswerSelectionImage.setImageDrawable(selectionImageDrawable);
+
             holder.binding.getRoot().setOnClickListener((v) -> this.select(holder.getAdapterPosition()));
         }
     }

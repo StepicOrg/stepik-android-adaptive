@@ -11,8 +11,7 @@
             android:id="@+id/item_answer_selection_image"
             android:layout_gravity="center_vertical"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:tint="@color/colorRadioButton" />
+            android:layout_height="wrap_content" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -20,6 +19,7 @@
             android:layout_gravity="center_vertical"
             android:layout_marginLeft="12dp"
             android:layout_marginStart="12dp"
+            android:textColor="@color/colorAnswerText"
             android:id="@+id/item_answer_text" />
 
     </LinearLayout>
