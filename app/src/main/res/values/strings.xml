@@ -11,4 +11,6 @@
     <string name="logout">Logout</string>
     <string name="correct">CORRECT</string>
     <string name="network_error">An error occurred while processing your request</string>
+    <string name="wrong">Wrong answer</string>
+    <string name="logout_dialog">Are you sure to continue?</string>
 </resources>

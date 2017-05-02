@@ -99,7 +99,11 @@ public final class API {
     }
 
     public void updateAuthState(final OAuthResponse response) {
-        SharedPreferenceMgr.getInstance().saveOAuthResponse(response);
+        if (response == null) {
+            SharedPreferenceMgr.getInstance().clear();
+        } else {
+            SharedPreferenceMgr.getInstance().saveOAuthResponse(response);
+        }
         initServices();
     }
 

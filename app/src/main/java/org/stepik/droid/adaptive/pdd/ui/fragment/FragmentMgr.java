@@ -1,6 +1,7 @@
 package org.stepik.droid.adaptive.pdd.ui.fragment;
 
 
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
@@ -65,5 +66,12 @@ public class FragmentMgr {
         if (app == null) return;
 
         app.getSupportFragmentManager().popBackStack();
+    }
+
+    public void showDialog(final DialogFragment dialogFragment) {
+        final AppCompatActivity app = appReference.get();
+        if (app == null) return;
+
+        dialogFragment.show(app.getSupportFragmentManager(), dialogFragment.getTag());
     }
 }

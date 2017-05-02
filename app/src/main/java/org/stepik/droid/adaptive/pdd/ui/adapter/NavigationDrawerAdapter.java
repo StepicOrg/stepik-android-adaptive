@@ -2,6 +2,7 @@ package org.stepik.droid.adaptive.pdd.ui.adapter;
 
 
 import android.databinding.DataBindingUtil;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.view.GravityCompat;
 
 import org.stepik.droid.adaptive.pdd.R;
@@ -10,6 +11,8 @@ import org.stepik.droid.adaptive.pdd.data.SharedPreferenceMgr;
 import org.stepik.droid.adaptive.pdd.data.model.Profile;
 import org.stepik.droid.adaptive.pdd.databinding.DrawerHeaderBinding;
 import org.stepik.droid.adaptive.pdd.databinding.FragmentRecommendationsBinding;
+import org.stepik.droid.adaptive.pdd.ui.dialog.LogoutDialog;
+import org.stepik.droid.adaptive.pdd.ui.fragment.FragmentMgr;
 
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -31,6 +34,15 @@ public final class NavigationDrawerAdapter {
     public void bind(final FragmentRecommendationsBinding binding) {
         binding.fragmentRecommendationsMenuButton.setOnClickListener((v) ->
             binding.fragmentRecommendationsDrawerLayout.openDrawer(GravityCompat.START));
+
+        binding.fragmentRecommendationsNavigation.setNavigationItemSelectedListener((item) -> {
+            switch (item.getItemId()) {
+                case R.id.drawer_logout:
+                    FragmentMgr.getInstance().showDialog(new LogoutDialog());
+                    return true;
+            }
+            return false;
+        });
 
         this.headerBinding = DataBindingUtil.bind(binding.fragmentRecommendationsNavigation.getHeaderView(0));
         setProfile(profile);

@@ -21,7 +21,6 @@
             android:title="@string/logout"
             android:id="@+id/drawer_logout"
             android:icon="@drawable/ic_logout"
-            android:enabled="false"
             android:visible="true" />
     </group>
 </menu>

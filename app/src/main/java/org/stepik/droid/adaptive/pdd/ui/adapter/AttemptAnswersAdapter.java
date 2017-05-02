@@ -2,7 +2,6 @@ package org.stepik.droid.adaptive.pdd.ui.adapter;
 
 import android.content.Context;
 import android.databinding.DataBindingUtil;
-import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.graphics.drawable.DrawableCompat;

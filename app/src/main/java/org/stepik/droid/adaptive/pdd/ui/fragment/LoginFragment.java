@@ -95,7 +95,7 @@ public final class LoginFragment extends Fragment {
                     binding.fragmentLoginButton.setVisibility(View.GONE);
 
                     compositeDisposable.add(API.getInstance().authWithCode(uri.getQueryParameter(API.AUTH_CODE))
-                            .observeOn(Schedulers.io())
+                            .observeOn(AndroidSchedulers.mainThread())
                             .doOnNext(API.getInstance()::updateAuthState)
                             .subscribeOn(Schedulers.io())
                             .subscribe(res ->

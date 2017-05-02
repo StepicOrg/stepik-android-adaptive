@@ -12,4 +12,6 @@
     <string name="logout">Выход</string>
     <string name="correct">ВЕРНО</string>
     <string name="network_error">При обработке запроса произошла ошибка</string>
+    <string name="wrong">Неверный ответ</string>
+    <string name="logout_dialog">Вы уверены, что хотите выйти из текущего профиля?</string>
 </resources>
