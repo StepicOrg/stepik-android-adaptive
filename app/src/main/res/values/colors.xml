@@ -6,6 +6,7 @@
     <color name="colorAccent">#4cc6d3</color>
     <color name="colorAccentDisabled">#aee5eb</color>
     <color name="colorWrong">#FC576B</color>
+    <color name="colorCorrect">#50D2BE</color>
     <color name="primaryBackground">#F1F1F1</color>
     <color name="colorRadioButton">#3EA0AB</color>
     <color name="colorRadioButtonDefault">#CCCED1</color>

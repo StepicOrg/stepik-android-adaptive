@@ -5,6 +5,7 @@ import android.content.res.Resources;
 import android.util.AttributeSet;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
+import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.RelativeLayout;
 
 import org.stepik.droid.adaptive.pdd.ui.helper.AnimationHelper;
@@ -113,7 +114,7 @@ public final class QuizCardView extends RelativeLayout {
             }
             AnimationHelper.createTransitionAnimation(this, Math.signum(x) * 2 * screenWidth, 0).withEndAction(listener::onSwiped);
         } else {
-            if (vy < -MIN_FLING_VELOCITY) {
+            if (Math.abs(vy) > MIN_FLING_VELOCITY) {
                 listener.onFlingDown();
             }
 
@@ -124,7 +125,8 @@ public final class QuizCardView extends RelativeLayout {
     public void swipeDown() {
         listener.onSwipeDown();
         AnimationHelper.createTransitionAnimation(this, 0, screenHeight)
-                .setDuration(AnimationHelper.ANIMATION_DURATION * 2).withEndAction(listener::onSwiped);
+                .setInterpolator(new AccelerateDecelerateInterpolator())
+                .withEndAction(listener::onSwiped);
     }
 
     public void setQuizCardFlingListener(final QuizCardFlingListener listener) {

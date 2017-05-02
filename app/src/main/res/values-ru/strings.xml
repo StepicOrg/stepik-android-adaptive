@@ -10,4 +10,6 @@
     <string name="settings">Настройки</string>
     <string name="stats">Статистика</string>
     <string name="logout">Выход</string>
+    <string name="correct">ВЕРНО</string>
+    <string name="network_error">При обработке запроса произошла ошибка</string>
 </resources>

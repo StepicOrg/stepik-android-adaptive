@@ -4,6 +4,7 @@ import android.content.Context;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -28,7 +29,6 @@ import org.stepik.droid.adaptive.pdd.ui.adapter.QuizCardAdapter;
 import org.stepik.droid.adaptive.pdd.ui.listener.OnCardSwipeListener;
 
 import io.reactivex.Observable;
-import io.reactivex.Scheduler;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.schedulers.Schedulers;
@@ -102,6 +102,7 @@ public final class RecommendationsFragment extends Fragment {
         stepsBridgeSubject = PublishSubject.create();
         onDestroyDisposable.add(stepsBridgeSubject.observeOn(Schedulers.io())
                 .map(lesson_id -> API.getInstance().getSteps(lesson_id).execute())
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(res -> stepsSubject.onNext(res), this::handleError));
 
 
@@ -116,7 +117,7 @@ public final class RecommendationsFragment extends Fragment {
                     }
                     return API.getInstance().getNextRecommendations().execute();
                 })
-                .observeOn(Schedulers.computation())
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(this::handleRecommendationsResponse, this::handleError));
 
         attemptSubject = BehaviorSubject.create();
@@ -184,6 +185,7 @@ public final class RecommendationsFragment extends Fragment {
                     .take(1)
                     .map(AttemptResponse::getFirstAttempt)
                     .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(attemptSubject::onNext, this::handleError);
         }
     }
@@ -202,7 +204,7 @@ public final class RecommendationsFragment extends Fragment {
         )
                 .skip(1)
                 .take(1)
-                .observeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe(res -> submissionSubject.onNext(res.getFirstSubmission()), this::handleError));
         quizCardAdapter.setUIState(QuizCardAdapter.State.PENDING_FOR_SUBMISSION);
@@ -212,7 +214,7 @@ public final class RecommendationsFragment extends Fragment {
             if (submission.getStatus() == Submission.Status.EVALUATION) {
                 API.getInstance().getSubmissions(submission.getAttempt())
                         .subscribeOn(Schedulers.io())
-                        .observeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(res -> submissionSubject.onNext(res.getFirstSubmission()), this::handleError);
             } else {
                 if (submission.getStatus() == Submission.Status.CORRECT) {
@@ -225,5 +227,12 @@ public final class RecommendationsFragment extends Fragment {
 
     private void handleError(final Throwable throwable) {
         throwable.printStackTrace();
+        if (stepsSubject.hasValue()) {
+            quizCardAdapter.setUIState(QuizCardAdapter.State.RECOMMENDATION_LOADED);
+        }
+
+        if (binding != null) {
+            Snackbar.make(binding.getRoot(), R.string.network_error, Snackbar.LENGTH_LONG).show();
+        }
     }
 }

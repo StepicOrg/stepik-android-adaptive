@@ -76,6 +76,21 @@
                     android:id="@+id/fragment_recommendations_hard_reaction"
                     />
 
+                <TextView
+                    android:layout_width="128dp"
+                    android:layout_height="128dp"
+                    android:layout_gravity="center"
+                    android:scaleX="0"
+                    android:scaleY="0"
+                    android:textSize="24sp"
+                    android:gravity="center"
+                    android:textColor="@android:color/white"
+                    android:background="@drawable/correct_button_bg"
+                    android:text="@string/correct"
+                    android:fontFamily="sans-serif-thin"
+                    android:id="@+id/fragment_recommendations_correct_reaction"
+                    />
+
                 <org.stepik.droid.adaptive.pdd.ui.view.QuizCardView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

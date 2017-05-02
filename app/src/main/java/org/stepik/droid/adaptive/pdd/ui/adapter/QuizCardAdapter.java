@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.support.v7.widget.LinearLayoutManager;
 import android.util.Log;
-import android.view.GestureDetector;
 import android.view.View;
 import android.view.ViewPropertyAnimator;
 import android.webkit.WebSettings;
@@ -20,7 +19,7 @@ import org.stepik.droid.adaptive.pdd.ui.helper.LayoutHelper;
 import org.stepik.droid.adaptive.pdd.ui.listener.OnCardSwipeListener;
 import org.stepik.droid.adaptive.pdd.ui.view.QuizCardView;
 
-public final class QuizCardAdapter extends GestureDetector.SimpleOnGestureListener {
+public final class QuizCardAdapter {
     private static final long ANIMATION_DURATION = 450;
     private static final long ANIMATION_DURATION_FAST = 300;
 
@@ -92,15 +91,17 @@ public final class QuizCardAdapter extends GestureDetector.SimpleOnGestureListen
                 if (Math.abs(scrollProgress) > 0.5) {
                     if (scrollProgress < 0) {
                         if (animatorEasy == null) {
-                            animatorEasy = AnimationHelper.createReactionAppearAnimation(binding.fragmentRecommendationsEasyReaction);
+                            animatorEasy = AnimationHelper
+                                    .createReactionAppearAnimation(binding.fragmentRecommendationsEasyReaction);
                         }
                     } else {
                         if (animatorHard == null) {
-                            animatorHard = AnimationHelper.createReactionAppearAnimation(binding.fragmentRecommendationsHardReaction);
+                            animatorHard = AnimationHelper
+                                    .createReactionAppearAnimation(binding.fragmentRecommendationsHardReaction);
                         }
                     }
                 } else {
-                    hideReactionAnimation();
+                    hideReactionAnimation(0);
                 }
             }
 
@@ -111,26 +112,22 @@ public final class QuizCardAdapter extends GestureDetector.SimpleOnGestureListen
 
             @Override
             public void onSwipeLeft() {
-                if (animatorEasy == null) {
-                    animatorEasy = AnimationHelper.createReactionAppearAnimation(binding.fragmentRecommendationsEasyReaction)
-                            .setDuration(ANIMATION_DURATION * 2)
-                            .withEndAction(() -> hideReactionAnimation());
-                } else {
-                    hideReactionAnimation();
-                }
+                animatorEasy = AnimationHelper.createReactionAppearAnimation(binding.fragmentRecommendationsEasyReaction)
+                        .withEndAction(() -> hideReactionAnimation(ANIMATION_DURATION * 2));
                 listener.onCardSwipe(OnCardSwipeListener.SWIPE_DIRECTION.LEFT);
             }
 
             @Override
             public void onSwipeRight() {
-                if (animatorHard == null) {
-                    animatorHard = AnimationHelper.createReactionAppearAnimation(binding.fragmentRecommendationsHardReaction)
-                            .setDuration(ANIMATION_DURATION * 2)
-                            .withEndAction(() -> hideReactionAnimation());
-                } else {
-                    hideReactionAnimation();
-                }
+                animatorHard = AnimationHelper.createReactionAppearAnimation(binding.fragmentRecommendationsHardReaction)
+                        .withEndAction(() -> hideReactionAnimation(ANIMATION_DURATION * 2));
                 listener.onCardSwipe(OnCardSwipeListener.SWIPE_DIRECTION.RIGHT);
+            }
+
+            @Override
+            public void onSwipeDown() {
+                AnimationHelper.createReactionAppearAnimation(binding.fragmentRecommendationsCorrectReaction)
+                        .withEndAction(() -> hideReactionAnimation(ANIMATION_DURATION * 2));
             }
         });
 
@@ -187,15 +184,21 @@ public final class QuizCardAdapter extends GestureDetector.SimpleOnGestureListen
         }
     }
 
-    private void hideReactionAnimation() {
+    private void hideReactionAnimation(final long delay) {
         if (animatorEasy != null) {
+            AnimationHelper.createReactionDisappearAnimation(binding.fragmentRecommendationsEasyReaction)
+                    .setStartDelay(delay);
             animatorEasy = null;
-            AnimationHelper.createReactionDisappearAnimation(binding.fragmentRecommendationsEasyReaction).start();
         }
+
         if (animatorHard != null) {
+            AnimationHelper.createReactionDisappearAnimation(binding.fragmentRecommendationsHardReaction)
+                    .setStartDelay(delay);
             animatorHard = null;
-            AnimationHelper.createReactionDisappearAnimation(binding.fragmentRecommendationsHardReaction).start();
         }
+
+        AnimationHelper.createReactionDisappearAnimation(binding.fragmentRecommendationsCorrectReaction)
+                .setStartDelay(delay);
     }
 
 
@@ -260,8 +263,6 @@ public final class QuizCardAdapter extends GestureDetector.SimpleOnGestureListen
                 .alpha(0)
                 .setDuration(ANIMATION_DURATION_FAST)
                 .withEndAction(binding.fragmentRecommendationsContainer::swipeDown);
-
-        // todo show correct sign
     }
 
     private void submissionWrong() {

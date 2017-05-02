@@ -4,6 +4,7 @@ import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.view.View;
 import android.view.ViewPropertyAnimator;
+import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.BounceInterpolator;
 import android.view.animation.OvershootInterpolator;
 import android.widget.RelativeLayout;
@@ -41,7 +42,7 @@ public final class AnimationHelper {
         return view.animate()
                 .scaleX(1)
                 .scaleY(1)
-                .setInterpolator(new BounceInterpolator())
+                .setInterpolator(new AccelerateDecelerateInterpolator())
                 .setDuration(ANIMATION_DURATION);
     }
 
@@ -49,6 +50,7 @@ public final class AnimationHelper {
         return view.animate()
                 .scaleX(0)
                 .scaleY(0)
+                .setInterpolator(new AccelerateDecelerateInterpolator())
                 .setDuration(ANIMATION_DURATION);
     }
 }

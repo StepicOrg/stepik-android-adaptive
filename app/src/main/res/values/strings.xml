@@ -9,4 +9,6 @@
     <string name="settings">Settings</string>
     <string name="stats">Stats</string>
     <string name="logout">Logout</string>
+    <string name="correct">CORRECT</string>
+    <string name="network_error">An error occurred while processing your request</string>
 </resources>
