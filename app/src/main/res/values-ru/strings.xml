@@ -14,4 +14,12 @@
     <string name="network_error">При обработке запроса произошла ошибка</string>
     <string name="wrong">Неверный ответ</string>
     <string name="logout_dialog">Вы уверены, что хотите выйти из текущего профиля?</string>
+    <string name="password">Пароль</string>
+    <string name="sign_in">Войти</string>
+    <string name="sign_up">Регистрация</string>
+    <string name="continue_with">Или авторизоваться через</string>
+    <string name="create_account">Регистрация</string>
+    <string name="forgot_password">Вспомнить пароль</string>
+    <string name="first_name">Имя</string>
+    <string name="second_name">Фамилия</string>
 </resources>

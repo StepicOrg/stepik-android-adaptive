@@ -16,6 +16,7 @@ import org.stepik.droid.adaptive.pdd.api.oauth.OAuthResponse;
 import org.stepik.droid.adaptive.pdd.data.SharedPreferenceMgr;
 import org.stepik.droid.adaptive.pdd.databinding.FragmentLoginBinding;
 import org.stepik.droid.adaptive.pdd.ui.DefaultWebViewClient;
+import org.stepik.droid.adaptive.pdd.ui.dialog.ForgotDialog;
 
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -55,6 +56,11 @@ public final class LoginFragment extends Fragment {
 //            CookieManager.getInstance().removeAllCookie();
 //        }
 
+        binding.fragmentLoginCreateAccount.setOnClickListener((v) ->
+                FragmentMgr.getInstance().replaceFragment(0, new RegistrationFragment(), true));
+
+        binding.fragmentLoginForgotPassword.setOnClickListener((v) ->
+                FragmentMgr.getInstance().showDialog(new ForgotDialog()));
         return binding.getRoot();
     }
 

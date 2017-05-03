@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDelegate;
+import android.view.MenuItem;
 
 import org.stepik.droid.adaptive.pdd.ui.fragment.FragmentMgr;
 import org.stepik.droid.adaptive.pdd.ui.fragment.LoginFragment;
@@ -23,6 +24,17 @@ public class Main extends AppCompatActivity {
 
         if (savedInstanceState == null) {
             FragmentMgr.getInstance().addFragment(0, new LoginFragment(), false);
+        }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(final MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                onBackPressed();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
     }
 }

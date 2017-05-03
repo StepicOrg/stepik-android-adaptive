@@ -13,4 +13,13 @@
     <string name="network_error">An error occurred while processing your request</string>
     <string name="wrong">Wrong answer</string>
     <string name="logout_dialog">Are you sure to continue?</string>
+    <string name="email" translatable="false">E-mail</string>
+    <string name="password">Password</string>
+    <string name="sign_in">Sign In</string>
+    <string name="sign_up">Sign Up</string>
+    <string name="continue_with">Or continue with</string>
+    <string name="create_account">Create account</string>
+    <string name="forgot_password">Forgot password</string>
+    <string name="first_name">First name</string>
+    <string name="second_name">Second name</string>
 </resources>

@@ -1,9 +1,14 @@
 package org.stepik.droid.adaptive.pdd;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.drawable.PictureDrawable;
 import android.net.Uri;
+import android.os.IBinder;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
+import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
 
 import com.bumptech.glide.GenericRequestBuilder;
@@ -44,6 +49,15 @@ public class Util {
                 "</div></body></html>";
     }
 
+    public static void hideSoftKeyboard(final Activity a) {
+        final View view = a.getCurrentFocus();
+        if (view != null) {
+            Log.d("hideSoftKeyboard", "hideSoftKeyboard");
+            final InputMethodManager mgr = (InputMethodManager) a.getSystemService(Context.INPUT_METHOD_SERVICE);
+            mgr.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }
+    }
+
 
     public static void loadImageFromNetworkAsync(final String path, final ImageView view, final int placeholder) {
         final Context context = view.getContext();
@@ -57,7 +71,7 @@ public class Util {
                     .sourceEncoder(new StreamEncoder())
                     .cacheDecoder(new FileToStreamDecoder<>(new SvgDecoder()))
                     .decoder(new SvgDecoder())
-                    .placeholder(placeholder)
+//                    .placeholder(placeholder)
                     .listener(new SvgSoftwareLayerSetter());
 
             Uri uri = Uri.parse(path);
@@ -70,7 +84,7 @@ public class Util {
                     .with(context.getApplicationContext())
                     .load(path)
                     .asBitmap()
-                    .placeholder(placeholder)
+//                    .placeholder(placeholder)
                     .into(view);
         }
     }

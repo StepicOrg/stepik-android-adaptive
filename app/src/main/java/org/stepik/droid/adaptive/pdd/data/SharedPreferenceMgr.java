@@ -69,6 +69,13 @@ public final class SharedPreferenceMgr {
         return gson.fromJson(json, Profile.class);
     }
 
+    public void removeProfile() {
+        remove(PROFILE);
+        remove(PROFILE_ID);
+        remove(OAUTH_RESPONSE);
+        remove(OAUTH_RESPONSE_DEADLINE);
+    }
+
 
     public void saveBoolean(String name, Boolean data){
         sharedPreferences.edit().putBoolean(name, data).apply();

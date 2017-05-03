@@ -100,7 +100,7 @@ public final class API {
 
     public void updateAuthState(final OAuthResponse response) {
         if (response == null) {
-            SharedPreferenceMgr.getInstance().clear();
+            SharedPreferenceMgr.getInstance().removeProfile();
         } else {
             SharedPreferenceMgr.getInstance().saveOAuthResponse(response);
         }
