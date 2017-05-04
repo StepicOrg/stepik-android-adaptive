@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">AdaptivePDD</string>
+    <string name="app_name">ПДД 2017</string>
     <string name="login_button">Войти через Stepik API</string>
     <string name="attempt_button">Решить</string>
     <string name="make_submission">Отправить</string>

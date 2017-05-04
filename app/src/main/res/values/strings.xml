@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">AdaptivePDD</string>
+    <string name="app_name">PDD 2017</string>
     <string name="login_button">Login with Stepik</string>
     <string name="attempt_button">Solve</string>
     <string name="make_submission">Submit</string>
