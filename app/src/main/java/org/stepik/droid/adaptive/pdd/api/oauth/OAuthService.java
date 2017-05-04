@@ -10,6 +10,14 @@ public interface OAuthService {
 
     @FormUrlEncoded
     @POST("oauth2/token/")
+    Observable<OAuthResponse> authWithLoginPassword(
+            @Field("grant_type") final String grant_type,
+            @Field(value = "username", encoded = true) final String username,
+            @Field(value = "password", encoded = true) final String password
+    );
+
+    @FormUrlEncoded
+    @POST("oauth2/token/")
     Observable<OAuthResponse> getAccessTokenByCode(
             @Field("grant_type") final String grant_type,
             @Field("code") final String code,

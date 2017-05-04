@@ -1,5 +1,7 @@
 package org.stepik.droid.adaptive.pdd.api;
 
+import android.util.Log;
+
 import org.stepik.droid.adaptive.pdd.Config;
 import org.stepik.droid.adaptive.pdd.api.oauth.AuthenticationInterceptor;
 import org.stepik.droid.adaptive.pdd.api.oauth.OAuthService;
@@ -21,16 +23,13 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public final class API {
     private final static String TAG = "API";
-
-    private static final String CLIENT_ID = "8030bQmbcsVo3j70ImSe1x4jujlZr9Lm9FOwZ5Pb";
-    private static final String CLIENT_SECRET = "1AphQOnuKmM4ROsNAfvo3GZoeUfSwEUsOfvDmibcBygd4IxAGQHbtPmZj3t6Yjr4X8Iz1dO231lrstzooofa07TliQxWljDlrlduuSNgD2BzhCyqxsOX0LWvxwZNVslN";
-    public static final String REDIRECT_URI = "http://test/success/";
-
     private static final String HOST = "https://stepik.org/";
 
-    public static final String AUTH_CODE = "code";
-    public static final String REFRESH_GRANT_TYPE = "refresh_token";
-    public static final String AUTH_CODE_GRANT_TYPE = "authorization_code";
+    public enum TokenType {
+        SOCIAL,
+        PASSWORD,
+        DEFAULT
+    }
 
     private static API instance;
 
@@ -44,13 +43,10 @@ public final class API {
     private OAuthService authService;
     private StepikService stepikService;
 
-    private API() {
-        initServices();
-    }
-
-    private void initServices() {
+    public API initServices(final TokenType tokenType) {
         final OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
-        final AuthenticationInterceptor interceptor = new AuthenticationInterceptor(getAuthToken());
+        final AuthenticationInterceptor interceptor = new AuthenticationInterceptor(getAuthToken(tokenType));
+        Log.d(TAG, "token: " + getAuthToken(tokenType));
         httpClient.addInterceptor(interceptor);
 
         HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
@@ -63,15 +59,27 @@ public final class API {
 
         this.authService = retrofit.create(OAuthService.class);
         this.stepikService = retrofit.create(StepikService.class);
+
+        return this;
     }
 
-    private String getAuthToken() {
+    private String getAuthToken(final TokenType tokenType) {
         final OAuthResponse response = SharedPreferenceMgr.getInstance().getOAuthResponse();
         final long expire = SharedPreferenceMgr.getInstance().getLong(SharedPreferenceMgr.OAUTH_RESPONSE_DEADLINE);
         if (response != null && expire > System.currentTimeMillis()) {
             return response.getTokenType() + " " + response.getAccessToken();
         } else {
-            return Credentials.basic(API.CLIENT_ID, API.CLIENT_SECRET);
+            switch (tokenType) {
+                case PASSWORD:
+                    return Credentials.basic(
+                            Config.getInstance().getOAuthClientId(),
+                            Config.getInstance().getOAuthClientSecret());
+                case SOCIAL:
+                    return Credentials.basic(
+                            Config.getInstance().getOAuthClientIdSocial(),
+                            Config.getInstance().getOAuthClientSecretSocial());
+            }
+            return "";
         }
     }
 
@@ -85,17 +93,16 @@ public final class API {
         return instance;
     }
 
-    public static String getAuthURL() {
-        return API.HOST + "oauth2/authorize/?response_type=code&client_id="
-                + API.CLIENT_ID + "&redirect_uri=" + API.REDIRECT_URI;
+    public Observable<OAuthResponse> authWithLoginPassword(final String login, final String password) {
+        return authService.authWithLoginPassword(Config.getInstance().getGrantType(), login, password);
     }
 
     public Observable<OAuthResponse> authWithCode(final String code) {
-        return authService.getAccessTokenByCode(API.AUTH_CODE_GRANT_TYPE, code, API.REDIRECT_URI);
+        return authService.getAccessTokenByCode(Config.getInstance().getGrantTypeSocial(), code, Config.getInstance().getRedirectUri());
     }
 
     public Call<OAuthResponse> authWithRefreshToken(final String refresh_token) {
-        return authService.refreshAccessToken(API.REFRESH_GRANT_TYPE, refresh_token);
+        return authService.refreshAccessToken(Config.getInstance().getRefreshGrantType(), refresh_token);
     }
 
     public void updateAuthState(final OAuthResponse response) {
@@ -103,12 +110,12 @@ public final class API {
             SharedPreferenceMgr.getInstance().removeProfile();
         } else {
             SharedPreferenceMgr.getInstance().saveOAuthResponse(response);
+            initServices(TokenType.DEFAULT);
         }
-        initServices();
     }
 
     public Call<RecommendationsResponse> getNextRecommendations() {
-        return stepikService.getNextRecommendations(Config.COURSE_ID);
+        return stepikService.getNextRecommendations(Config.getInstance().getCourseId());
     }
 
     public Call<StepsResponse> getSteps(final long lesson) {
