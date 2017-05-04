@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import org.stepik.droid.adaptive.pdd.R;
+import org.stepik.droid.adaptive.pdd.Util;
 import org.stepik.droid.adaptive.pdd.api.API;
 import org.stepik.droid.adaptive.pdd.api.oauth.OAuthResponse;
 import org.stepik.droid.adaptive.pdd.data.SharedPreferenceMgr;
@@ -99,15 +100,15 @@ public final class LoginFragment extends Fragment {
     }
 
     private void setAuthState(final AuthState state) {
-        this.state = state;
 
         if (authProgress != null) authProgress.dismiss();
 
-        if (state == AuthState.OK) {
-            FragmentMgr.getInstance().replaceFragment(0, new RecommendationsFragment(), false);
+        if (state == AuthState.OK && this.state != state) { // to not to call it twice
+            Util.startStudy(getActivity());
         } else if (binding != null) {
             setUIState(state);
         }
+        this.state = state;
     }
 
     private void setUIState(final AuthState state) {

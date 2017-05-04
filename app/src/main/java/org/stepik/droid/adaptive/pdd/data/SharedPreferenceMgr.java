@@ -3,7 +3,6 @@ package org.stepik.droid.adaptive.pdd.data;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
-import android.util.Log;
 
 import com.google.gson.Gson;
 
@@ -17,6 +16,7 @@ public final class SharedPreferenceMgr {
     private static final String PROFILE = "profile";
     public static final String PROFILE_ID = "profile_id";
 
+    private static final String FIRST_TIME = "first_time";
 
     private static SharedPreferenceMgr instance;
 
@@ -76,20 +76,28 @@ public final class SharedPreferenceMgr {
         remove(OAUTH_RESPONSE_DEADLINE);
     }
 
+    public void setFirstTime(final boolean shown) {
+        saveBoolean(FIRST_TIME, shown);
+    }
 
-    public void saveBoolean(String name, Boolean data){
+    public boolean isFirstTime() {
+        return getBoolean(FIRST_TIME);
+    }
+
+
+    public void saveBoolean(String name, Boolean data) {
         sharedPreferences.edit().putBoolean(name, data).apply();
     }
 
-    public void saveString(final String name, final String data){
+    public void saveString(final String name, final String data) {
         sharedPreferences.edit().putString(name, data).apply();
     }
 
-    public void saveInt(final String name, final int data){
+    public void saveInt(final String name, final int data) {
         sharedPreferences.edit().putInt(name, data).apply();
     }
 
-    public void saveLong(final String name, final long data){
+    public void saveLong(final String name, final long data) {
         sharedPreferences.edit().putLong(name, data).apply();
     }
 
@@ -105,7 +113,7 @@ public final class SharedPreferenceMgr {
         return sharedPreferences.getLong(name, 0);
     }
 
-    public boolean getBoolean(final String name){
+    public boolean getBoolean(final String name) {
         return sharedPreferences.getBoolean(name, false);
     }
 

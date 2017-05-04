@@ -1,15 +1,17 @@
-package org.stepik.droid.adaptive.pdd;
+package org.stepik.droid.adaptive.pdd.ui.activity;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDelegate;
 import android.view.MenuItem;
 
+import org.stepik.droid.adaptive.pdd.R;
+import org.stepik.droid.adaptive.pdd.Util;
 import org.stepik.droid.adaptive.pdd.ui.fragment.FragmentMgr;
-import org.stepik.droid.adaptive.pdd.ui.fragment.LoginFragment;
 
-public class Main extends AppCompatActivity {
+public abstract class FragmentActivity extends AppCompatActivity {
     static {
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
     }
@@ -20,12 +22,14 @@ public class Main extends AppCompatActivity {
         Util.initMgr(this);
         FragmentMgr.getInstance().attach(this);
 
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.fragment_activity);
 
         if (savedInstanceState == null) {
-            FragmentMgr.getInstance().addFragment(0, new LoginFragment(), false);
+            FragmentMgr.getInstance().addFragment(0, createFragment(), false);
         }
     }
+
+    protected abstract Fragment createFragment();
 
     @Override
     public boolean onOptionsItemSelected(final MenuItem item) {

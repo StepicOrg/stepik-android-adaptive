@@ -2,9 +2,9 @@ package org.stepik.droid.adaptive.pdd;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.drawable.PictureDrawable;
 import android.net.Uri;
-import android.os.IBinder;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -20,12 +20,18 @@ import com.caverock.androidsvg.SVG;
 
 import org.stepik.droid.adaptive.pdd.api.API;
 import org.stepik.droid.adaptive.pdd.data.SharedPreferenceMgr;
+import org.stepik.droid.adaptive.pdd.ui.activity.StudyActivity;
+import org.stepik.droid.adaptive.pdd.ui.activity.TutorialActivity;
 import org.stepik.droid.adaptive.pdd.ui.fragment.FragmentMgr;
 import org.stepik.droid.adaptive.pdd.util.svg.SvgDecoder;
 import org.stepik.droid.adaptive.pdd.util.svg.SvgDrawableTranscoder;
 import org.stepik.droid.adaptive.pdd.util.svg.SvgSoftwareLayerSetter;
 
 import java.io.InputStream;
+
+import io.reactivex.Observable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
 
 public class Util {
     public static void initMgr(final AppCompatActivity context) {
@@ -90,5 +96,17 @@ public class Util {
 //                    .placeholder(placeholder)
                     .into(view);
         }
+    }
+
+    public static void startStudy(final Activity activity) {
+        Observable.fromCallable(SharedPreferenceMgr.getInstance()::isFirstTime)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe((firstTime) -> {
+                    final Intent intent = new Intent(activity, firstTime ? TutorialActivity.class : StudyActivity.class);
+                    intent.setFlags(intent.getFlags() | Intent.FLAG_ACTIVITY_NO_HISTORY);
+                    activity.startActivity(intent);
+                    activity.finish();
+                });
     }
 }
