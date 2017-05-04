@@ -18,6 +18,7 @@ import com.bumptech.glide.load.model.StreamEncoder;
 import com.bumptech.glide.load.resource.file.FileToStreamDecoder;
 import com.caverock.androidsvg.SVG;
 
+import org.stepik.droid.adaptive.pdd.api.API;
 import org.stepik.droid.adaptive.pdd.data.SharedPreferenceMgr;
 import org.stepik.droid.adaptive.pdd.ui.fragment.FragmentMgr;
 import org.stepik.droid.adaptive.pdd.util.svg.SvgDecoder;
@@ -28,6 +29,8 @@ import java.io.InputStream;
 
 public class Util {
     public static void initMgr(final AppCompatActivity context) {
+        Config.init(context);
+        API.init();
         FragmentMgr.init(context);
         SharedPreferenceMgr.init(context);
     }

@@ -7,6 +7,7 @@
         android:layout_height="match_parent"
         android:fitsSystemWindows="true">
         <ScrollView
+            android:id="@+id/fragment_login_main_screen"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
             <LinearLayout
@@ -28,10 +29,12 @@
                     />
 
                 <android.support.design.widget.TextInputLayout
+                    android:id="@+id/fragment_login_email_layout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="8dp">
                     <android.support.design.widget.TextInputEditText
+                        android:id="@+id/fragment_login_email"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:inputType="textEmailAddress"
@@ -39,12 +42,14 @@
                 </android.support.design.widget.TextInputLayout>
 
                 <android.support.design.widget.TextInputLayout
+                    android:id="@+id/fragment_login_password_layout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="8dp"
                     app:passwordToggleEnabled="true"
                     android:fontFamily="sans-serif-light">
                     <android.support.design.widget.TextInputEditText
+                        android:id="@+id/fragment_login_password"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:inputType="textPassword"
@@ -81,6 +86,7 @@
                     </LinearLayout>
 
                     <Button
+                        android:id="@+id/fragment_login_button_sign_in"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textColor="@color/button_text_color"
@@ -159,35 +165,11 @@
             </LinearLayout>
         </ScrollView>
 
-
-
-        <RelativeLayout
-            android:visibility="gone"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:text="@string/login_button"
-                android:id="@+id/fragment_login_button"
-                />
-
-            <ProgressBar
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:id="@+id/fragment_login_progress"
-                />
-
-            <WebView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:visibility="gone"
-                android:id="@+id/fragment_login_web">
-            </WebView>
-
-        </RelativeLayout>
+        <ProgressBar
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:id="@+id/fragment_login_progress"
+            />
     </android.support.design.widget.CoordinatorLayout>
 </layout>

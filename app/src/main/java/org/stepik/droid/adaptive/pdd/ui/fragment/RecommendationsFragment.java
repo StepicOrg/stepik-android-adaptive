@@ -122,6 +122,9 @@ public final class RecommendationsFragment extends Fragment {
 
         attemptSubject = BehaviorSubject.create();
         submissionSubject = BehaviorSubject.create();
+
+
+        navigationDrawerAdapter = new NavigationDrawerAdapter();
     }
 
     @Override
@@ -137,7 +140,6 @@ public final class RecommendationsFragment extends Fragment {
     public void onAttach(final Context context) {
         super.onAttach(context);
         quizCardAdapter = new QuizCardAdapter(context, this::onCardSwipe);
-        navigationDrawerAdapter = new NavigationDrawerAdapter();
     }
 
     private void onCardSwipe(final OnCardSwipeListener.SWIPE_DIRECTION swipeDirection) {

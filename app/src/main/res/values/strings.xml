@@ -22,4 +22,9 @@
     <string name="forgot_password">Forgot password</string>
     <string name="first_name">First name</string>
     <string name="second_name">Second name</string>
+    <string name="auth_error">Authorization error</string>
+    <string name="auth_error_empty_email">Enter valid email address</string>
+    <string name="auth_error_empty_password">Entert the password</string>
+    <string name="processing_your_request">Processing your request</string>
+    <string name="auth">Authorization</string>
 </resources>

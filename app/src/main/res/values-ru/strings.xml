@@ -22,4 +22,9 @@
     <string name="forgot_password">Вспомнить пароль</string>
     <string name="first_name">Имя</string>
     <string name="second_name">Фамилия</string>
+    <string name="auth_error">Ошибка авторизации</string>
+    <string name="auth_error_empty_email">Введите корректный E-mail</string>
+    <string name="auth_error_empty_password">Введите пароль</string>
+    <string name="processing_your_request">Обработка запроса</string>
+    <string name="auth">Авторизация</string>
 </resources>

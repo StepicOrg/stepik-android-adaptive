@@ -1,21 +1,23 @@
 package org.stepik.droid.adaptive.pdd.ui.fragment;
 
+import android.app.ProgressDialog;
 import android.databinding.DataBindingUtil;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.text.Editable;
+import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.webkit.WebViewClient;
 
 import org.stepik.droid.adaptive.pdd.R;
 import org.stepik.droid.adaptive.pdd.api.API;
 import org.stepik.droid.adaptive.pdd.api.oauth.OAuthResponse;
 import org.stepik.droid.adaptive.pdd.data.SharedPreferenceMgr;
 import org.stepik.droid.adaptive.pdd.databinding.FragmentLoginBinding;
-import org.stepik.droid.adaptive.pdd.ui.DefaultWebViewClient;
 import org.stepik.droid.adaptive.pdd.ui.dialog.ForgotDialog;
 
 import io.reactivex.Observable;
@@ -32,35 +34,27 @@ public final class LoginFragment extends Fragment {
 
     private CompositeDisposable compositeDisposable;
 
-    private WebViewClient defaultWevViewClient;
+    private ProgressDialog authProgress;
+
 
     @Nullable
     @Override
     public View onCreateView(final LayoutInflater inflater, @Nullable final ViewGroup container, @Nullable final Bundle savedInstanceState) {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_login, container, false);
 
-        binding.fragmentLoginButton.setOnClickListener((v) -> {
-            binding.fragmentLoginWeb.setVisibility(View.VISIBLE);
-            binding.fragmentLoginProgress.setVisibility(View.GONE);
-            binding.fragmentLoginButton.setVisibility(View.GONE);
-            binding.fragmentLoginWeb.loadUrl(API.getAuthURL());
-            binding.fragmentLoginWeb.requestFocus(View.FOCUS_DOWN);
-        });
-
-        binding.fragmentLoginWeb.setWebViewClient(defaultWevViewClient);
-        binding.fragmentLoginWeb.getSettings().setJavaScriptEnabled(true);
-
         setUIState(state);
-
-//        if (savedInstanceState == null) {
-//            CookieManager.getInstance().removeAllCookie();
-//        }
-
         binding.fragmentLoginCreateAccount.setOnClickListener((v) ->
                 FragmentMgr.getInstance().replaceFragment(0, new RegistrationFragment(), true));
 
         binding.fragmentLoginForgotPassword.setOnClickListener((v) ->
                 FragmentMgr.getInstance().showDialog(new ForgotDialog()));
+
+
+        binding.fragmentLoginButtonSignIn.setOnClickListener((v) -> authWithLoginPassword());
+
+        binding.fragmentLoginEmail.addTextChangedListener(new FormTextWatcher(this::validateEmail));
+        binding.fragmentLoginPassword.addTextChangedListener(new FormTextWatcher(this::validatePassword));
+
         return binding.getRoot();
     }
 
@@ -71,7 +65,6 @@ public final class LoginFragment extends Fragment {
         compositeDisposable = new CompositeDisposable();
 
         Observable<AuthState> resolveAuth = Observable.fromCallable(() -> {
-            API.init();
             final OAuthResponse response = SharedPreferenceMgr.getInstance().getOAuthResponse();
             if (response != null) {
                 final long expire = SharedPreferenceMgr.getInstance().getLong(SharedPreferenceMgr.OAUTH_RESPONSE_DEADLINE);
@@ -82,6 +75,8 @@ public final class LoginFragment extends Fragment {
                     } else {
                         return AuthState.ERROR;
                     }
+                } else {
+                    API.getInstance().updateAuthState(response);
                 }
             } else {
                 return AuthState.NEED_AUTH;
@@ -92,31 +87,6 @@ public final class LoginFragment extends Fragment {
         compositeDisposable.add(resolveAuth
                 .subscribeOn(Schedulers.io())
                 .subscribe(this::setAuthState, e -> setAuthState(AuthState.ERROR)));
-
-        defaultWevViewClient = new DefaultWebViewClient((v, url) -> {
-            if (url.startsWith(API.REDIRECT_URI)) {
-                if (url.contains("success")) {
-                    final Uri uri = Uri.parse(url);
-                    binding.fragmentLoginWeb.setVisibility(View.GONE);
-                    binding.fragmentLoginButton.setVisibility(View.GONE);
-
-                    compositeDisposable.add(API.getInstance().authWithCode(uri.getQueryParameter(API.AUTH_CODE))
-                            .observeOn(AndroidSchedulers.mainThread())
-                            .doOnNext(API.getInstance()::updateAuthState)
-                            .subscribeOn(Schedulers.io())
-                            .subscribe(res ->
-                                compositeDisposable.add(API.getInstance().getProfile()
-                                        .observeOn(AndroidSchedulers.mainThread())
-                                        .doOnNext(profileResponse ->
-                                                SharedPreferenceMgr.getInstance().saveProfile(profileResponse.getProfile()))
-                                        .subscribeOn(Schedulers.io())
-                                        .subscribe(profileResponse -> setAuthState(AuthState.OK), e -> setAuthState(AuthState.ERROR))),
-                            e -> setAuthState(AuthState.ERROR)));
-                }
-                return true;
-            }
-            return false;
-        });
     }
 
     @Override
@@ -131,6 +101,8 @@ public final class LoginFragment extends Fragment {
     private void setAuthState(final AuthState state) {
         this.state = state;
 
+        if (authProgress != null) authProgress.dismiss();
+
         if (state == AuthState.OK) {
             FragmentMgr.getInstance().replaceFragment(0, new RecommendationsFragment(), false);
         } else if (binding != null) {
@@ -141,12 +113,10 @@ public final class LoginFragment extends Fragment {
     private void setUIState(final AuthState state) {
         if (state == AuthState.PENDING) {
             binding.fragmentLoginProgress.setVisibility(View.VISIBLE);
-            binding.fragmentLoginButton.setVisibility(View.GONE);
-            binding.fragmentLoginWeb.setVisibility(View.GONE);
+            binding.fragmentLoginMainScreen.setVisibility(View.GONE);
         } else if (state == AuthState.NEED_AUTH || state == AuthState.ERROR) {
             binding.fragmentLoginProgress.setVisibility(View.GONE);
-            binding.fragmentLoginButton.setVisibility(View.VISIBLE);
-            binding.fragmentLoginWeb.setVisibility(View.GONE);
+            binding.fragmentLoginMainScreen.setVisibility(View.VISIBLE);
         } // todo handle error
     }
 
@@ -155,5 +125,78 @@ public final class LoginFragment extends Fragment {
         ERROR,
         NEED_AUTH,
         PENDING
+    }
+
+    private boolean validateEmail() {
+        final String email = binding.fragmentLoginEmail.getText().toString().trim();
+        final boolean valid = !TextUtils.isEmpty(email) && android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches();
+        if (valid) {
+            binding.fragmentLoginEmailLayout.setErrorEnabled(false);
+        } else {
+            binding.fragmentLoginEmail.setError(getString(R.string.auth_error_empty_email));
+        }
+        return valid;
+    }
+
+    private boolean validatePassword() {
+        final String password = binding.fragmentLoginPassword.getText().toString().trim();
+        final boolean valid = !TextUtils.isEmpty(password);
+        if (valid) {
+            binding.fragmentLoginPasswordLayout.setErrorEnabled(false);
+        } else {
+            binding.fragmentLoginPassword.setError(getString(R.string.auth_error_empty_password));
+        }
+        return valid;
+    }
+
+    private boolean validateLoginForm() {
+        return validateEmail() && validatePassword();
+    }
+
+    private void authWithLoginPassword() {
+        if (!validateLoginForm()) return;
+
+        authProgress = ProgressDialog.show(getContext(), getString(R.string.auth), getString(R.string.processing_your_request));
+
+        final String email = binding.fragmentLoginEmail.getText().toString().trim();
+        final String password = binding.fragmentLoginPassword.getText().toString().trim();
+
+        compositeDisposable.add(API.getInstance()
+            .initServices(API.TokenType.PASSWORD)
+            .authWithLoginPassword(email, password)
+            .subscribeOn(Schedulers.io())
+            .doOnNext(API.getInstance()::updateAuthState)
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe((r) -> compositeDisposable.add(
+                API.getInstance().getProfile()
+                .doOnNext(profileResponse -> SharedPreferenceMgr.getInstance().saveProfile(profileResponse.getProfile()))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(profileResponse -> setAuthState(AuthState.OK), this::onLoginError)), this::onLoginError));
+    }
+
+    private void onLoginError(final Throwable throwable) {
+        setAuthState(AuthState.ERROR);
+        if (binding != null) {
+            Snackbar.make(binding.getRoot(), R.string.auth_error, Snackbar.LENGTH_LONG).show();
+        }
+    }
+
+    private static final class FormTextWatcher implements TextWatcher {
+        private final Runnable runnable;
+
+        private FormTextWatcher(final Runnable runnable) {
+            this.runnable = runnable;
+        }
+
+        @Override
+        public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+        @Override
+        public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+
+        @Override
+        public void afterTextChanged(Editable editable) {
+            runnable.run();
+        }
     }
 }
