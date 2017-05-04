@@ -27,4 +27,12 @@
     <string name="auth_error_empty_password">Введите пароль</string>
     <string name="processing_your_request">Обработка запроса</string>
     <string name="auth">Авторизация</string>
+    <string name="tutorial_title_1">ПДД 2017</string>
+    <string name="tutorial_description_1">Добро пожаловать на курс по ПДД. Этот курс будет адаптироваться к вашим ответам.</string>
+    <string name="tutorial_title_2">Сложный вопрос</string>
+    <string name="tutorial_description_2">Если вопрос кажется вам слишком сложным в данный момент, Вы можете отложить его скинув карточку ВПРАВО.</string>
+    <string name="tutorial_title_3">Простой вопрос</string>
+    <string name="tutorial_description_3">С другой стороны, если текущий вопрос кажется вам слишком простым, Вы можете пропустить его скинув карточку ВЛЕВО.</string>
+    <string name="tutorial_title_4">Успешной подготовки</string>
+    <string name="tutorial_description_4">Мы надеемся, что этот курс поможет вам успешно подготовится к сдаче теоритеческого экзамена в ГАИ. Удачи!</string>
 </resources>

@@ -104,7 +104,6 @@ public class Util {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe((firstTime) -> {
                     final Intent intent = new Intent(activity, firstTime ? TutorialActivity.class : StudyActivity.class);
-                    intent.setFlags(intent.getFlags() | Intent.FLAG_ACTIVITY_NO_HISTORY);
                     activity.startActivity(intent);
                     activity.finish();
                 });

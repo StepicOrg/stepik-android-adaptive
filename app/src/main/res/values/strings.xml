@@ -27,4 +27,12 @@
     <string name="auth_error_empty_password">Entert the password</string>
     <string name="processing_your_request">Processing your request</string>
     <string name="auth">Authorization</string>
+    <string name="tutorial_title_1">PDD 2017</string>
+    <string name="tutorial_description_1">Welcome to adaptive course dedicated to PDD exam.</string>
+    <string name="tutorial_title_2">Hard</string>
+    <string name="tutorial_description_2">If you consider current question is hard you can skip it by swiping card to RIGHT.</string>
+    <string name="tutorial_title_3">Easy</string>
+    <string name="tutorial_description_3">On the other hand, if you consider current question too easy you can skip it by swiping it LEFT.</string>
+    <string name="tutorial_title_4">Good luck</string>
+    <string name="tutorial_description_4">We hope that this course will help you successfully pass your exam.</string>
 </resources>
