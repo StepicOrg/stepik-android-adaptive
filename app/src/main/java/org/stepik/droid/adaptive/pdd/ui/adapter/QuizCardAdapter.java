@@ -208,6 +208,7 @@ public final class QuizCardAdapter {
 
     private void recommendationLoaded() {
         binding.fragmentRecommendationsProgressBar.setVisibility(View.GONE);
+        binding.fragmentRecommendationsSubmit.setAlpha(0);
 
         final ObjectAnimator animator =
                 ObjectAnimator.ofFloat(binding.fragmentRecommendationsContainer, "translationY", 0);
