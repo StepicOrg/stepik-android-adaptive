@@ -21,7 +21,7 @@ import com.caverock.androidsvg.SVG;
 import org.stepik.droid.adaptive.pdd.api.API;
 import org.stepik.droid.adaptive.pdd.data.SharedPreferenceMgr;
 import org.stepik.droid.adaptive.pdd.ui.activity.StudyActivity;
-import org.stepik.droid.adaptive.pdd.ui.activity.TutorialActivity;
+import org.stepik.droid.adaptive.pdd.ui.activity.IntroActivity;
 import org.stepik.droid.adaptive.pdd.ui.fragment.FragmentMgr;
 import org.stepik.droid.adaptive.pdd.util.svg.SvgDecoder;
 import org.stepik.droid.adaptive.pdd.util.svg.SvgDrawableTranscoder;
@@ -103,7 +103,7 @@ public class Util {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe((firstTime) -> {
-                    final Intent intent = new Intent(activity, firstTime ? TutorialActivity.class : StudyActivity.class);
+                    final Intent intent = new Intent(activity, firstTime ? IntroActivity.class : StudyActivity.class);
                     activity.startActivity(intent);
                     activity.finish();
                 });

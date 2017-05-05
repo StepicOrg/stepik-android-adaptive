@@ -1,7 +1,6 @@
 package org.stepik.droid.adaptive.pdd.ui.activity;
 
 import android.content.Intent;
-import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
@@ -16,31 +15,31 @@ import io.reactivex.Completable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 
-public class TutorialActivity extends AppIntro2 {
+public class IntroActivity extends AppIntro2 {
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         addSlide(AppIntroFragment.newInstance(
-                getString(R.string.tutorial_title_1),
-                getString(R.string.tutorial_description_1),
-                R.drawable.ic_logo,
+                getString(R.string.intro_title_1),
+                getString(R.string.intro_description_1),
+                R.drawable.ic_car,
                 ContextCompat.getColor(this, R.color.colorAccent)));
         addSlide(AppIntroFragment.newInstance(
-                getString(R.string.tutorial_title_2),
-                getString(R.string.tutorial_description_2),
-                R.drawable.ic_tutorial_hard,
+                getString(R.string.intro_title_2),
+                getString(R.string.intro_description_2),
+                R.drawable.ic_intro_hard,
                 ContextCompat.getColor(this, R.color.colorAccent)));
         addSlide(AppIntroFragment.newInstance(
-                getString(R.string.tutorial_title_3),
-                getString(R.string.tutorial_description_3),
-                R.drawable.ic_tutorial_easy,
+                getString(R.string.intro_title_3),
+                getString(R.string.intro_description_3),
+                R.drawable.ic_intro_easy,
                 ContextCompat.getColor(this, R.color.colorAccent)));
         addSlide(AppIntroFragment.newInstance(
-                getString(R.string.tutorial_title_4),
-                getString(R.string.tutorial_description_4),
-                R.drawable.ic_tutorial_logo,
+                getString(R.string.intro_title_4),
+                getString(R.string.intro_description_4),
+                R.drawable.ic_done,
                 ContextCompat.getColor(this, R.color.colorAccent)));
 
         showSkipButton(false);

@@ -3,4 +3,5 @@
     <dimen name="vertical_card_margin">128dp</dimen>
     <dimen name="horizontal_card_margin">16dp</dimen>
     <dimen name="button_position">-178dp</dimen>
+    <dimen name="intro_asset_size">256dp</dimen>
 </resources>

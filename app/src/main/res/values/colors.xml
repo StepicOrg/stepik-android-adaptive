@@ -17,4 +17,5 @@
     <color name="colorSocialButton">#9E9E9E</color>
     <color name="colorDarkGrayText">#333</color>
     <color name="colorSeparator">#DCDCDC</color>
+    <color name="intro_asset_color">@android:color/white</color>
 </resources>
