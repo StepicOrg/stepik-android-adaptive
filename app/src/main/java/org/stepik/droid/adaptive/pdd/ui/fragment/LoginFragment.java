@@ -1,5 +1,6 @@
 package org.stepik.droid.adaptive.pdd.ui.fragment;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
@@ -13,12 +14,18 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.vk.sdk.VKSdk;
+import com.vk.sdk.api.model.VKScopes;
+
 import org.stepik.droid.adaptive.pdd.R;
 import org.stepik.droid.adaptive.pdd.Util;
 import org.stepik.droid.adaptive.pdd.api.API;
+import org.stepik.droid.adaptive.pdd.api.login.LoginListener;
+import org.stepik.droid.adaptive.pdd.api.login.SocialManager;
 import org.stepik.droid.adaptive.pdd.api.oauth.OAuthResponse;
 import org.stepik.droid.adaptive.pdd.data.SharedPreferenceMgr;
 import org.stepik.droid.adaptive.pdd.databinding.FragmentLoginBinding;
+import org.stepik.droid.adaptive.pdd.ui.activity.LaunchActivity;
 import org.stepik.droid.adaptive.pdd.ui.dialog.ForgotDialog;
 
 import io.reactivex.Observable;
@@ -37,6 +44,34 @@ public final class LoginFragment extends Fragment {
 
     private ProgressDialog authProgress;
 
+    private final LoginListener loginListener;
+
+    public LoginFragment() {
+        loginListener = new LoginListener() {
+            @Override
+            public void onLogin(final OAuthResponse response) {
+                compositeDisposable.add(API.getInstance().getProfile()
+                        .doOnNext(profileResponse -> SharedPreferenceMgr.getInstance().saveProfile(profileResponse.getProfile()))
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(profileResponse -> setAuthState(AuthState.OK), this::onError));
+            }
+
+            @Override
+            public void onSocialLogin(String token, SocialManager.SocialType type) {
+                showProgressDialog();
+                super.onSocialLogin(token, type);
+            }
+
+            @Override
+            public void onError(Throwable throwable) {
+                setAuthState(AuthState.ERROR);
+                if (binding != null) {
+                    Snackbar.make(binding.getRoot(), R.string.auth_error, Snackbar.LENGTH_LONG).show();
+                }
+            }
+        };
+    }
 
     @Nullable
     @Override
@@ -56,11 +91,13 @@ public final class LoginFragment extends Fragment {
         binding.fragmentLoginEmail.addTextChangedListener(new FormTextWatcher(this::validateEmail));
         binding.fragmentLoginPassword.addTextChangedListener(new FormTextWatcher(this::validatePassword));
 
+        binding.fragmentLoginVkButton.setOnClickListener((v) -> VKSdk.login(getActivity(), VKScopes.EMAIL));
+
         return binding.getRoot();
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    public void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
         compositeDisposable = new CompositeDisposable();
@@ -88,6 +125,16 @@ public final class LoginFragment extends Fragment {
         compositeDisposable.add(resolveAuth
                 .subscribeOn(Schedulers.io())
                 .subscribe(this::setAuthState, e -> setAuthState(AuthState.ERROR)));
+    }
+
+    @SuppressWarnings("deprecation")
+    @Override
+    public void onAttach(final Activity activity) {
+        super.onAttach(activity);
+
+        if (activity instanceof LaunchActivity) {
+            ((LaunchActivity) activity).setLoginListener(loginListener);
+        }
     }
 
     @Override
@@ -157,30 +204,21 @@ public final class LoginFragment extends Fragment {
     private void authWithLoginPassword() {
         if (!validateLoginForm()) return;
 
-        authProgress = ProgressDialog.show(getContext(), getString(R.string.auth), getString(R.string.processing_your_request));
+        showProgressDialog();
 
         final String email = binding.fragmentLoginEmail.getText().toString().trim();
         final String password = binding.fragmentLoginPassword.getText().toString().trim();
 
         compositeDisposable.add(API.getInstance()
-            .initServices(API.TokenType.PASSWORD)
             .authWithLoginPassword(email, password)
             .subscribeOn(Schedulers.io())
             .doOnNext(API.getInstance()::updateAuthState)
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe((r) -> compositeDisposable.add(
-                API.getInstance().getProfile()
-                .doOnNext(profileResponse -> SharedPreferenceMgr.getInstance().saveProfile(profileResponse.getProfile()))
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(profileResponse -> setAuthState(AuthState.OK), this::onLoginError)), this::onLoginError));
+            .subscribe(loginListener::onLogin, loginListener::onError));
     }
 
-    private void onLoginError(final Throwable throwable) {
-        setAuthState(AuthState.ERROR);
-        if (binding != null) {
-            Snackbar.make(binding.getRoot(), R.string.auth_error, Snackbar.LENGTH_LONG).show();
-        }
+    private void showProgressDialog() {
+        authProgress = ProgressDialog.show(getContext(), getString(R.string.auth), getString(R.string.processing_your_request));
     }
 
     private static final class FormTextWatcher implements TextWatcher {

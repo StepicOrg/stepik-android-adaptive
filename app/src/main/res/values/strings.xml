@@ -35,4 +35,5 @@
     <string name="intro_description_3">On the other hand, if you consider current question too easy you can skip it by swiping it LEFT.</string>
     <string name="intro_title_4">Good luck</string>
     <string name="intro_description_4">We hope that this course will help you successfully pass your exam.</string>
+    <integer name="com_vk_sdk_AppId" translatable="false">6018407</integer>
 </resources>

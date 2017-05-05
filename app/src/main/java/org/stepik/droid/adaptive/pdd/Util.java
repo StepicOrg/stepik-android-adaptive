@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.PictureDrawable;
 import android.net.Uri;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -17,6 +16,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.model.StreamEncoder;
 import com.bumptech.glide.load.resource.file.FileToStreamDecoder;
 import com.caverock.androidsvg.SVG;
+import com.vk.sdk.VKSdk;
 
 import org.stepik.droid.adaptive.pdd.api.API;
 import org.stepik.droid.adaptive.pdd.data.SharedPreferenceMgr;
@@ -34,11 +34,12 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 
 public class Util {
-    public static void initMgr(final AppCompatActivity context) {
+    public static void initMgr(final Context context) {
         Config.init(context);
         API.init();
-        FragmentMgr.init(context);
+        FragmentMgr.init();
         SharedPreferenceMgr.init(context);
+        VKSdk.initialize(context);
     }
 
 

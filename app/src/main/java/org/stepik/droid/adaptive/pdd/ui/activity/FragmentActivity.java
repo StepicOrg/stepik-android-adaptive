@@ -19,7 +19,6 @@ public abstract class FragmentActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Util.initMgr(this);
         FragmentMgr.getInstance().attach(this);
 
         setContentView(R.layout.fragment_activity);

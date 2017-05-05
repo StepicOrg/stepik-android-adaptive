@@ -56,6 +56,8 @@ dependencies {
 
     compile 'com.github.paolorotolo:appintro:4.1.0'
 
+    compile 'com.vk:androidsdk:+'
+
     testCompile 'junit:junit:4.12'
     compile project(':androidsvg')
 }

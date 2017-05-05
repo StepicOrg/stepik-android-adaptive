@@ -31,5 +31,14 @@ public interface OAuthService {
             @Field("refresh_token") final String refresh_token
     );
 
+    @FormUrlEncoded
+    @POST("/oauth2/social-token/")
+    Observable<OAuthResponse> getTokenByNativeCode(
+            @Field("provider") String providerName,
+            @Field("code") String providerCode,
+            @Field("grant_type") String grant_type,
+            @Field("redirect_uri") String redirect_uri,
+            @Field("code_type") String accessToken
+    );
 
 }

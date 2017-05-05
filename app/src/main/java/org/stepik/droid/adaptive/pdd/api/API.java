@@ -6,6 +6,7 @@ import org.stepik.droid.adaptive.pdd.Config;
 import org.stepik.droid.adaptive.pdd.api.oauth.AuthenticationInterceptor;
 import org.stepik.droid.adaptive.pdd.api.oauth.OAuthService;
 import org.stepik.droid.adaptive.pdd.api.oauth.OAuthResponse;
+import org.stepik.droid.adaptive.pdd.api.login.SocialManager;
 import org.stepik.droid.adaptive.pdd.data.SharedPreferenceMgr;
 import org.stepik.droid.adaptive.pdd.data.model.RecommendationReaction;
 import org.stepik.droid.adaptive.pdd.data.model.Submission;
@@ -43,7 +44,7 @@ public final class API {
     private OAuthService authService;
     private StepikService stepikService;
 
-    public API initServices(final TokenType tokenType) {
+    public void initServices(final TokenType tokenType) {
         final OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
         final AuthenticationInterceptor interceptor = new AuthenticationInterceptor(getAuthToken(tokenType));
         Log.d(TAG, "token: " + getAuthToken(tokenType));
@@ -59,8 +60,6 @@ public final class API {
 
         this.authService = retrofit.create(OAuthService.class);
         this.stepikService = retrofit.create(StepikService.class);
-
-        return this;
     }
 
     private String getAuthToken(final TokenType tokenType) {
@@ -94,6 +93,7 @@ public final class API {
     }
 
     public Observable<OAuthResponse> authWithLoginPassword(final String login, final String password) {
+        initServices(TokenType.PASSWORD);
         return authService.authWithLoginPassword(Config.getInstance().getGrantType(), login, password);
     }
 
@@ -103,6 +103,20 @@ public final class API {
 
     public Call<OAuthResponse> authWithRefreshToken(final String refresh_token) {
         return authService.refreshAccessToken(Config.getInstance().getRefreshGrantType(), refresh_token);
+    }
+
+    public Observable<OAuthResponse> authWithNativeCode(final String code, final SocialManager.SocialType type) {
+        initServices(TokenType.SOCIAL);
+        String codeType = null;
+        if (type.needUseAccessTokenInsteadOfCode()) {
+            codeType = "access_token";
+        }
+        return authService.getTokenByNativeCode(
+                type.getIdentifier(),
+                code,
+                Config.getInstance().getGrantTypeSocial(),
+                Config.getInstance().getRedirectUri(),
+                codeType);
     }
 
     public void updateAuthState(final OAuthResponse response) {
