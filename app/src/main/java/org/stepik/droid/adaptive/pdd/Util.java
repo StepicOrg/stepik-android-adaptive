@@ -99,11 +99,11 @@ public class Util {
     }
 
     public static void startStudy(final Activity activity) {
-        Observable.fromCallable(SharedPreferenceMgr.getInstance()::isFirstTime)
+        Observable.fromCallable(SharedPreferenceMgr.getInstance()::isNotFirstTime)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe((firstTime) -> {
-                    final Intent intent = new Intent(activity, firstTime ? IntroActivity.class : StudyActivity.class);
+                .subscribe((notFirstTime) -> {
+                    final Intent intent = new Intent(activity, notFirstTime ? StudyActivity.class : IntroActivity.class);
                     activity.startActivity(intent);
                     activity.finish();
                 });

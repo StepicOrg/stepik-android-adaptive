@@ -16,7 +16,7 @@ public final class SharedPreferenceMgr {
     private static final String PROFILE = "profile";
     public static final String PROFILE_ID = "profile_id";
 
-    private static final String FIRST_TIME = "first_time";
+    private static final String NOT_FIRST_TIME = "not_first_time";
 
     private static SharedPreferenceMgr instance;
 
@@ -76,12 +76,12 @@ public final class SharedPreferenceMgr {
         remove(OAUTH_RESPONSE_DEADLINE);
     }
 
-    public void setFirstTime(final boolean shown) {
-        saveBoolean(FIRST_TIME, shown);
+    public void setNotFirstTime(final boolean notFirstTime) {
+        saveBoolean(NOT_FIRST_TIME, notFirstTime);
     }
 
-    public boolean isFirstTime() {
-        return getBoolean(FIRST_TIME);
+    public boolean isNotFirstTime() {
+        return getBoolean(NOT_FIRST_TIME);
     }
 
 

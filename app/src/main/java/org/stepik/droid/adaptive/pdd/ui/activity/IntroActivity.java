@@ -50,7 +50,7 @@ public class IntroActivity extends AppIntro2 {
     public void onDonePressed(Fragment currentFragment) {
         super.onDonePressed(currentFragment);
         Completable
-            .fromRunnable(() -> SharedPreferenceMgr.getInstance().setFirstTime(false))
+            .fromRunnable(() -> SharedPreferenceMgr.getInstance().setNotFirstTime(true))
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(() -> {
