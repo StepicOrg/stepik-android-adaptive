@@ -122,6 +122,7 @@
                         android:layout_weight="1"
                         android:gravity="center_horizontal">
                         <ImageButton
+                            android:id="@+id/fragment_login_google_button"
                             android:layout_width="48dp"
                             android:layout_height="48dp"
                             app:srcCompat="@drawable/ic_login_social_g"

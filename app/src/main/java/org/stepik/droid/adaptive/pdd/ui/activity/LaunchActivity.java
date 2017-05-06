@@ -3,6 +3,9 @@ package org.stepik.droid.adaptive.pdd.ui.activity;
 import android.content.Intent;
 import android.support.v4.app.Fragment;
 
+import com.google.android.gms.auth.api.Auth;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.vk.sdk.VKAccessToken;
 import com.vk.sdk.VKCallback;
 import com.vk.sdk.VKSdk;
@@ -15,6 +18,7 @@ import org.stepik.droid.adaptive.pdd.ui.fragment.LoginFragment;
 
 public class LaunchActivity extends FragmentActivity {
     private LoginListener loginListener;
+    public static final int REQUEST_CODE_GOOGLE_SIGN_IN = 159;
 
     public void setLoginListener(final LoginListener listener) {
         this.loginListener = listener;
@@ -27,18 +31,40 @@ public class LaunchActivity extends FragmentActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (VKSdk.onActivityResult(requestCode, resultCode, data, new VKCallback<VKAccessToken>() {
-            @Override
-            public void onResult(VKAccessToken res) {
-                if (loginListener != null) loginListener.onSocialLogin(res.accessToken, SocialManager.SocialType.vk);
+        if (loginListener != null) {
+            if (VKSdk.onActivityResult(requestCode, resultCode, data, new VKCallback<VKAccessToken>() {
+                @Override
+                public void onResult(VKAccessToken res) {
+                    loginListener.onSocialLogin(res.accessToken, SocialManager.SocialType.vk);
+                }
+
+                @Override
+                public void onError(VKError error) {
+                    loginListener.onError(null);
+                }
+            })) {
+                return;
             }
 
-            @Override
-            public void onError(VKError error) {
-                if (loginListener != null) loginListener.onError(null);
+        }
+
+        if (requestCode == REQUEST_CODE_GOOGLE_SIGN_IN && resultCode == RESULT_OK) {
+            final GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
+            if (result.isSuccess()) {
+                final GoogleSignInAccount account = result.getSignInAccount();
+                if (account == null) {
+                    loginListener.onError(null);
+                } else {
+                    final String token = account.getServerAuthCode();
+                    if (token == null) {
+                        loginListener.onError(null);
+                    } else {
+                        loginListener.onSocialLogin(token, SocialManager.SocialType.google);
+                    }
+                }
+            } else {
+                loginListener.onError(null);
             }
-        })) {
-           return;
         }
         super.onActivityResult(requestCode, resultCode, data);
     }

@@ -14,6 +14,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.android.gms.auth.api.Auth;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.common.Scopes;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.Scope;
 import com.vk.sdk.VKSdk;
 import com.vk.sdk.api.model.VKScopes;
 
@@ -45,6 +50,8 @@ public final class LoginFragment extends Fragment {
     private CompositeDisposable compositeDisposable;
 
     private ProgressDialog authProgress;
+
+    private GoogleApiClient googleApiClient;
 
     private final LoginListener loginListener;
 
@@ -106,6 +113,13 @@ public final class LoginFragment extends Fragment {
 
         binding.fragmentLoginVkButton.setOnClickListener((v) -> VKSdk.login(getActivity(), VKScopes.EMAIL));
 
+        if (googleApiClient == null) {
+            binding.fragmentLoginGoogleButton.setEnabled(false);
+        } else {
+            binding.fragmentLoginGoogleButton.setOnClickListener((v) ->
+                    startActivityForResult(Auth.GoogleSignInApi.getSignInIntent(googleApiClient), LaunchActivity.REQUEST_CODE_GOOGLE_SIGN_IN));
+        }
+
         return binding.getRoot();
     }
 
@@ -138,6 +152,19 @@ public final class LoginFragment extends Fragment {
         compositeDisposable.add(resolveAuth
                 .subscribeOn(Schedulers.io())
                 .subscribe(this::setAuthState, e -> setAuthState(AuthState.ERROR)));
+
+        if (Util.checkPlayServices(getContext())) {
+            final GoogleSignInOptions googleSignInOptions = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                    .requestScopes(new Scope(Scopes.EMAIL), new Scope(Scopes.PROFILE))
+                    .requestServerAuthCode(Config.getInstance().getGoogleServerClientId())
+                    .build();
+
+            googleApiClient = new GoogleApiClient.Builder(getContext())
+                    .enableAutoManage(getActivity(), (r) -> loginListener.onError(null))
+                    .addApi(Auth.GOOGLE_SIGN_IN_API, googleSignInOptions)
+                    .addApi(Auth.CREDENTIALS_API)
+                    .build();
+        }
     }
 
     @SuppressWarnings("deprecation")

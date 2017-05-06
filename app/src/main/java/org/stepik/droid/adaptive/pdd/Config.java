@@ -42,6 +42,8 @@ public final class Config {
 
         private String REFRESH_GRANT_TYPE = "REFRESH_GRANT_TYPE";
 
+        private String GOOGLE_SERVER_CLIENT_ID = "GOOGLE_SERVER_CLIENT_ID";
+
         public long getCourseId() {
             return COURSE_ID;
         }
@@ -76,6 +78,10 @@ public final class Config {
 
         public String getRefreshGrantType() {
             return REFRESH_GRANT_TYPE;
+        }
+
+        public String getGoogleServerClientId() {
+            return GOOGLE_SERVER_CLIENT_ID;
         }
     }
 }
