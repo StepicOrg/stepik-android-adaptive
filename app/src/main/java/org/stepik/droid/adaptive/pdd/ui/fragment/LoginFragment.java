@@ -17,6 +17,7 @@ import android.view.ViewGroup;
 import com.vk.sdk.VKSdk;
 import com.vk.sdk.api.model.VKScopes;
 
+import org.stepik.droid.adaptive.pdd.Config;
 import org.stepik.droid.adaptive.pdd.R;
 import org.stepik.droid.adaptive.pdd.Util;
 import org.stepik.droid.adaptive.pdd.api.API;
@@ -28,6 +29,7 @@ import org.stepik.droid.adaptive.pdd.databinding.FragmentLoginBinding;
 import org.stepik.droid.adaptive.pdd.ui.activity.LaunchActivity;
 import org.stepik.droid.adaptive.pdd.ui.dialog.ForgotDialog;
 
+import io.reactivex.Completable;
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
@@ -50,11 +52,19 @@ public final class LoginFragment extends Fragment {
         loginListener = new LoginListener() {
             @Override
             public void onLogin(final OAuthResponse response) {
-                compositeDisposable.add(API.getInstance().getProfile()
-                        .doOnNext(profileResponse -> SharedPreferenceMgr.getInstance().saveProfile(profileResponse.getProfile()))
+                API.getInstance()
+                        .joinCourse(Config.getInstance().getCourseId())
                         .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(profileResponse -> setAuthState(AuthState.OK), this::onError));
+                        .subscribe();
+
+
+                compositeDisposable.add(
+                        API.getInstance().getProfile()
+                                .doOnNext(profileResponse -> SharedPreferenceMgr.getInstance().saveProfile(profileResponse.getProfile()))
+                                .subscribeOn(Schedulers.io())
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .subscribe(profileResponse -> setAuthState(AuthState.OK), this::onError)
+                );
             }
 
             @Override
@@ -65,6 +75,9 @@ public final class LoginFragment extends Fragment {
 
             @Override
             public void onError(Throwable throwable) {
+                if (throwable != null) {
+                    throwable.printStackTrace();
+                }
                 setAuthState(AuthState.ERROR);
                 if (binding != null) {
                     Snackbar.make(binding.getRoot(), R.string.auth_error, Snackbar.LENGTH_LONG).show();
@@ -152,6 +165,9 @@ public final class LoginFragment extends Fragment {
 
         if (state == AuthState.OK && this.state != state) { // to not to call it twice
             Util.startStudy(getActivity());
+        } else if (state == AuthState.ERROR) {
+            Completable.fromRunnable(() -> API.getInstance().updateAuthState(null)) // remove tokens if not authorized
+                    .subscribeOn(Schedulers.io()).subscribe();
         } else if (binding != null) {
             setUIState(state);
         }
@@ -165,7 +181,7 @@ public final class LoginFragment extends Fragment {
         } else if (state == AuthState.NEED_AUTH || state == AuthState.ERROR) {
             binding.fragmentLoginProgress.setVisibility(View.GONE);
             binding.fragmentLoginMainScreen.setVisibility(View.VISIBLE);
-        } // todo handle error
+        }
     }
 
     private enum AuthState {

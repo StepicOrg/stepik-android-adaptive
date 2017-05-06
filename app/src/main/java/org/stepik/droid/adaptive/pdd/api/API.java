@@ -8,11 +8,13 @@ import org.stepik.droid.adaptive.pdd.api.oauth.OAuthService;
 import org.stepik.droid.adaptive.pdd.api.oauth.OAuthResponse;
 import org.stepik.droid.adaptive.pdd.api.login.SocialManager;
 import org.stepik.droid.adaptive.pdd.data.SharedPreferenceMgr;
+import org.stepik.droid.adaptive.pdd.data.model.EnrollmentWrapper;
 import org.stepik.droid.adaptive.pdd.data.model.RecommendationReaction;
 import org.stepik.droid.adaptive.pdd.data.model.Submission;
 
 import java.util.concurrent.TimeUnit;
 
+import io.reactivex.Completable;
 import io.reactivex.Observable;
 import okhttp3.Credentials;
 import okhttp3.OkHttpClient;
@@ -126,6 +128,10 @@ public final class API {
             SharedPreferenceMgr.getInstance().saveOAuthResponse(response);
             initServices(TokenType.DEFAULT);
         }
+    }
+
+    public Completable joinCourse(final long course) {
+        return stepikService.joinCourse(new EnrollmentWrapper(course));
     }
 
     public Call<RecommendationsResponse> getNextRecommendations() {

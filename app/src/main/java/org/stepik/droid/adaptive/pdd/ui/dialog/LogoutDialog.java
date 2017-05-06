@@ -11,8 +11,6 @@ import android.support.v7.app.AlertDialog;
 import org.stepik.droid.adaptive.pdd.R;
 import org.stepik.droid.adaptive.pdd.api.API;
 import org.stepik.droid.adaptive.pdd.ui.activity.LaunchActivity;
-import org.stepik.droid.adaptive.pdd.ui.fragment.FragmentMgr;
-import org.stepik.droid.adaptive.pdd.ui.fragment.LoginFragment;
 
 import io.reactivex.Completable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
