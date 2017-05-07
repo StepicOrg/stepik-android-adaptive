@@ -19,7 +19,7 @@
     <string name="sign_up">Sign Up</string>
     <string name="continue_with">Or continue with</string>
     <string name="create_account">Create account</string>
-    <string name="forgot_password">Forgot password</string>
+    <string name="remind_password">Forgot password</string>
     <string name="first_name">First name</string>
     <string name="second_name">Second name</string>
     <string name="auth_error">Authorization error</string>
@@ -36,4 +36,5 @@
     <string name="intro_title_4">Good luck</string>
     <string name="intro_description_4">We hope that this course will help you successfully pass your exam.</string>
     <integer name="com_vk_sdk_AppId" translatable="false">6018407</integer>
+    <string name="remind_password_success">We sent you a letter</string>
 </resources>

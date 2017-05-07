@@ -1,5 +1,6 @@
 package org.stepik.droid.adaptive.pdd.api.oauth;
 
+import io.reactivex.Completable;
 import io.reactivex.Observable;
 import retrofit2.Call;
 import retrofit2.http.Field;
@@ -7,6 +8,12 @@ import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.POST;
 
 public interface OAuthService {
+
+    @FormUrlEncoded
+    @POST("accounts/password/reset/")
+    Completable remindPassword(
+            @Field(value = "email", encoded = true) final String email
+    );
 
     @FormUrlEncoded
     @POST("oauth2/token/")

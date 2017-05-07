@@ -7,9 +7,6 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
-import android.text.Editable;
-import android.text.TextUtils;
-import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,7 +29,8 @@ import org.stepik.droid.adaptive.pdd.api.oauth.OAuthResponse;
 import org.stepik.droid.adaptive.pdd.data.SharedPreferenceMgr;
 import org.stepik.droid.adaptive.pdd.databinding.FragmentLoginBinding;
 import org.stepik.droid.adaptive.pdd.ui.activity.LaunchActivity;
-import org.stepik.droid.adaptive.pdd.ui.dialog.ForgotDialog;
+import org.stepik.droid.adaptive.pdd.ui.dialog.RemindPasswordDialog;
+import org.stepik.droid.adaptive.pdd.util.ValidateUtil;
 
 import io.reactivex.Completable;
 import io.reactivex.Observable;
@@ -102,14 +100,14 @@ public final class LoginFragment extends Fragment {
         binding.fragmentLoginCreateAccount.setOnClickListener((v) ->
                 FragmentMgr.getInstance().replaceFragment(0, new RegistrationFragment(), true));
 
-        binding.fragmentLoginForgotPassword.setOnClickListener((v) ->
-                FragmentMgr.getInstance().showDialog(new ForgotDialog()));
+        binding.fragmentLoginRemindPassword.setOnClickListener((v) ->
+                FragmentMgr.getInstance().showDialog(new RemindPasswordDialog()));
 
 
         binding.fragmentLoginButtonSignIn.setOnClickListener((v) -> authWithLoginPassword());
 
-        binding.fragmentLoginEmail.addTextChangedListener(new FormTextWatcher(this::validateEmail));
-        binding.fragmentLoginPassword.addTextChangedListener(new FormTextWatcher(this::validatePassword));
+        binding.fragmentLoginEmail.addTextChangedListener(new ValidateUtil.FormTextWatcher(this::validateEmail));
+        binding.fragmentLoginPassword.addTextChangedListener(new ValidateUtil.FormTextWatcher(this::validatePassword));
 
         binding.fragmentLoginVkButton.setOnClickListener((v) -> VKSdk.login(getActivity(), VKScopes.EMAIL));
 
@@ -147,11 +145,9 @@ public final class LoginFragment extends Fragment {
                 return AuthState.NEED_AUTH;
             }
             return AuthState.OK;
-        }).observeOn(AndroidSchedulers.mainThread());
+        }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io());
 
-        compositeDisposable.add(resolveAuth
-                .subscribeOn(Schedulers.io())
-                .subscribe(this::setAuthState, e -> setAuthState(AuthState.ERROR)));
+        compositeDisposable.add(resolveAuth.subscribe(this::setAuthState, e -> setAuthState(AuthState.ERROR)));
 
         if (Util.checkPlayServices(getContext())) {
             final GoogleSignInOptions googleSignInOptions = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -192,11 +188,14 @@ public final class LoginFragment extends Fragment {
 
         if (state == AuthState.OK && this.state != state) { // to not to call it twice
             Util.startStudy(getActivity());
-        } else if (state == AuthState.ERROR) {
-            Completable.fromRunnable(() -> API.getInstance().updateAuthState(null)) // remove tokens if not authorized
-                    .subscribeOn(Schedulers.io()).subscribe();
-        } else if (binding != null) {
-            setUIState(state);
+        } else {
+            if (state == AuthState.ERROR) {
+                Completable.fromRunnable(() -> API.getInstance().updateAuthState(null)) // remove tokens if not authorized
+                        .subscribeOn(Schedulers.io()).subscribe();
+            }
+            if (binding != null) {
+                setUIState(state);
+            }
         }
         this.state = state;
     }
@@ -219,25 +218,11 @@ public final class LoginFragment extends Fragment {
     }
 
     private boolean validateEmail() {
-        final String email = binding.fragmentLoginEmail.getText().toString().trim();
-        final boolean valid = !TextUtils.isEmpty(email) && android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches();
-        if (valid) {
-            binding.fragmentLoginEmailLayout.setErrorEnabled(false);
-        } else {
-            binding.fragmentLoginEmail.setError(getString(R.string.auth_error_empty_email));
-        }
-        return valid;
+        return ValidateUtil.validateEmail(binding.fragmentLoginEmailLayout, binding.fragmentLoginEmail);
     }
 
     private boolean validatePassword() {
-        final String password = binding.fragmentLoginPassword.getText().toString().trim();
-        final boolean valid = !TextUtils.isEmpty(password);
-        if (valid) {
-            binding.fragmentLoginPasswordLayout.setErrorEnabled(false);
-        } else {
-            binding.fragmentLoginPassword.setError(getString(R.string.auth_error_empty_password));
-        }
-        return valid;
+        return ValidateUtil.validatePassword(binding.fragmentLoginPasswordLayout, binding.fragmentLoginPassword);
     }
 
     private boolean validateLoginForm() {
@@ -262,23 +247,5 @@ public final class LoginFragment extends Fragment {
 
     private void showProgressDialog() {
         authProgress = ProgressDialog.show(getContext(), getString(R.string.auth), getString(R.string.processing_your_request));
-    }
-
-    private static final class FormTextWatcher implements TextWatcher {
-        private final Runnable runnable;
-
-        private FormTextWatcher(final Runnable runnable) {
-            this.runnable = runnable;
-        }
-
-        @Override
-        public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
-        @Override
-        public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
-
-        @Override
-        public void afterTextChanged(Editable editable) {
-            runnable.run();
-        }
     }
 }

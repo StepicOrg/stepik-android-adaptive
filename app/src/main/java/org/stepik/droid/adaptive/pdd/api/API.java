@@ -1,7 +1,5 @@
 package org.stepik.droid.adaptive.pdd.api;
 
-import android.util.Log;
-
 import org.stepik.droid.adaptive.pdd.Config;
 import org.stepik.droid.adaptive.pdd.api.oauth.AuthenticationInterceptor;
 import org.stepik.droid.adaptive.pdd.api.oauth.OAuthService;
@@ -31,7 +29,8 @@ public final class API {
     public enum TokenType {
         SOCIAL,
         PASSWORD,
-        DEFAULT
+        DEFAULT,
+        REFRESH
     }
 
     private static API instance;
@@ -48,9 +47,11 @@ public final class API {
 
     public void initServices(final TokenType tokenType) {
         final OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
-        final AuthenticationInterceptor interceptor = new AuthenticationInterceptor(getAuthToken(tokenType));
-        Log.d(TAG, "token: " + getAuthToken(tokenType));
-        httpClient.addInterceptor(interceptor);
+        final String token = getAuthToken(tokenType);
+        if (token != null) {
+            final AuthenticationInterceptor interceptor = new AuthenticationInterceptor(token);
+            httpClient.addInterceptor(interceptor);
+        }
 
         HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
         logging.setLevel(HttpLoggingInterceptor.Level.BODY);
@@ -67,20 +68,24 @@ public final class API {
     private String getAuthToken(final TokenType tokenType) {
         final OAuthResponse response = SharedPreferenceMgr.getInstance().getOAuthResponse();
         final long expire = SharedPreferenceMgr.getInstance().getLong(SharedPreferenceMgr.OAUTH_RESPONSE_DEADLINE);
-        if (response != null && expire > System.currentTimeMillis()) {
-            return response.getTokenType() + " " + response.getAccessToken();
-        } else {
-            switch (tokenType) {
-                case PASSWORD:
-                    return Credentials.basic(
-                            Config.getInstance().getOAuthClientId(),
-                            Config.getInstance().getOAuthClientSecret());
-                case SOCIAL:
-                    return Credentials.basic(
-                            Config.getInstance().getOAuthClientIdSocial(),
-                            Config.getInstance().getOAuthClientSecretSocial());
-            }
-            return "";
+        switch (tokenType) {
+            case PASSWORD:
+                return Credentials.basic(
+                        Config.getInstance().getOAuthClientId(),
+                        Config.getInstance().getOAuthClientSecret());
+            case SOCIAL:
+                return Credentials.basic(
+                        Config.getInstance().getOAuthClientIdSocial(),
+                        Config.getInstance().getOAuthClientSecretSocial());
+            case REFRESH:
+                if (response != null)
+                    return response.getTokenType() + " " + response.getAccessToken();
+            default:
+                if (response != null && expire > System.currentTimeMillis()) {
+                    return response.getTokenType() + " " + response.getAccessToken();
+                } else {
+                    return null;
+                }
         }
     }
 
@@ -104,6 +109,7 @@ public final class API {
     }
 
     public Call<OAuthResponse> authWithRefreshToken(final String refresh_token) {
+        initServices(TokenType.REFRESH);
         return authService.refreshAccessToken(Config.getInstance().getRefreshGrantType(), refresh_token);
     }
 
@@ -119,6 +125,11 @@ public final class API {
                 Config.getInstance().getGrantTypeSocial(),
                 Config.getInstance().getRedirectUri(),
                 codeType);
+    }
+
+    public Completable remindPassword(final String email) {
+        initServices(TokenType.DEFAULT);
+        return authService.remindPassword(email);
     }
 
     public void updateAuthState(final OAuthResponse response) {
