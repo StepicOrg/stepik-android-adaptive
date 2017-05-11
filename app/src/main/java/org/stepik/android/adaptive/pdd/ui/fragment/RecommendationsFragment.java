@@ -17,6 +17,7 @@ import org.stepik.android.adaptive.pdd.api.API;
 import org.stepik.android.adaptive.pdd.api.AttemptResponse;
 import org.stepik.android.adaptive.pdd.api.RecommendationsResponse;
 import org.stepik.android.adaptive.pdd.api.StepsResponse;
+import org.stepik.android.adaptive.pdd.data.AnalyticMgr;
 import org.stepik.android.adaptive.pdd.data.SharedPreferenceMgr;
 import org.stepik.android.adaptive.pdd.data.model.Attempt;
 import org.stepik.android.adaptive.pdd.data.model.Recommendation;
@@ -147,9 +148,11 @@ public final class RecommendationsFragment extends Fragment {
         Log.d(TAG, "swipe " + swipeDirection);
         switch (swipeDirection) {
             case LEFT: // TOO EASY
+                AnalyticMgr.getInstance().reactionEasy(step.getLesson());
                 reactionSubject.onNext(new RecommendationReaction(step.getLesson(), RecommendationReaction.Reaction.NEVER_AGAIN));
             break;
             case RIGHT: // TOO HARD
+                AnalyticMgr.getInstance().reactionHard(step.getLesson());
                 reactionSubject.onNext(new RecommendationReaction(step.getLesson(), RecommendationReaction.Reaction.MAYBE_LATER));
             break;
         }
@@ -222,6 +225,7 @@ public final class RecommendationsFragment extends Fragment {
                 if (submission.getStatus() == Submission.Status.CORRECT) {
                     reactionSubject.onNext(new RecommendationReaction(step.getLesson(), RecommendationReaction.Reaction.SOLVED));
                 }
+                AnalyticMgr.getInstance().answerResult(step, submission);
                 quizCardAdapter.setSubmission(submission);
             }
         }

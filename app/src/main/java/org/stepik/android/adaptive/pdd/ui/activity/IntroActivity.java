@@ -9,6 +9,7 @@ import com.github.paolorotolo.appintro.AppIntro2;
 import com.github.paolorotolo.appintro.AppIntroFragment;
 
 import org.stepik.android.adaptive.pdd.R;
+import org.stepik.android.adaptive.pdd.data.AnalyticMgr;
 import org.stepik.android.adaptive.pdd.data.SharedPreferenceMgr;
 
 import io.reactivex.Completable;
@@ -54,6 +55,7 @@ public class IntroActivity extends AppIntro2 {
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(() -> {
+                AnalyticMgr.getInstance().onBoardingFinished();
                 startActivity(new Intent(this, StudyActivity.class));
                 finish();
             });

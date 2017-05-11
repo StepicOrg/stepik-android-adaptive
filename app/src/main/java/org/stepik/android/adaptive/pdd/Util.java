@@ -21,6 +21,7 @@ import com.google.android.gms.common.GoogleApiAvailability;
 import com.vk.sdk.VKSdk;
 
 import org.stepik.android.adaptive.pdd.api.API;
+import org.stepik.android.adaptive.pdd.data.AnalyticMgr;
 import org.stepik.android.adaptive.pdd.data.SharedPreferenceMgr;
 import org.stepik.android.adaptive.pdd.ui.activity.StudyActivity;
 import org.stepik.android.adaptive.pdd.ui.activity.IntroActivity;
@@ -42,6 +43,7 @@ public class Util {
         FragmentMgr.init();
         SharedPreferenceMgr.init(context);
         VKSdk.initialize(context);
+        AnalyticMgr.init(context);
     }
 
 

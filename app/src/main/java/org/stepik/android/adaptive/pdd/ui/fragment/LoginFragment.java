@@ -26,6 +26,7 @@ import org.stepik.android.adaptive.pdd.api.API;
 import org.stepik.android.adaptive.pdd.api.login.LoginListener;
 import org.stepik.android.adaptive.pdd.api.login.SocialManager;
 import org.stepik.android.adaptive.pdd.api.oauth.OAuthResponse;
+import org.stepik.android.adaptive.pdd.data.AnalyticMgr;
 import org.stepik.android.adaptive.pdd.data.SharedPreferenceMgr;
 import org.stepik.android.adaptive.pdd.databinding.FragmentLoginBinding;
 import org.stepik.android.adaptive.pdd.ui.activity.LaunchActivity;
@@ -187,6 +188,7 @@ public final class LoginFragment extends Fragment {
         if (authProgress != null) authProgress.dismiss();
 
         if (state == AuthState.OK && this.state != state) { // to not to call it twice
+            AnalyticMgr.getInstance().successLogin();
             Util.startStudy(getActivity());
         } else {
             if (state == AuthState.ERROR) {
