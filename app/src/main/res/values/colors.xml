@@ -4,7 +4,7 @@
     <color name="colorPrimaryDark">#46B6C2</color>
     <!--<color name="colorPrimaryDark">#3EA3AD</color>-->
     <color name="colorAccent">#4cc6d3</color>
-    <color name="colorAccentDisabled">#aee5eb</color>
+    <color name="colorAccentDisabled">#B9B9B9</color>
     <color name="colorWrong">#FC576B</color>
     <color name="colorCorrect">#50D2BE</color>
     <color name="primaryBackground">#F1F1F1</color>
@@ -18,4 +18,5 @@
     <color name="colorDarkGrayText">#333</color>
     <color name="colorSeparator">#DCDCDC</color>
     <color name="intro_asset_color">@android:color/white</color>
+    <color name="colorStroke">#E4E4E4</color>
 </resources>

@@ -2,15 +2,15 @@ package org.stepik.android.adaptive.pdd.ui.view;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.support.v7.widget.CardView;
 import android.util.AttributeSet;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.animation.AccelerateDecelerateInterpolator;
-import android.widget.RelativeLayout;
 
 import org.stepik.android.adaptive.pdd.ui.helper.AnimationHelper;
 
-public final class QuizCardView extends RelativeLayout {
+public final class QuizCardView extends CardView {
     private float startX = 0;
     private float startY = 0;
 

@@ -3,20 +3,20 @@ package org.stepik.android.adaptive.pdd.ui.helper;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.ViewPropertyAnimator;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.OvershootInterpolator;
-import android.widget.RelativeLayout;
 
 public final class AnimationHelper {
     public static final long ANIMATION_DURATION = 450;
     public static final long ANIMATION_DURATION_FAST = 300;
 
-    public static OvershootInterpolator OvershootInterpolator2F = new OvershootInterpolator(2f);
+    public static OvershootInterpolator OvershootInterpolator2F = new OvershootInterpolator(1.5f);
 
 
-    public static ValueAnimator.AnimatorUpdateListener createLayoutMarginAnimation(final RelativeLayout layout) {
-        return (animation) -> LayoutHelper.setRelativeLayoutMarginTop(layout,
+    public static ValueAnimator.AnimatorUpdateListener createPaddingAnimation(final ViewGroup layout) {
+        return (animation) -> LayoutHelper.setViewGroupPaddingTop(layout,
                 (Integer) animation.getAnimatedValue());
     }
 

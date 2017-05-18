@@ -4,7 +4,7 @@
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="12dp"
+        android:padding="14dp"
         android:background="?attr/selectableItemBackground">
 
         <ImageView
@@ -17,8 +17,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:layout_marginLeft="12dp"
-            android:layout_marginStart="12dp"
+            android:layout_marginStart="6dp"
             android:textColor="@color/colorAnswerText"
             android:id="@+id/item_answer_text" />
 

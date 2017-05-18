@@ -1,5 +1,6 @@
 package org.stepik.android.adaptive.pdd.ui.adapter;
 
+import android.animation.Animator;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.content.res.Resources;
@@ -27,8 +28,7 @@ import io.reactivex.subjects.PublishSubject;
 
 public final class QuizCardAdapter {
     private static final int ANSWER_ANIMATION_START = -LayoutHelper.pxFromDp(160);
-    private static final int ANSWER_ANIMATION_END = -LayoutHelper.P_32DP;
-    private static final int SOLVE_BUTTON_OFFSET = LayoutHelper.P_24DP;
+    private static final int ANSWER_ANIMATION_END = 0;
 
 
     private ValueAnimator answerAnimator, answerAnimatorReverse;
@@ -130,11 +130,8 @@ public final class QuizCardAdapter {
             }
         });
 
-        binding.fragmentRecommendationsCard.bringToFront();
-        binding.fragmentRecommendationsSolve.bringToFront();
-
         final ValueAnimator.AnimatorUpdateListener answerAnimatorUpdateListener =
-                AnimationHelper.createLayoutMarginAnimation(binding.fragmentRecommendationsAnswersContainer);
+                AnimationHelper.createPaddingAnimation(binding.fragmentRecommendationsAnswersContainer);
 
         answerAnimator = ValueAnimator.ofInt(ANSWER_ANIMATION_START, ANSWER_ANIMATION_END);
         answerAnimator.setDuration(AnimationHelper.ANIMATION_DURATION_FAST);
@@ -142,10 +139,30 @@ public final class QuizCardAdapter {
 
         answerAnimatorReverse = ValueAnimator.ofInt();
         answerAnimatorReverse.setDuration(AnimationHelper.ANIMATION_DURATION_FAST);
-        answerAnimatorReverse.addUpdateListener((anm) ->
-                binding.fragmentRecommendationsAnswersContainer.setAlpha(1f - (float) anm.getCurrentPlayTime() / anm.getDuration()));
+//        answerAnimatorReverse.addUpdateListener((anm) ->
+//                binding.fragmentRecommendationsAnswersContainer.setAlpha(1f - (float) anm.getCurrentPlayTime() / anm.getDuration()));
         answerAnimatorReverse.addUpdateListener(answerAnimatorUpdateListener);
+        answerAnimatorReverse.addListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animator) {
 
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animator) {
+                binding.fragmentRecommendationsContainer.swipeDown();
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animator) {
+
+            }
+
+            @Override
+            public void onAnimationRepeat(Animator animator) {
+
+            }
+        });
 
         attemptAnswersAdapter.setSubmitButton(binding.fragmentRecommendationsSubmit);
         binding.fragmentRecommendationsAnswers.setLayoutManager(new LinearLayoutManager(binding.getRoot().getContext()));
@@ -197,20 +214,18 @@ public final class QuizCardAdapter {
         binding.fragmentRecommendationsProgressBar.setVisibility(View.VISIBLE);
 
         binding.fragmentRecommendationsAnswersContainer.setVisibility(View.GONE);
+        binding.fragmentRecommendationsAnswersProgress.setVisibility(View.GONE);
         binding.fragmentRecommendationsSolve.setVisibility(View.VISIBLE);
     }
 
     private void recommendationLoaded() {
         binding.fragmentRecommendationsProgressBar.setVisibility(View.GONE);
-        binding.fragmentRecommendationsSubmit.setAlpha(0);
+        binding.fragmentRecommendationsSubmit.setVisibility(View.GONE);
 
         final ObjectAnimator animator =
                 ObjectAnimator.ofFloat(binding.fragmentRecommendationsContainer, "translationY", 0);
         animator.setInterpolator(AnimationHelper.OvershootInterpolator2F);
         animator.setDuration(AnimationHelper.ANIMATION_DURATION);
-        animator.addUpdateListener((anm) ->
-            LayoutHelper.wrapWebView(binding.fragmentRecommendationsCard,
-                    binding.fragmentRecommendationsQuestion, SOLVE_BUTTON_OFFSET));
         animator.start();
     }
 
@@ -218,29 +233,27 @@ public final class QuizCardAdapter {
         binding.fragmentRecommendationsSolve.setVisibility(View.GONE);
         binding.fragmentRecommendationsSubmit.setVisibility(View.VISIBLE);
 
-        LayoutHelper.wrapWebView(binding.fragmentRecommendationsCard,
-                binding.fragmentRecommendationsQuestion, 0);
-
-        binding.fragmentRecommendationsSubmit.setAlpha(1);
+        binding.fragmentRecommendationsAnswersProgress.setVisibility(View.VISIBLE);
+        binding.fragmentRecommendationsAnswersContainer.setVisibility(View.GONE);
+        binding.fragmentRecommendationsSubmit.setVisibility(View.GONE);
         binding.fragmentRecommendationsSubmit.setEnabled(false);
 
-        binding.fragmentRecommendationsAnswersProgress.setVisibility(View.VISIBLE);
-        binding.fragmentRecommendationsAnswers.setVisibility(View.GONE);
-
-        binding.fragmentRecommendationsAnswersContainer.setVisibility(View.VISIBLE);
-        binding.fragmentRecommendationsAnswersContainer.setAlpha(1);
-        answerAnimator.start();
     }
 
     private void answersLoaded() {
+        answerAnimator.start();
+        binding.fragmentRecommendationsAnswersContainer.setVisibility(View.VISIBLE);
         binding.fragmentRecommendationsAnswersProgress.setVisibility(View.GONE);
-        binding.fragmentRecommendationsAnswers.setVisibility(View.VISIBLE);
+
+        binding.fragmentRecommendationsAnswersContainer.setVisibility(View.VISIBLE);
+        binding.fragmentRecommendationsSubmit.setVisibility(View.VISIBLE);
     }
 
     private void pendingForSubmissions() {
-        binding.fragmentRecommendationsSubmit.setEnabled(false);
         binding.fragmentRecommendationsAnswersProgress.setVisibility(View.VISIBLE);
-        binding.fragmentRecommendationsAnswers.setVisibility(View.GONE);
+
+        binding.fragmentRecommendationsAnswersContainer.setVisibility(View.GONE);
+        binding.fragmentRecommendationsSubmit.setVisibility(View.GONE);
     }
 
     private void submissionCorrect() {
@@ -249,8 +262,8 @@ public final class QuizCardAdapter {
                 -binding.fragmentRecommendationsAnswersContainer.getHeight());
         answerAnimatorReverse.start();
 
+        binding.fragmentRecommendationsSubmit.setVisibility(View.GONE);
         binding.fragmentRecommendationsSubmit.animate()
-                .alpha(0)
                 .setDuration(AnimationHelper.ANIMATION_DURATION_FAST)
                 .withEndAction(binding.fragmentRecommendationsContainer::swipeDown);
     }
@@ -259,7 +272,8 @@ public final class QuizCardAdapter {
         AnimationHelper.playWiggleAnimation(binding.fragmentRecommendationsContainer);
 
         binding.fragmentRecommendationsAnswersProgress.setVisibility(View.GONE);
-        binding.fragmentRecommendationsAnswers.setVisibility(View.VISIBLE);
+        binding.fragmentRecommendationsAnswersContainer.setVisibility(View.VISIBLE);
+        binding.fragmentRecommendationsSubmit.setVisibility(View.VISIBLE);
 
         Snackbar.make(binding.getRoot(), R.string.wrong, Snackbar.LENGTH_SHORT).show();
     }
