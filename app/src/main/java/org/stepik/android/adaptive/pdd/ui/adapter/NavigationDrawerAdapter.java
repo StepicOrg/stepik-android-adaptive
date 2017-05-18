@@ -1,8 +1,9 @@
 package org.stepik.android.adaptive.pdd.ui.adapter;
 
 
+import android.app.Activity;
 import android.databinding.DataBindingUtil;
-import android.support.v4.view.GravityCompat;
+import android.support.v7.app.ActionBarDrawerToggle;
 
 import org.stepik.android.adaptive.pdd.R;
 import org.stepik.android.adaptive.pdd.Util;
@@ -30,9 +31,13 @@ public final class NavigationDrawerAdapter {
                 .subscribe(this::setProfile);
     }
 
-    public void bind(final FragmentRecommendationsBinding binding) {
-        binding.fragmentRecommendationsMenuButton.setOnClickListener((v) ->
-            binding.fragmentRecommendationsDrawerLayout.openDrawer(GravityCompat.START));
+    public void bind(final Activity activity, final FragmentRecommendationsBinding binding) {
+        final ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(activity, binding.fragmentRecommendationsDrawerLayout,
+                binding.fragmentRecommendationsToolbar, R.string.open, R.string.close);
+
+        binding.fragmentRecommendationsDrawerLayout.setDrawerListener(toggle);
+        toggle.syncState();
+        toggle.setDrawerIndicatorEnabled(true);
 
         binding.fragmentRecommendationsNavigation.setNavigationItemSelectedListener((item) -> {
             switch (item.getItemId()) {

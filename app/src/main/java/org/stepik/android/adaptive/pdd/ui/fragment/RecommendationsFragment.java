@@ -58,7 +58,7 @@ public final class RecommendationsFragment extends Fragment {
     public View onCreateView(final LayoutInflater inflater, @Nullable final ViewGroup container, @Nullable final Bundle savedInstanceState) {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_recommendations, container, false);
         quizCardAdapter.bind(binding);
-        navigationDrawerAdapter.bind(binding);
+        navigationDrawerAdapter.bind(getActivity(), binding);
 
         binding.fragmentRecommendationsSolve.setOnClickListener((v) -> loadAttempt());
         binding.fragmentRecommendationsSubmit.setOnClickListener((v) -> makeSubmission());

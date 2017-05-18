@@ -19,18 +19,13 @@
                 android:background="@color/primaryBackground"
                 app:elevation="0dp">
 
-                <ImageButton
-                    style="@style/Widget.AppCompat.ImageButton"
+                <android.support.v7.widget.Toolbar
+                    android:id="@+id/fragment_recommendations_toolbar"
+                    android:title=""
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:tint="@color/colorAccent"
-                    android:contentDescription="@string/menu"
-                    android:background="?attr/selectableItemBackground"
-                    app:srcCompat="@drawable/ic_menu"
-                    android:id="@+id/fragment_recommendations_menu_button"
-                    android:padding="16dp"
-                    />
-
+                    android:layout_height="?attr/actionBarSize"
+                    app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+                    android:theme="@style/AppTheme.ActionBarTheme" />
 
             </android.support.design.widget.AppBarLayout>
 

@@ -37,4 +37,6 @@
     <string name="intro_description_4">We hope that this course will help you successfully pass your exam.</string>
     <integer name="com_vk_sdk_AppId" translatable="false">6018407</integer>
     <string name="remind_password_success">We sent you a letter</string>
+    <string name="open">Open</string>
+    <string name="close">Close</string>
 </resources>

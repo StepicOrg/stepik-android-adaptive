@@ -36,4 +36,6 @@
     <string name="intro_title_4">Успешной подготовки</string>
     <string name="intro_description_4">Мы надеемся, что этот курс поможет вам успешно подготовится к сдаче теоритеческого экзамена в ГАИ. Удачи!</string>
     <string name="remind_password_success">Мы отправили вам письмо</string>
+    <string name="open">Открыть</string>
+    <string name="close">Закрыть</string>
 </resources>
