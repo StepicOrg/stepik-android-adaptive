@@ -140,7 +140,7 @@ public final class RecommendationsFragment extends Fragment {
     @Override
     public void onAttach(final Context context) {
         super.onAttach(context);
-        quizCardAdapter = new QuizCardAdapter(context, this::onCardSwipe);
+        quizCardAdapter = new QuizCardAdapter(this::onCardSwipe);
     }
 
     private void onCardSwipe(final OnCardSwipeListener.SWIPE_DIRECTION swipeDirection) {

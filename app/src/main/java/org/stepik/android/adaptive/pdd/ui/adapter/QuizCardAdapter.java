@@ -2,7 +2,6 @@ package org.stepik.android.adaptive.pdd.ui.adapter;
 
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
-import android.content.Context;
 import android.content.res.Resources;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.LinearLayoutManager;
@@ -27,9 +26,9 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.subjects.PublishSubject;
 
 public final class QuizCardAdapter {
-    private static final int ANSWER_ANIMATION_START = -160;
-    private static final int ANSWER_ANIMATION_END = -32;
-    private static final int SOLVE_BUTTON_OFFSET = 24;
+    private static final int ANSWER_ANIMATION_START = -LayoutHelper.pxFromDp(160);
+    private static final int ANSWER_ANIMATION_END = -LayoutHelper.P_32DP;
+    private static final int SOLVE_BUTTON_OFFSET = LayoutHelper.P_24DP;
 
 
     private ValueAnimator answerAnimator, answerAnimatorReverse;
@@ -40,7 +39,6 @@ public final class QuizCardAdapter {
 
     private final OnCardSwipeListener listener;
     private final AttemptAnswersAdapter attemptAnswersAdapter;
-    private final Context context;
 
     private final PublishSubject<Float> scrollSubject = PublishSubject.create();
     private Disposable scrollDisposable;
@@ -60,8 +58,7 @@ public final class QuizCardAdapter {
     private State state = State.PENDING_FOR_NEXT_RECOMMENDATION;
 
     
-    public QuizCardAdapter(final Context context, final OnCardSwipeListener listener) {
-        this.context = context;
+    public QuizCardAdapter(final OnCardSwipeListener listener) {
         this.listener = listener;
         this.attemptAnswersAdapter = new AttemptAnswersAdapter();
 
@@ -139,10 +136,7 @@ public final class QuizCardAdapter {
         final ValueAnimator.AnimatorUpdateListener answerAnimatorUpdateListener =
                 AnimationHelper.createLayoutMarginAnimation(binding.fragmentRecommendationsAnswersContainer);
 
-        answerAnimator = ValueAnimator.ofInt(
-                LayoutHelper.pxFromDp(context, ANSWER_ANIMATION_START),
-                LayoutHelper.pxFromDp(context, ANSWER_ANIMATION_END)
-        );
+        answerAnimator = ValueAnimator.ofInt(ANSWER_ANIMATION_START, ANSWER_ANIMATION_END);
         answerAnimator.setDuration(AnimationHelper.ANIMATION_DURATION_FAST);
         answerAnimator.addUpdateListener(answerAnimatorUpdateListener);
 
@@ -251,7 +245,7 @@ public final class QuizCardAdapter {
 
     private void submissionCorrect() {
         answerAnimatorReverse.setIntValues(
-                LayoutHelper.pxFromDp(context, ANSWER_ANIMATION_END),
+                ANSWER_ANIMATION_END,
                 -binding.fragmentRecommendationsAnswersContainer.getHeight());
         answerAnimatorReverse.start();
 
