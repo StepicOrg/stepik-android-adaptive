@@ -26,6 +26,8 @@ class AttemptAnswersAdapter extends RecyclerView.Adapter<AttemptAnswersAdapter.A
     private int lastSelection = -1;
     private int selectedCount = 0;
 
+    private boolean enabled = true;
+
     private Button submitButton;
 
     public void setAttempt(final Attempt attempt) {
@@ -47,6 +49,10 @@ class AttemptAnswersAdapter extends RecyclerView.Adapter<AttemptAnswersAdapter.A
         refreshSubmitButton();
     }
 
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
+    }
+
     private void refreshSubmitButton() {
         if (submitButton != null) {
             submitButton.setEnabled(selectedCount > 0);
@@ -54,6 +60,7 @@ class AttemptAnswersAdapter extends RecyclerView.Adapter<AttemptAnswersAdapter.A
     }
 
     private void select(final int pos) {
+        if (!enabled) return;
         if (attempt.getDataset().is_multiple_choice()) {
             selectedCount += selection[pos] ? -1 : 1;
             selection[pos] = !selection[pos];

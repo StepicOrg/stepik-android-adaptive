@@ -1,5 +1,6 @@
 package org.stepik.android.adaptive.pdd.ui.helper;
 
+import android.animation.Animator;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.view.View;
@@ -52,5 +53,23 @@ public final class AnimationHelper {
                 .scaleY(0)
                 .setInterpolator(new AccelerateDecelerateInterpolator())
                 .setDuration(ANIMATION_DURATION);
+    }
+
+    public static Animator.AnimatorListener onAnimationEnd(final Runnable runnable) {
+        return new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animator) {}
+
+            @Override
+            public void onAnimationEnd(Animator animator) {
+                runnable.run();
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animator) {}
+
+            @Override
+            public void onAnimationRepeat(Animator animator) {}
+        };
     }
 }

@@ -1,16 +1,13 @@
 package org.stepik.android.adaptive.pdd.ui.adapter;
 
-import android.animation.Animator;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.content.res.Resources;
-import android.support.design.widget.Snackbar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.util.Log;
 import android.view.View;
 import android.webkit.WebSettings;
 
-import org.stepik.android.adaptive.pdd.R;
 import org.stepik.android.adaptive.pdd.data.model.Attempt;
 import org.stepik.android.adaptive.pdd.data.model.Submission;
 import org.stepik.android.adaptive.pdd.databinding.FragmentRecommendationsBinding;
@@ -22,6 +19,7 @@ import org.stepik.android.adaptive.pdd.ui.view.QuizCardView;
 
 import java.util.concurrent.TimeUnit;
 
+import io.reactivex.Completable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.subjects.PublishSubject;
@@ -31,7 +29,7 @@ public final class QuizCardAdapter {
     private static final int ANSWER_ANIMATION_END = 0;
 
 
-    private ValueAnimator answerAnimator, answerAnimatorReverse;
+    private ValueAnimator answerAnimator;
 
     private final String TAG = "QuizCardAdapter";
 
@@ -125,44 +123,13 @@ public final class QuizCardAdapter {
 
             @Override
             public void onSwipeDown() {
-                AnimationHelper.createReactionAppearAnimation(binding.fragmentRecommendationsCorrectReaction)
-                        .withEndAction(() -> hideReactionAnimation(AnimationHelper.ANIMATION_DURATION * 2));
+                binding.fragmentRecommendationsContainer.setEnabled(false);
             }
         });
-
-        final ValueAnimator.AnimatorUpdateListener answerAnimatorUpdateListener =
-                AnimationHelper.createPaddingAnimation(binding.fragmentRecommendationsAnswersContainer);
 
         answerAnimator = ValueAnimator.ofInt(ANSWER_ANIMATION_START, ANSWER_ANIMATION_END);
         answerAnimator.setDuration(AnimationHelper.ANIMATION_DURATION_FAST);
-        answerAnimator.addUpdateListener(answerAnimatorUpdateListener);
-
-        answerAnimatorReverse = ValueAnimator.ofInt();
-        answerAnimatorReverse.setDuration(AnimationHelper.ANIMATION_DURATION_FAST);
-//        answerAnimatorReverse.addUpdateListener((anm) ->
-//                binding.fragmentRecommendationsAnswersContainer.setAlpha(1f - (float) anm.getCurrentPlayTime() / anm.getDuration()));
-        answerAnimatorReverse.addUpdateListener(answerAnimatorUpdateListener);
-        answerAnimatorReverse.addListener(new Animator.AnimatorListener() {
-            @Override
-            public void onAnimationStart(Animator animator) {
-
-            }
-
-            @Override
-            public void onAnimationEnd(Animator animator) {
-                binding.fragmentRecommendationsContainer.swipeDown();
-            }
-
-            @Override
-            public void onAnimationCancel(Animator animator) {
-
-            }
-
-            @Override
-            public void onAnimationRepeat(Animator animator) {
-
-            }
-        });
+        answerAnimator.addUpdateListener(AnimationHelper.createPaddingAnimation(binding.fragmentRecommendationsAnswersContainer));
 
         attemptAnswersAdapter.setSubmitButton(binding.fragmentRecommendationsSubmit);
         binding.fragmentRecommendationsAnswers.setLayoutManager(new LinearLayoutManager(binding.getRoot().getContext()));
@@ -214,73 +181,82 @@ public final class QuizCardAdapter {
         binding.fragmentRecommendationsProgressBar.setVisibility(View.VISIBLE);
 
         binding.fragmentRecommendationsAnswersContainer.setVisibility(View.GONE);
-        binding.fragmentRecommendationsAnswersProgress.setVisibility(View.GONE);
-        binding.fragmentRecommendationsSolve.setVisibility(View.VISIBLE);
     }
 
     private void recommendationLoaded() {
-        binding.fragmentRecommendationsProgressBar.setVisibility(View.GONE);
-        binding.fragmentRecommendationsSubmit.setVisibility(View.GONE);
+        binding.fragmentRecommendationsContainer.setEnabled(true);
+        LayoutHelper.setViewGroupPaddingTop(binding.fragmentRecommendationsContent, 0);
 
         final ObjectAnimator animator =
                 ObjectAnimator.ofFloat(binding.fragmentRecommendationsContainer, "translationY", 0);
         animator.setInterpolator(AnimationHelper.OvershootInterpolator2F);
         animator.setDuration(AnimationHelper.ANIMATION_DURATION);
+        animator.addListener(AnimationHelper.onAnimationEnd(binding.fragmentRecommendationsSolve::callOnClick));
         animator.start();
     }
 
     private void pendingForAnswers() {
-        binding.fragmentRecommendationsSolve.setVisibility(View.GONE);
-        binding.fragmentRecommendationsSubmit.setVisibility(View.VISIBLE);
-
-        binding.fragmentRecommendationsAnswersProgress.setVisibility(View.VISIBLE);
         binding.fragmentRecommendationsAnswersContainer.setVisibility(View.GONE);
-        binding.fragmentRecommendationsSubmit.setVisibility(View.GONE);
         binding.fragmentRecommendationsSubmit.setEnabled(false);
-
     }
 
     private void answersLoaded() {
+        attemptAnswersAdapter.setEnabled(true);
         answerAnimator.start();
-        binding.fragmentRecommendationsAnswersContainer.setVisibility(View.VISIBLE);
-        binding.fragmentRecommendationsAnswersProgress.setVisibility(View.GONE);
 
         binding.fragmentRecommendationsAnswersContainer.setVisibility(View.VISIBLE);
-        binding.fragmentRecommendationsSubmit.setVisibility(View.VISIBLE);
     }
 
     private void pendingForSubmissions() {
-        binding.fragmentRecommendationsAnswersProgress.setVisibility(View.VISIBLE);
-
-        binding.fragmentRecommendationsAnswersContainer.setVisibility(View.GONE);
-        binding.fragmentRecommendationsSubmit.setVisibility(View.GONE);
+        attemptAnswersAdapter.setEnabled(false);
     }
 
-    private void submissionCorrect() {
-        answerAnimatorReverse.setIntValues(
-                ANSWER_ANIMATION_END,
-                -binding.fragmentRecommendationsAnswersContainer.getHeight());
-        answerAnimatorReverse.start();
-
-        binding.fragmentRecommendationsSubmit.setVisibility(View.GONE);
-        binding.fragmentRecommendationsSubmit.animate()
-                .setDuration(AnimationHelper.ANIMATION_DURATION_FAST)
-                .withEndAction(binding.fragmentRecommendationsContainer::swipeDown);
-    }
+    private void submissionCorrect() {}
 
     private void submissionWrong() {
+        attemptAnswersAdapter.setEnabled(true);
         AnimationHelper.playWiggleAnimation(binding.fragmentRecommendationsContainer);
 
-        binding.fragmentRecommendationsAnswersProgress.setVisibility(View.GONE);
-        binding.fragmentRecommendationsAnswersContainer.setVisibility(View.VISIBLE);
-        binding.fragmentRecommendationsSubmit.setVisibility(View.VISIBLE);
+        Completable.timer(3, TimeUnit.SECONDS)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(() -> {if (binding != null) setSupplementalActions(State.ANSWERS_LOADED);});
+    }
 
-        Snackbar.make(binding.getRoot(), R.string.wrong, Snackbar.LENGTH_SHORT).show();
+    /**
+     * Sets actions of supplemental area depending on current state
+     * @param state - current state
+     */
+    private void setSupplementalActions(final State state) {
+        binding.fragmentRecommendationsSolve.setVisibility(View.GONE);
+        binding.fragmentRecommendationsSubmit.setVisibility(View.GONE);
+        binding.fragmentRecommendationsNext.setVisibility(View.GONE);
+        binding.fragmentRecommendationsCorrect.setVisibility(View.GONE);
+        binding.fragmentRecommendationsWrong.setVisibility(View.GONE);
+        binding.fragmentRecommendationsAnswersProgress.setVisibility(View.GONE);
+        switch (state) {
+            case RECOMMENDATION_LOADED:
+            case PENDING_FOR_NEXT_RECOMMENDATION:
+            case PENDING_FOR_SUBMISSION:
+            case PENDING_FOR_ANSWERS:
+                binding.fragmentRecommendationsAnswersProgress.setVisibility(View.VISIBLE);
+            break;
+            case ANSWERS_LOADED:
+                binding.fragmentRecommendationsSubmit.setVisibility(View.VISIBLE);
+            break;
+            case SUBMISSION_CORRECT:
+                binding.fragmentRecommendationsCorrect.setVisibility(View.VISIBLE);
+                binding.fragmentRecommendationsNext.setVisibility(View.VISIBLE);
+            break;
+            case SUBMISSION_WRONG:
+                binding.fragmentRecommendationsWrong.setVisibility(View.VISIBLE);
+            break;
+        }
     }
 
     public void setUIState(final State state) {
         Log.d(TAG, "Switch state: " + state);
         if (binding == null) return;
+        setSupplementalActions(state);
         switch (state) {
             case PENDING_FOR_NEXT_RECOMMENDATION:
                 pendingForNextRecommendation();

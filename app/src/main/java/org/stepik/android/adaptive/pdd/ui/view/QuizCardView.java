@@ -66,6 +66,7 @@ public final class QuizCardView extends CardView {
     }
 
     private void processTouchEvent(MotionEvent motionEvent) {
+        if (!this.isEnabled()) return;
         boolean isFling = flingDetector.onTouchEvent(motionEvent);
         switch (motionEvent.getAction() & MotionEvent.ACTION_MASK) {
             case MotionEvent.ACTION_DOWN:

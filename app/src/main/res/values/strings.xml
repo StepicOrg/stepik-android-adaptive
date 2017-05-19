@@ -11,7 +11,7 @@
     <string name="logout">Logout</string>
     <string name="correct">CORRECT</string>
     <string name="network_error">An error occurred while processing your request</string>
-    <string name="wrong">Wrong answer</string>
+    <string name="wrong">WRONG</string>
     <string name="logout_dialog">Are you sure to continue?</string>
     <string name="email" translatable="false">E-mail</string>
     <string name="password">Password</string>
@@ -39,4 +39,5 @@
     <string name="remind_password_success">We sent you a letter</string>
     <string name="open">Open</string>
     <string name="close">Close</string>
+    <string name="next">Next</string>
 </resources>

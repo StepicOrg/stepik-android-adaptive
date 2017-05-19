@@ -62,6 +62,10 @@ public final class RecommendationsFragment extends Fragment {
 
         binding.fragmentRecommendationsSolve.setOnClickListener((v) -> loadAttempt());
         binding.fragmentRecommendationsSubmit.setOnClickListener((v) -> makeSubmission());
+        binding.fragmentRecommendationsNext.setOnClickListener((v) -> {
+            reactionSubject.onNext(new RecommendationReaction(step.getLesson(), RecommendationReaction.Reaction.SOLVED));
+            binding.fragmentRecommendationsContainer.swipeDown();
+        });
 
         viewDisposable.add(stepsSubject
                 .observeOn(AndroidSchedulers.mainThread())
@@ -222,9 +226,9 @@ public final class RecommendationsFragment extends Fragment {
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(res -> submissionSubject.onNext(res.getFirstSubmission()), this::handleError);
             } else {
-                if (submission.getStatus() == Submission.Status.CORRECT) {
-                    reactionSubject.onNext(new RecommendationReaction(step.getLesson(), RecommendationReaction.Reaction.SOLVED));
-                }
+//                if (submission.getStatus() == Submission.Status.CORRECT) {
+//                    reactionSubject.onNext(new RecommendationReaction(step.getLesson(), RecommendationReaction.Reaction.SOLVED));
+//                }
                 AnalyticMgr.getInstance().answerResult(step, submission);
                 quizCardAdapter.setSubmission(submission);
             }

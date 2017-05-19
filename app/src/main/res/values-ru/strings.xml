@@ -12,7 +12,7 @@
     <string name="logout">Выход</string>
     <string name="correct">ВЕРНО</string>
     <string name="network_error">При обработке запроса произошла ошибка</string>
-    <string name="wrong">Неверный ответ</string>
+    <string name="wrong">НЕВЕРНО</string>
     <string name="logout_dialog">Вы уверены, что хотите выйти из текущего профиля?</string>
     <string name="password">Пароль</string>
     <string name="sign_in">Войти</string>
@@ -38,4 +38,5 @@
     <string name="remind_password_success">Мы отправили вам письмо</string>
     <string name="open">Открыть</string>
     <string name="close">Закрыть</string>
+    <string name="next">Дальше</string>
 </resources>
