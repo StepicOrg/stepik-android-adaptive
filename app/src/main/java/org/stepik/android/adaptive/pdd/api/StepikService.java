@@ -21,7 +21,7 @@ Completable joinCourse(
 
 
 @GET("api/recommendations")
-Call<RecommendationsResponse> getNextRecommendations(
+Observable<RecommendationsResponse> getNextRecommendations(
         @Query("course") final long course_id
 );
 
@@ -43,7 +43,7 @@ Observable<AttemptResponse> getAttempts(
 );
 
 @POST("api/submissions")
-Observable<SubmissionResponse> createSubmission(
+Completable createSubmission(
      @Body final SubmissionRequest submissionRequest
 );
 
@@ -57,7 +57,7 @@ Observable<SubmissionResponse> getSubmissions(
 Observable<ProfileResponse> getProfile();
 
 @POST("api/recommendation-reactions")
-Call<RecommendationReactionsResponse> createRecommendationReaction(
+Completable createRecommendationReaction(
         @Body final RecommendationReactionsRequest reactionsRequest
 );
 

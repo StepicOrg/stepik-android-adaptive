@@ -4,7 +4,6 @@ import android.content.Context;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -66,6 +65,10 @@ public final class RecommendationsFragment extends Fragment {
             reactionSubject.onNext(new RecommendationReaction(step.getLesson(), RecommendationReaction.Reaction.SOLVED));
             binding.fragmentRecommendationsContainer.swipeDown();
         });
+        binding.fragmentRecommendationsTryAgain.setOnClickListener((v) -> {
+            quizCardAdapter.setUIState(QuizCardAdapter.State.PENDING_FOR_NEXT_RECOMMENDATION);
+            reactionSubject.onNext(reactionSubject.getValue());
+        });
 
         viewDisposable.add(stepsSubject
                 .observeOn(AndroidSchedulers.mainThread())
@@ -114,16 +117,20 @@ public final class RecommendationsFragment extends Fragment {
         reactionSubject =
                 BehaviorSubject.createDefault(new RecommendationReaction(0, RecommendationReaction.Reaction.INTERESTING));
         onDestroyDisposable.add(reactionSubject
+                .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())
                 .map(reaction -> {
+                    final Observable<RecommendationsResponse> responseObservable = API.getInstance().getNextRecommendations();
                     if (reaction.getLesson() != 0) {
                         reaction.setUser(SharedPreferenceMgr.getInstance().getLong(SharedPreferenceMgr.PROFILE_ID));
-                        API.getInstance().createReaction(reaction).execute();
+                        return API.getInstance().createReaction(reaction).andThen(responseObservable);
                     }
-                    return API.getInstance().getNextRecommendations().execute();
+                    return responseObservable;
                 })
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(this::handleRecommendationsResponse, this::handleError));
+                .subscribe((obs) -> onDestroyDisposable.add(obs
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribeOn(Schedulers.io())
+                        .subscribe(this::handleRecommendationsResponse, this::handleError))));
 
         attemptSubject = BehaviorSubject.create();
         submissionSubject = BehaviorSubject.create();
@@ -162,12 +169,12 @@ public final class RecommendationsFragment extends Fragment {
         }
     }
 
-    private void handleRecommendationsResponse(final Response<RecommendationsResponse> response) {
-        if (response.isSuccessful()) {
-            final Recommendation recommendation = response.body().getFirstRecommendation();
-            if (recommendation != null) {
-                stepsBridgeSubject.onNext(recommendation.getLesson());
-            }
+    private void handleRecommendationsResponse(final RecommendationsResponse response) {
+        final Recommendation recommendation = response.getFirstRecommendation();
+        if (recommendation != null) {
+            stepsBridgeSubject.onNext(recommendation.getLesson());
+        } else if (response.getRecommendations().isEmpty()) {
+            quizCardAdapter.setUIState(QuizCardAdapter.State.COURSE_COMPLETED);
         }
     }
     private void handleStepsResponse(final Response<StepsResponse> response) {
@@ -207,12 +214,8 @@ public final class RecommendationsFragment extends Fragment {
 
     private void makeSubmission() {
         final Submission submission = quizCardAdapter.getSubmission();
-        onDestroyDisposable.add(Observable.concat(
-                API.getInstance().createSubmission(submission),
-                API.getInstance().getSubmissions(submission.getAttempt())
-        )
-                .skip(1)
-                .take(1)
+        onDestroyDisposable.add(API.getInstance().createSubmission(submission)
+                .andThen(API.getInstance().getSubmissions(submission.getAttempt()))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe(res -> submissionSubject.onNext(res.getFirstSubmission()), this::handleError));
@@ -226,9 +229,6 @@ public final class RecommendationsFragment extends Fragment {
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(res -> submissionSubject.onNext(res.getFirstSubmission()), this::handleError);
             } else {
-//                if (submission.getStatus() == Submission.Status.CORRECT) {
-//                    reactionSubject.onNext(new RecommendationReaction(step.getLesson(), RecommendationReaction.Reaction.SOLVED));
-//                }
                 AnalyticMgr.getInstance().answerResult(step, submission);
                 quizCardAdapter.setSubmission(submission);
             }
@@ -237,12 +237,6 @@ public final class RecommendationsFragment extends Fragment {
 
     private void handleError(final Throwable throwable) {
         throwable.printStackTrace();
-        if (stepsSubject.hasValue()) {
-            quizCardAdapter.setUIState(QuizCardAdapter.State.RECOMMENDATION_LOADED);
-        }
-
-        if (binding != null) {
-            Snackbar.make(binding.getRoot(), R.string.network_error, Snackbar.LENGTH_LONG).show();
-        }
+        quizCardAdapter.onError();
     }
 }

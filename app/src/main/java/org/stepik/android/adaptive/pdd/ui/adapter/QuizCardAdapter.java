@@ -3,11 +3,13 @@ package org.stepik.android.adaptive.pdd.ui.adapter;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.content.res.Resources;
+import android.support.design.widget.Snackbar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.util.Log;
 import android.view.View;
 import android.webkit.WebSettings;
 
+import org.stepik.android.adaptive.pdd.R;
 import org.stepik.android.adaptive.pdd.data.model.Attempt;
 import org.stepik.android.adaptive.pdd.data.model.Submission;
 import org.stepik.android.adaptive.pdd.databinding.FragmentRecommendationsBinding;
@@ -50,7 +52,8 @@ public final class QuizCardAdapter {
         ANSWERS_LOADED,
         PENDING_FOR_SUBMISSION,
         SUBMISSION_CORRECT,
-        SUBMISSION_WRONG
+        SUBMISSION_WRONG,
+        COURSE_COMPLETED
     }
 
     private State state = State.PENDING_FOR_NEXT_RECOMMENDATION;
@@ -170,8 +173,6 @@ public final class QuizCardAdapter {
                 .setStartDelay(delay);
         AnimationHelper.createReactionDisappearAnimation(binding.fragmentRecommendationsHardReaction)
                 .setStartDelay(delay);
-        AnimationHelper.createReactionDisappearAnimation(binding.fragmentRecommendationsCorrectReaction)
-                .setStartDelay(delay);
     }
 
 
@@ -187,12 +188,18 @@ public final class QuizCardAdapter {
         binding.fragmentRecommendationsContainer.setEnabled(true);
         LayoutHelper.setViewGroupPaddingTop(binding.fragmentRecommendationsContent, 0);
 
-        final ObjectAnimator animator =
-                ObjectAnimator.ofFloat(binding.fragmentRecommendationsContainer, "translationY", 0);
-        animator.setInterpolator(AnimationHelper.OvershootInterpolator2F);
-        animator.setDuration(AnimationHelper.ANIMATION_DURATION);
-        animator.addListener(AnimationHelper.onAnimationEnd(binding.fragmentRecommendationsSolve::callOnClick));
-        animator.start();
+        if (binding.fragmentRecommendationsContainer.getTranslationY() != 0) {
+            final ObjectAnimator animator =
+                    ObjectAnimator.ofFloat(binding.fragmentRecommendationsContainer, "translationY", 0);
+            animator.setInterpolator(AnimationHelper.OvershootInterpolator2F);
+            animator.setDuration(AnimationHelper.ANIMATION_DURATION);
+            animator.addListener(AnimationHelper.onAnimationEnd(() -> {
+                if (binding != null) {
+                    binding.fragmentRecommendationsSolve.callOnClick();
+                }
+            }));
+            animator.start();
+        }
     }
 
     private void pendingForAnswers() {
@@ -227,15 +234,18 @@ public final class QuizCardAdapter {
      * @param state - current state
      */
     private void setSupplementalActions(final State state) {
+        binding.fragmentRecommendationsError.setVisibility(View.GONE);
         binding.fragmentRecommendationsSolve.setVisibility(View.GONE);
         binding.fragmentRecommendationsSubmit.setVisibility(View.GONE);
         binding.fragmentRecommendationsNext.setVisibility(View.GONE);
         binding.fragmentRecommendationsCorrect.setVisibility(View.GONE);
         binding.fragmentRecommendationsWrong.setVisibility(View.GONE);
+        binding.fragmentRecommendationsProgressBar.setVisibility(View.GONE);
         binding.fragmentRecommendationsAnswersProgress.setVisibility(View.GONE);
         switch (state) {
-            case RECOMMENDATION_LOADED:
             case PENDING_FOR_NEXT_RECOMMENDATION:
+                binding.fragmentRecommendationsProgressBar.setVisibility(View.VISIBLE);
+            case RECOMMENDATION_LOADED:
             case PENDING_FOR_SUBMISSION:
             case PENDING_FOR_ANSWERS:
                 binding.fragmentRecommendationsAnswersProgress.setVisibility(View.VISIBLE);
@@ -279,7 +289,34 @@ public final class QuizCardAdapter {
             case SUBMISSION_WRONG:
                 submissionWrong();
             break;
+            case COURSE_COMPLETED:
+                binding.fragmentRecommendationsCourseCompleted.setVisibility(View.VISIBLE);
+            break;
         }
         this.state = state;
+    }
+
+    public void onError() {
+        if (binding != null) {
+            Snackbar.make(binding.getRoot(), R.string.network_error, Snackbar.LENGTH_LONG).show();
+            switch (state) { // return adapter to previous stable state
+                case PENDING_FOR_ANSWERS:
+                    setUIState(State.RECOMMENDATION_LOADED);
+                    binding.fragmentRecommendationsAnswersProgress.setVisibility(View.GONE);
+                    binding.fragmentRecommendationsSolve.setVisibility(View.VISIBLE);
+                break;
+                case PENDING_FOR_SUBMISSION:
+                    setUIState(State.ANSWERS_LOADED);
+                break;
+                default:
+                    if (attemptAnswersAdapter.getItemCount() > 0) {
+                        setUIState(State.RECOMMENDATION_LOADED);
+                    } else {
+                        binding.fragmentRecommendationsProgressBar.setVisibility(View.GONE);
+                        binding.fragmentRecommendationsError.setVisibility(View.VISIBLE);
+                    }
+                break;
+            }
+        }
     }
 }

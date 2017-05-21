@@ -40,4 +40,6 @@
     <string name="open">Open</string>
     <string name="close">Close</string>
     <string name="next">Next</string>
+    <string name="course_completed">Congratulations!\nYou have successfully completed the course!</string>
+    <string name="try_again">Try again</string>
 </resources>

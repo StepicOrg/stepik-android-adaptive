@@ -145,7 +145,7 @@ public final class API {
         return stepikService.joinCourse(new EnrollmentWrapper(course));
     }
 
-    public Call<RecommendationsResponse> getNextRecommendations() {
+    public Observable<RecommendationsResponse> getNextRecommendations() {
         return stepikService.getNextRecommendations(Config.getInstance().getCourseId());
     }
 
@@ -161,7 +161,7 @@ public final class API {
         return stepikService.getAttempts(step, SharedPreferenceMgr.getInstance().getLong(SharedPreferenceMgr.PROFILE_ID));
     }
 
-    public Observable<SubmissionResponse> createSubmission(final Submission submission) {
+    public Completable createSubmission(final Submission submission) {
         return stepikService.createSubmission(new SubmissionRequest(submission));
     }
 
@@ -173,7 +173,7 @@ public final class API {
         return stepikService.getProfile();
     }
 
-    public Call<RecommendationReactionsResponse> createReaction(final RecommendationReaction reaction) {
+    public Completable createReaction(final RecommendationReaction reaction) {
         return stepikService.createRecommendationReaction(new RecommendationReactionsRequest(reaction));
     }
 }
