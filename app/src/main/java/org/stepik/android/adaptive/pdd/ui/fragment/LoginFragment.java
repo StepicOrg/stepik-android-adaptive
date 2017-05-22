@@ -116,7 +116,7 @@ public final class LoginFragment extends Fragment {
             binding.fragmentLoginGoogleButton.setEnabled(false);
         } else {
             binding.fragmentLoginGoogleButton.setOnClickListener((v) ->
-                    startActivityForResult(Auth.GoogleSignInApi.getSignInIntent(googleApiClient), LaunchActivity.REQUEST_CODE_GOOGLE_SIGN_IN));
+                    getActivity().startActivityForResult(Auth.GoogleSignInApi.getSignInIntent(googleApiClient), LaunchActivity.REQUEST_CODE_GOOGLE_SIGN_IN));
         }
 
         return binding.getRoot();
