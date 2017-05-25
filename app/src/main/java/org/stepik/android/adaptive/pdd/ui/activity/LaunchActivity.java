@@ -32,7 +32,6 @@ public class LaunchActivity extends FragmentActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        Log.d("onActivityResult", "requestCode-" + requestCode + " resultCode-" + resultCode);
         if (loginListener != null) {
             if (VKSdk.onActivityResult(requestCode, resultCode, data, new VKCallback<VKAccessToken>() {
                 @Override
@@ -49,9 +48,7 @@ public class LaunchActivity extends FragmentActivity {
             }
 
             if (requestCode == REQUEST_CODE_GOOGLE_SIGN_IN && resultCode == RESULT_OK) {
-                Log.d(getClass().getCanonicalName(), "REQUEST_CODE_GOOGLE_SIGN_IN");
                 final GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
-                Log.d(getClass().getCanonicalName(), "success: " + result.isSuccess());
                 if (result.isSuccess()) {
                     final GoogleSignInAccount account = result.getSignInAccount();
                     if (account == null) {

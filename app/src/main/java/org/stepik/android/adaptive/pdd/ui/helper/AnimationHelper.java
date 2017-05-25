@@ -4,22 +4,13 @@ import android.animation.Animator;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.ViewPropertyAnimator;
-import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.OvershootInterpolator;
 
 public final class AnimationHelper {
-    public static final long ANIMATION_DURATION = 450;
-    public static final long ANIMATION_DURATION_FAST = 300;
+    public static final long ANIMATION_DURATION = 200;
 
     public static OvershootInterpolator OvershootInterpolator2F = new OvershootInterpolator(1.5f);
-
-
-    public static ValueAnimator.AnimatorUpdateListener createPaddingAnimation(final ViewGroup layout) {
-        return (animation) -> LayoutHelper.setViewGroupPaddingTop(layout,
-                (Integer) animation.getAnimatedValue());
-    }
 
     public static void playWiggleAnimation(final View view) {
         final ObjectAnimator animator = ObjectAnimator.ofFloat(view, "translationX", 0, 10);
@@ -35,25 +26,12 @@ public final class AnimationHelper {
                 .translationY(y);
     }
 
-    public static void playRollBackAnimation(final View view) {
-        createTransitionAnimation(view, 0, 0).setInterpolator(OvershootInterpolator2F).start();
+    public static ViewPropertyAnimator playRollBackAnimation(final View view) {
+        return createTransitionAnimation(view, 0, 0)
+                .rotation(0)
+                .setInterpolator(OvershootInterpolator2F);
     }
 
-    public static ViewPropertyAnimator createReactionAppearAnimation(final View view) {
-        return view.animate()
-                .scaleX(1)
-                .scaleY(1)
-                .setInterpolator(new AccelerateDecelerateInterpolator())
-                .setDuration(ANIMATION_DURATION_FAST);
-    }
-
-    public static ViewPropertyAnimator createReactionDisappearAnimation(final View view) {
-        return view.animate()
-                .scaleX(0)
-                .scaleY(0)
-                .setInterpolator(new AccelerateDecelerateInterpolator())
-                .setDuration(ANIMATION_DURATION);
-    }
 
     public static Animator.AnimatorListener onAnimationEnd(final Runnable runnable) {
         return new Animator.AnimatorListener() {

@@ -1,5 +1,7 @@
 package org.stepik.android.adaptive.pdd.api;
 
+import com.vk.sdk.VKSdk;
+
 import org.stepik.android.adaptive.pdd.Config;
 import org.stepik.android.adaptive.pdd.api.oauth.AuthenticationInterceptor;
 import org.stepik.android.adaptive.pdd.api.oauth.OAuthService;
@@ -135,6 +137,7 @@ public final class API {
     public void updateAuthState(final OAuthResponse response) {
         if (response == null) {
             SharedPreferenceMgr.getInstance().removeProfile();
+            VKSdk.logout();
         } else {
             SharedPreferenceMgr.getInstance().saveOAuthResponse(response);
             initServices(TokenType.DEFAULT);

@@ -57,4 +57,8 @@ public final class Submission {
     public long getAttempt() {
         return attempt;
     }
+
+    public String getHint() {
+        return hint;
+    }
 }

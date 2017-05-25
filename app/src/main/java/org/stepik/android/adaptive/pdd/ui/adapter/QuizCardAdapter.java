@@ -1,7 +1,6 @@
 package org.stepik.android.adaptive.pdd.ui.adapter;
 
 import android.animation.ObjectAnimator;
-import android.animation.ValueAnimator;
 import android.content.res.Resources;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.LinearLayoutManager;
@@ -15,7 +14,6 @@ import org.stepik.android.adaptive.pdd.data.model.Submission;
 import org.stepik.android.adaptive.pdd.databinding.FragmentRecommendationsBinding;
 import org.stepik.android.adaptive.pdd.ui.DefaultWebViewClient;
 import org.stepik.android.adaptive.pdd.ui.helper.AnimationHelper;
-import org.stepik.android.adaptive.pdd.ui.helper.LayoutHelper;
 import org.stepik.android.adaptive.pdd.ui.listener.OnCardSwipeListener;
 import org.stepik.android.adaptive.pdd.ui.view.QuizCardView;
 
@@ -23,25 +21,14 @@ import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Completable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.Disposable;
-import io.reactivex.subjects.PublishSubject;
 
 public final class QuizCardAdapter {
-    private static final int ANSWER_ANIMATION_START = -LayoutHelper.pxFromDp(160);
-    private static final int ANSWER_ANIMATION_END = 0;
-
-
-    private ValueAnimator answerAnimator;
-
     private final String TAG = "QuizCardAdapter";
 
     private FragmentRecommendationsBinding binding;
 
     private final OnCardSwipeListener listener;
     private final AttemptAnswersAdapter attemptAnswersAdapter;
-
-    private final PublishSubject<Float> scrollSubject = PublishSubject.create();
-    private Disposable scrollDisposable;
 
     private final int screenHeight;
 
@@ -80,17 +67,7 @@ public final class QuizCardAdapter {
                 setUIState(State.RECOMMENDATION_LOADED)));
         binding.fragmentRecommendationsQuestion.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
 
-        scrollDisposable = scrollSubject
-            .throttleFirst(AnimationHelper.ANIMATION_DURATION_FAST, TimeUnit.MILLISECONDS, AndroidSchedulers.mainThread())
-            .subscribe((scrollProgress) -> {
-                if (Math.abs(scrollProgress) > 0.5) {
-                    AnimationHelper.createReactionAppearAnimation(
-                            scrollProgress < 0 ? binding.fragmentRecommendationsEasyReaction : binding.fragmentRecommendationsHardReaction
-                    );
-                } else {
-                    hideReactionAnimation(0);
-                }
-            });
+        binding.fragmentRecommendationsAnswers.setNestedScrollingEnabled(false);
 
         binding.fragmentRecommendationsContainer.setQuizCardFlingListener(new QuizCardView.QuizCardFlingListener() {
             @Override
@@ -102,25 +79,26 @@ public final class QuizCardAdapter {
 
             @Override
             public void onScroll(final float scrollProgress) {
-                scrollSubject.onNext(scrollProgress);
+                binding.fragmentRecommendationsHardReaction.setAlpha(Math.max(2 * scrollProgress, 0));
+                binding.fragmentRecommendationsEasyReaction.setAlpha(Math.max(2 * -scrollProgress, 0));
             }
 
             @Override
             public void onSwiped() {
+                binding.fragmentRecommendationsEasyReaction.setAlpha(0);
+                binding.fragmentRecommendationsHardReaction.setAlpha(0);
                 setUIState(State.PENDING_FOR_NEXT_RECOMMENDATION);
             }
 
             @Override
             public void onSwipeLeft() {
-                AnimationHelper.createReactionAppearAnimation(binding.fragmentRecommendationsEasyReaction)
-                        .withEndAction(() -> hideReactionAnimation(AnimationHelper.ANIMATION_DURATION * 2));
+                binding.fragmentRecommendationsEasyReaction.setAlpha(1);
                 listener.onCardSwipe(OnCardSwipeListener.SWIPE_DIRECTION.LEFT);
             }
 
             @Override
             public void onSwipeRight() {
-                AnimationHelper.createReactionAppearAnimation(binding.fragmentRecommendationsHardReaction)
-                        .withEndAction(() -> hideReactionAnimation(AnimationHelper.ANIMATION_DURATION * 2));
+                binding.fragmentRecommendationsHardReaction.setAlpha(1);
                 listener.onCardSwipe(OnCardSwipeListener.SWIPE_DIRECTION.RIGHT);
             }
 
@@ -130,11 +108,9 @@ public final class QuizCardAdapter {
             }
         });
 
-        answerAnimator = ValueAnimator.ofInt(ANSWER_ANIMATION_START, ANSWER_ANIMATION_END);
-        answerAnimator.setDuration(AnimationHelper.ANIMATION_DURATION_FAST);
-        answerAnimator.addUpdateListener(AnimationHelper.createPaddingAnimation(binding.fragmentRecommendationsAnswersContainer));
 
         attemptAnswersAdapter.setSubmitButton(binding.fragmentRecommendationsSubmit);
+
         binding.fragmentRecommendationsAnswers.setLayoutManager(new LinearLayoutManager(binding.getRoot().getContext()));
         binding.fragmentRecommendationsAnswers.setAdapter(attemptAnswersAdapter);
 
@@ -142,7 +118,6 @@ public final class QuizCardAdapter {
     }
 
     public void unbind() {
-        scrollDisposable.dispose();
         binding = null;
     }
 
@@ -159,6 +134,7 @@ public final class QuizCardAdapter {
         switch (submission.getStatus()) {
             case CORRECT:
                 setUIState(State.SUBMISSION_CORRECT);
+                binding.fragmentRecommendationsHint.setText(submission.getHint());
             break;
             case WRONG:
                 setUIState(State.SUBMISSION_WRONG);
@@ -168,25 +144,15 @@ public final class QuizCardAdapter {
         }
     }
 
-    private void hideReactionAnimation(final long delay) {
-        AnimationHelper.createReactionDisappearAnimation(binding.fragmentRecommendationsEasyReaction)
-                .setStartDelay(delay);
-        AnimationHelper.createReactionDisappearAnimation(binding.fragmentRecommendationsHardReaction)
-                .setStartDelay(delay);
-    }
-
-
     private void pendingForNextRecommendation() {
         binding.fragmentRecommendationsContainer.setTranslationX(0);
         binding.fragmentRecommendationsContainer.setTranslationY(-screenHeight);
         binding.fragmentRecommendationsProgressBar.setVisibility(View.VISIBLE);
-
-        binding.fragmentRecommendationsAnswersContainer.setVisibility(View.GONE);
+        attemptAnswersAdapter.setAttempt(null);
     }
 
     private void recommendationLoaded() {
         binding.fragmentRecommendationsContainer.setEnabled(true);
-        LayoutHelper.setViewGroupPaddingTop(binding.fragmentRecommendationsContent, 0);
 
         if (binding.fragmentRecommendationsContainer.getTranslationY() != 0) {
             final ObjectAnimator animator =
@@ -203,15 +169,11 @@ public final class QuizCardAdapter {
     }
 
     private void pendingForAnswers() {
-        binding.fragmentRecommendationsAnswersContainer.setVisibility(View.GONE);
         binding.fragmentRecommendationsSubmit.setEnabled(false);
     }
 
     private void answersLoaded() {
         attemptAnswersAdapter.setEnabled(true);
-        answerAnimator.start();
-
-        binding.fragmentRecommendationsAnswersContainer.setVisibility(View.VISIBLE);
     }
 
     private void pendingForSubmissions() {
@@ -242,6 +204,7 @@ public final class QuizCardAdapter {
         binding.fragmentRecommendationsWrong.setVisibility(View.GONE);
         binding.fragmentRecommendationsProgressBar.setVisibility(View.GONE);
         binding.fragmentRecommendationsAnswersProgress.setVisibility(View.GONE);
+        binding.fragmentRecommendationsHint.setVisibility(View.GONE);
         switch (state) {
             case PENDING_FOR_NEXT_RECOMMENDATION:
                 binding.fragmentRecommendationsProgressBar.setVisibility(View.VISIBLE);
@@ -249,13 +212,16 @@ public final class QuizCardAdapter {
             case PENDING_FOR_SUBMISSION:
             case PENDING_FOR_ANSWERS:
                 binding.fragmentRecommendationsAnswersProgress.setVisibility(View.VISIBLE);
-            break;
+                binding.fragmentRecommendationsScroll.post(() -> binding.fragmentRecommendationsScroll.fullScroll(View.FOCUS_DOWN));
+                break;
             case ANSWERS_LOADED:
                 binding.fragmentRecommendationsSubmit.setVisibility(View.VISIBLE);
             break;
             case SUBMISSION_CORRECT:
                 binding.fragmentRecommendationsCorrect.setVisibility(View.VISIBLE);
                 binding.fragmentRecommendationsNext.setVisibility(View.VISIBLE);
+                binding.fragmentRecommendationsHint.setVisibility(View.VISIBLE);
+                binding.fragmentRecommendationsScroll.post(() -> binding.fragmentRecommendationsScroll.fullScroll(View.FOCUS_DOWN));
             break;
             case SUBMISSION_WRONG:
                 binding.fragmentRecommendationsWrong.setVisibility(View.VISIBLE);

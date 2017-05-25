@@ -19,6 +19,8 @@ import com.google.android.gms.common.api.Scope;
 import com.vk.sdk.VKSdk;
 import com.vk.sdk.api.model.VKScopes;
 
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 import org.stepik.android.adaptive.pdd.Config;
 import org.stepik.android.adaptive.pdd.R;
 import org.stepik.android.adaptive.pdd.Util;
@@ -132,7 +134,7 @@ public final class LoginFragment extends Fragment {
             final OAuthResponse response = SharedPreferenceMgr.getInstance().getOAuthResponse();
             if (response != null) {
                 final long expire = SharedPreferenceMgr.getInstance().getLong(SharedPreferenceMgr.OAUTH_RESPONSE_DEADLINE);
-                if (System.currentTimeMillis() > expire) {
+                if (DateTime.now(DateTimeZone.UTC).getMillis() > expire) {
                     final Response<OAuthResponse> res = API.getInstance().authWithRefreshToken(response.getRefreshToken()).execute();
                     if (res.isSuccessful()) {
                         API.getInstance().updateAuthState(res.body());

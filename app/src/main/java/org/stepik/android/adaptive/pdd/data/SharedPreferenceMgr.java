@@ -6,6 +6,8 @@ import android.preference.PreferenceManager;
 
 import com.google.gson.Gson;
 
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 import org.stepik.android.adaptive.pdd.api.oauth.OAuthResponse;
 import org.stepik.android.adaptive.pdd.data.model.Profile;
 
@@ -41,8 +43,10 @@ public final class SharedPreferenceMgr {
         final Gson gson = new Gson();
         final String json = gson.toJson(response);
 
+        final long currentTime = DateTime.now(DateTimeZone.UTC).getMillis();
+
         saveString(OAUTH_RESPONSE, json);
-        saveLong(OAUTH_RESPONSE_DEADLINE, System.currentTimeMillis() + response.getExpiresIn() * 1000);
+        saveLong(OAUTH_RESPONSE_DEADLINE, currentTime + (response.getExpiresIn() - 50) * 1000);
     }
 
     public OAuthResponse getOAuthResponse() {
@@ -85,42 +89,31 @@ public final class SharedPreferenceMgr {
     }
 
 
-    public void saveBoolean(String name, Boolean data) {
+    private void saveBoolean(String name, Boolean data) {
         sharedPreferences.edit().putBoolean(name, data).apply();
     }
 
-    public void saveString(final String name, final String data) {
+    private void saveString(final String name, final String data) {
         sharedPreferences.edit().putString(name, data).apply();
     }
 
-    public void saveInt(final String name, final int data) {
-        sharedPreferences.edit().putInt(name, data).apply();
-    }
-
-    public void saveLong(final String name, final long data) {
+    private void saveLong(final String name, final long data) {
         sharedPreferences.edit().putLong(name, data).apply();
     }
 
-    public String getString(final String name){
+    private String getString(final String name){
         return sharedPreferences.getString(name, null);
-    }
-
-    public int getInt(final String name){
-        return sharedPreferences.getInt(name, 0);
     }
 
     public long getLong(final String name){
         return sharedPreferences.getLong(name, 0);
     }
 
-    public boolean getBoolean(final String name) {
+    private boolean getBoolean(final String name) {
         return sharedPreferences.getBoolean(name, false);
     }
 
-    public void clear(){
-        sharedPreferences.edit().clear().apply();
-    }
-    public void remove(final String name){
+    private void remove(final String name){
         sharedPreferences.edit().remove(name).apply();
     }
 

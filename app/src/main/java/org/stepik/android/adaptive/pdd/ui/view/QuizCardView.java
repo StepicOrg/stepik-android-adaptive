@@ -2,6 +2,8 @@ package org.stepik.android.adaptive.pdd.ui.view;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.os.Build;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.CardView;
 import android.util.AttributeSet;
 import android.view.GestureDetector;
@@ -19,10 +21,21 @@ public final class QuizCardView extends CardView {
 
     private final int screenWidth;
     private final int screenHeight;
+    private final float viewX;
 
     private final GestureDetector flingDetector;
 
     private final static float MIN_FLING_VELOCITY = 400;
+    private final static float ROTATION_ANGLE = 15.5f;
+
+    private final static float MIN_DELTA = 32;
+
+    private final static int TOUCH_ABOVE = 0;
+    private final static int TOUCH_BELOW = 1;
+    private int touchPosition;
+
+    private boolean intercepted = false;
+
     private final float MIN_FLING_TRANSLATION;
 
     private final float MIN_SWIPE_TRANSLATION;
@@ -45,6 +58,8 @@ public final class QuizCardView extends CardView {
         this.screenHeight = Resources.getSystem().getDisplayMetrics().heightPixels;
         this.screenWidth = Resources.getSystem().getDisplayMetrics().widthPixels;
 
+        this.viewX = getX();
+
         MIN_SWIPE_TRANSLATION = this.screenWidth / 2;
         MIN_FLING_TRANSLATION = this.screenWidth / 4;
     }
@@ -52,7 +67,7 @@ public final class QuizCardView extends CardView {
     @Override
     public boolean onInterceptTouchEvent(final MotionEvent motionEvent) {
         processTouchEvent(motionEvent);
-        return super.onInterceptTouchEvent(motionEvent);
+        return intercepted || super.onInterceptTouchEvent(motionEvent);
     }
 
     @Override
@@ -76,7 +91,14 @@ public final class QuizCardView extends CardView {
                 elemX = getTranslationX();
                 elemY = getTranslationY();
 
+                if (startY < getHeight() / 2) {
+                    touchPosition = TOUCH_ABOVE;
+                } else {
+                    touchPosition = TOUCH_BELOW;
+                }
+
                 getParent().requestDisallowInterceptTouchEvent(true);
+                intercepted = false;
                 break;
 
             case MotionEvent.ACTION_UP:
@@ -84,19 +106,31 @@ public final class QuizCardView extends CardView {
                     onActionUp(0, 0);
                 }
                 getParent().requestDisallowInterceptTouchEvent(false);
-
+                intercepted = false;
                 break;
             case MotionEvent.ACTION_MOVE:
                 float dx = motionEvent.getX() - startX;
                 float dy = motionEvent.getY() - startY;
 
-                elemX += dx;
-                elemY += dy;
+                intercepted = intercepted || Math.abs(dx) > MIN_DELTA || Math.abs(dy) > MIN_DELTA;
 
-                setTranslationX(elemX);
-                setTranslationY(elemY);
+                if (intercepted) {
+                    elemX += dx;
+                    elemY += dy;
 
-                listener.onScroll(elemX / screenWidth);
+                    setTranslationX(elemX);
+                    setTranslationY(elemY);
+
+                    if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) { // due to some lags on < 5.0
+                        float rotation = ROTATION_ANGLE * 2 * (elemX - viewX) / getWidth();
+                        if (touchPosition == TOUCH_BELOW) {
+                            rotation = -rotation;
+                        }
+                        setRotation(rotation);
+                    }
+
+                    listener.onScroll(elemX / screenWidth);
+                }
                 break;
         }
     }
@@ -113,12 +147,16 @@ public final class QuizCardView extends CardView {
             } else {
                 listener.onSwipeLeft();
             }
-            AnimationHelper.createTransitionAnimation(this, Math.signum(x) * 2 * screenWidth, 0).withEndAction(listener::onSwiped);
+            AnimationHelper.createTransitionAnimation(this, Math.signum(x) * 2 * screenWidth, 0)
+                    .rotation(0)
+                    .setDuration(AnimationHelper.ANIMATION_DURATION * 2)
+                    .withEndAction(listener::onSwiped);
         } else {
             if (Math.abs(vy) > MIN_FLING_VELOCITY) {
                 listener.onFlingDown();
             }
 
+            listener.onScroll(0);
             AnimationHelper.playRollBackAnimation(this);
         }
     }
@@ -126,11 +164,12 @@ public final class QuizCardView extends CardView {
     public void swipeDown() {
         listener.onSwipeDown();
         AnimationHelper.createTransitionAnimation(this, 0, screenHeight)
+                .rotation(0)
                 .setInterpolator(new AccelerateDecelerateInterpolator())
                 .withEndAction(listener::onSwiped);
     }
 
-    public void setQuizCardFlingListener(final QuizCardFlingListener listener) {
+    public void setQuizCardFlingListener(@NonNull final QuizCardFlingListener listener) {
         this.listener = listener;
     }
 
