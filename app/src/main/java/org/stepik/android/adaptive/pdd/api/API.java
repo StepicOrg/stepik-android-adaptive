@@ -161,7 +161,7 @@ public final class API {
                             return chain.proceed(request);
                         }
 
-                        if (response == null && !oAuthResponse.isSuccessful()) {
+                        if (response == null || !oAuthResponse.isSuccessful()) {
                             if (oAuthResponse.code() == 401) {
                                 // todo logout
                             }

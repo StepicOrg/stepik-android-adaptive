@@ -15,10 +15,10 @@ import org.stepik.android.adaptive.pdd.data.model.Profile;
 public final class SharedPreferenceMgr {
     private static final String OAUTH_RESPONSE = "oauth_response";
     private static final String IS_OAUTH_TOKEN_SOCIAL = "is_oauth_token_social";
-    public static final String OAUTH_RESPONSE_DEADLINE = "oauth_response_deadline";
+    private static final String OAUTH_RESPONSE_DEADLINE = "oauth_response_deadline";
 
     private static final String PROFILE = "profile";
-    public static final String PROFILE_ID = "profile_id";
+    private static final String PROFILE_ID = "profile_id";
 
     private static final String NOT_FIRST_TIME = "not_first_time";
 
