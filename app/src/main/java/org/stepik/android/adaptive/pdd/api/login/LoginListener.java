@@ -16,7 +16,6 @@ public abstract class LoginListener {
             disposable = API.getInstance()
                     .authWithNativeCode(token, type)
                     .subscribeOn(Schedulers.io())
-                    .doOnNext(API.getInstance()::updateAuthState)
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(this::onLogin, this::onError);
         }

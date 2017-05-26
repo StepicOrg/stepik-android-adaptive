@@ -10,6 +10,7 @@ import android.support.v7.app.AlertDialog;
 
 import org.stepik.android.adaptive.pdd.R;
 import org.stepik.android.adaptive.pdd.api.API;
+import org.stepik.android.adaptive.pdd.data.SharedPreferenceMgr;
 import org.stepik.android.adaptive.pdd.ui.activity.LaunchActivity;
 
 import io.reactivex.Completable;
@@ -34,7 +35,7 @@ public final class LogoutDialog extends DialogFragment implements Dialog.OnClick
     public void onClick(DialogInterface dialogInterface, int which) {
         if (which == -1) {
             Completable
-                    .fromRunnable(() -> API.getInstance().updateAuthState(null))
+                    .fromRunnable(SharedPreferenceMgr.getInstance()::removeProfile)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(() -> {

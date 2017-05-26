@@ -9,9 +9,11 @@ import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.Headers;
 import retrofit2.http.POST;
+import retrofit2.http.Part;
+import retrofit2.http.Path;
 import retrofit2.http.Query;
 
-public interface StepikService {
+interface StepikService {
 
 @Headers("Content-Type: application/json")
 @POST("api/enrollments")
@@ -51,6 +53,11 @@ Completable createSubmission(
 Observable<SubmissionResponse> getSubmissions(
         @Query("attempt") final long attempt_id,
         @Query("order") final String desc
+);
+
+@GET("api/lessons/{lesson}")
+Observable<LessonsResponse> getLessons(
+        @Path("lesson") final long lesson
 );
 
 @GET("api/stepics/1")

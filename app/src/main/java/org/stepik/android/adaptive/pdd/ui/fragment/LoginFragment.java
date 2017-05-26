@@ -19,8 +19,6 @@ import com.google.android.gms.common.api.Scope;
 import com.vk.sdk.VKSdk;
 import com.vk.sdk.api.model.VKScopes;
 
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
 import org.stepik.android.adaptive.pdd.Config;
 import org.stepik.android.adaptive.pdd.R;
 import org.stepik.android.adaptive.pdd.Util;
@@ -40,7 +38,6 @@ import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.schedulers.Schedulers;
-import retrofit2.Response;
 
 public final class LoginFragment extends Fragment {
     private final static String TAG = "LoginFragment";
@@ -130,27 +127,12 @@ public final class LoginFragment extends Fragment {
         setRetainInstance(true);
         compositeDisposable = new CompositeDisposable();
 
-        Observable<AuthState> resolveAuth = Observable.fromCallable(() -> {
-            final OAuthResponse response = SharedPreferenceMgr.getInstance().getOAuthResponse();
-            if (response != null) {
-                final long expire = SharedPreferenceMgr.getInstance().getLong(SharedPreferenceMgr.OAUTH_RESPONSE_DEADLINE);
-                if (DateTime.now(DateTimeZone.UTC).getMillis() > expire) {
-                    final Response<OAuthResponse> res = API.getInstance().authWithRefreshToken(response.getRefreshToken()).execute();
-                    if (res.isSuccessful()) {
-                        API.getInstance().updateAuthState(res.body());
-                    } else {
-                        return AuthState.ERROR;
-                    }
-                } else {
-                    API.getInstance().updateAuthState(response);
-                }
-            } else {
-                return AuthState.NEED_AUTH;
-            }
-            return AuthState.OK;
-        }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io());
-
-        compositeDisposable.add(resolveAuth.subscribe(this::setAuthState, e -> setAuthState(AuthState.ERROR)));
+        compositeDisposable.add(
+                Observable.fromCallable(SharedPreferenceMgr.getInstance()::getAuthResponseDeadline)
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(d -> setAuthState(d == 0 ? AuthState.NEED_AUTH : AuthState.OK))
+        );
 
         if (Util.checkPlayServices(getContext())) {
             final GoogleSignInOptions googleSignInOptions = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -186,7 +168,6 @@ public final class LoginFragment extends Fragment {
     }
 
     private void setAuthState(final AuthState state) {
-
         if (authProgress != null) authProgress.dismiss();
 
         if (state == AuthState.OK && this.state != state) { // to not to call it twice
@@ -194,7 +175,7 @@ public final class LoginFragment extends Fragment {
             Util.startStudy(getActivity());
         } else {
             if (state == AuthState.ERROR) {
-                Completable.fromRunnable(() -> API.getInstance().updateAuthState(null)) // remove tokens if not authorized
+                Completable.fromAction(SharedPreferenceMgr.getInstance()::removeProfile) // remove tokens if not authorized
                         .subscribeOn(Schedulers.io()).subscribe();
             }
             if (binding != null) {
@@ -244,7 +225,6 @@ public final class LoginFragment extends Fragment {
         compositeDisposable.add(API.getInstance()
             .authWithLoginPassword(email, password)
             .subscribeOn(Schedulers.io())
-            .doOnNext(API.getInstance()::updateAuthState)
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(loginListener::onLogin, loginListener::onError));
     }

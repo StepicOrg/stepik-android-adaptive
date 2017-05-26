@@ -8,11 +8,13 @@ import com.google.gson.Gson;
 
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
+import org.stepik.android.adaptive.pdd.api.API;
 import org.stepik.android.adaptive.pdd.api.oauth.OAuthResponse;
 import org.stepik.android.adaptive.pdd.data.model.Profile;
 
 public final class SharedPreferenceMgr {
     private static final String OAUTH_RESPONSE = "oauth_response";
+    private static final String IS_OAUTH_TOKEN_SOCIAL = "is_oauth_token_social";
     public static final String OAUTH_RESPONSE_DEADLINE = "oauth_response_deadline";
 
     private static final String PROFILE = "profile";
@@ -74,10 +76,13 @@ public final class SharedPreferenceMgr {
     }
 
     public void removeProfile() {
+        API.authLock.lock();
         remove(PROFILE);
         remove(PROFILE_ID);
         remove(OAUTH_RESPONSE);
+        remove(IS_OAUTH_TOKEN_SOCIAL);
         remove(OAUTH_RESPONSE_DEADLINE);
+        API.authLock.unlock();
     }
 
     public void setNotFirstTime(final boolean notFirstTime) {
@@ -88,6 +93,21 @@ public final class SharedPreferenceMgr {
         return getBoolean(NOT_FIRST_TIME);
     }
 
+    public void setIsOauthTokenSocial(final boolean isOauthTokenSocial) {
+        saveBoolean(IS_OAUTH_TOKEN_SOCIAL, isOauthTokenSocial);
+    }
+
+    public boolean isAuthTokenSocial() {
+        return getBoolean(IS_OAUTH_TOKEN_SOCIAL);
+    }
+
+    public long getAuthResponseDeadline() {
+        return getLong(OAUTH_RESPONSE_DEADLINE);
+    }
+
+    public long getProfileId() {
+        return getLong(PROFILE_ID);
+    }
 
     private void saveBoolean(String name, Boolean data) {
         sharedPreferences.edit().putBoolean(name, data).apply();
@@ -105,7 +125,7 @@ public final class SharedPreferenceMgr {
         return sharedPreferences.getString(name, null);
     }
 
-    public long getLong(final String name){
+    private long getLong(final String name){
         return sharedPreferences.getLong(name, 0);
     }
 

@@ -122,7 +122,7 @@ public final class RecommendationsFragment extends Fragment {
                 .map(reaction -> {
                     final Observable<RecommendationsResponse> responseObservable = API.getInstance().getNextRecommendations();
                     if (reaction.getLesson() != 0) {
-                        reaction.setUser(SharedPreferenceMgr.getInstance().getLong(SharedPreferenceMgr.PROFILE_ID));
+                        reaction.setUser(SharedPreferenceMgr.getInstance().getProfileId());
                         return API.getInstance().createReaction(reaction).andThen(responseObservable);
                     }
                     return responseObservable;
