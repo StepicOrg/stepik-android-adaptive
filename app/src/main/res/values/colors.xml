@@ -1,16 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="colorPrimary">#3EA0AB</color>
-    <color name="colorPrimaryDark">#46B6C2</color>
+    <color name="colorPrimaryDark">#CCCCCC</color>
     <!--<color name="colorPrimaryDark">#3EA3AD</color>-->
-    <color name="colorAccent">#4cc6d3</color>
+    <color name="colorAccent">#66CC66</color>
     <color name="colorAccentDisabledBlue">#aee5eb</color>
     <color name="colorAccentDisabled">#B9B9B9</color>
     <color name="colorWrong">#FF3838</color>
     <color name="colorEasy">#227300</color>
     <color name="colorCorrect">#50D2BE</color>
     <color name="primaryBackground">#F1F1F1</color>
-    <color name="colorRadioButton">#3EA0AB</color>
     <color name="colorRadioButtonDefault">#CCCED1</color>
     <color name="colorAnswerText">#37474E</color>
     <color name="colorGrayBackground">#D9D9D9</color>

@@ -29,7 +29,7 @@ Observable<RecommendationsResponse> getNextRecommendations(
 
 
 @GET("api/steps")
-Call<StepsResponse> getSteps(
+Observable<StepsResponse> getSteps(
         @Query("lesson") final long lesson_id
 );
 

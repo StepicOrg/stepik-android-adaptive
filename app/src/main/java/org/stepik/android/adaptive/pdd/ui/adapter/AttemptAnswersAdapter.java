@@ -19,7 +19,7 @@ import org.stepik.android.adaptive.pdd.databinding.ItemAnswerBinding;
 import java.util.List;
 
 
-class AttemptAnswersAdapter extends RecyclerView.Adapter<AttemptAnswersAdapter.AttemptAnswerViewHolder> {
+public class AttemptAnswersAdapter extends RecyclerView.Adapter<AttemptAnswersAdapter.AttemptAnswerViewHolder> {
     private Attempt attempt;
     private List<String> options;
     private boolean[] selection;
@@ -120,6 +120,9 @@ class AttemptAnswersAdapter extends RecyclerView.Adapter<AttemptAnswersAdapter.A
         return 0;
     }
 
+    public void clear() {
+        setAttempt(null);
+    }
 
 
     class AttemptAnswerViewHolder extends RecyclerView.ViewHolder {

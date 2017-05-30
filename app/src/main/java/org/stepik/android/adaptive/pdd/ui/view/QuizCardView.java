@@ -73,7 +73,7 @@ public final class QuizCardView extends CardView {
     @Override
     public boolean onTouchEvent(MotionEvent motionEvent) {
         processTouchEvent(motionEvent);
-        if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
+        if (motionEvent.getAction() == MotionEvent.ACTION_DOWN && isEnabled()) {
             return true;
         } else {
             return super.onTouchEvent(motionEvent);

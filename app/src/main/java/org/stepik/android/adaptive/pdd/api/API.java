@@ -20,7 +20,6 @@ import io.reactivex.Observable;
 import okhttp3.Credentials;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
-import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Call;
 import retrofit2.Response;
 import retrofit2.Retrofit;
@@ -82,9 +81,6 @@ public final class API {
                                     Config.getInstance().getOAuthClientSecret())
                 ).build()));
 
-        HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
-        logging.setLevel(HttpLoggingInterceptor.Level.BODY);
-        httpClient.addInterceptor(logging);
         httpClient.connectTimeout(60, TimeUnit.SECONDS);
         httpClient.readTimeout(60, TimeUnit.SECONDS);
 
@@ -181,9 +177,6 @@ public final class API {
             return chain.proceed(request);
         });
 
-        HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
-        logging.setLevel(HttpLoggingInterceptor.Level.BODY);
-        httpClient.addInterceptor(logging);
         httpClient.connectTimeout(60, TimeUnit.SECONDS);
         httpClient.readTimeout(60, TimeUnit.SECONDS);
 
@@ -214,7 +207,7 @@ public final class API {
         return stepikService.getNextRecommendations(Config.getInstance().getCourseId());
     }
 
-    public Call<StepsResponse> getSteps(final long lesson) {
+    public Observable<StepsResponse> getSteps(final long lesson) {
         return stepikService.getSteps(lesson);
     }
 

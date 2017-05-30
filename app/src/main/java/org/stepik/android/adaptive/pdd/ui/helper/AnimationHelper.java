@@ -15,7 +15,7 @@ public final class AnimationHelper {
     public static void playWiggleAnimation(final View view) {
         final ObjectAnimator animator = ObjectAnimator.ofFloat(view, "translationX", 0, 10);
         animator.setRepeatMode(ValueAnimator.REVERSE);
-        animator.setDuration(100);
+        animator.setDuration(ANIMATION_DURATION / 2);
         animator.setRepeatCount(5);
         animator.start();
     }

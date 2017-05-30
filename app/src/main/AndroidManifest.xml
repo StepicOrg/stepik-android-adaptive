@@ -30,9 +30,7 @@
         <activity
             android:theme="@style/AppTheme.NoActionBar"
             android:name="org.stepik.android.adaptive.pdd.ui.activity.StudyActivity"
-            android:label="@string/app_name"
-            android:windowSoftInputMode="stateHidden|adjustResize"
-            android:screenOrientation="portrait">
+            android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
             </intent-filter>

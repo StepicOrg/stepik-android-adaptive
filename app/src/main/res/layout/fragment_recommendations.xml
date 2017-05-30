@@ -1,295 +1,313 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-    <android.support.v4.widget.DrawerLayout
-        android:id="@+id/fragment_recommendations_drawer_layout"
+    <android.support.design.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:fitsSystemWindows="true">
-        <android.support.design.widget.CoordinatorLayout
+        android:background="@color/primaryBackground">
+
+        <android.support.design.widget.AppBarLayout
+            android:id="@+id/fragment_recommendations_appbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fitsSystemWindows="true"
+            android:background="@color/primaryBackground"
+            android:orientation="vertical"
+            app:elevation="0dp">
+
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/fragment_recommendations_toolbar"
+                android:title=""
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+                android:theme="@style/AppTheme.ActionBarTheme" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/colorStroke"/>
+
+        </android.support.design.widget.AppBarLayout>
+
+        <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/primaryBackground">
+            android:paddingTop="?attr/actionBarSize"
+            android:clipToPadding="false">
 
-            <android.support.design.widget.AppBarLayout
-                android:id="@+id/fragment_recommendations_appbar"
-                android:layout_width="match_parent"
+            <ProgressBar
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:fitsSystemWindows="true"
-                android:background="@color/primaryBackground"
-                android:orientation="vertical"
-                app:elevation="0dp">
+                android:layout_gravity="center"
+                android:id="@+id/fragment_recommendations_progress_bar"/>
 
-                <android.support.v7.widget.Toolbar
-                    android:id="@+id/fragment_recommendations_toolbar"
-                    android:title=""
-                    android:layout_width="wrap_content"
-                    android:layout_height="?attr/actionBarSize"
-                    app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-                    android:theme="@style/AppTheme.ActionBarTheme" />
+            <org.stepik.android.adaptive.pdd.ui.view.QuizCardView
+                android:layout_width="@dimen/card_width"
+                android:layout_height="@dimen/card_height"
+                android:layout_gravity="center"
+                android:layout_margin="16dp"
+                android:id="@+id/fragment_recommendations_container">
 
-                <View
+                <RelativeLayout
                     android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:background="@color/colorStroke"/>
+                    android:layout_height="match_parent">
 
-            </android.support.design.widget.AppBarLayout>
-
-            <FrameLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:paddingTop="?attr/actionBarSize"
-                android:clipToPadding="false">
-
-                <ProgressBar
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:visibility="gone"
-                    android:id="@+id/fragment_recommendations_progress_bar"/>
-
-                <org.stepik.android.adaptive.pdd.ui.view.QuizCardView
-                    android:layout_width="@dimen/card_width"
-                    android:layout_height="@dimen/card_height"
-                    android:layout_gravity="center"
-                    android:layout_margin="16dp"
-                    android:id="@+id/fragment_recommendations_container">
+                    <TextView
+                        android:id="@+id/fragment_recommendations_title"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textColor="#FFF"
+                        android:background="@color/colorAccent"
+                        android:fontFamily="sans-serif-medium"
+                        android:layout_alignParentTop="true"
+                        android:padding="16dp" />
 
                     <RelativeLayout
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent">
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentBottom="true"
+                        android:paddingLeft="4dp"
+                        android:paddingRight="4dp"
+                        android:id="@+id/fragment_recommendations_supplemental_actions">
+                        <Button
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            style="@style/Widget.AppCompat.Button.Borderless"
+                            android:textColor="@color/borderless_button_text_color"
+                            android:text="@string/attempt_button"
+                            android:id="@+id/fragment_recommendations_solve"
+                            android:visibility="gone"
+                            android:layout_alignParentStart="true" />
 
-                        <RelativeLayout
+                        <Button
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_alignParentBottom="true"
-                            android:paddingLeft="4dp"
-                            android:paddingRight="4dp"
-                            android:id="@+id/fragment_recommendations_supplemental_actions">
-                            <Button
+                            style="@style/Widget.AppCompat.Button.Borderless"
+                            android:textColor="@color/borderless_button_text_color"
+                            android:text="@string/make_submission"
+                            android:gravity="start|center_vertical"
+                            android:id="@+id/fragment_recommendations_submit"
+                            android:visibility="gone"
+                            android:layout_alignParentStart="true" />
+
+                        <Button
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            style="@style/Widget.AppCompat.Button.Borderless"
+                            android:textColor="@color/borderless_button_text_color"
+                            android:text="@string/next"
+                            android:id="@+id/fragment_recommendations_next"
+                            android:visibility="gone"
+                            android:layout_alignParentEnd="true" />
+
+                        <Button
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            style="@style/Widget.AppCompat.Button.Borderless"
+                            android:textColor="@color/borderless_button_text_color"
+                            android:text="@string/wrong_retry"
+                            android:id="@+id/fragment_recommendations_wrong_retry"
+                            android:visibility="gone"
+                            android:layout_alignParentEnd="true" />
+
+                        <LinearLayout
+                            android:id="@+id/fragment_recommendations_correct"
+                            android:layout_width="wrap_content"
+                            android:layout_height="48dp"
+                            android:orientation="horizontal"
+                            android:gravity="start"
+                            android:visibility="gone"
+                            android:layout_marginStart="10dp"
+                            android:layout_alignParentStart="true" >
+                            <ImageView
+                                android:layout_width="24dp"
+                                android:layout_height="24dp"
+                                app:srcCompat="@drawable/ic_correct"
+                                android:tint="@color/colorCorrect"
+                                android:layout_gravity="center_vertical"
+                                android:layout_marginEnd="6dp" />
+                            <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                style="@style/Widget.AppCompat.Button.Borderless"
-                                android:textColor="@color/borderless_button_text_color"
-                                android:text="@string/attempt_button"
-                                android:id="@+id/fragment_recommendations_solve"
-                                android:visibility="gone"
-                                android:layout_alignParentStart="true" />
+                                android:layout_gravity="center_vertical"
+                                android:textColor="@color/colorCorrect"
+                                android:text="@string/correct" />
+                        </LinearLayout>
 
-                            <Button
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                style="@style/Widget.AppCompat.Button.Borderless"
-                                android:textColor="@color/borderless_button_text_color"
-                                android:text="@string/make_submission"
-                                android:gravity="start|center_vertical"
-                                android:id="@+id/fragment_recommendations_submit"
-                                android:layout_alignParentStart="true" />
-
-                            <Button
+                        <LinearLayout
+                            android:id="@+id/fragment_recommendations_wrong"
+                            android:layout_width="wrap_content"
+                            android:layout_height="48dp"
+                            android:orientation="horizontal"
+                            android:gravity="start"
+                            android:visibility="gone"
+                            android:layout_marginStart="10dp"
+                            android:layout_alignParentStart="true">
+                            <ImageView
+                                android:layout_width="24dp"
+                                android:layout_height="24dp"
+                                app:srcCompat="@drawable/ic_wrong"
+                                android:tint="@color/colorWrong"
+                                android:layout_gravity="center_vertical"
+                                android:layout_marginEnd="6dp" />
+                            <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                style="@style/Widget.AppCompat.Button.Borderless"
-                                android:textColor="@color/borderless_button_text_color"
-                                android:text="@string/next"
-                                android:id="@+id/fragment_recommendations_next"
-                                android:layout_alignParentEnd="true" />
-
-                            <LinearLayout
-                                android:id="@+id/fragment_recommendations_correct"
-                                android:layout_width="wrap_content"
-                                android:layout_height="48dp"
-                                android:orientation="horizontal"
-                                android:gravity="start"
-                                android:layout_marginStart="10dp"
-                                android:layout_alignParentStart="true" >
-                                <ImageView
-                                    android:layout_width="24dp"
-                                    android:layout_height="24dp"
-                                    app:srcCompat="@drawable/ic_correct"
-                                    android:tint="@color/colorCorrect"
-                                    android:layout_gravity="center_vertical"
-                                    android:layout_marginEnd="6dp" />
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_gravity="center_vertical"
-                                    android:textColor="@color/colorCorrect"
-                                    android:text="@string/correct" />
-                            </LinearLayout>
-
-                            <LinearLayout
-                                android:id="@+id/fragment_recommendations_wrong"
-                                android:layout_width="wrap_content"
-                                android:layout_height="48dp"
-                                android:orientation="horizontal"
-                                android:gravity="start"
-                                android:layout_marginStart="10dp"
-                                android:layout_alignParentStart="true">
-                                <ImageView
-                                    android:layout_width="24dp"
-                                    android:layout_height="24dp"
-                                    app:srcCompat="@drawable/ic_wrong"
-                                    android:tint="@color/colorWrong"
-                                    android:layout_gravity="center_vertical"
-                                    android:layout_marginEnd="6dp" />
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_gravity="center_vertical"
-                                    android:textColor="@color/colorWrong"
-                                    android:text="@string/wrong" />
-                            </LinearLayout>
-                        </RelativeLayout>
-
-                        <View
-                            android:layout_width="match_parent"
-                            android:layout_height="1dp"
-                            android:layout_above="@id/fragment_recommendations_supplemental_actions"
-                            android:background="@color/colorStroke"
-                            android:id="@+id/fragment_recommendations_bottom_divider"/>
-
-                        <ScrollView
-                            android:background="@android:color/white"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:id="@+id/fragment_recommendations_scroll"
-                            android:layout_above="@id/fragment_recommendations_bottom_divider">
-                            <LinearLayout
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:orientation="vertical">
-                                <WebView
-                                    android:id="@+id/fragment_recommendations_question"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content" />
-
-                                <View
-                                    android:layout_width="match_parent"
-                                    android:layout_height="1dp"
-                                    android:background="@color/colorStroke"/>
-
-                                <android.support.v7.widget.RecyclerView
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:id="@+id/fragment_recommendations_answers" />
-
-                                <View
-                                    android:layout_width="match_parent"
-                                    android:layout_height="1dp"
-                                    android:background="@color/colorStroke"/>
-
-                                <TextView
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:id="@+id/fragment_recommendations_hint"
-                                    android:padding="16dp" />
-
-                                <ProgressBar
-                                    android:visibility="gone"
-                                    android:layout_width="32dp"
-                                    android:layout_height="32dp"
-                                    android:layout_margin="16dp"
-                                    android:layout_gravity="center_horizontal"
-                                    android:id="@+id/fragment_recommendations_answers_progress" />
-
-                            </LinearLayout>
-                        </ScrollView>
-
+                                android:layout_gravity="center_vertical"
+                                android:textColor="@color/colorWrong"
+                                android:text="@string/wrong" />
+                        </LinearLayout>
                     </RelativeLayout>
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="start|top"
-                        android:textColor="@color/colorWrong"
-                        android:text="@string/too_hard"
-                        android:background="@drawable/hard_button_bg"
-                        android:rotation="-30"
-                        android:layout_marginStart="12dp"
-                        android:layout_marginTop="36dp"
-                        android:alpha="0"
-                        style="@style/AppTheme.ReactionStamp"
-                        android:id="@+id/fragment_recommendations_hard_reaction" />
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_above="@id/fragment_recommendations_supplemental_actions"
+                        android:background="@color/colorStroke"
+                        android:id="@+id/fragment_recommendations_bottom_divider"/>
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="end|top"
-                        android:textColor="@color/colorEasy"
-                        android:text="@string/too_easy"
-                        android:background="@drawable/easy_button_bg"
-                        android:rotation="30"
-                        android:layout_marginEnd="12dp"
-                        android:layout_marginTop="36dp"
-                        android:alpha="0"
-                        style="@style/AppTheme.ReactionStamp"
-                        android:id="@+id/fragment_recommendations_easy_reaction" />
+                    <ScrollView
+                        android:background="@android:color/white"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:id="@+id/fragment_recommendations_scroll"
+                        android:layout_below="@id/fragment_recommendations_title"
+                        android:layout_above="@id/fragment_recommendations_bottom_divider">
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical">
+                            <WebView
+                                android:id="@+id/fragment_recommendations_question"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content" />
 
-                </org.stepik.android.adaptive.pdd.ui.view.QuizCardView>
+                            <View
+                                android:layout_width="match_parent"
+                                android:layout_height="1dp"
+                                android:background="@color/colorStroke"/>
 
-                <LinearLayout
+                            <android.support.v7.widget.RecyclerView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:id="@+id/fragment_recommendations_answers" />
+
+                            <View
+                                android:layout_width="match_parent"
+                                android:layout_height="1dp"
+                                android:background="@color/colorStroke"/>
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:id="@+id/fragment_recommendations_hint"
+                                android:visibility="gone"
+                                android:padding="16dp" />
+
+                            <ProgressBar
+                                android:visibility="gone"
+                                android:layout_width="32dp"
+                                android:layout_height="32dp"
+                                android:layout_margin="16dp"
+                                android:layout_gravity="center_horizontal"
+                                android:id="@+id/fragment_recommendations_answers_progress" />
+
+                        </LinearLayout>
+                    </ScrollView>
+
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="5dp"
+                        android:layout_marginBottom="-5dp"
+                        android:layout_below="@id/fragment_recommendations_title"
+                        android:background="@drawable/shadow"
+                        android:id="@+id/fragment_recommendations_top_divider"/>
+
+                </RelativeLayout>
+
+                <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:visibility="gone"
-                    android:orientation="vertical"
-                    android:layout_gravity="center"
-                    android:gravity="center_horizontal"
-                    android:id="@+id/fragment_recommendations_course_completed">
+                    android:layout_gravity="start|top"
+                    android:textColor="@color/colorWrong"
+                    android:text="@string/too_hard"
+                    android:background="@drawable/hard_button_bg"
+                    android:rotation="-30"
+                    android:layout_marginStart="12dp"
+                    android:layout_marginTop="36dp"
+                    android:alpha="0"
+                    style="@style/AppTheme.ReactionStamp"
+                    android:id="@+id/fragment_recommendations_hard_reaction" />
 
-                    <ImageView
-                        android:layout_width="256dp"
-                        android:layout_height="256dp"
-                        android:tint="@color/colorSocialButton"
-                        app:srcCompat="@drawable/ic_done" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:maxWidth="256dp"
-                        android:gravity="center"
-                        android:layout_marginTop="16dp"
-                        android:textColor="@color/colorGrayText"
-                        android:text="@string/course_completed"/>
-
-                </LinearLayout>
-
-                <LinearLayout
+                <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:visibility="gone"
-                    android:orientation="vertical"
-                    android:layout_gravity="center"
-                    android:gravity="center_horizontal"
-                    android:id="@+id/fragment_recommendations_error">
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:maxWidth="256dp"
-                        android:gravity="center"
-                        android:text="@string/network_error"
-                        android:textColor="@color/colorGrayText"/>
+                    android:layout_gravity="end|top"
+                    android:textColor="@color/colorEasy"
+                    android:text="@string/too_easy"
+                    android:background="@drawable/easy_button_bg"
+                    android:rotation="30"
+                    android:layout_marginEnd="12dp"
+                    android:layout_marginTop="36dp"
+                    android:alpha="0"
+                    style="@style/AppTheme.ReactionStamp"
+                    android:id="@+id/fragment_recommendations_easy_reaction" />
 
-                    <Button
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        style="@style/Widget.AppCompat.Button.Borderless"
-                        android:textColor="@color/borderless_button_text_color"
-                        android:text="@string/try_again"
-                        android:id="@+id/fragment_recommendations_try_again" />
-                </LinearLayout>
-            </FrameLayout>
-        </android.support.design.widget.CoordinatorLayout>
+            </org.stepik.android.adaptive.pdd.ui.view.QuizCardView>
 
-        <android.support.design.widget.NavigationView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_gravity="start"
-            android:fitsSystemWindows="true"
-            app:headerLayout="@layout/drawer_header"
-            app:menu="@menu/drawer_menu"
-            android:id="@+id/fragment_recommendations_navigation" />
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                android:orientation="vertical"
+                android:layout_gravity="center"
+                android:gravity="center_horizontal"
+                android:id="@+id/fragment_recommendations_course_completed">
 
-    </android.support.v4.widget.DrawerLayout>
+                <ImageView
+                    android:layout_width="256dp"
+                    android:layout_height="256dp"
+                    android:tint="@color/colorSocialButton"
+                    app:srcCompat="@drawable/ic_done" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:maxWidth="256dp"
+                    android:gravity="center"
+                    android:layout_marginTop="16dp"
+                    android:textColor="@color/colorGrayText"
+                    android:text="@string/course_completed"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                android:orientation="vertical"
+                android:layout_gravity="center"
+                android:gravity="center_horizontal"
+                android:id="@+id/fragment_recommendations_error">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:maxWidth="256dp"
+                    android:gravity="center"
+                    android:text="@string/network_error"
+                    android:textColor="@color/colorGrayText"/>
+
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    style="@style/Widget.AppCompat.Button.Borderless"
+                    android:textColor="@color/borderless_button_text_color"
+                    android:text="@string/try_again"
+                    android:id="@+id/fragment_recommendations_try_again" />
+            </LinearLayout>
+        </FrameLayout>
+    </android.support.design.widget.CoordinatorLayout>
 </layout>
 
