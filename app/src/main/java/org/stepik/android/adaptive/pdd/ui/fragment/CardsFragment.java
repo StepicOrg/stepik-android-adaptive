@@ -351,7 +351,9 @@ public final class CardsFragment extends Fragment {
 
     @Override
     public void onDestroy() {
-        cards.forEach(Card::recycle);
+        for (final Card card : cards) {
+            card.recycle();
+        }
         super.onDestroy();
     }
 }
