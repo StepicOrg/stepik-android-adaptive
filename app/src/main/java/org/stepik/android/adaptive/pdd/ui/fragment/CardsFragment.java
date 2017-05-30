@@ -34,6 +34,7 @@ import org.stepik.android.adaptive.pdd.ui.view.QuizCardView;
 import org.stepik.android.adaptive.pdd.util.HtmlUtil;
 
 import java.util.ArrayDeque;
+import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.TimeUnit;
 
@@ -179,12 +180,15 @@ public final class CardsFragment extends Fragment {
     }
 
     private void onRecommendation(final RecommendationsResponse response) {
-        final Recommendation recommendation = response.getFirstRecommendation();
-        if (recommendation == null) {
+        final List<Recommendation> recommendations = response.getRecommendations();
+        if (recommendations == null || recommendations.isEmpty()) {
             courseCompleted();
         } else {
-            cards.add(new Card(recommendation.getLesson()));
-            if (binding != null && cards.size() == 1) resubscribe();
+            int size = cards.size();
+            for (final Recommendation recommendation: recommendations) {
+                cards.add(new Card(recommendation.getLesson()));
+            }
+            if (binding != null && size == 0) resubscribe();
         }
     }
 
@@ -258,6 +262,7 @@ public final class CardsFragment extends Fragment {
     private void createSubmission() {
         CardHelper.resetSupplementalActions(binding);
 
+        binding.fragmentRecommendationsContainer.setEnabled(false);
         binding.fragmentRecommendationsSubmit.setVisibility(View.GONE);
         binding.fragmentRecommendationsAnswersProgress.setVisibility(View.VISIBLE);
         cards.peek().getAdapter().setEnabled(false);
@@ -317,6 +322,8 @@ public final class CardsFragment extends Fragment {
                 binding.fragmentRecommendationsWrongRetry.setVisibility(View.VISIBLE);
                 binding.fragmentRecommendationsSubmit.setVisibility(View.GONE);
 
+                binding.fragmentRecommendationsContainer.setEnabled(true);
+
                 if (animate) {
                     AnimationHelper.playWiggleAnimation(binding.fragmentRecommendationsContainer);
                 }
@@ -328,6 +335,7 @@ public final class CardsFragment extends Fragment {
         submission = null;
         cards.peek().getAdapter().setEnabled(true);
         if (binding != null) {
+            binding.fragmentRecommendationsContainer.setEnabled(true);
             Snackbar.make(binding.getRoot(), R.string.network_error, Snackbar.LENGTH_SHORT).show();
             CardHelper.resetSupplementalActions(binding);
         }
