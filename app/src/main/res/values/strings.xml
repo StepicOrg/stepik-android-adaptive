@@ -40,7 +40,7 @@
     <string name="open">Open</string>
     <string name="close">Close</string>
     <string name="next">Next</string>
-    <string name="course_completed">Congratulations!\nYou have successfully completed the course!</string>
+    <string name="course_completed">Congratulations!\n\nYou have successfully completed the course!\n\n<a href="https://play.google.com/store/apps/details?id=org.stepic.droid">Find courses on Stepik</a></string>
     <string name="try_again">Try again</string>
     <string name="wrong_retry">Retry</string>
 </resources>

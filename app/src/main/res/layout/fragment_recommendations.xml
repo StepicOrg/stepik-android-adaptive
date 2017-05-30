@@ -36,11 +36,26 @@
             android:paddingTop="?attr/actionBarSize"
             android:clipToPadding="false">
 
-            <ProgressBar
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:id="@+id/fragment_recommendations_progress_bar"/>
+                android:orientation="vertical"
+                android:id="@+id/fragment_recommendations_progress">
+
+                <pl.droidsonroids.gif.GifImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/loading_robot"
+                    android:layout_gravity="center_horizontal"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:layout_gravity="center_horizontal"
+                    android:id="@+id/fragment_recommendations_loading_placeholder"/>
+            </LinearLayout>
 
             <org.stepik.android.adaptive.pdd.ui.view.QuizCardView
                 android:layout_width="@dimen/card_width"
@@ -267,10 +282,9 @@
                 android:id="@+id/fragment_recommendations_course_completed">
 
                 <ImageView
-                    android:layout_width="256dp"
-                    android:layout_height="256dp"
-                    android:tint="@color/colorSocialButton"
-                    app:srcCompat="@drawable/ic_done" />
+                    android:layout_width="125dp"
+                    android:layout_height="125dp"
+                    android:src="@drawable/course_passed" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -279,7 +293,8 @@
                     android:gravity="center"
                     android:layout_marginTop="16dp"
                     android:textColor="@color/colorGrayText"
-                    android:text="@string/course_completed"/>
+                    android:text="@string/course_completed"
+                    android:id="@+id/fragment_recommendations_course_completed_text"/>
 
             </LinearLayout>
 
@@ -291,9 +306,16 @@
                 android:layout_gravity="center"
                 android:gravity="center_horizontal"
                 android:id="@+id/fragment_recommendations_error">
+
+                <ImageView
+                    android:layout_width="125dp"
+                    android:layout_height="125dp"
+                    android:src="@drawable/ic_no_wifi" />
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
                     android:maxWidth="256dp"
                     android:gravity="center"
                     android:text="@string/network_error"

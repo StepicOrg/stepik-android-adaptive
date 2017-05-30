@@ -39,7 +39,7 @@
     <string name="open">Открыть</string>
     <string name="close">Закрыть</string>
     <string name="next">Дальше</string>
-    <string name="course_completed">Поздравляем!\nВы успешно прошли курс!</string>
+    <string name="course_completed">Поздравляем!\n\nВы успешно прошли курс!\n\n<a href="https://play.google.com/store/apps/details?id=org.stepic.droid">Найти другие курсы на Stepik</a></string>
     <string name="try_again">Попробовать снова</string>
     <string name="wrong_retry">Новая попытка</string>
 </resources>

@@ -59,4 +59,8 @@ public class Util {
         int resultCode = apiAvailability.isGooglePlayServicesAvailable(context);
         return resultCode == ConnectionResult.SUCCESS;
     }
+
+    public static int getRandomNumberBetween(final int lower, final int upper) {
+        return (int) (Math.random() * (upper - lower)) + lower;
+    }
 }

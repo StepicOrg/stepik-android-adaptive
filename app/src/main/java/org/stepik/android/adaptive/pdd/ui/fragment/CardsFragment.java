@@ -7,6 +7,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
+import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -16,6 +17,7 @@ import android.view.ViewGroup;
 import android.webkit.WebSettings;
 
 import org.stepik.android.adaptive.pdd.R;
+import org.stepik.android.adaptive.pdd.Util;
 import org.stepik.android.adaptive.pdd.api.API;
 import org.stepik.android.adaptive.pdd.api.RecommendationsResponse;
 import org.stepik.android.adaptive.pdd.api.SubmissionResponse;
@@ -48,8 +50,9 @@ public final class CardsFragment extends Fragment {
     private final CompositeDisposable compositeDisposable = new CompositeDisposable();
     private final PublishSubject<View> retrySubject = PublishSubject.create();
 
-
     private final Queue<Card> cards = new ArrayDeque<>();
+
+    private String[] loadingPlaceholders;
 
     private FragmentRecommendationsBinding binding;
 
@@ -66,6 +69,7 @@ public final class CardsFragment extends Fragment {
         setRetainInstance(true);
         setHasOptionsMenu(true);
         compositeDisposable.add(retrySubject.observeOn(AndroidSchedulers.mainThread()).subscribe(v -> retry()));
+        loadingPlaceholders = getResources().getStringArray(R.array.recommendation_loading_placeholders);
     }
 
     @Nullable
@@ -78,6 +82,8 @@ public final class CardsFragment extends Fragment {
         if (savedInstanceState == null) {
             createReaction(0, RecommendationReaction.Reaction.INTERESTING);
         }
+
+        binding.fragmentRecommendationsCourseCompletedText.setMovementMethod(LinkMovementMethod.getInstance());
 
         final WebSettings settings = binding.fragmentRecommendationsQuestion.getSettings();
         settings.setAllowContentAccess(false);
@@ -99,6 +105,7 @@ public final class CardsFragment extends Fragment {
             cards.peek().getAdapter().setEnabled(true);
             CardHelper.resetSupplementalActions(binding);
         });
+        binding.fragmentRecommendationsLoadingPlaceholder.setText(loadingPlaceholders[Util.getRandomNumberBetween(0, 3)]);
 
         CardHelper.resetCard(binding);
 
@@ -161,7 +168,8 @@ public final class CardsFragment extends Fragment {
     }
 
     private void createReaction(final long lesson, final RecommendationReaction.Reaction reaction) {
-        binding.fragmentRecommendationsProgressBar.setVisibility(View.VISIBLE);
+        binding.fragmentRecommendationsProgress.setVisibility(View.VISIBLE);
+        binding.fragmentRecommendationsLoadingPlaceholder.setText(loadingPlaceholders[Util.getRandomNumberBetween(0, 3)]);
         compositeDisposable.add(CardHelper.createReactionObservable(lesson, reaction)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -196,9 +204,11 @@ public final class CardsFragment extends Fragment {
     private void onError(final Throwable error) {
         isError = true;
         if (error != null) error.printStackTrace();
-        CardHelper.resetCard(binding);
-        binding.fragmentRecommendationsError.setVisibility(View.VISIBLE);
-        binding.fragmentRecommendationsProgressBar.setVisibility(View.GONE);
+        if (binding != null) {
+            CardHelper.resetCard(binding);
+            binding.fragmentRecommendationsError.setVisibility(View.VISIBLE);
+            binding.fragmentRecommendationsProgress.setVisibility(View.GONE);
+        }
     }
 
     /**
@@ -207,7 +217,8 @@ public final class CardsFragment extends Fragment {
     private void retry() {
         isError = false;
         binding.fragmentRecommendationsError.setVisibility(View.GONE);
-        binding.fragmentRecommendationsProgressBar.setVisibility(View.VISIBLE);
+        binding.fragmentRecommendationsProgress.setVisibility(View.VISIBLE);
+        binding.fragmentRecommendationsLoadingPlaceholder.setText(loadingPlaceholders[Util.getRandomNumberBetween(0, 3)]);
         if (!cards.isEmpty()) {
             cards.peek().init();
             resubscribe();
@@ -236,7 +247,7 @@ public final class CardsFragment extends Fragment {
      */
     private void onCardLoaded() {
         if (binding == null) return;
-        binding.fragmentRecommendationsProgressBar.setVisibility(View.GONE); // hide progresses
+        binding.fragmentRecommendationsProgress.setVisibility(View.GONE); // hide progresses
         binding.fragmentRecommendationsAnswersProgress.setVisibility(View.GONE);
 
         CardHelper.scrollDown(binding.fragmentRecommendationsScroll);
@@ -326,7 +337,7 @@ public final class CardsFragment extends Fragment {
         isCourseCompleted = true;
         if (binding != null) {
             binding.fragmentRecommendationsContainer.setVisibility(View.GONE);
-            binding.fragmentRecommendationsProgressBar.setVisibility(View.GONE);
+            binding.fragmentRecommendationsProgress.setVisibility(View.GONE);
             binding.fragmentRecommendationsCourseCompleted.setVisibility(View.VISIBLE);
         }
     }
