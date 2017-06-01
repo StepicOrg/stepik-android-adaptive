@@ -21,6 +21,7 @@ import org.stepik.android.adaptive.pdd.Util;
 import org.stepik.android.adaptive.pdd.api.API;
 import org.stepik.android.adaptive.pdd.api.RecommendationsResponse;
 import org.stepik.android.adaptive.pdd.api.SubmissionResponse;
+import org.stepik.android.adaptive.pdd.data.AnalyticMgr;
 import org.stepik.android.adaptive.pdd.data.model.Card;
 import org.stepik.android.adaptive.pdd.data.model.Recommendation;
 import org.stepik.android.adaptive.pdd.data.model.RecommendationReaction;
@@ -121,12 +122,14 @@ public final class CardsFragment extends Fragment {
             public void onSwipeLeft() {
                 binding.fragmentRecommendationsEasyReaction.setAlpha(1);
                 createReaction(cards.peek().getStep().getLesson(), RecommendationReaction.Reaction.NEVER_AGAIN);
+                AnalyticMgr.getInstance().reactionEasy(cards.peek().getStep().getLesson());
             }
 
             @Override
             public void onSwipeRight() {
                 binding.fragmentRecommendationsHardReaction.setAlpha(1);
                 createReaction(cards.peek().getStep().getLesson(), RecommendationReaction.Reaction.MAYBE_LATER);
+                AnalyticMgr.getInstance().reactionHard(cards.peek().getStep().getLesson());
             }
 
             @Override
@@ -185,7 +188,7 @@ public final class CardsFragment extends Fragment {
             courseCompleted();
         } else {
             int size = cards.size();
-            for (final Recommendation recommendation: recommendations) {
+            for (final Recommendation recommendation : recommendations) {
                 cards.add(new Card(recommendation.getLesson()));
             }
             if (binding != null && size == 0) resubscribe();
@@ -294,6 +297,7 @@ public final class CardsFragment extends Fragment {
         } else {
             if (submission.getStatus() == Submission.Status.CORRECT) {
                 createReaction(cards.peek().getStep().getLesson(), RecommendationReaction.Reaction.SOLVED);
+                AnalyticMgr.getInstance().answerResult(cards.peek().getStep(), submission);
             }
             if (binding != null) onSubmission(submission, true);
         }
