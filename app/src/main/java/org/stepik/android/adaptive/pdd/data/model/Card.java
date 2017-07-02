@@ -62,6 +62,10 @@ public final class Card extends Observable<Card> {
         }
     }
 
+    public long getLessonId() {
+        return lessonId;
+    }
+
     private void setStep(Step step) {
         if (step != null) {
             this.step = step;

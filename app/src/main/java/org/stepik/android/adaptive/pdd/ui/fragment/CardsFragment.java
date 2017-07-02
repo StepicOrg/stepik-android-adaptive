@@ -189,7 +189,9 @@ public final class CardsFragment extends Fragment {
         } else {
             int size = cards.size();
             for (final Recommendation recommendation : recommendations) {
-                cards.add(new Card(recommendation.getLesson()));
+                if (!isCardExists(recommendation.getLesson())) {
+                    cards.add(new Card(recommendation.getLesson()));
+                }
             }
             if (binding != null && size == 0) resubscribe();
         }
@@ -295,9 +297,9 @@ public final class CardsFragment extends Fragment {
                             .subscribe(this::onSubmissionLoaded, this::onSubmissionError)
             );
         } else {
+            AnalyticMgr.getInstance().answerResult(cards.peek().getStep(), submission);
             if (submission.getStatus() == Submission.Status.CORRECT) {
                 createReaction(cards.peek().getStep().getLesson(), RecommendationReaction.Reaction.SOLVED);
-                AnalyticMgr.getInstance().answerResult(cards.peek().getStep(), submission);
             }
             if (binding != null) onSubmission(submission, true);
         }
@@ -352,6 +354,13 @@ public final class CardsFragment extends Fragment {
             binding.fragmentRecommendationsProgress.setVisibility(View.GONE);
             binding.fragmentRecommendationsCourseCompleted.setVisibility(View.VISIBLE);
         }
+    }
+
+    private boolean isCardExists(final long lessonId) {
+        for (final Card card : cards) {
+            if (card.getLessonId() == lessonId) return true;
+        }
+        return false;
     }
 
     @Override
