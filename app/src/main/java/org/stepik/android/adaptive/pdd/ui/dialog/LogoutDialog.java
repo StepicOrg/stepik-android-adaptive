@@ -10,6 +10,8 @@ import android.support.v7.app.AlertDialog;
 
 import org.stepik.android.adaptive.pdd.R;
 import org.stepik.android.adaptive.pdd.api.API;
+import org.stepik.android.adaptive.pdd.core.LogoutHelper;
+import org.stepik.android.adaptive.pdd.core.ScreenManager;
 import org.stepik.android.adaptive.pdd.data.SharedPreferenceMgr;
 import org.stepik.android.adaptive.pdd.ui.activity.LaunchActivity;
 
@@ -33,15 +35,8 @@ public final class LogoutDialog extends DialogFragment implements Dialog.OnClick
 
     @Override
     public void onClick(DialogInterface dialogInterface, int which) {
-        if (which == -1) {
-            Completable
-                    .fromRunnable(SharedPreferenceMgr.getInstance()::removeProfile)
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(() -> {
-                        getContext().startActivity(new Intent(getContext(), LaunchActivity.class));
-                        getActivity().finish();
-                    });
+        if (which == DialogInterface.BUTTON_POSITIVE) {
+            LogoutHelper.logout(ScreenManager.getInstance()::showLaunchScreenAfterLogout);
         }
     }
 }
