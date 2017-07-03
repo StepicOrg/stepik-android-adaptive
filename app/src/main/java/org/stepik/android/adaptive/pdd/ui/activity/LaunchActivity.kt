@@ -42,8 +42,8 @@ class LaunchActivity : BasePresenterActivity<LoginPresenter, LoginView>(), Login
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_launch)
 
-        binding.launchActivitySignIn.setOnClickListener { ScreenManager.getInstance().showLoginScreen() }
-        binding.launchActivityCreateAccount.setOnClickListener { ScreenManager.getInstance().showRegisterScreen() }
+        binding.launchActivitySignIn.setOnClickListener { showLoginScreen() }
+        binding.launchActivityCreateAccount.setOnClickListener { showRegisterScreen() }
 
         binding.launchActivityVkButton.setOnClickListener { VKSdk.login(this, VKScopes.EMAIL) }
 
@@ -67,6 +67,14 @@ class LaunchActivity : BasePresenterActivity<LoginPresenter, LoginView>(), Login
         }
     }
 
+    private fun showLoginScreen() {
+        startActivity(Intent(this, LoginActivity::class.java))
+    }
+
+    private fun showRegisterScreen() {
+        startActivity(Intent(this, RegisterActivity::class.java))
+    }
+
     override fun onStart() {
         super.onStart()
         presenter?.attachView(this)
@@ -81,6 +89,8 @@ class LaunchActivity : BasePresenterActivity<LoginPresenter, LoginView>(), Login
         binding.unbind()
         super.onDestroy()
     }
+
+    override fun onSaveInstanceState(outState: Bundle?) {} // caused FC on low android versions
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
 //        super.onActivityResult(requestCode, resultCode, data)

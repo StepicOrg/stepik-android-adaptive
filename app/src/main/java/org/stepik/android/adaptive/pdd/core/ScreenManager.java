@@ -51,13 +51,4 @@ public class ScreenManager {
                     context.startActivity(intent);
                 });
     }
-
-    public void showLoginScreen() {
-        context.startActivity(new Intent(context, LoginActivity.class));
-    }
-
-    public void showRegisterScreen() {
-        context.startActivity(new Intent(context, RegisterActivity.class));
-    }
-
 }
