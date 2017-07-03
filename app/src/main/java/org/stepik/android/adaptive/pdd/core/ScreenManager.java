@@ -7,6 +7,8 @@ import android.content.Intent;
 import org.stepik.android.adaptive.pdd.data.SharedPreferenceMgr;
 import org.stepik.android.adaptive.pdd.ui.activity.IntroActivity;
 import org.stepik.android.adaptive.pdd.ui.activity.LaunchActivity;
+import org.stepik.android.adaptive.pdd.ui.activity.LoginActivity;
+import org.stepik.android.adaptive.pdd.ui.activity.RegisterActivity;
 import org.stepik.android.adaptive.pdd.ui.activity.StudyActivity;
 
 import io.reactivex.Observable;
@@ -33,7 +35,7 @@ public class ScreenManager {
         this.context = context;
     }
 
-    public void showLaunchScreenAfterLogout() {
+    public void showLaunchScreen() {
         Intent intent = new Intent(context, LaunchActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(intent);
@@ -48,6 +50,14 @@ public class ScreenManager {
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     context.startActivity(intent);
                 });
+    }
+
+    public void showLoginScreen() {
+        context.startActivity(new Intent(context, LoginActivity.class));
+    }
+
+    public void showRegisterScreen() {
+        context.startActivity(new Intent(context, RegisterActivity.class));
     }
 
 }

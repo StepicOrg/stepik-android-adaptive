@@ -42,4 +42,9 @@
     <string name="course_completed">Поздравляем!\n\nВы успешно прошли курс!\n\n<a href="https://play.google.com/store/apps/details?id=org.stepic.droid">Найти другие курсы на Stepik</a></string>
     <string name="try_again">Попробовать снова</string>
     <string name="wrong_retry">Новая попытка</string>
+    <string name="required_field">Обязательное поле</string>
+    <string name="terms_message_launch"><a href="https://stepik.org/page/terms/?from_mobile_app=true">Условия использования</a> и <a href="https://stepik.org/page/privacy/?from_mobile_app=true">Политика конфиденциальности</a></string>
+    <string name="terms_message_login">Входя в приложение, Вы соглашаетесь с <a href="https://stepik.org/page/terms/?from_mobile_app=true">Условиями использования</a> и <a href="https://stepik.org/page/privacy/?from_mobile_app=true">Политикой конфиденциальности</a></string>
+    <string name="terms_message_register">Регистрируясь, Вы соглашаетесь с <a href="https://stepik.org/page/terms/?from_mobile_app=true">Условиями использования</a> и <a href="https://stepik.org/page/privacy/?from_mobile_app=true">Политикой конфиденциальности</a></string>
+    <string name="register_error">При регистрации возникла ошибка</string>
 </resources>

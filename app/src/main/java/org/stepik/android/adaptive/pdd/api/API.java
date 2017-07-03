@@ -1,25 +1,44 @@
 package org.stepik.android.adaptive.pdd.api;
 
+import android.support.annotation.NonNull;
+import android.webkit.CookieManager;
+
+import org.jetbrains.annotations.Nullable;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.stepik.android.adaptive.pdd.Config;
+import org.stepik.android.adaptive.pdd.api.oauth.EmptyAuthService;
 import org.stepik.android.adaptive.pdd.api.oauth.OAuthService;
 import org.stepik.android.adaptive.pdd.api.oauth.OAuthResponse;
 import org.stepik.android.adaptive.pdd.api.login.SocialManager;
+import org.stepik.android.adaptive.pdd.core.LogoutHelper;
+import org.stepik.android.adaptive.pdd.core.ScreenManager;
 import org.stepik.android.adaptive.pdd.data.SharedPreferenceMgr;
 import org.stepik.android.adaptive.pdd.data.model.EnrollmentWrapper;
 import org.stepik.android.adaptive.pdd.data.model.RecommendationReaction;
+import org.stepik.android.adaptive.pdd.data.model.RegistrationUser;
 import org.stepik.android.adaptive.pdd.data.model.Submission;
+import org.stepik.android.adaptive.pdd.util.AppConstants;
 
 import java.io.IOException;
+import java.net.HttpCookie;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URLEncoder;
+import java.util.List;
+import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantLock;
 
 import io.reactivex.Completable;
 import io.reactivex.Observable;
 import okhttp3.Credentials;
+import okhttp3.Headers;
+import okhttp3.HttpUrl;
+import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
+import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Call;
 import retrofit2.Response;
 import retrofit2.Retrofit;
@@ -30,7 +49,7 @@ public final class API {
     private final static String TAG = "API";
     private final static String HOST = "https://stepik.org/";
 
-    private final static String AUTH_HEADER = "Authorization";
+    private final static int TIMEOUT_IN_SECONDS = 60;
 
     public final static ReentrantLock authLock = new ReentrantLock();
 
@@ -46,9 +65,11 @@ public final class API {
     private OAuthService authService;
 
     private final StepikService stepikService;
+    private final EmptyAuthService emptyAuthService;
 
     private API() {
         stepikService = initStepikService();
+        emptyAuthService = initEmptyAuthService();
     }
 
     public synchronized static void init() {
@@ -68,10 +89,10 @@ public final class API {
      * @return new authService
      */
     private OAuthService initAuthService(final TokenType tokenType) {
-        final OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
+        final OkHttpClient.Builder okHttpBuilder = new OkHttpClient.Builder();
 
-        httpClient.addInterceptor(chain ->
-                chain.proceed(chain.request().newBuilder().header(AUTH_HEADER,
+        okHttpBuilder.addInterceptor(chain ->
+                chain.proceed(addUserAgentTo(chain).newBuilder().header(AppConstants.authorizationHeaderName,
                         Credentials.basic(
                             tokenType == TokenType.SOCIAL ?
                                     Config.getInstance().getOAuthClientIdSocial() :
@@ -81,14 +102,13 @@ public final class API {
                                     Config.getInstance().getOAuthClientSecret())
                 ).build()));
 
-        httpClient.connectTimeout(60, TimeUnit.SECONDS);
-        httpClient.readTimeout(60, TimeUnit.SECONDS);
+        setTimeout(okHttpBuilder, TIMEOUT_IN_SECONDS);
 
-        final Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(API.HOST)
-                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-                .client(httpClient.build())
-                .addConverterFactory(GsonConverterFactory.create()).build();
+        HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
+        logging.setLevel(HttpLoggingInterceptor.Level.BODY);
+        okHttpBuilder.addInterceptor(logging);
+
+        final Retrofit retrofit = buildRetrofit(okHttpBuilder.build());
 
         return retrofit.create(OAuthService.class);
     }
@@ -137,10 +157,41 @@ public final class API {
                 .refreshAccessToken(Config.getInstance().getRefreshGrantType(), refreshToken);
     }
 
+    public Observable<Response<RegistrationResponse>> createAccount(final String firstName, final String lastName,
+                                                          final String email, final String password) {
+        OkHttpClient.Builder okHttpBuilder = new OkHttpClient.Builder();
+        okHttpBuilder.addNetworkInterceptor(chain -> {
+            Request newRequest = addUserAgentTo(chain);
+            String cookies = CookieManager.getInstance().getCookie(API.HOST);
+            if (cookies == null) {
+                updateCookieForBaseUrl();
+                cookies = android.webkit.CookieManager.getInstance().getCookie(API.HOST);
+            }
+            if (cookies == null)
+                return chain.proceed(newRequest);
+
+            String csrftoken = getCsrfTokenFromCookies(cookies);
+            Request.Builder requestBuilder = newRequest
+                    .newBuilder()
+                    .addHeader(AppConstants.refererHeaderName, API.HOST)
+                    .addHeader(AppConstants.csrfTokenHeaderName, csrftoken)
+                    .addHeader(AppConstants.cookieHeaderName, cookies);
+            newRequest = requestBuilder.build();
+            return chain.proceed(newRequest);
+        });
+        setTimeout(okHttpBuilder, TIMEOUT_IN_SECONDS);
+
+        Retrofit notLogged = buildRetrofit(okHttpBuilder.build());
+
+        OAuthService tmpService = notLogged.create(OAuthService.class);
+
+        return tmpService.createAccount(new UserRegistrationRequest(new RegistrationUser(firstName, lastName, email, password)));
+    }
+
     private StepikService initStepikService() {
-        final OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
-        httpClient.addInterceptor(chain -> {
-            Request request = chain.request();
+        final OkHttpClient.Builder okHttpBuilder = new OkHttpClient.Builder();
+        okHttpBuilder.addInterceptor(chain -> {
+            Request request = addUserAgentTo(chain);
 
             try {
                 authLock.lock();
@@ -159,7 +210,7 @@ public final class API {
 
                         if (response == null || !oAuthResponse.isSuccessful()) {
                             if (oAuthResponse.code() == 401) {
-                                // todo logout
+                                LogoutHelper.logout(ScreenManager.getInstance()::showLaunchScreen);
                             }
                             return chain.proceed(request);
                         }
@@ -167,7 +218,7 @@ public final class API {
                         SharedPreferenceMgr.getInstance().saveOAuthResponse(response);
                     }
                     request = request.newBuilder()
-                            .addHeader(AUTH_HEADER, response.getTokenType() + " " + response.getAccessToken())
+                            .addHeader(AppConstants.authorizationHeaderName, response.getTokenType() + " " + response.getAccessToken())
                             .build();
                 }
             } finally {
@@ -177,16 +228,25 @@ public final class API {
             return chain.proceed(request);
         });
 
-        httpClient.connectTimeout(60, TimeUnit.SECONDS);
-        httpClient.readTimeout(60, TimeUnit.SECONDS);
+        setTimeout(okHttpBuilder, TIMEOUT_IN_SECONDS);
 
-        final Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(API.HOST)
-                .client(httpClient.build())
-                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-                .addConverterFactory(GsonConverterFactory.create()).build();
+        HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
+        logging.setLevel(HttpLoggingInterceptor.Level.BODY);
+        okHttpBuilder.addInterceptor(logging);
+
+
+        final Retrofit retrofit = buildRetrofit(okHttpBuilder.build());
 
         return retrofit.create(StepikService.class);
+    }
+
+    private EmptyAuthService initEmptyAuthService() {
+        final OkHttpClient.Builder okHttpBuilder = new OkHttpClient.Builder();
+        setTimeout(okHttpBuilder, TIMEOUT_IN_SECONDS);
+
+        final Retrofit retrofit = buildRetrofit(okHttpBuilder.build());
+
+        return retrofit.create(EmptyAuthService.class);
     }
 
     private boolean isUpdateNeeded() {
@@ -195,8 +255,49 @@ public final class API {
     }
 
     public Completable remindPassword(final String email) {
-        return getAuthService(SharedPreferenceMgr.getInstance().isAuthTokenSocial() ? TokenType.SOCIAL : TokenType.PASSWORD)
-                .remindPassword(email);
+        String encodedEmail = URLEncoder.encode(email);
+        Interceptor interceptor = chain -> {
+            Request newRequest = addUserAgentTo(chain);
+
+            List<HttpCookie> cookies = getCookiesForBaseUrl();
+            if (cookies == null)
+                return chain.proceed(newRequest);
+            String csrftoken = null;
+            String sessionId = null;
+            for (HttpCookie item : cookies) {
+                if (item.getName() != null && item.getName().equals(AppConstants.csrfTokenCookieName)) {
+                    csrftoken = item.getValue();
+                    continue;
+                }
+                if (item.getName() != null && item.getName().equals(AppConstants.sessionCookieName)) {
+                    sessionId = item.getValue();
+                }
+            }
+
+            String cookieResult = AppConstants.csrfTokenCookieName + "=" + csrftoken + "; " + AppConstants.sessionCookieName + "=" + sessionId;
+            if (csrftoken == null) return chain.proceed(newRequest);
+            HttpUrl url = newRequest
+                    .url()
+                    .newBuilder()
+                    .addQueryParameter("csrfmiddlewaretoken", csrftoken)
+                    .addQueryParameter("csrfmiddlewaretoken", csrftoken)
+                    .build();
+            newRequest = newRequest.newBuilder()
+                    .addHeader("referer", API.HOST)
+                    .addHeader("X-CSRFToken", csrftoken)
+                    .addHeader("Cookie", cookieResult)
+                    .url(url)
+                    .build();
+            return chain.proceed(newRequest);
+        };
+        OkHttpClient.Builder okHttpBuilder = new OkHttpClient.Builder();
+        okHttpBuilder.addNetworkInterceptor(interceptor);
+//        okHttpBuilder.addNetworkInterceptor(this.stethoInterceptor);
+        setTimeout(okHttpBuilder, TIMEOUT_IN_SECONDS);
+        Retrofit notLogged = buildRetrofit(okHttpBuilder.build());
+
+        EmptyAuthService tempService = notLogged.create(EmptyAuthService.class);
+        return tempService.remindPassword(encodedEmail);
     }
 
     public Completable joinCourse(final long course) {
@@ -237,5 +338,85 @@ public final class API {
 
     public Observable<LessonsResponse> getLessons(final long lesson) {
         return stepikService.getLessons(lesson);
+    }
+
+
+    private void setTimeout(OkHttpClient.Builder builder, int seconds) {
+        builder.connectTimeout(seconds, TimeUnit.SECONDS);
+        builder.readTimeout(seconds, TimeUnit.SECONDS);
+    }
+
+    @Nullable
+    private List<HttpCookie> getCookiesForBaseUrl() throws IOException {
+        String lang = Locale.getDefault().getLanguage();
+        retrofit2.Response response = emptyAuthService.getStepicForFun(lang).execute();
+        Headers headers = response.headers();
+        java.net.CookieManager cookieManager = new java.net.CookieManager();
+        URI myUri;
+        try {
+            myUri = new URI(API.HOST);
+        } catch (URISyntaxException e) {
+            return null;
+        }
+        cookieManager.put(myUri, headers.toMultimap());
+        return cookieManager.getCookieStore().get(myUri);
+    }
+
+    private void updateCookieForBaseUrl() throws IOException {
+        String lang = Locale.getDefault().getLanguage();
+        retrofit2.Response response = emptyAuthService.getStepicForFun(lang).execute();
+
+        List<String> setCookieHeaders = response.headers().values(AppConstants.setCookieHeaderName);
+        if (!setCookieHeaders.isEmpty()) {
+            for (String value : setCookieHeaders) {
+                if (value != null) {
+                    CookieManager.getInstance().setCookie(API.HOST, value); //set-cookie is not empty
+                }
+            }
+        }
+    }
+
+    @Nullable
+    private String tryGetCsrfFromOnePair(String keyValueCookie) {
+        List<HttpCookie> cookieList = HttpCookie.parse(keyValueCookie);
+        for (HttpCookie item : cookieList) {
+            if (item.getName() != null && item.getName().equals(AppConstants.csrfTokenCookieName)) {
+                return item.getValue();
+            }
+        }
+        return null;
+    }
+
+    @NonNull
+    private String getCsrfTokenFromCookies(String cookies) {
+        String csrftoken = null;
+        String[] cookiePairs = cookies.split(";");
+        for (String cookieItem : cookiePairs) {
+            csrftoken = tryGetCsrfFromOnePair(cookieItem);
+            if (csrftoken != null) {
+                break;
+            }
+        }
+        if (csrftoken == null) {
+            csrftoken = "";
+        }
+        return csrftoken;
+    }
+
+    private Request addUserAgentTo(Interceptor.Chain chain) {
+        return chain
+                .request()
+                .newBuilder()
+                .header(AppConstants.userAgentName, UserAgentProvider.provideUserAgent())
+                .build();
+    }
+
+    private Retrofit buildRetrofit(OkHttpClient client) {
+        return new Retrofit.Builder()
+                .baseUrl(API.HOST)
+                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+                .addConverterFactory(GsonConverterFactory.create())
+                .client(client)
+                .build();
     }
 }
