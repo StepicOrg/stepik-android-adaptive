@@ -194,7 +194,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:orientation="vertical">
-                            <WebView
+                            <org.stepik.android.adaptive.pdd.ui.view.LatexSupportableWebView
                                 android:id="@+id/fragment_recommendations_question"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content" />

@@ -8,6 +8,7 @@ import org.stepik.android.adaptive.pdd.data.SharedPreferenceMgr;
 import org.stepik.android.adaptive.pdd.ui.activity.IntroActivity;
 import org.stepik.android.adaptive.pdd.ui.activity.LaunchActivity;
 import org.stepik.android.adaptive.pdd.ui.activity.LoginActivity;
+import org.stepik.android.adaptive.pdd.ui.activity.PhotoViewActivity;
 import org.stepik.android.adaptive.pdd.ui.activity.RegisterActivity;
 import org.stepik.android.adaptive.pdd.ui.activity.StudyActivity;
 
@@ -50,5 +51,11 @@ public class ScreenManager {
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     context.startActivity(intent);
                 });
+    }
+
+    public static void showImage(Context context, String path) {
+        Intent intent = new Intent(context, PhotoViewActivity.class);
+        intent.putExtra(PhotoViewActivity.Companion.getPathKey(), path);
+        context.startActivity(intent);
     }
 }

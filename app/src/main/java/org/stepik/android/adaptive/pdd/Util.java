@@ -14,14 +14,12 @@ import org.stepik.android.adaptive.pdd.api.UserAgentProvider;
 import org.stepik.android.adaptive.pdd.core.ScreenManager;
 import org.stepik.android.adaptive.pdd.data.AnalyticMgr;
 import org.stepik.android.adaptive.pdd.data.SharedPreferenceMgr;
-import org.stepik.android.adaptive.pdd.ui.fragment.FragmentMgr;
 
 public class Util {
     public static void initMgr(final Context context) {
         Config.init(context);
         ScreenManager.init(context);
         API.init();
-        FragmentMgr.init();
         SharedPreferenceMgr.init(context);
         VKSdk.initialize(context);
         AnalyticMgr.init(context);

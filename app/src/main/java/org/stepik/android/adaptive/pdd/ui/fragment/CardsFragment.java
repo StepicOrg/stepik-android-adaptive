@@ -4,6 +4,7 @@ import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -21,6 +22,7 @@ import org.stepik.android.adaptive.pdd.Util;
 import org.stepik.android.adaptive.pdd.api.API;
 import org.stepik.android.adaptive.pdd.api.RecommendationsResponse;
 import org.stepik.android.adaptive.pdd.api.SubmissionResponse;
+import org.stepik.android.adaptive.pdd.core.ScreenManager;
 import org.stepik.android.adaptive.pdd.data.AnalyticMgr;
 import org.stepik.android.adaptive.pdd.data.model.Card;
 import org.stepik.android.adaptive.pdd.data.model.Recommendation;
@@ -94,6 +96,7 @@ public final class CardsFragment extends Fragment {
         settings.setLayoutAlgorithm(WebSettings.LayoutAlgorithm.NORMAL);
 
         binding.fragmentRecommendationsQuestion.setWebViewClient(new DefaultWebViewClient(null, (v, u) -> onCardLoaded()));
+        binding.fragmentRecommendationsQuestion.setOnWebViewClickListener(path -> ScreenManager.showImage(getContext(), path));
         binding.fragmentRecommendationsQuestion.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
 
         binding.fragmentRecommendationsAnswers.setNestedScrollingEnabled(false);
@@ -165,7 +168,8 @@ public final class CardsFragment extends Fragment {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.menu_logout) {
-            FragmentMgr.getInstance().showDialog(new LogoutDialog());
+            DialogFragment dialog = new LogoutDialog();
+            dialog.show(getChildFragmentManager(), dialog.getTag());
             return true;
         }
         return super.onOptionsItemSelected(item);

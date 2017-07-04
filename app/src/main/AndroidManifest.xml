@@ -27,51 +27,28 @@
 
         <activity
             android:theme="@style/AppTheme.NoActionBar"
-            android:name="org.stepik.android.adaptive.pdd.ui.activity.LaunchActivity"
-            android:label="@string/app_name"
-            android:windowSoftInputMode="stateHidden|adjustResize">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-            </intent-filter>
-        </activity>
+            android:name="org.stepik.android.adaptive.pdd.ui.activity.LaunchActivity" />
 
         <activity
             android:theme="@style/AppTheme.NoActionBar"
-            android:name="org.stepik.android.adaptive.pdd.ui.activity.StudyActivity"
-            android:label="@string/app_name">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-            </intent-filter>
-        </activity>
+            android:name="org.stepik.android.adaptive.pdd.ui.activity.StudyActivity" />
 
         <activity
             android:theme="@style/AppTheme.NoActionBar"
-            android:name="org.stepik.android.adaptive.pdd.ui.activity.LoginActivity"
-            android:label="@string/app_name">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-            </intent-filter>
-        </activity>
+            android:name="org.stepik.android.adaptive.pdd.ui.activity.LoginActivity" />
 
         <activity
             android:theme="@style/AppTheme.NoActionBar"
-            android:name="org.stepik.android.adaptive.pdd.ui.activity.RegisterActivity"
-            android:label="@string/app_name">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-            </intent-filter>
-        </activity>
+            android:name="org.stepik.android.adaptive.pdd.ui.activity.RegisterActivity" />
 
         <activity
             android:theme="@style/AppTheme.NoActionBar"
             android:name="org.stepik.android.adaptive.pdd.ui.activity.IntroActivity"
-            android:label="@string/app_name"
-            android:windowSoftInputMode="stateHidden|adjustResize"
-            android:screenOrientation="portrait">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-            </intent-filter>
-        </activity>
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:theme="@style/AppTheme.NoActionBar"
+            android:name="org.stepik.android.adaptive.pdd.ui.activity.PhotoViewActivity"/>
     </application>
 
 </manifest>
