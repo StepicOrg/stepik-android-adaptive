@@ -124,15 +124,25 @@ public final class CardsFragment extends Fragment {
             @Override
             public void onSwipeLeft() {
                 binding.fragmentRecommendationsEasyReaction.setAlpha(1);
-                createReaction(cards.peek().getStep().getLesson(), RecommendationReaction.Reaction.NEVER_AGAIN);
-                AnalyticMgr.getInstance().reactionEasy(cards.peek().getStep().getLesson());
+                final Card card = cards.peek();
+                final long lesson = card.getStep().getLesson();
+                createReaction(lesson, RecommendationReaction.Reaction.NEVER_AGAIN);
+                if (card.isCorrect()) {
+                    AnalyticMgr.getInstance().reactionEasyAfterCorrect(lesson);
+                }
+                AnalyticMgr.getInstance().reactionEasy(lesson);
             }
 
             @Override
             public void onSwipeRight() {
                 binding.fragmentRecommendationsHardReaction.setAlpha(1);
-                createReaction(cards.peek().getStep().getLesson(), RecommendationReaction.Reaction.MAYBE_LATER);
-                AnalyticMgr.getInstance().reactionHard(cards.peek().getStep().getLesson());
+                final Card card = cards.peek();
+                final long lesson = card.getStep().getLesson();
+                createReaction(lesson, RecommendationReaction.Reaction.MAYBE_LATER);
+                if (card.isCorrect()) {
+                    AnalyticMgr.getInstance().reactionHardAfterCorrect(lesson);
+                }
+                AnalyticMgr.getInstance().reactionHard(lesson);
             }
 
             @Override
@@ -178,7 +188,7 @@ public final class CardsFragment extends Fragment {
     private void createReaction(final long lesson, final RecommendationReaction.Reaction reaction) {
         binding.fragmentRecommendationsProgress.setVisibility(View.VISIBLE);
         binding.fragmentRecommendationsLoadingPlaceholder.setText(loadingPlaceholders[Util.getRandomNumberBetween(0, 3)]);
-        compositeDisposable.add(CardHelper.createReactionObservable(lesson, reaction)
+        compositeDisposable.add(CardHelper.createReactionObservable(lesson, reaction, cards.size())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnError(this::onError)
@@ -303,6 +313,7 @@ public final class CardsFragment extends Fragment {
         } else {
             AnalyticMgr.getInstance().answerResult(cards.peek().getStep(), submission);
             if (submission.getStatus() == Submission.Status.CORRECT) {
+                cards.peek().onCorrect();
                 createReaction(cards.peek().getStep().getLesson(), RecommendationReaction.Reaction.SOLVED);
             }
             if (binding != null) onSubmission(submission, true);
@@ -318,7 +329,7 @@ public final class CardsFragment extends Fragment {
 
                 binding.fragmentRecommendationsCorrect.setVisibility(View.VISIBLE);
                 binding.fragmentRecommendationsNext.setVisibility(View.VISIBLE);
-                binding.fragmentRecommendationsContainer.setEnabled(false);
+                binding.fragmentRecommendationsContainer.setEnabled(true);
 
                 binding.fragmentRecommendationsHint.setText(submission.getHint());
                 binding.fragmentRecommendationsHint.setVisibility(View.VISIBLE);

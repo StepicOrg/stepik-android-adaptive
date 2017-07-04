@@ -15,6 +15,11 @@ public final class AnalyticMgr {
 
     private final static String EVENT_REACTION_HARD = "reaction_hard";
     private final static String EVENT_REACTION_EASY = "reaction_easy";
+
+    private final static String EVENT_REACTION_HARD_AFTER_CORRECT = "reaction_hard_after_correct_answer";
+    private final static String EVENT_REACTION_EASY_AFTER_CORRECT = "reaction_easy_after_correct_answer";
+
+
     private final static String EVENT_CORRECT_ANSWER = "correct_answer";
     private final static String EVENT_WRONG_ANSWER = "wrong_answer";
 
@@ -57,6 +62,14 @@ public final class AnalyticMgr {
 
     public void reactionEasy(final long lesson) {
         logEventWithLesson(EVENT_REACTION_EASY, lesson);
+    }
+
+    public void reactionHardAfterCorrect(final long lesson) {
+        logEventWithLesson(EVENT_REACTION_HARD_AFTER_CORRECT, lesson);
+    }
+
+    public void reactionEasyAfterCorrect(final long lesson) {
+        logEventWithLesson(EVENT_REACTION_EASY_AFTER_CORRECT, lesson);
     }
 
     public void answerResult(final Step step, @NonNull final Submission submission) {

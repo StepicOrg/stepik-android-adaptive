@@ -7,6 +7,7 @@ import org.stepik.android.adaptive.pdd.Config
 import org.stepik.android.adaptive.pdd.api.API
 import org.stepik.android.adaptive.pdd.api.login.SocialManager
 import org.stepik.android.adaptive.pdd.core.presenter.contracts.LoginView
+import org.stepik.android.adaptive.pdd.data.AnalyticMgr
 import org.stepik.android.adaptive.pdd.data.SharedPreferenceMgr
 
 class LoginPresenter : PresenterBase<LoginView>() {
@@ -83,6 +84,7 @@ class LoginPresenter : PresenterBase<LoginView>() {
 
     fun onSuccess() {
         isSuccess = true
+        AnalyticMgr.getInstance().successLogin()
         view?.onSuccess()
     }
 

@@ -304,8 +304,8 @@ public final class API {
         return stepikService.joinCourse(new EnrollmentWrapper(course));
     }
 
-    public Observable<RecommendationsResponse> getNextRecommendations() {
-        return stepikService.getNextRecommendations(Config.getInstance().getCourseId());
+    public Observable<RecommendationsResponse> getNextRecommendations(final int count) {
+        return stepikService.getNextRecommendations(Config.getInstance().getCourseId(), count);
     }
 
     public Observable<StepsResponse> getSteps(final long lesson) {

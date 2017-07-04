@@ -35,6 +35,7 @@ public final class Card extends Observable<Card> {
 
     private Observer<? super Card> observer;
 
+    private boolean correct = false;
 
     public Card(final long lessonId) {
         this.lessonId = lessonId;
@@ -144,5 +145,13 @@ public final class Card extends Observable<Card> {
 
     public AttemptAnswersAdapter getAdapter() {
         return adapter;
+    }
+
+    public void onCorrect() {
+        this.correct = true;
+    }
+
+    public boolean isCorrect() {
+        return correct;
     }
 }

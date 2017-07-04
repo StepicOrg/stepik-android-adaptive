@@ -24,7 +24,8 @@ Completable joinCourse(
 
 @GET("api/recommendations")
 Observable<RecommendationsResponse> getNextRecommendations(
-        @Query("course") final long course_id
+        @Query("course") final long course_id,
+        @Query("count") final int count
 );
 
 

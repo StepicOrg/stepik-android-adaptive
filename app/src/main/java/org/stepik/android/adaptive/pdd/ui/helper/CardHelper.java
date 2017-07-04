@@ -11,19 +11,26 @@ import org.stepik.android.adaptive.pdd.data.model.RecommendationReaction;
 import org.stepik.android.adaptive.pdd.databinding.FragmentRecommendationsBinding;
 import org.stepik.android.adaptive.pdd.ui.view.QuizCardView;
 
+import io.reactivex.Completable;
 import io.reactivex.Observable;
 
 public class CardHelper {
 
     private final static int screenHeight = Resources.getSystem().getDisplayMetrics().heightPixels;
+    private final static int CARDS_IN_CACHE = 10;
+    private final static int MIN_CARDS_IN_CACHE = 5;
 
-    public static Observable<RecommendationsResponse> createReactionObservable(final long lesson, final RecommendationReaction.Reaction reaction) {
-        final Observable<RecommendationsResponse> responseObservable = API.getInstance().getNextRecommendations();
+    public static Observable<RecommendationsResponse> createReactionObservable(final long lesson, final RecommendationReaction.Reaction reaction, final int cacheSize) {
+        final Observable<RecommendationsResponse> responseObservable = API.getInstance().getNextRecommendations(CARDS_IN_CACHE);
 
         if (lesson != 0) {
-            return API.getInstance()
-                    .createReaction(new RecommendationReaction(lesson, reaction, SharedPreferenceMgr.getInstance().getProfileId()))
-                    .andThen(responseObservable);
+            final Completable reactionCompletable = API.getInstance()
+                    .createReaction(new RecommendationReaction(lesson, reaction, SharedPreferenceMgr.getInstance().getProfileId()));
+            if (cacheSize <= MIN_CARDS_IN_CACHE) {
+                return reactionCompletable.andThen(responseObservable);
+            } else {
+                return reactionCompletable.toObservable();
+            }
         }
         return responseObservable;
     }
