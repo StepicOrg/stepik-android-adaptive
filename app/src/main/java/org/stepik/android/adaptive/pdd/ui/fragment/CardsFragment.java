@@ -3,11 +3,9 @@ package org.stepik.android.adaptive.pdd.ui.fragment;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
 import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -15,31 +13,22 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.webkit.WebSettings;
 
 import org.stepik.android.adaptive.pdd.R;
 import org.stepik.android.adaptive.pdd.Util;
-import org.stepik.android.adaptive.pdd.api.API;
 import org.stepik.android.adaptive.pdd.api.RecommendationsResponse;
-import org.stepik.android.adaptive.pdd.api.SubmissionResponse;
-import org.stepik.android.adaptive.pdd.core.ScreenManager;
-import org.stepik.android.adaptive.pdd.data.AnalyticMgr;
 import org.stepik.android.adaptive.pdd.data.model.Card;
 import org.stepik.android.adaptive.pdd.data.model.Recommendation;
 import org.stepik.android.adaptive.pdd.data.model.RecommendationReaction;
-import org.stepik.android.adaptive.pdd.data.model.Submission;
 import org.stepik.android.adaptive.pdd.databinding.FragmentRecommendationsBinding;
-import org.stepik.android.adaptive.pdd.ui.DefaultWebViewClient;
+import org.stepik.android.adaptive.pdd.ui.adapter.QuizCardsAdapter;
 import org.stepik.android.adaptive.pdd.ui.dialog.LogoutDialog;
-import org.stepik.android.adaptive.pdd.ui.helper.AnimationHelper;
 import org.stepik.android.adaptive.pdd.ui.helper.CardHelper;
-import org.stepik.android.adaptive.pdd.ui.view.QuizCardView;
-import org.stepik.android.adaptive.pdd.util.HtmlUtil;
+import org.stepik.android.adaptive.pdd.ui.listener.AdaptiveReactionListener;
 
 import java.util.ArrayDeque;
 import java.util.List;
 import java.util.Queue;
-import java.util.concurrent.TimeUnit;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
@@ -62,10 +51,10 @@ public final class CardsFragment extends Fragment {
 
     private Disposable cardDisposable;
 
-    private Submission submission;
-
     private boolean isError = false;
     private boolean isCourseCompleted = false;
+
+    private final QuizCardsAdapter adapter = new QuizCardsAdapter(this::createReaction);
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -74,6 +63,7 @@ public final class CardsFragment extends Fragment {
         setHasOptionsMenu(true);
         compositeDisposable.add(retrySubject.observeOn(AndroidSchedulers.mainThread()).subscribe(v -> retry()));
         loadingPlaceholders = getResources().getStringArray(R.array.recommendation_loading_placeholders);
+        adapter.attachFragment(this);
     }
 
     @Nullable
@@ -87,81 +77,18 @@ public final class CardsFragment extends Fragment {
             createReaction(0, RecommendationReaction.Reaction.INTERESTING);
         }
 
-        binding.fragmentRecommendationsCourseCompletedText.setMovementMethod(LinkMovementMethod.getInstance());
-
-        final WebSettings settings = binding.fragmentRecommendationsQuestion.getSettings();
-        settings.setAllowContentAccess(false);
-        settings.setLoadWithOverviewMode(true);
-        settings.setUseWideViewPort(true);
-        settings.setLayoutAlgorithm(WebSettings.LayoutAlgorithm.NORMAL);
-
-        binding.fragmentRecommendationsQuestion.setWebViewClient(new DefaultWebViewClient(null, (v, u) -> onCardLoaded()));
-        binding.fragmentRecommendationsQuestion.setOnWebViewClickListener(path -> ScreenManager.showImage(getContext(), path));
-        binding.fragmentRecommendationsQuestion.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
-
-        binding.fragmentRecommendationsAnswers.setNestedScrollingEnabled(false);
-        binding.fragmentRecommendationsAnswers.setLayoutManager(new LinearLayoutManager(getContext()));
-
         binding.fragmentRecommendationsTryAgain.setOnClickListener(retrySubject::onNext);
-        binding.fragmentRecommendationsNext.setOnClickListener(v -> binding.fragmentRecommendationsContainer.swipeDown());
-        binding.fragmentRecommendationsSubmit.setOnClickListener(v -> createSubmission());
-        binding.fragmentRecommendationsWrongRetry.setOnClickListener(v -> {
-            submission = null;
-            cards.peek().getAdapter().setEnabled(true);
-            CardHelper.resetSupplementalActions(binding);
-        });
+        binding.fragmentRecommendationsCourseCompletedText.setMovementMethod(LinkMovementMethod.getInstance());
         binding.fragmentRecommendationsLoadingPlaceholder.setText(loadingPlaceholders[Util.getRandomNumberBetween(0, 3)]);
 
-        CardHelper.resetCard(binding);
+        binding.fragmentRecommendationsProgress.setVisibility(adapter.getItemCount() == 0 ? View.VISIBLE : View.GONE);
 
-        binding.fragmentRecommendationsContainer.setQuizCardFlingListener(new QuizCardView.QuizCardFlingListener() {
-            @Override
-            public void onScroll(float scrollProgress) {
-                binding.fragmentRecommendationsHardReaction.setAlpha(Math.max(2 * scrollProgress, 0));
-                binding.fragmentRecommendationsEasyReaction.setAlpha(Math.max(2 * -scrollProgress, 0));
-            }
-
-            @Override
-            public void onSwipeLeft() {
-                binding.fragmentRecommendationsEasyReaction.setAlpha(1);
-                final Card card = cards.peek();
-                final long lesson = card.getStep().getLesson();
-                createReaction(lesson, RecommendationReaction.Reaction.NEVER_AGAIN);
-                if (card.isCorrect()) {
-                    AnalyticMgr.getInstance().reactionEasyAfterCorrect(lesson);
-                }
-                AnalyticMgr.getInstance().reactionEasy(lesson);
-            }
-
-            @Override
-            public void onSwipeRight() {
-                binding.fragmentRecommendationsHardReaction.setAlpha(1);
-                final Card card = cards.peek();
-                final long lesson = card.getStep().getLesson();
-                createReaction(lesson, RecommendationReaction.Reaction.MAYBE_LATER);
-                if (card.isCorrect()) {
-                    AnalyticMgr.getInstance().reactionHardAfterCorrect(lesson);
-                }
-                AnalyticMgr.getInstance().reactionHard(lesson);
-            }
-
-            @Override
-            public void onSwiped() {
-                binding.fragmentRecommendationsEasyReaction.setAlpha(0);
-                binding.fragmentRecommendationsHardReaction.setAlpha(0);
-
-                CardHelper.resetCard(binding);
-                cards.poll().recycle();
-                submission = null;
-                resubscribe();
-            }
-        });
+        binding.fragmentRecommendationsCardsContainer.setAdapter(adapter);
 
         if (isCourseCompleted) {
             courseCompleted();
         } else {
             resubscribe();
-            onSubmission(submission, false);
             if (isError) {
                 onError(null);
             }
@@ -185,9 +112,12 @@ public final class CardsFragment extends Fragment {
         return super.onOptionsItemSelected(item);
     }
 
-    private void createReaction(final long lesson, final RecommendationReaction.Reaction reaction) {
-        binding.fragmentRecommendationsProgress.setVisibility(View.VISIBLE);
-        binding.fragmentRecommendationsLoadingPlaceholder.setText(loadingPlaceholders[Util.getRandomNumberBetween(0, 3)]);
+    public void createReaction(final long lesson, final RecommendationReaction.Reaction reaction) {
+        if (adapter.getItemCount() == 0) {
+            binding.fragmentRecommendationsProgress.setVisibility(View.VISIBLE);
+            binding.fragmentRecommendationsLoadingPlaceholder.setText(loadingPlaceholders[Util.getRandomNumberBetween(0, 3)]);
+        }
+
         compositeDisposable.add(CardHelper.createReactionObservable(lesson, reaction, cards.size())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -253,119 +183,18 @@ public final class CardsFragment extends Fragment {
      * @param card - current card
      */
     private void onCardDataLoaded(final Card card) {
-        binding.fragmentRecommendationsTitle.setText(card.getLesson().getTitle());
-        HtmlUtil.setCardWebViewHtml(
-                binding.fragmentRecommendationsQuestion,
-                HtmlUtil.prepareCardHtml(card.getStep().getBlock().getText()));
-
-
-        binding.fragmentRecommendationsAnswers.setAdapter(card.getAdapter());
-        binding.fragmentRecommendationsSubmit.setVisibility(View.VISIBLE); // set button
-        card.getAdapter().setSubmitButton(binding.fragmentRecommendationsSubmit);
+        adapter.add(card);
+        binding.fragmentRecommendationsProgress.setVisibility(View.GONE);
+        binding.fragmentRecommendationsCardsContainer.setVisibility(View.VISIBLE);
+        cards.poll();
+        resubscribe();
     }
 
-
-    /**
-     * Called when card completely loaded and ready
-     */
-    private void onCardLoaded() {
-        if (binding == null) return;
-        binding.fragmentRecommendationsProgress.setVisibility(View.GONE); // hide progresses
-        binding.fragmentRecommendationsAnswersProgress.setVisibility(View.GONE);
-
-        CardHelper.scrollDown(binding.fragmentRecommendationsScroll);
-        CardHelper.showCard(binding.fragmentRecommendationsContainer);
-    }
-
-
-    private void createSubmission() {
-        CardHelper.resetSupplementalActions(binding);
-
-        binding.fragmentRecommendationsContainer.setEnabled(false);
-        binding.fragmentRecommendationsSubmit.setVisibility(View.GONE);
-        binding.fragmentRecommendationsAnswersProgress.setVisibility(View.VISIBLE);
-        cards.peek().getAdapter().setEnabled(false);
-
-        CardHelper.scrollDown(binding.fragmentRecommendationsScroll);
-
-        final Submission submission = cards.peek().getAdapter().getSubmission();
-
-        compositeDisposable.add(
-                API.getInstance().createSubmission(submission)
-                .andThen(API.getInstance().getSubmissions(submission.getAttempt()))
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(this::onSubmissionLoaded, this::onSubmissionError)
-        );
-    }
-
-    private void onSubmissionLoaded(final SubmissionResponse response) {
-        final Submission submission = response.getFirstSubmission();
-        this.submission = submission;
-        if (submission.getStatus() == Submission.Status.EVALUATION) {
-            compositeDisposable.add( // retry to reload submission
-                    API.getInstance().getSubmissions(submission.getAttempt())
-                            .delay(1, TimeUnit.SECONDS)
-                            .subscribeOn(Schedulers.io())
-                            .observeOn(AndroidSchedulers.mainThread())
-                            .subscribe(this::onSubmissionLoaded, this::onSubmissionError)
-            );
-        } else {
-            AnalyticMgr.getInstance().answerResult(cards.peek().getStep(), submission);
-            if (submission.getStatus() == Submission.Status.CORRECT) {
-                cards.peek().onCorrect();
-                createReaction(cards.peek().getStep().getLesson(), RecommendationReaction.Reaction.SOLVED);
-            }
-            if (binding != null) onSubmission(submission, true);
-        }
-    }
-
-    private void onSubmission(final Submission submission, final boolean animate) {
-        if (submission == null) return;
-        CardHelper.resetSupplementalActions(binding);
-        switch (submission.getStatus()) {
-            case CORRECT:
-                binding.fragmentRecommendationsSubmit.setVisibility(View.GONE);
-
-                binding.fragmentRecommendationsCorrect.setVisibility(View.VISIBLE);
-                binding.fragmentRecommendationsNext.setVisibility(View.VISIBLE);
-                binding.fragmentRecommendationsContainer.setEnabled(true);
-
-                binding.fragmentRecommendationsHint.setText(submission.getHint());
-                binding.fragmentRecommendationsHint.setVisibility(View.VISIBLE);
-
-                if (animate) {
-                    CardHelper.scrollDown(binding.fragmentRecommendationsScroll);
-                }
-                break;
-            case WRONG:
-                binding.fragmentRecommendationsWrong.setVisibility(View.VISIBLE);
-                binding.fragmentRecommendationsWrongRetry.setVisibility(View.VISIBLE);
-                binding.fragmentRecommendationsSubmit.setVisibility(View.GONE);
-
-                binding.fragmentRecommendationsContainer.setEnabled(true);
-
-                if (animate) {
-                    AnimationHelper.playWiggleAnimation(binding.fragmentRecommendationsContainer);
-                }
-            break;
-        }
-    }
-
-    private void onSubmissionError(final Throwable error) {
-        submission = null;
-        cards.peek().getAdapter().setEnabled(true);
-        if (binding != null) {
-            binding.fragmentRecommendationsContainer.setEnabled(true);
-            Snackbar.make(binding.getRoot(), R.string.network_error, Snackbar.LENGTH_SHORT).show();
-            CardHelper.resetSupplementalActions(binding);
-        }
-    }
 
     private void courseCompleted() {
         isCourseCompleted = true;
         if (binding != null) {
-            binding.fragmentRecommendationsContainer.setVisibility(View.GONE);
+            binding.fragmentRecommendationsCardsContainer.setVisibility(View.GONE);
             binding.fragmentRecommendationsProgress.setVisibility(View.GONE);
             binding.fragmentRecommendationsCourseCompleted.setVisibility(View.VISIBLE);
         }
@@ -375,11 +204,12 @@ public final class CardsFragment extends Fragment {
         for (final Card card : cards) {
             if (card.getLessonId() == lessonId) return true;
         }
-        return false;
+        return adapter.isCardExists(lessonId);
     }
 
     @Override
     public void onDestroyView() {
+        adapter.detach();
         if (cardDisposable != null) cardDisposable.dispose();
         binding = null;
         super.onDestroyView();
@@ -390,6 +220,7 @@ public final class CardsFragment extends Fragment {
         for (final Card card : cards) {
             card.recycle();
         }
+        adapter.recycle();
         super.onDestroy();
     }
 }

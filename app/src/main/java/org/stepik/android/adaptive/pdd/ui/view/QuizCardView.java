@@ -12,6 +12,9 @@ import android.view.animation.AccelerateDecelerateInterpolator;
 
 import org.stepik.android.adaptive.pdd.ui.helper.AnimationHelper;
 
+import java.util.HashSet;
+import java.util.Set;
+
 public final class QuizCardView extends CardView {
     private float startX = 0;
     private float startY = 0;
@@ -40,7 +43,7 @@ public final class QuizCardView extends CardView {
 
     private final float MIN_SWIPE_TRANSLATION;
 
-    private QuizCardFlingListener listener;
+    private Set<QuizCardFlingListener> listeners = new HashSet<>();
 
     public QuizCardView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -53,7 +56,7 @@ public final class QuizCardView extends CardView {
             }
         });
 
-        this.listener = new QuizCardFlingListener();
+//        this.listener = new QuizCardFlingListener();
 
         this.screenHeight = Resources.getSystem().getDisplayMetrics().heightPixels;
         this.screenWidth = Resources.getSystem().getDisplayMetrics().widthPixels;
@@ -129,7 +132,9 @@ public final class QuizCardView extends CardView {
                         setRotation(rotation);
                     }
 
-                    listener.onScroll(elemX / screenWidth);
+                    for (QuizCardFlingListener l : listeners) {
+                        l.onScroll(elemX / screenWidth);
+                    }
                 }
                 break;
         }
@@ -143,34 +148,53 @@ public final class QuizCardView extends CardView {
                 || Math.abs(x) > MIN_SWIPE_TRANSLATION) {
 
             if (x > 0) {
-                listener.onSwipeRight();
+                for (QuizCardFlingListener l : listeners) {
+                    l.onSwipeRight();
+                }
             } else {
-                listener.onSwipeLeft();
+                for (QuizCardFlingListener l : listeners) {
+                    l.onSwipeLeft();
+                }
             }
             AnimationHelper.createTransitionAnimation(this, Math.signum(x) * 2 * screenWidth, 0)
                     .rotation(0)
                     .setDuration(AnimationHelper.ANIMATION_DURATION * 2)
-                    .withEndAction(listener::onSwiped);
+                    .withEndAction(() -> {
+                        for (QuizCardFlingListener l : listeners) {
+                            l.onSwiped();
+                        }
+                    });
         } else {
             if (Math.abs(vy) > MIN_FLING_VELOCITY) {
-                listener.onFlingDown();
+                for (QuizCardFlingListener l : listeners) {
+                    l.onFlingDown();
+                }
             }
 
-            listener.onScroll(0);
+            for (QuizCardFlingListener l : listeners) {
+                l.onScroll(0);
+            }
             AnimationHelper.playRollBackAnimation(this);
         }
     }
 
     public void swipeDown() {
-        listener.onSwipeDown();
+        for (QuizCardFlingListener l : listeners) {
+            l.onSwipeDown();
+        }
+
         AnimationHelper.createTransitionAnimation(this, 0, screenHeight)
                 .rotation(0)
                 .setInterpolator(new AccelerateDecelerateInterpolator())
-                .withEndAction(listener::onSwiped);
+                .withEndAction(() -> {
+                    for (QuizCardFlingListener l : listeners) {
+                        l.onSwiped();
+                    }
+                });
     }
 
     public void setQuizCardFlingListener(@NonNull final QuizCardFlingListener listener) {
-        this.listener = listener;
+        this.listeners.add(listener);
     }
 
     public static class QuizCardFlingListener {
