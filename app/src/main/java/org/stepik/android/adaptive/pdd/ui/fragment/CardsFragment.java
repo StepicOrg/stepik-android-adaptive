@@ -24,7 +24,6 @@ import org.stepik.android.adaptive.pdd.databinding.FragmentRecommendationsBindin
 import org.stepik.android.adaptive.pdd.ui.adapter.QuizCardsAdapter;
 import org.stepik.android.adaptive.pdd.ui.dialog.LogoutDialog;
 import org.stepik.android.adaptive.pdd.ui.helper.CardHelper;
-import org.stepik.android.adaptive.pdd.ui.listener.AdaptiveReactionListener;
 
 import java.util.ArrayDeque;
 import java.util.List;
@@ -158,7 +157,7 @@ public final class CardsFragment extends Fragment {
         isError = true;
         if (error != null) error.printStackTrace();
         if (binding != null) {
-            CardHelper.resetCard(binding);
+            binding.fragmentRecommendationsCardsContainer.setVisibility(View.GONE);
             binding.fragmentRecommendationsError.setVisibility(View.VISIBLE);
             binding.fragmentRecommendationsProgress.setVisibility(View.GONE);
         }
@@ -171,6 +170,7 @@ public final class CardsFragment extends Fragment {
         isError = false;
         binding.fragmentRecommendationsError.setVisibility(View.GONE);
         binding.fragmentRecommendationsProgress.setVisibility(View.VISIBLE);
+        binding.fragmentRecommendationsCardsContainer.setVisibility(View.VISIBLE);
         binding.fragmentRecommendationsLoadingPlaceholder.setText(loadingPlaceholders[Util.getRandomNumberBetween(0, 3)]);
         if (!cards.isEmpty()) {
             cards.peek().init();

@@ -1,6 +1,6 @@
 package org.stepik.android.adaptive.pdd.ui.helper;
 
-import android.content.res.Resources;
+import android.util.Log;
 import android.view.View;
 import android.widget.ScrollView;
 
@@ -8,16 +8,13 @@ import org.stepik.android.adaptive.pdd.api.API;
 import org.stepik.android.adaptive.pdd.api.RecommendationsResponse;
 import org.stepik.android.adaptive.pdd.data.SharedPreferenceMgr;
 import org.stepik.android.adaptive.pdd.data.model.RecommendationReaction;
-import org.stepik.android.adaptive.pdd.databinding.FragmentRecommendationsBinding;
 import org.stepik.android.adaptive.pdd.databinding.QuizCardViewBinding;
-import org.stepik.android.adaptive.pdd.ui.view.QuizCardView;
 
 import io.reactivex.Completable;
 import io.reactivex.Observable;
 
 public class CardHelper {
 
-    private final static int screenHeight = Resources.getSystem().getDisplayMetrics().heightPixels;
     private final static int CARDS_IN_CACHE = 10;
     private final static int MIN_CARDS_IN_CACHE = 5;
 
@@ -36,10 +33,6 @@ public class CardHelper {
         return responseObservable;
     }
 
-    public static void resetCard(final FragmentRecommendationsBinding binding) {
-//        binding.fragmentRecommendationsCardsContainer.setVisibility(View.GONE);
-    }
-
     public static void resetSupplementalActions(final QuizCardViewBinding binding) {
         binding.fragmentRecommendationsNext.setVisibility(View.GONE);
         binding.fragmentRecommendationsCorrect.setVisibility(View.GONE);
@@ -53,9 +46,4 @@ public class CardHelper {
     public static void scrollDown(final ScrollView view) {
         view.post(() -> view.fullScroll(View.FOCUS_DOWN));
     }
-
-    public static void showCard(final FragmentRecommendationsBinding binding) {
-        binding.fragmentRecommendationsCardsContainer.setVisibility(View.VISIBLE);
-    }
-
 }
