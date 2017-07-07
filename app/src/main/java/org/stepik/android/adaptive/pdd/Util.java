@@ -16,6 +16,8 @@ import org.stepik.android.adaptive.pdd.core.ScreenManager;
 import org.stepik.android.adaptive.pdd.data.AnalyticMgr;
 import org.stepik.android.adaptive.pdd.data.SharedPreferenceMgr;
 
+import java.util.Random;
+
 public class Util {
     public static void initMgr(final Context context) {
         Config.init(context);
@@ -44,5 +46,18 @@ public class Util {
 
     public static int getRandomNumberBetween(final int lower, final int upper) {
         return (int) (Math.random() * (upper - lower)) + lower;
+    }
+
+    private static String ALLOWED_SYMBOLS = "ABCDEFGHIJKLMNOPQRESTUVWXYZabcdefgghiklmnopqrstuvwxyz1234567890_";
+
+    public static String randomString(final int length) {
+        Random random = new Random();
+        StringBuilder builder = new StringBuilder(length);
+
+        for (int i = 0; i < length; ++i) {
+            builder.append(ALLOWED_SYMBOLS.charAt(random.nextInt(ALLOWED_SYMBOLS.length())));
+        }
+
+        return builder.toString();
     }
 }

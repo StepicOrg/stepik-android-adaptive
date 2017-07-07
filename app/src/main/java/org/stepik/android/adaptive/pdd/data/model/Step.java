@@ -33,4 +33,8 @@ public final class Step {
     public long getLesson() {
         return lesson;
     }
+
+    public Step(Block block) {
+        this.block = block;
+    }
 }

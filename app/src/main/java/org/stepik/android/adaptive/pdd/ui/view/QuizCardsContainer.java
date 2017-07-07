@@ -72,6 +72,12 @@ public class QuizCardsContainer extends FrameLayout {
 
     private List<CardViewHolder> cardHolders = new ArrayList<>();
 
+    @org.jetbrains.annotations.Nullable
+    public View getTopCardView() {
+        CardViewHolder holder = cardHolders.get(0);
+        return holder.isAttached() ? holder.getView() : null;
+    }
+
     private void initCards() {
         cardHolders.clear();
         for (int i = 0; i < BUFFER_SIZE; i++) {

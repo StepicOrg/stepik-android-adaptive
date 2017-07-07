@@ -21,7 +21,7 @@ import org.stepik.android.adaptive.pdd.ui.DefaultWebViewClient
 
 
 
-class QuizCardViewHolder(private val binding: QuizCardViewBinding) : QuizCardsContainer.CardViewHolder(binding.root), CardView {
+class QuizCardViewHolder(val binding: QuizCardViewBinding) : QuizCardsContainer.CardViewHolder(binding.root), CardView {
     init {
         val settings = binding.fragmentRecommendationsQuestion.settings
         settings.allowContentAccess = false

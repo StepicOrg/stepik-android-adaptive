@@ -37,6 +37,15 @@ public final class Card extends Observable<Card> {
 
     private boolean correct = false;
 
+    public Card(long lessonId, Lesson lesson, Step step, Attempt attempt) {
+        this.lessonId = lessonId;
+        this.lesson = lesson;
+        this.step = step;
+        this.attempt = attempt;
+        this.adapter = new AttemptAnswersAdapter();
+        adapter.setAttempt(attempt);
+    }
+
     public Card(final long lessonId) {
         this.lessonId = lessonId;
         this.adapter = new AttemptAnswersAdapter();

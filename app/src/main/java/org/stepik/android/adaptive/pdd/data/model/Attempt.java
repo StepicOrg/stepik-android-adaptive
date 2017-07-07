@@ -25,4 +25,8 @@ public final class Attempt {
     public long getId() {
         return id;
     }
+
+    public Attempt(Dataset dataset) {
+        this.dataset = dataset;
+    }
 }
