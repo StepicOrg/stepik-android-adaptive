@@ -22,8 +22,11 @@ import org.stepik.android.adaptive.pdd.data.model.Recommendation;
 import org.stepik.android.adaptive.pdd.data.model.RecommendationReaction;
 import org.stepik.android.adaptive.pdd.databinding.FragmentRecommendationsBinding;
 import org.stepik.android.adaptive.pdd.ui.adapter.QuizCardsAdapter;
+import org.stepik.android.adaptive.pdd.ui.dialog.ExpLevelDialog;
 import org.stepik.android.adaptive.pdd.ui.dialog.LogoutDialog;
 import org.stepik.android.adaptive.pdd.ui.helper.CardHelper;
+import org.stepik.android.adaptive.pdd.ui.view.ExpProgressSnackBar;
+import org.stepik.android.adaptive.pdd.util.ExpUtil;
 
 import java.util.ArrayDeque;
 import java.util.List;
@@ -53,7 +56,7 @@ public final class CardsFragment extends Fragment {
     private boolean isError = false;
     private boolean isCourseCompleted = false;
 
-    private final QuizCardsAdapter adapter = new QuizCardsAdapter(this::createReaction);
+    private final QuizCardsAdapter adapter = new QuizCardsAdapter(this::createReaction, this::onCorrectAnswer);
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -108,6 +111,9 @@ public final class CardsFragment extends Fragment {
             dialog.show(getChildFragmentManager(), dialog.getTag());
             return true;
         }
+        if (item.getItemId() == R.id.menu_stats) { // TESTING
+            onLevelGained(3);
+        }
         return super.onOptionsItemSelected(item);
     }
 
@@ -122,6 +128,11 @@ public final class CardsFragment extends Fragment {
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnError(this::onError)
                 .retryWhen(x -> x.zipWith(retrySubject, (a, b) -> a))
+//                .doOnComplete(() -> {
+//                    if (reaction == RecommendationReaction.Reaction.SOLVED) {
+//                        onCorrectAnswer();
+//                    }
+//                })
                 .subscribe(this::onRecommendation, this::onError));
     }
 
@@ -138,6 +149,22 @@ public final class CardsFragment extends Fragment {
             }
             if (binding != null && size == 0) resubscribe();
         }
+    }
+
+    private void onCorrectAnswer() {
+        final long exp = ExpUtil.incExp();
+        final long level = ExpUtil.getCurrentLevel(exp);
+
+        if (level != ExpUtil.getCurrentLevel(exp - 1)) {
+            onLevelGained(level);
+        } else {
+            final long next = ExpUtil.getNextLevelExp(level);
+            ExpProgressSnackBar.Companion.make(binding.fragmentRecommendationsCardsContainer, exp, level, next).show();
+        }
+    }
+
+    private void onLevelGained(final long level) {
+        ExpLevelDialog.Companion.newInstance(level).show(getChildFragmentManager(), "LEVEL");
     }
 
     /**

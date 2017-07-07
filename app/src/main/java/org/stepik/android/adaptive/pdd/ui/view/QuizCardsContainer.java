@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
 import org.jetbrains.annotations.NotNull;
+import org.stepik.android.adaptive.pdd.Util;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,8 +21,6 @@ import java.util.List;
 public class QuizCardsContainer extends FrameLayout {
     private final static int BUFFER_SIZE = 3;
     private final static int CARD_OFFSET = (int)(Resources.getSystem().getDisplayMetrics().density * 10);
-
-    private final static boolean isDeprecated = Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP;
 
     public QuizCardsContainer(@NonNull Context context) {
         super(context);
@@ -104,7 +103,7 @@ public class QuizCardsContainer extends FrameLayout {
                 addView(view);
             }
 
-            if (!isDeprecated) {
+            if (!Util.isLowAndroidVersion()) {
                 view.setElevation(size + 3 - i);
             }
 
@@ -117,7 +116,7 @@ public class QuizCardsContainer extends FrameLayout {
             }
         }
 
-        if (isDeprecated) {
+        if (Util.isLowAndroidVersion()) {
             for (int i = size - 1; i >= 0; i--)
                 cardHolders.get(i).getView().bringToFront();
         }

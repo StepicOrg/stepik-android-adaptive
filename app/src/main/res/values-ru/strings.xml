@@ -54,4 +54,6 @@
     <string name="onboarding_card_question_2"><![CDATA[<p><img src="images/02.jpg" /></p><p>Что означает красный сигнал светофора?</p>]]></string>
     <string name="onboarding_card_title_3">Слишком сложный вопрос</string>
     <string name="onboarding_card_title_4">Удачи в обучении</string>
+    <string name="exp_title">Текущий уровень знаний: <b>%d</b></string>
+    <string name="exp_level_title">Поздравляем! Вы достигли <b>%d</b> уровня знаний!</string>
 </resources>

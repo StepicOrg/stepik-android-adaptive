@@ -2,7 +2,7 @@ package org.stepik.android.adaptive.pdd.ui.adapter
 
 import android.view.View
 
-class OnboardingQuizCardsAdapter(private val onOnboardingEnd: () -> Unit) : QuizCardsAdapter({_,_ -> }) {
+class OnboardingQuizCardsAdapter(private val onOnboardingEnd: () -> Unit) : QuizCardsAdapter(null, null) {
 
     override fun onBindViewHolder(holder: QuizCardViewHolder?, pos: Int) {
         super.onBindViewHolder(holder, pos)

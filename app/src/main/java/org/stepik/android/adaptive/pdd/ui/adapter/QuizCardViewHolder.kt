@@ -13,6 +13,7 @@ import org.stepik.android.adaptive.pdd.ui.view.QuizCardView
 import org.stepik.android.adaptive.pdd.ui.view.QuizCardsContainer
 import org.stepik.android.adaptive.pdd.util.HtmlUtil
 import android.support.v7.widget.LinearLayoutManager
+import android.view.ViewGroup
 import android.webkit.WebSettings
 import org.stepik.android.adaptive.pdd.R
 import org.stepik.android.adaptive.pdd.core.ScreenManager
@@ -143,7 +144,7 @@ class QuizCardViewHolder(val binding: QuizCardViewBinding) : QuizCardsContainer.
     }
 
     override fun onSubmissionError() {
-        Snackbar.make(binding.root, R.string.network_error, Snackbar.LENGTH_SHORT).show()
+        Snackbar.make(binding.root.parent as ViewGroup, R.string.network_error, Snackbar.LENGTH_SHORT).show()
         CardHelper.resetSupplementalActions(binding)
     }
 

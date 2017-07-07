@@ -2,7 +2,6 @@ package org.stepik.android.adaptive.pdd.ui.view;
 
 import android.content.Context;
 import android.content.res.Resources;
-import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.CardView;
 import android.util.AttributeSet;
@@ -10,6 +9,7 @@ import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.animation.AccelerateDecelerateInterpolator;
 
+import org.stepik.android.adaptive.pdd.Util;
 import org.stepik.android.adaptive.pdd.ui.helper.AnimationHelper;
 
 import java.util.HashSet;
@@ -124,7 +124,7 @@ public final class QuizCardView extends CardView {
                     setTranslationX(elemX);
                     setTranslationY(elemY);
 
-                    if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) { // due to some lags on < 5.0
+                    if (!Util.isLowAndroidVersion()) { // due to some lags on < 5.0
                         float rotation = ROTATION_ANGLE * 2 * (elemX - viewX) / getWidth();
                         if (touchPosition == TOUCH_BELOW) {
                             rotation = -rotation;

@@ -117,7 +117,7 @@ public final class SharedPreferenceMgr {
         sharedPreferences.edit().putString(name, data).apply();
     }
 
-    private void saveLong(final String name, final long data) {
+    public void saveLong(final String name, final long data) {
         sharedPreferences.edit().putLong(name, data).apply();
     }
 
@@ -125,7 +125,7 @@ public final class SharedPreferenceMgr {
         return sharedPreferences.getString(name, null);
     }
 
-    private long getLong(final String name){
+    public long getLong(final String name){
         return sharedPreferences.getLong(name, 0);
     }
 

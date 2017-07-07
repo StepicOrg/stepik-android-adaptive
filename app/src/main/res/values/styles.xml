@@ -23,4 +23,13 @@
         <item name="android:gravity">center</item>
         <item name="android:fontFamily">sans-serif-black</item>
     </style>
+
+    <style name="ExpLevelDialogTheme" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <item name="android:windowAnimationStyle">@style/ExpLevelDialogTheme.Window</item>
+    </style>
+
+    <style name="ExpLevelDialogTheme.Window" parent="@android:style/Animation.Activity">
+        <item name="android:windowEnterAnimation">@anim/anim_exp_dialog_in</item>
+        <item name="android:windowExitAnimation">@anim/anim_exp_dialog_out</item>
+    </style>
 </resources>

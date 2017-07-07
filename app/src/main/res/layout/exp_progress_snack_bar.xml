@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+
+        android:paddingTop="@dimen/design_snackbar_padding_vertical"
+        android:paddingBottom="@dimen/design_snackbar_padding_vertical"
+        android:paddingLeft="@dimen/design_snackbar_padding_horizontal"
+        android:paddingRight="@dimen/design_snackbar_padding_horizontal">
+
+        <TextView
+            android:id="@+id/exp_title"
+            android:textColor="@color/colorAccent"
+            android:text="@string/exp_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true" />
+
+        <!-- had to use lib to set custom color on Android 4 -->
+        <me.zhanghai.android.materialprogressbar.MaterialProgressBar
+            android:id="@+id/exp_progress"
+            style="@style/Widget.MaterialProgressBar.ProgressBar.Horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/exp_title"
+            app:mpb_progressStyle="horizontal"
+            android:layout_marginTop="8dp" />
+
+        <TextView
+            android:id="@+id/exp_percents"
+            android:textColor="@color/colorAccent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/exp_progress"
+            android:layout_alignParentStart="true"
+            android:layout_marginTop="8dp" />
+
+        <TextView
+            android:id="@+id/exp_total"
+            android:textColor="@color/colorAccent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/exp_progress"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="8dp" />
+    </RelativeLayout>
+</layout>

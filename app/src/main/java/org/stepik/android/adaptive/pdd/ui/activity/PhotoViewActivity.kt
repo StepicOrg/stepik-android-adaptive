@@ -3,6 +3,7 @@ package org.stepik.android.adaptive.pdd.ui.activity
 import android.os.Build
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import org.stepik.android.adaptive.pdd.Util
 import org.stepik.android.adaptive.pdd.ui.fragment.PhotoViewFragment
 
 class PhotoViewActivity : FragmentActivity() {
@@ -17,7 +18,7 @@ class PhotoViewActivity : FragmentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+        if (!Util.isLowAndroidVersion()) {
             window.statusBarColor = resources.getColor(android.R.color.black)
         }
     }

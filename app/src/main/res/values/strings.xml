@@ -56,4 +56,6 @@
     <string name="onboarding_card_question_2"><![CDATA[<p><img src="images/02.jpg" /></p><p>What means red traffic light?</p>]]></string>
     <string name="onboarding_card_title_3">Very hard question</string>
     <string name="onboarding_card_title_4">Good luck</string>
+    <string name="exp_title">Current experience level is: <b>%d</b></string>
+    <string name="exp_level_title">Congratulations! You\'ve reached %d experience leve!</string>
 </resources>

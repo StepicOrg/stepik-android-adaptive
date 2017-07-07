@@ -11,11 +11,12 @@ import org.stepik.android.adaptive.pdd.data.model.Card
 import org.stepik.android.adaptive.pdd.data.model.RecommendationReaction
 import org.stepik.android.adaptive.pdd.data.model.Submission
 import org.stepik.android.adaptive.pdd.ui.listener.AdaptiveReactionListener
+import org.stepik.android.adaptive.pdd.ui.listener.ExperienceListener
 import org.stepik.android.adaptive.pdd.util.HtmlUtil
 import java.util.concurrent.TimeUnit
 
 
-class CardPresenter(val card: Card, private val listener: AdaptiveReactionListener) : PresenterBase<CardView>() {
+class CardPresenter(val card: Card, private val listener: AdaptiveReactionListener?, private val experienceListener: ExperienceListener?) : PresenterBase<CardView>() {
     private var submission: Submission? = null
     private var error: Throwable? = null
 
@@ -63,7 +64,7 @@ class CardPresenter(val card: Card, private val listener: AdaptiveReactionListen
                 AnalyticMgr.getInstance().reactionHard(lesson)
             }
         }
-        listener.createReaction(lesson, reaction)
+        listener?.createReaction(lesson, reaction)
     }
 
     fun createSubmission() {
@@ -99,7 +100,8 @@ class CardPresenter(val card: Card, private val listener: AdaptiveReactionListen
                 isLoading = false
                 AnalyticMgr.getInstance().answerResult(card.step, it)
                 if (it.status == Submission.Status.CORRECT) {
-                    listener.createReaction(card.lessonId, RecommendationReaction.Reaction.SOLVED)
+                    listener?.createReaction(card.lessonId, RecommendationReaction.Reaction.SOLVED)
+                    experienceListener?.onExperienceIncreased()
                     card.onCorrect()
                 }
                 view?.setSubmission(it, true)

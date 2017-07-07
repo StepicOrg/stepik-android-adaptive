@@ -41,7 +41,11 @@ class OnboardingFragment : Fragment(), LoginView {
 
         (activity as AppCompatActivity).setSupportActionBar(binding.fragmentRecommendationsToolbar)
 
-        
+        /**
+         * TODO
+         * генерация карточек из просто данных,
+         * возможность ставить ограничения на карточки, мол только вправо свайпать или нет
+         */
         binding.fragmentRecommendationsCardsContainer.setAdapter(adapter)
         binding.fragmentRecommendationsProgress.visibility = View.GONE
 
@@ -105,6 +109,6 @@ class OnboardingFragment : Fragment(), LoginView {
         val password = Util.randomString(16)
         val firstName = Util.randomString(10)
         val lastName = Util.randomString(10)
-        presenter.createAccount(firstName, lastName, email, password)
+        presenter.createAccount(firstName, lastName, email, password) // TODO : onboarding testing
     }
 }

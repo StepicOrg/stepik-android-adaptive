@@ -19,6 +19,7 @@ import org.stepik.android.adaptive.pdd.ui.DefaultWebViewClient;
 import org.stepik.android.adaptive.pdd.ui.fragment.CardsFragment;
 import org.stepik.android.adaptive.pdd.ui.helper.CardHelper;
 import org.stepik.android.adaptive.pdd.ui.listener.AdaptiveReactionListener;
+import org.stepik.android.adaptive.pdd.ui.listener.ExperienceListener;
 import org.stepik.android.adaptive.pdd.ui.view.QuizCardView;
 import org.stepik.android.adaptive.pdd.ui.view.QuizCardsContainer;
 import org.stepik.android.adaptive.pdd.util.HtmlUtil;
@@ -32,9 +33,11 @@ import io.reactivex.disposables.CompositeDisposable;
 public class QuizCardsAdapter extends QuizCardsContainer.CardsAdapter<QuizCardViewHolder> {
     private List<CardPresenter> presenters = new ArrayList<>();
     private final AdaptiveReactionListener listener;
+    private final ExperienceListener experienceListener;
 
-    public QuizCardsAdapter(AdaptiveReactionListener listener) {
+    public QuizCardsAdapter(AdaptiveReactionListener listener, ExperienceListener experienceListener) {
         this.listener = listener;
+        this.experienceListener = experienceListener;
     }
 
     private WeakReference<CardsFragment> fragmentWeakReference = new WeakReference<>(null);
@@ -87,7 +90,7 @@ public class QuizCardsAdapter extends QuizCardsContainer.CardsAdapter<QuizCardVi
     }
 
     public void add(Card card) {
-        presenters.add(new CardPresenter(card, listener));
+        presenters.add(new CardPresenter(card, listener, experienceListener));
         notifyDataAdded();
     }
 
