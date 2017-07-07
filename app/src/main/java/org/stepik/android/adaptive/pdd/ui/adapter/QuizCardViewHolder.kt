@@ -18,9 +18,6 @@ import org.stepik.android.adaptive.pdd.R
 import org.stepik.android.adaptive.pdd.core.ScreenManager
 import org.stepik.android.adaptive.pdd.ui.DefaultWebViewClient
 
-
-
-
 class QuizCardViewHolder(val binding: QuizCardViewBinding) : QuizCardsContainer.CardViewHolder(binding.root), CardView {
     init {
         val settings = binding.fragmentRecommendationsQuestion.settings
@@ -58,8 +55,13 @@ class QuizCardViewHolder(val binding: QuizCardViewBinding) : QuizCardsContainer.
 
     fun onTopCard() {
         if (!hasSubmission) {
-            binding.fragmentRecommendationsSubmit.visibility = View.VISIBLE
-            (binding.fragmentRecommendationsAnswers.adapter as AttemptAnswersAdapter).setEnabled(true)
+            if (presenter?.isLoading ?: false) {
+                onSubmissionLoading()
+                binding.fragmentRecommendationsAnswersProgress.visibility = View.VISIBLE
+            } else {
+                binding.fragmentRecommendationsSubmit.visibility = View.VISIBLE
+                (binding.fragmentRecommendationsAnswers.adapter as AttemptAnswersAdapter).setEnabled(true)
+            }
         }
 
         binding.fragmentRecommendationsContainer.setQuizCardFlingListener(object : QuizCardView.QuizCardFlingListener() {
@@ -82,7 +84,7 @@ class QuizCardViewHolder(val binding: QuizCardViewBinding) : QuizCardsContainer.
 
     private fun onCardLoaded() {
         binding.fragmentRecommendationsContainer.visibility = View.VISIBLE
-        binding.fragmentRecommendationsAnswersProgress.visibility = View.GONE
+        if (!(presenter?.isLoading ?: false)) binding.fragmentRecommendationsAnswersProgress.visibility = View.GONE
 
         CardHelper.scrollDown(binding.fragmentRecommendationsScroll)
     }

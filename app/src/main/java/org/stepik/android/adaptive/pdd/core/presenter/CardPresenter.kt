@@ -21,13 +21,16 @@ class CardPresenter(val card: Card, private val listener: AdaptiveReactionListen
 
     private var disposable: Disposable? = null
 
+    var isLoading = false
+        get
+
     override fun attachView(view: CardView) {
         super.attachView(view)
         view.setTitle(card.lesson.title)
         view.setQuestion(HtmlUtil.prepareCardHtml(card.step.block.text))
         view.setAnswerAdapter(card.adapter)
 
-        disposable?.let { if (submission == null) view.onSubmissionLoading() }
+        if (isLoading) view.onSubmissionLoading()
         submission?.let { view.setSubmission(it, false) }
         error?.let { view.onSubmissionError() }
     }
@@ -67,6 +70,7 @@ class CardPresenter(val card: Card, private val listener: AdaptiveReactionListen
         if (disposable == null || disposable?.isDisposed ?: true) {
             card.adapter.setEnabled(false)
             view?.onSubmissionLoading()
+            isLoading = true
 
             val submission = card.adapter.submission
             disposable = API.getInstance().createSubmission(submission)
@@ -92,6 +96,7 @@ class CardPresenter(val card: Card, private val listener: AdaptiveReactionListen
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(this::onSubmissionLoaded, this::onNetworkError)
             } else {
+                isLoading = false
                 AnalyticMgr.getInstance().answerResult(card.step, it)
                 if (it.status == Submission.Status.CORRECT) {
                     listener.createReaction(card.lessonId, RecommendationReaction.Reaction.SOLVED)
@@ -103,6 +108,7 @@ class CardPresenter(val card: Card, private val listener: AdaptiveReactionListen
     }
 
     private fun onNetworkError(error: Throwable) {
+        isLoading = false
         this.error = error
         card.adapter.setEnabled(true)
         view?.onSubmissionError()
