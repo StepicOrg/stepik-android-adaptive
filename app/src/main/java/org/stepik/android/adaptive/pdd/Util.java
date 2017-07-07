@@ -5,6 +5,7 @@ import android.content.Context;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 
+import com.facebook.FacebookSdk;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.vk.sdk.VKSdk;
@@ -22,6 +23,7 @@ public class Util {
         API.init();
         SharedPreferenceMgr.init(context);
         VKSdk.initialize(context);
+        FacebookSdk.sdkInitialize(context.getApplicationContext());
         AnalyticMgr.init(context);
         UserAgentProvider.init(context);
     }

@@ -24,7 +24,7 @@ public interface OAuthService {
 
     @FormUrlEncoded
     @POST("oauth2/token/")
-    Observable<OAuthResponse> getAccessTokenByCode(
+    Observable<OAuthResponse> getTokenByCode(
             @Field("grant_type") final String grant_type,
             @Field("code") final String code,
             @Field("redirect_uri") final String redirect_uri

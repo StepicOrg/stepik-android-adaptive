@@ -15,6 +15,10 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
+        <meta-data
+            android:name="com.facebook.sdk.ApplicationId"
+            android:value="@string/facebook_app_id"/>
+
         <activity
             android:theme="@style/AppTheme.NoActionBar"
             android:name="org.stepik.android.adaptive.pdd.ui.activity.SplashActivity"
@@ -49,6 +53,10 @@
         <activity
             android:theme="@style/AppTheme.NoActionBar"
             android:name="org.stepik.android.adaptive.pdd.ui.activity.PhotoViewActivity"/>
+
+        <activity
+            android:theme="@style/AppTheme.NoActionBar"
+            android:name="org.stepik.android.adaptive.pdd.ui.activity.SocialAuthActivity"/>
     </application>
 
 </manifest>

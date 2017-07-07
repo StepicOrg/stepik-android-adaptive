@@ -11,7 +11,11 @@ public class SocialManager {
 
     public enum SocialType {
         vk(VK_SOCIAL_IDENTIFIER),
-        google(GOOGLE_SOCIAL_IDENTIFIER);
+        google(GOOGLE_SOCIAL_IDENTIFIER),
+        facebook(FACEBOOK_SOCIAL_IDENTIFIER),
+        twitter(TWITTER_SOCIAL_IDENTIFIER),
+        mailru(MAILRU_SOCIAL_IDENTIFIER),
+        github(GITHUB_SOCIAL_IDENTIFIER);
 
         private final String identifier;
 

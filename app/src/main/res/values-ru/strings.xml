@@ -48,4 +48,10 @@
     <string name="terms_message_register">Регистрируясь, Вы соглашаетесь с <a href="https://stepik.org/page/terms/?from_mobile_app=true">Условиями использования</a> и <a href="https://stepik.org/page/privacy/?from_mobile_app=true">Политикой конфиденциальности</a></string>
     <string name="register_error">При регистрации возникла ошибка</string>
     <string name="retry">Попробовать снова</string>
+    <string name="onboarding_card_title_1">Добро пожаловать</string>
+    <string name="onboarding_card_question_1"><![CDATA[<p><img style="margin: 0 64px;" src="images/01.svg" /></p><p>Добро пожаловать на адаптивный курс. Этот курс будет автоматически подстраиваться под уровень ваших знаний.</p>]]></string>
+    <string name="onboarding_card_title_2">Очень простой вопрос</string>
+    <string name="onboarding_card_question_2"><![CDATA[<p><img src="images/02.jpg" /></p><p>Что означает красный сигнал светофора?</p>]]></string>
+    <string name="onboarding_card_title_3">Слишком сложный вопрос</string>
+    <string name="onboarding_card_title_4">Удачи в обучении</string>
 </resources>

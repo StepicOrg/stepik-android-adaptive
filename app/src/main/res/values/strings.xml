@@ -49,4 +49,11 @@
     <string name="terms_message_launch"><a href="https://stepik.org/page/terms/?from_mobile_app=true">Terms of Service</a> and <a href="https://stepik.org/page/privacy/?from_mobile_app=true">Privacy Policy</a></string>
     <string name="register_error">Registration error</string>
     <string name="retry">Retry</string>
+    <string name="facebook_app_id" translatable="false">100481807271297</string>
+    <string name="onboarding_card_title_1">Welcome</string>
+    <string name="onboarding_card_question_1"><![CDATA[<p><img style="margin: 0 64px;" src="images/01.svg" /></p><p>Welcome to adaptive course. This course will automatically adjust questions according to your skill.</p>]]></string>
+    <string name="onboarding_card_title_2">Very easy question</string>
+    <string name="onboarding_card_question_2"><![CDATA[<p><img src="images/02.jpg" /></p><p>What means red traffic light?</p>]]></string>
+    <string name="onboarding_card_title_3">Very hard question</string>
+    <string name="onboarding_card_title_4">Good luck</string>
 </resources>

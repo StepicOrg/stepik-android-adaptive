@@ -86,15 +86,57 @@
                 </LinearLayout>
 
                 <LinearLayout
-                    android:visibility="gone"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:gravity="center_horizontal">
                     <ImageButton
+                        android:id="@+id/launch_activity_fb_button"
                         android:layout_width="48dp"
                         android:layout_height="48dp"
                         app:srcCompat="@drawable/ic_login_social_fb"
+                        android:tint="@color/colorSocialButton"
+                        android:background="@drawable/circle_button_bg" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center_horizontal">
+                    <ImageButton
+                        android:id="@+id/launch_activity_twitter_button"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        app:srcCompat="@drawable/ic_login_social_tw"
+                        android:tint="@color/colorSocialButton"
+                        android:background="@drawable/circle_button_bg" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center_horizontal">
+                    <ImageButton
+                        android:id="@+id/launch_activity_mailru_button"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        app:srcCompat="@drawable/ic_login_social_mail"
+                        android:tint="@color/colorSocialButton"
+                        android:background="@drawable/circle_button_bg" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center_horizontal">
+                    <ImageButton
+                        android:id="@+id/launch_activity_github_button"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        app:srcCompat="@drawable/ic_login_social_github"
                         android:tint="@color/colorSocialButton"
                         android:background="@drawable/circle_button_bg" />
                 </LinearLayout>

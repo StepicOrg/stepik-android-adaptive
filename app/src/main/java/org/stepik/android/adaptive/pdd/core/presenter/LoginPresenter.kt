@@ -57,6 +57,16 @@ class LoginPresenter : PresenterBase<LoginView>() {
                 .subscribe({ this.onLogin() }, { this.onError() }))
     }
 
+    fun authWithCode(code: String) {
+        view?.onLoading()
+
+        disposable.add(API.getInstance()
+                .authWithCode(code)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({ this.onLogin() }, { this.onError() }))
+    }
+
     fun onError() {
         view?.onNetworkError()
     }

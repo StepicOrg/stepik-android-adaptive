@@ -1,5 +1,6 @@
 package org.stepik.android.adaptive.pdd.api;
 
+import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.webkit.CookieManager;
 
@@ -32,6 +33,7 @@ import java.util.concurrent.locks.ReentrantLock;
 
 import io.reactivex.Completable;
 import io.reactivex.Observable;
+import io.reactivex.Observer;
 import okhttp3.Credentials;
 import okhttp3.Headers;
 import okhttp3.HttpUrl;
@@ -150,6 +152,17 @@ public final class API {
                     SharedPreferenceMgr.getInstance().setIsOauthTokenSocial(true);
                     authLock.unlock();
                 });
+    }
+
+    public Observable<OAuthResponse> authWithCode(final String code) {
+        return getAuthService(TokenType.SOCIAL).getTokenByCode(
+                Config.getInstance().getGrantTypeSocial(), code, Config.getInstance().getRedirectUri()
+        ).doOnNext(response -> {
+            authLock.lock();
+            SharedPreferenceMgr.getInstance().saveOAuthResponse(response);
+            SharedPreferenceMgr.getInstance().setIsOauthTokenSocial(true);
+            authLock.unlock();
+        });
     }
 
     private Call<OAuthResponse> authWithRefreshToken(final String refreshToken) {
@@ -418,5 +431,11 @@ public final class API {
                 .addConverterFactory(GsonConverterFactory.create())
                 .client(client)
                 .build();
+    }
+
+    public Uri getUriForSocialAuth(SocialManager.SocialType type) {
+        String socialIdentifier = type.getIdentifier();
+        String url = API.HOST + "accounts/" + socialIdentifier + "/login?next=/oauth2/authorize/?" + Uri.encode("client_id=" + Config.getInstance().getOAuthClientIdSocial() + "&response_type=code");
+        return Uri.parse(url);
     }
 }

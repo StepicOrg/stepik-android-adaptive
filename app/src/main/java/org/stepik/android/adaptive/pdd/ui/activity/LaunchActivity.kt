@@ -1,9 +1,15 @@
 package org.stepik.android.adaptive.pdd.ui.activity
 
+import android.app.Activity
 import android.content.Intent
 import android.databinding.DataBindingUtil
 import android.os.Bundle
 import android.support.design.widget.Snackbar
+import com.facebook.CallbackManager
+import com.facebook.FacebookCallback
+import com.facebook.FacebookException
+import com.facebook.login.LoginManager
+import com.facebook.login.LoginResult
 import com.google.android.gms.auth.api.Auth
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.Scopes
@@ -17,6 +23,7 @@ import com.vk.sdk.api.model.VKScopes
 import org.stepik.android.adaptive.pdd.Config
 import org.stepik.android.adaptive.pdd.R
 import org.stepik.android.adaptive.pdd.Util
+import org.stepik.android.adaptive.pdd.api.API
 import org.stepik.android.adaptive.pdd.api.login.SocialManager
 import org.stepik.android.adaptive.pdd.core.ScreenManager
 import org.stepik.android.adaptive.pdd.core.presenter.BasePresenterActivity
@@ -28,6 +35,7 @@ import org.stepik.android.adaptive.pdd.databinding.ActivityLaunchBinding
 class LaunchActivity : BasePresenterActivity<LoginPresenter, LoginView>(), LoginView {
     companion object {
         val REQUEST_CODE_GOOGLE_SIGN_IN = 159
+        val REQUEST_CODE_SOCIAL_AUTH = 231
     }
 
     private val PROGRESS = "launch_progress"
@@ -35,6 +43,7 @@ class LaunchActivity : BasePresenterActivity<LoginPresenter, LoginView>(), Login
     private var presenter: LoginPresenter? = null
 
     private var googleApiClient : GoogleApiClient? = null
+    private lateinit var callbackManager : CallbackManager
 
     private lateinit var binding : ActivityLaunchBinding
 
@@ -65,6 +74,30 @@ class LaunchActivity : BasePresenterActivity<LoginPresenter, LoginView>(), Login
         } else {
             binding.launchActivityGoogleButton.isEnabled = false
         }
+
+        callbackManager = CallbackManager.Factory.create()
+        LoginManager.getInstance().registerCallback(callbackManager, object : FacebookCallback<LoginResult> {
+            override fun onCancel() {}
+
+            override fun onSuccess(loginResult: LoginResult?) {
+                if (loginResult != null) {
+                    presenter?.onSocialLogin(loginResult.accessToken.token, SocialManager.SocialType.facebook)
+                }
+            }
+
+            override fun onError(p0: FacebookException?) {
+               presenter?.onError()
+            }
+
+        })
+
+        binding.launchActivityFbButton.setOnClickListener {
+            LoginManager.getInstance().logInWithReadPermissions(this@LaunchActivity, listOf("email"))
+        }
+
+        binding.launchActivityTwitterButton.setOnClickListener { onSocialAuth(SocialManager.SocialType.twitter) }
+        binding.launchActivityMailruButton.setOnClickListener { onSocialAuth(SocialManager.SocialType.mailru) }
+        binding.launchActivityGithubButton.setOnClickListener { onSocialAuth(SocialManager.SocialType.github) }
     }
 
     private fun showLoginScreen() {
@@ -108,9 +141,9 @@ class LaunchActivity : BasePresenterActivity<LoginPresenter, LoginView>(), Login
             return
         }
 
-        if (requestCode == REQUEST_CODE_GOOGLE_SIGN_IN && resultCode == RESULT_OK) {
+        if (requestCode == REQUEST_CODE_GOOGLE_SIGN_IN) {
             val result = Auth.GoogleSignInApi.getSignInResultFromIntent(data)
-            if (result.isSuccess) {
+            if (resultCode == RESULT_OK && result.isSuccess) {
                 val account = result.signInAccount
                 if (account == null) {
                     presenter?.onError()
@@ -126,6 +159,22 @@ class LaunchActivity : BasePresenterActivity<LoginPresenter, LoginView>(), Login
                 presenter?.onError()
             }
         }
+
+        if (requestCode == REQUEST_CODE_SOCIAL_AUTH) {
+            if (resultCode == Activity.RESULT_OK) {
+                data?.let {
+                    presenter?.authWithCode(it.data.getQueryParameter(Config.getInstance().codeQueryParameter))
+                }
+            } else {
+                presenter?.onError()
+            }
+        }
+    }
+
+    private fun onSocialAuth(type: SocialManager.SocialType) {
+        val intent = Intent(this, SocialAuthActivity::class.java)
+        intent.data = API.getInstance().getUriForSocialAuth(type)
+        startActivityForResult(intent, REQUEST_CODE_SOCIAL_AUTH)
     }
 
     override fun onSuccess() {

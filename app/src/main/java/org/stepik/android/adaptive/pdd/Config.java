@@ -44,6 +44,8 @@ public final class Config {
 
         private String GOOGLE_SERVER_CLIENT_ID = "GOOGLE_SERVER_CLIENT_ID";
 
+        private String CODE_QUERY_PARAMETER = "CODE_QUERY_PARAMETER";
+
         public long getCourseId() {
             return COURSE_ID;
         }
@@ -82,6 +84,10 @@ public final class Config {
 
         public String getGoogleServerClientId() {
             return GOOGLE_SERVER_CLIENT_ID;
+        }
+
+        public String getCodeQueryParameter() {
+            return CODE_QUERY_PARAMETER;
         }
     }
 }
