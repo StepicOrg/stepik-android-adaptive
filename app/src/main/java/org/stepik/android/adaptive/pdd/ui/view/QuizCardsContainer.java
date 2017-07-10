@@ -2,12 +2,10 @@ package org.stepik.android.adaptive.pdd.ui.view;
 
 import android.content.Context;
 import android.content.res.Resources;
-import android.os.Build;
 import android.support.annotation.AttrRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
@@ -19,7 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class QuizCardsContainer extends FrameLayout {
-    private final static int BUFFER_SIZE = 3;
+    private final static int BUFFER_SIZE = 4;
     private final static int CARD_OFFSET = (int)(Resources.getSystem().getDisplayMetrics().density * 10);
 
     public QuizCardsContainer(@NonNull Context context) {
@@ -135,6 +133,10 @@ public class QuizCardsContainer extends FrameLayout {
 
         view.setEnabled(mul == 0 && allowEnable);
         view.setTranslationY(CARD_OFFSET * mul);
+
+        if (mul >= BUFFER_SIZE - 2) {
+            view.setAlpha(BUFFER_SIZE - mul - 1);
+        }
     }
 
     public static abstract class CardsAdapter<VH extends CardViewHolder> {
