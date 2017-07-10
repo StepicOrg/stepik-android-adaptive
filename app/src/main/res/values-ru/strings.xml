@@ -62,14 +62,29 @@
     <string name="onboarding_card_question_2"><![CDATA[
         <p>Представьте, что это сложный вопрос, на который вы не знаете ответа или не хотите сейчас отвечать. Вы можете отложить его, смахнув карточку с вопросом <b>вправо</b>.</p>
         <p>Попробуйте сделать так с этой карточкой.</p>
+        <div class="center">
+            <div class="padding-box">
+                <img src="images/arrow_right.svg" />
+            </div>
+        </div>
     ]]></string>
     <string name="onboarding_card_title_3">Простой вопрос</string>
     <string name="onboarding_card_question_3"><![CDATA[
         <p>Теперь представьте, что это, наоборот, слишком простой вопрос, на который вам уже лень отвечать. Вы можете пропустить его, смахнув карточку <b>влево</b>. Больше вы <b>никогда</b> не увидите этот вопрос.</p>
         <p>Попробуйте смахнуть эту карточку <b>влево</b>.</p>
+        <div class="center">
+            <div class="padding-box">
+                <img src="images/arrow_left.svg" />
+            </div>
+        </div>
     ]]></string>
     <string name="onboarding_card_title_4">Процесс обучения</string>
     <string name="onboarding_card_question_4"><![CDATA[
+        <div class="center">
+            <div class="padding-box">
+                <img src="images/04.png" />
+            </div>
+        </div>
         <p>Тренируйтесь каждый день и получайте очки опыта. За определенное количество очков опыта вы будете получать уровни, а чем выше ваш уровень, тем лучше вы знаете данную тему.</p>
     ]]></string>
     <string name="exp_title">Текущий уровень знаний: <b>%d</b></string>

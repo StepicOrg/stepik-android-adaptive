@@ -64,14 +64,29 @@
     <string name="onboarding_card_question_2"><![CDATA[
         <p>Imagine that this card contains some hard question and you don\'t know answer. You can postpone hard question by swiping card to <b>right</b>.</p>
         <p>Try to swipe this card to <b>right</b>.</p>
+        <div class="center">
+            <div class="padding-box">
+                <img src="images/arrow_right.svg" />
+            </div>
+        </div>
     ]]></string>
     <string name="onboarding_card_title_3">Easy question</string>
     <string name="onboarding_card_question_3"><![CDATA[
         <p>Now imagine that this card contains very easy question. You can skip it by swiping card to <b>left</b>. You\'ll <b>never</b> see it again.</p>
         <p>Try to swipe this card to <b>left</b>.</p>
+        <div class="center">
+            <div class="padding-box">
+                <img src="images/arrow_left.svg" />
+            </div>
+        </div>
     ]]></string>
     <string name="onboarding_card_title_4">Learning process</string>
     <string name="onboarding_card_question_4"><![CDATA[
+        <div class="center">
+            <div class="padding-box">
+                <img src="images/04.png" />
+            </div>
+        </div>
         <p>Solve tasks every day and gain exp points. For the certain amount of points you\'ll gain levels. Higher level means you better know this topic.</p>
     ]]></string>
     <string name="exp_title">Current experience level is: <b>%d</b></string>

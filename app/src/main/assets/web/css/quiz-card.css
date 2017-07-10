@@ -38,3 +38,7 @@ p {
 .padding-box {
     margin: 24px auto;
 }
+
+.padding-box img {
+    max-width: 100%;
+}
