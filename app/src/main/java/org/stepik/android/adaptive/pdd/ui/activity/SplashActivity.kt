@@ -19,15 +19,18 @@ class SplashActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_splash)
 
-        disposable = Observable.fromCallable(SharedPreferenceMgr.getInstance()::getAuthResponseDeadline)
+        val authObservable = Observable.fromCallable(SharedPreferenceMgr.getInstance()::getAuthResponseDeadline)
+        val onboardingObservable = Observable.fromCallable(SharedPreferenceMgr.getInstance()::isNotFirstTime)
+
+        disposable = Observable.zip<Long, Boolean, Pair<Long, Boolean>>(authObservable, onboardingObservable, io.reactivex.functions.BiFunction { t1, t2 -> Pair(t1, t2) })
                 .delay(1L, TimeUnit.SECONDS)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({
-                    if (it != 0L) {
+                    if (it.first != 0L && it.second) {
                         ScreenManager.getInstance().startStudy()
                     } else {
-                        ScreenManager.getInstance().showLaunchScreen()
+                        ScreenManager.getInstance().showOnboardingScreen()
                     }
                 })
     }

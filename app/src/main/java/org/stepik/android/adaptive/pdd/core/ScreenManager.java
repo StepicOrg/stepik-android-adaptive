@@ -27,7 +27,7 @@ public class ScreenManager {
         this.context = context;
     }
 
-    public void showLaunchScreen() {
+    public void showOnboardingScreen() {
         Intent intent = new Intent(context, IntroActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(intent);

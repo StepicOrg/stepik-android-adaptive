@@ -28,7 +28,7 @@ public final class LogoutDialog extends DialogFragment implements Dialog.OnClick
     @Override
     public void onClick(DialogInterface dialogInterface, int which) {
         if (which == DialogInterface.BUTTON_POSITIVE) {
-            LogoutHelper.logout(ScreenManager.getInstance()::showLaunchScreen);
+            LogoutHelper.logout(ScreenManager.getInstance()::showOnboardingScreen);
         }
     }
 }

@@ -49,11 +49,13 @@
     <string name="register_error">При регистрации возникла ошибка</string>
     <string name="retry">Попробовать снова</string>
     <string name="onboarding_card_title_1">Добро пожаловать</string>
-    <string name="onboarding_card_question_1"><![CDATA[<p><img style="margin: 0 64px;" src="images/01.svg" /></p><p>Добро пожаловать на адаптивный курс. Этот курс будет автоматически подстраиваться под уровень ваших знаний.</p>]]></string>
-    <string name="onboarding_card_title_2">Очень простой вопрос</string>
-    <string name="onboarding_card_question_2"><![CDATA[<p><img src="images/02.jpg" /></p><p>Что означает красный сигнал светофора?</p>]]></string>
-    <string name="onboarding_card_title_3">Слишком сложный вопрос</string>
+    <string name="onboarding_card_question_1"><![CDATA[<p>Добро пожаловать на адаптивный курс по ПДД. В этом курсе вопросы подбираются автоматически, адаптируясь к вашим ответам и реакциям. Давайте посмотрим как это работает.</p>]]></string>
+    <string name="onboarding_card_title_2">Сложный вопрос</string>
+    <string name="onboarding_card_question_2"><![CDATA[<p>Представьте, что это сложный вопрос, на который вы не знаете ответа или не хотите сейчас отвечать. Вы можете отложить его, смахнув карточку с вопросом <b>вправо</b>.</p><p>Побробуйте сделать так с этой карточкой.</p>]]></string>
+    <string name="onboarding_card_title_3">Простой вопрос</string>
+    <string name="onboarding_card_question_3"><![CDATA[<p>Теперь представьте, что это, наоборот, слишком простой вопрос, на который вам уже лень отвечать. Вы можете пропустить его, смахнув карточку <b>влево</b>. Больше вы <b>никогда</b> не увидете этот вопрос.</p><p>Попробуйте смахнуть эту карточку <b>влево</b>.</p>]]></string>
     <string name="onboarding_card_title_4">Удачи в обучении</string>
+    <string name="onboarding_card_question_4"><![CDATA[<p>Теперь представьте, что это, наоборот, слишком простой вопрос, на который вам уже лень отвечать. Вы можете не отвечать на него, смахнув карточку <b>влево</b>. Больше вы <b>никогда</b> не увидете этот вопрос. Попробуйте смахнуть эту карточку <b>влево</b>.</p>]]></string>
     <string name="exp_title">Текущий уровень знаний: <b>%d</b></string>
-    <string name="exp_level_title">Поздравляем! Вы достигли <b>%d</b> уровня знаний!</string>
+    <string name="exp_level_title">Новый уровень!</string>
 </resources>

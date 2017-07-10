@@ -33,14 +33,12 @@ import java.util.concurrent.locks.ReentrantLock;
 
 import io.reactivex.Completable;
 import io.reactivex.Observable;
-import io.reactivex.Observer;
 import okhttp3.Credentials;
 import okhttp3.Headers;
 import okhttp3.HttpUrl;
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
-import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Call;
 import retrofit2.Response;
 import retrofit2.Retrofit;
@@ -105,10 +103,6 @@ public final class API {
                 ).build()));
 
         setTimeout(okHttpBuilder, TIMEOUT_IN_SECONDS);
-
-        HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
-        logging.setLevel(HttpLoggingInterceptor.Level.BODY);
-        okHttpBuilder.addInterceptor(logging);
 
         final Retrofit retrofit = buildRetrofit(okHttpBuilder.build());
 
@@ -223,7 +217,7 @@ public final class API {
 
                         if (response == null || !oAuthResponse.isSuccessful()) {
                             if (oAuthResponse.code() == 401) {
-                                LogoutHelper.logout(ScreenManager.getInstance()::showLaunchScreen);
+                                LogoutHelper.logout(ScreenManager.getInstance()::showOnboardingScreen);
                             }
                             return chain.proceed(request);
                         }
@@ -242,12 +236,6 @@ public final class API {
         });
 
         setTimeout(okHttpBuilder, TIMEOUT_IN_SECONDS);
-
-        HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
-        logging.setLevel(HttpLoggingInterceptor.Level.BODY);
-        okHttpBuilder.addInterceptor(logging);
-
-
         final Retrofit retrofit = buildRetrofit(okHttpBuilder.build());
 
         return retrofit.create(StepikService.class);
