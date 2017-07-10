@@ -158,8 +158,9 @@ public final class CardsFragment extends Fragment {
         if (level != ExpUtil.getCurrentLevel(exp - 1)) {
             onLevelGained(level);
         } else {
-            final long next = ExpUtil.getNextLevelExp(level);
-            ExpProgressSnackBar.Companion.make(binding.fragmentRecommendationsCardsContainer, exp, level, next).show();
+//            final long next = ExpUtil.getNextLevelExp(level);
+//            ExpProgressSnackBar.Companion.make(binding.fragmentRecommendationsCardsContainer, exp, level, next).show();
+//            TODO: kinda annoying bar
         }
     }
 
