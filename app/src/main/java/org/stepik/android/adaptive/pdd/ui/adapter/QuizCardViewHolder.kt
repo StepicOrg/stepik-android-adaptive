@@ -42,8 +42,6 @@ class QuizCardViewHolder(val binding: QuizCardViewBinding) : QuizCardsContainer.
                 CardHelper.resetSupplementalActions(binding)
             }
         }
-
-        binding.fragmentRecommendationsContainer.visibility = View.INVISIBLE // to hide loading of web view
     }
 
     private var hasSubmission = false
@@ -84,7 +82,7 @@ class QuizCardViewHolder(val binding: QuizCardViewBinding) : QuizCardsContainer.
     }
 
     private fun onCardLoaded() {
-        binding.fragmentRecommendationsContainer.visibility = View.VISIBLE
+        binding.fragmentRecommendationsCurtain.visibility = View.GONE
         if (!(presenter?.isLoading ?: false)) binding.fragmentRecommendationsAnswersProgress.visibility = View.GONE
 
         CardHelper.scrollDown(binding.fragmentRecommendationsScroll)

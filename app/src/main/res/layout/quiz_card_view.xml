@@ -217,6 +217,18 @@
             style="@style/AppTheme.ReactionStamp"
             android:id="@+id/fragment_recommendations_easy_reaction" />
 
+        <FrameLayout
+            android:id="@+id/fragment_recommendations_curtain"
+            android:background="@android:color/white"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:alpha="0.95">
+            <ProgressBar
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_gravity="center" />
+        </FrameLayout>
+
     </org.stepik.android.adaptive.pdd.ui.view.QuizCardView>
 
 </layout>
