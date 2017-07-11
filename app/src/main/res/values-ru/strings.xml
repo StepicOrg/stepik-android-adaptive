@@ -89,4 +89,5 @@
     ]]></string>
     <string name="exp_title">Уровень: <b>%d</b></string>
     <string name="exp_level_title">Новый уровень!</string>
+    <string name="exp_subtitle">%d опыта до следующего</string>
 </resources>

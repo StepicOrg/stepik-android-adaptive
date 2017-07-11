@@ -93,4 +93,5 @@
     <string name="exp_level_title">New level!</string>
     <string name="exp_inc" translatable="false">+%d</string>
     <string name="exp_current_progress" translatable="false">%d / %d</string>
+    <string name="exp_subtitle">Next in %d</string>
 </resources>

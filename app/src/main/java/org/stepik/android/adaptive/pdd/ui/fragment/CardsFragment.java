@@ -139,6 +139,7 @@ public final class CardsFragment extends Fragment implements AnswerListener {
 
         binding.fragmentRecommendationsExpCounter.setText(Long.toString(exp)); //String.format(getString(R.string.exp_current_progress), exp - prev, next - prev));
         binding.fragmentRecommendationsExpLevel.setText(String.format(getString(R.string.exp_title), level));
+        binding.fragmentRecommendationsExpLevelNext.setText(String.format(getString(R.string.exp_subtitle), next - exp));
 
         if (showLevelDialog && level != ExpUtil.getCurrentLevel(exp - streak)) {
             onLevelGained(level);
