@@ -56,10 +56,10 @@ class QuizCardViewHolder(val binding: QuizCardViewBinding) : QuizCardsContainer.
         if (!hasSubmission) {
             if (presenter?.isLoading ?: false) {
                 onSubmissionLoading()
-                binding.fragmentRecommendationsAnswersProgress.visibility = View.VISIBLE
             } else {
                 binding.fragmentRecommendationsSubmit.visibility = View.VISIBLE
                 (binding.fragmentRecommendationsAnswers.adapter as AttemptAnswersAdapter).setEnabled(true)
+                CardHelper.scrollDown(binding.fragmentRecommendationsScroll)
             }
         }
 

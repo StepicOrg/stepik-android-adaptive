@@ -1,8 +1,7 @@
 package org.stepik.android.adaptive.pdd.ui.helper;
 
-import android.util.Log;
+import android.support.v4.widget.NestedScrollView;
 import android.view.View;
-import android.widget.ScrollView;
 
 import org.stepik.android.adaptive.pdd.api.API;
 import org.stepik.android.adaptive.pdd.api.RecommendationsResponse;
@@ -43,7 +42,7 @@ public class CardHelper {
         binding.fragmentRecommendationsSubmit.setVisibility(View.VISIBLE);
     }
 
-    public static void scrollDown(final ScrollView view) {
+    public static void scrollDown(final NestedScrollView view) {
         view.post(() -> view.fullScroll(View.FOCUS_DOWN));
     }
 }

@@ -129,7 +129,7 @@
                 android:background="@color/colorStroke"
                 android:id="@+id/fragment_recommendations_bottom_divider"/>
 
-            <ScrollView
+            <android.support.v4.widget.NestedScrollView
                 android:background="@android:color/white"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -176,7 +176,7 @@
                         android:id="@+id/fragment_recommendations_answers_progress" />
 
                 </LinearLayout>
-            </ScrollView>
+            </android.support.v4.widget.NestedScrollView>
 
 
             <View

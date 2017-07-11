@@ -7,6 +7,7 @@ class OnboardingQuizCardsAdapter(private val onOnboardingEnd: () -> Unit) : Quiz
     override fun onBindViewHolder(holder: QuizCardViewHolder?, pos: Int) {
         super.onBindViewHolder(holder, pos)
         holder?.binding?.fragmentRecommendationsAnswers?.visibility = View.GONE
+        holder?.binding?.fragmentRecommendationsQuestion?.setOnWebViewClickListener(null)
     }
 
     override fun onBindTopCard(holder: QuizCardViewHolder?, pos: Int) {
