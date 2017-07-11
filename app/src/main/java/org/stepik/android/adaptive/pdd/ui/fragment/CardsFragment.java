@@ -1,10 +1,13 @@
 package org.stepik.android.adaptive.pdd.ui.fragment;
 
 import android.databinding.DataBindingUtil;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
@@ -13,6 +16,11 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.DecelerateInterpolator;
+import android.view.animation.LinearInterpolator;
+
+import com.github.jinatonic.confetti.CommonConfetti;
+import com.github.jinatonic.confetti.ConfettiSource;
 
 import org.stepik.android.adaptive.pdd.R;
 import org.stepik.android.adaptive.pdd.Util;
@@ -25,7 +33,6 @@ import org.stepik.android.adaptive.pdd.ui.adapter.QuizCardsAdapter;
 import org.stepik.android.adaptive.pdd.ui.dialog.ExpLevelDialog;
 import org.stepik.android.adaptive.pdd.ui.dialog.LogoutDialog;
 import org.stepik.android.adaptive.pdd.ui.helper.CardHelper;
-import org.stepik.android.adaptive.pdd.ui.view.ExpProgressSnackBar;
 import org.stepik.android.adaptive.pdd.util.ExpUtil;
 
 import java.util.ArrayDeque;
@@ -62,7 +69,7 @@ public final class CardsFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
-        setHasOptionsMenu(true);
+//        setHasOptionsMenu(true);
         compositeDisposable.add(retrySubject.observeOn(AndroidSchedulers.mainThread()).subscribe(v -> retry()));
         loadingPlaceholders = getResources().getStringArray(R.array.recommendation_loading_placeholders);
         adapter.attachFragment(this);
@@ -95,6 +102,8 @@ public final class CardsFragment extends Fragment {
                 onError(null);
             }
         }
+
+        updateExpProgressBar(ExpUtil.getExp(), false);
         return binding.getRoot();
     }
 
@@ -112,7 +121,14 @@ public final class CardsFragment extends Fragment {
             return true;
         }
         if (item.getItemId() == R.id.menu_stats) { // TESTING
-            onLevelGained(3);
+//            onLevelGained(3);
+
+            ConfettiSource source = new ConfettiSource(binding.getRoot().getWidth() - 48, 48);
+            CommonConfetti.rainingConfetti((CoordinatorLayout) binding.getRoot(), source, new int[]{
+                    Color.BLACK,
+                    ContextCompat.getColor(getContext(), R.color.colorAccentDisabled),
+                    ContextCompat.getColor(getContext(), R.color.colorAccent)
+            }).oneShot().enableFadeOut(new LinearInterpolator()).setTouchEnabled(true);
         }
         return super.onOptionsItemSelected(item);
     }
@@ -151,17 +167,40 @@ public final class CardsFragment extends Fragment {
         }
     }
 
-    private void onCorrectAnswer() {
-        final long exp = ExpUtil.incExp();
+    private void updateExpProgressBar(final long exp, final boolean showLevelDialog) {
         final long level = ExpUtil.getCurrentLevel(exp);
 
-        if (level != ExpUtil.getCurrentLevel(exp - 1)) {
+        final long prev = ExpUtil.getNextLevelExp(level - 1);
+        final long next = ExpUtil.getNextLevelExp(level);
+        binding.fragmentRecommendationsExpProgress.setMax((int) (next - prev));
+        binding.fragmentRecommendationsExpProgress.setProgress((int) (exp - prev));
+
+        binding.fragmentRecommendationsExpCounter.setText(String.format(getString(R.string.exp_current_progress), exp - prev, next - prev));
+        binding.fragmentRecommendationsExpLevel.setText(String.format(getString(R.string.exp_title), level));
+
+        if (showLevelDialog && level != ExpUtil.getCurrentLevel(exp - 1)) {
             onLevelGained(level);
-        } else {
-//            final long next = ExpUtil.getNextLevelExp(level);
-//            ExpProgressSnackBar.Companion.make(binding.fragmentRecommendationsCardsContainer, exp, level, next).show();
-//            TODO: kinda annoying bar
         }
+    }
+
+    private void onCorrectAnswer() {
+        binding.fragmentRecommendationsExpInc.setAlpha(1);
+        binding.fragmentRecommendationsExpInc.animate()
+                .alpha(0)
+                .setInterpolator(new DecelerateInterpolator())
+                .setStartDelay(1500)
+                .setDuration(200)
+                .start();
+
+        int[] pos = new int[2];
+        binding.fragmentRecommendationsExpInc.getLocationInWindow(pos);
+
+        CommonConfetti.explosion((CoordinatorLayout) binding.getRoot(), pos[0] + binding.fragmentRecommendationsExpInc.getWidth() / 2, binding.fragmentRecommendationsToolbar.getHeight() / 2, new int[]{
+                Color.BLACK,
+                ContextCompat.getColor(getContext(), R.color.colorAccentDisabled),
+                ContextCompat.getColor(getContext(), R.color.colorAccent)
+        }).oneShot();
+        updateExpProgressBar(ExpUtil.incExp(), true);
     }
 
     private void onLevelGained(final long level) {

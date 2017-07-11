@@ -20,8 +20,55 @@
                 android:title=""
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
-                app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-                android:theme="@style/AppTheme.ActionBarTheme" />
+                android:background="?attr/selectableItemBackground">
+
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+                    <TextView
+                        android:id="@+id/fragment_recommendations_exp_level"
+                        android:layout_gravity="start|center_vertical"
+                        android:text="@string/exp_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="4dp"
+                        android:textColor="@color/colorGrayText"
+                        style="@style/TextAppearance.AppCompat.Widget.ActionBar.Title"/>
+
+                    <FrameLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="end|center_vertical"
+                        android:layout_marginEnd="16dp">
+                        <TextView
+                            android:id="@+id/fragment_recommendations_exp_counter"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:fontFamily="sans-serif-black"
+                            android:background="@drawable/gray_circle"
+                            android:gravity="center"/>
+                        <TextView
+                            android:id="@+id/fragment_recommendations_exp_inc"
+                            android:alpha="0"
+                            android:text="@string/exp_inc"
+                            android:background="@drawable/green_circle"
+                            android:textColor="@android:color/white"
+                            android:fontFamily="sans-serif-black"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:gravity="center" />
+                    </FrameLayout>
+                </FrameLayout>
+
+            </android.support.v7.widget.Toolbar>
+
+            <me.zhanghai.android.materialprogressbar.MaterialProgressBar
+                android:id="@+id/fragment_recommendations_exp_progress"
+                style="@style/Widget.MaterialProgressBar.ProgressBar.Horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                app:mpb_progressStyle="horizontal"
+                app:mpb_useIntrinsicPadding="false" />
 
             <View
                 android:layout_width="match_parent"
