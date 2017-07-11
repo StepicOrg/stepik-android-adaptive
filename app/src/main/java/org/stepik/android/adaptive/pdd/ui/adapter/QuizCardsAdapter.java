@@ -1,34 +1,20 @@
 package org.stepik.android.adaptive.pdd.ui.adapter;
 
 import android.databinding.DataBindingUtil;
-import android.support.v7.widget.LinearLayoutManager;
-import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
-import android.webkit.WebSettings;
 
 import org.stepik.android.adaptive.pdd.R;
-import org.stepik.android.adaptive.pdd.core.ScreenManager;
 import org.stepik.android.adaptive.pdd.core.presenter.CardPresenter;
-import org.stepik.android.adaptive.pdd.data.AnalyticMgr;
 import org.stepik.android.adaptive.pdd.data.model.Card;
-import org.stepik.android.adaptive.pdd.data.model.RecommendationReaction;
-import org.stepik.android.adaptive.pdd.databinding.QuizCardViewBinding;
-import org.stepik.android.adaptive.pdd.ui.DefaultWebViewClient;
 import org.stepik.android.adaptive.pdd.ui.fragment.CardsFragment;
-import org.stepik.android.adaptive.pdd.ui.helper.CardHelper;
 import org.stepik.android.adaptive.pdd.ui.listener.AdaptiveReactionListener;
 import org.stepik.android.adaptive.pdd.ui.listener.ExperienceListener;
-import org.stepik.android.adaptive.pdd.ui.view.QuizCardView;
 import org.stepik.android.adaptive.pdd.ui.view.QuizCardsContainer;
-import org.stepik.android.adaptive.pdd.util.HtmlUtil;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
-
-import io.reactivex.disposables.CompositeDisposable;
 
 public class QuizCardsAdapter extends QuizCardsContainer.CardsAdapter<QuizCardViewHolder> {
     private List<CardPresenter> presenters = new ArrayList<>();

@@ -67,6 +67,11 @@ class OnboardingFragment : Fragment(), LoginView {
         return binding.root
     }
 
+    override fun onDestroyView() {
+        adapter.detach()
+        super.onDestroyView()
+    }
+
     override fun onDestroy() {
         presenter.detachView(this)
         super.onDestroy()
