@@ -133,7 +133,7 @@ public final class SharedPreferenceMgr {
         return sharedPreferences.getBoolean(name, false);
     }
 
-    private void remove(final String name){
+    public void remove(final String name){
         sharedPreferences.edit().remove(name).apply();
     }
 

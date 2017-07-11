@@ -57,8 +57,6 @@ public final class CardsFragment extends Fragment implements AnswerListener {
     private boolean isError = false;
     private boolean isCourseCompleted = false;
 
-    private long streak = 0;
-
     private final QuizCardsAdapter adapter = new QuizCardsAdapter(this::createReaction, this);
 
     @Override
@@ -98,7 +96,7 @@ public final class CardsFragment extends Fragment implements AnswerListener {
             }
         }
 
-        updateExpProgressBar(ExpUtil.getExp(), false);
+        updateExpProgressBar(ExpUtil.getExp(), 0, false);
         return binding.getRoot();
     }
 
@@ -131,7 +129,7 @@ public final class CardsFragment extends Fragment implements AnswerListener {
         }
     }
 
-    private void updateExpProgressBar(final long exp, final boolean showLevelDialog) {
+    private void updateExpProgressBar(final long exp, final long streak, final boolean showLevelDialog) {
         final long level = ExpUtil.getCurrentLevel(exp);
 
         final long prev = ExpUtil.getNextLevelExp(level - 1);
@@ -148,7 +146,7 @@ public final class CardsFragment extends Fragment implements AnswerListener {
     }
 
     public void onCorrectAnswer() {
-        streak++;
+        final long streak = ExpUtil.incStreak();
         binding.fragmentRecommendationsExpInc.setText(String.format(getString(R.string.exp_inc), streak));
         binding.fragmentRecommendationsExpInc.setAlpha(1);
         binding.fragmentRecommendationsExpInc.animate()
@@ -166,11 +164,11 @@ public final class CardsFragment extends Fragment implements AnswerListener {
                 ContextCompat.getColor(getContext(), R.color.colorAccentDisabled),
                 ContextCompat.getColor(getContext(), R.color.colorAccent)
         }).oneShot();
-        updateExpProgressBar(ExpUtil.addExp(streak), true);
+        updateExpProgressBar(ExpUtil.addExp(streak), streak, true);
     }
 
     public void onWrongAnswer() {
-        streak = 0;
+        ExpUtil.resetStreak();
     }
 
     private void onLevelGained(final long level) {
