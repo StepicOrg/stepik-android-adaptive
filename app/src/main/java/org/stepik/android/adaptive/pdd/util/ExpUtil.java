@@ -9,10 +9,14 @@ public class ExpUtil {
         return SharedPreferenceMgr.getInstance().getLong(EXP_KEY);
     }
 
-    public static long incExp() {
+    public static long addExp(long delta) {
         long current = SharedPreferenceMgr.getInstance().getLong(EXP_KEY);
-        SharedPreferenceMgr.getInstance().saveLong(EXP_KEY, current + 1);
-        return current + 1;
+        SharedPreferenceMgr.getInstance().saveLong(EXP_KEY, current + delta);
+        return current + delta;
+    }
+
+    public static long incExp() {
+        return addExp(1);
     }
 
     public static long getCurrentLevel(long exp) {

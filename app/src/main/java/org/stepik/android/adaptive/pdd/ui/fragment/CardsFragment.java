@@ -5,22 +5,16 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.CoordinatorLayout;
-import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.DecelerateInterpolator;
-import android.view.animation.LinearInterpolator;
 
 import com.github.jinatonic.confetti.CommonConfetti;
-import com.github.jinatonic.confetti.ConfettiSource;
 
 import org.stepik.android.adaptive.pdd.R;
 import org.stepik.android.adaptive.pdd.Util;
@@ -31,8 +25,8 @@ import org.stepik.android.adaptive.pdd.data.model.RecommendationReaction;
 import org.stepik.android.adaptive.pdd.databinding.FragmentRecommendationsBinding;
 import org.stepik.android.adaptive.pdd.ui.adapter.QuizCardsAdapter;
 import org.stepik.android.adaptive.pdd.ui.dialog.ExpLevelDialog;
-import org.stepik.android.adaptive.pdd.ui.dialog.LogoutDialog;
 import org.stepik.android.adaptive.pdd.ui.helper.CardHelper;
+import org.stepik.android.adaptive.pdd.ui.listener.AnswerListener;
 import org.stepik.android.adaptive.pdd.util.ExpUtil;
 
 import java.util.ArrayDeque;
@@ -46,7 +40,7 @@ import io.reactivex.schedulers.Schedulers;
 import io.reactivex.subjects.PublishSubject;
 
 
-public final class CardsFragment extends Fragment {
+public final class CardsFragment extends Fragment implements AnswerListener {
     private final static String TAG = "CardsFragment";
 
     private final CompositeDisposable compositeDisposable = new CompositeDisposable();
@@ -63,13 +57,14 @@ public final class CardsFragment extends Fragment {
     private boolean isError = false;
     private boolean isCourseCompleted = false;
 
-    private final QuizCardsAdapter adapter = new QuizCardsAdapter(this::createReaction, this::onCorrectAnswer);
+    private long streak = 0;
+
+    private final QuizCardsAdapter adapter = new QuizCardsAdapter(this::createReaction, this);
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
-//        setHasOptionsMenu(true);
         compositeDisposable.add(retrySubject.observeOn(AndroidSchedulers.mainThread()).subscribe(v -> retry()));
         loadingPlaceholders = getResources().getStringArray(R.array.recommendation_loading_placeholders);
         adapter.attachFragment(this);
@@ -107,32 +102,6 @@ public final class CardsFragment extends Fragment {
         return binding.getRoot();
     }
 
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.cards_menu, menu);
-        super.onCreateOptionsMenu(menu, inflater);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.menu_logout) {
-            DialogFragment dialog = new LogoutDialog();
-            dialog.show(getChildFragmentManager(), dialog.getTag());
-            return true;
-        }
-        if (item.getItemId() == R.id.menu_stats) { // TESTING
-//            onLevelGained(3);
-
-            ConfettiSource source = new ConfettiSource(binding.getRoot().getWidth() - 48, 48);
-            CommonConfetti.rainingConfetti((CoordinatorLayout) binding.getRoot(), source, new int[]{
-                    Color.BLACK,
-                    ContextCompat.getColor(getContext(), R.color.colorAccentDisabled),
-                    ContextCompat.getColor(getContext(), R.color.colorAccent)
-            }).oneShot().enableFadeOut(new LinearInterpolator()).setTouchEnabled(true);
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
     public void createReaction(final long lesson, final RecommendationReaction.Reaction reaction) {
         if (adapter.getItemCount() == 0) {
             binding.fragmentRecommendationsProgress.setVisibility(View.VISIBLE);
@@ -144,11 +113,6 @@ public final class CardsFragment extends Fragment {
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnError(this::onError)
                 .retryWhen(x -> x.zipWith(retrySubject, (a, b) -> a))
-//                .doOnComplete(() -> {
-//                    if (reaction == RecommendationReaction.Reaction.SOLVED) {
-//                        onCorrectAnswer();
-//                    }
-//                })
                 .subscribe(this::onRecommendation, this::onError));
     }
 
@@ -175,15 +139,17 @@ public final class CardsFragment extends Fragment {
         binding.fragmentRecommendationsExpProgress.setMax((int) (next - prev));
         binding.fragmentRecommendationsExpProgress.setProgress((int) (exp - prev));
 
-        binding.fragmentRecommendationsExpCounter.setText(String.format(getString(R.string.exp_current_progress), exp - prev, next - prev));
+        binding.fragmentRecommendationsExpCounter.setText(Long.toString(exp)); //String.format(getString(R.string.exp_current_progress), exp - prev, next - prev));
         binding.fragmentRecommendationsExpLevel.setText(String.format(getString(R.string.exp_title), level));
 
-        if (showLevelDialog && level != ExpUtil.getCurrentLevel(exp - 1)) {
+        if (showLevelDialog && level != ExpUtil.getCurrentLevel(exp - streak)) {
             onLevelGained(level);
         }
     }
 
-    private void onCorrectAnswer() {
+    public void onCorrectAnswer() {
+        streak++;
+        binding.fragmentRecommendationsExpInc.setText(String.format(getString(R.string.exp_inc), streak));
         binding.fragmentRecommendationsExpInc.setAlpha(1);
         binding.fragmentRecommendationsExpInc.animate()
                 .alpha(0)
@@ -200,7 +166,11 @@ public final class CardsFragment extends Fragment {
                 ContextCompat.getColor(getContext(), R.color.colorAccentDisabled),
                 ContextCompat.getColor(getContext(), R.color.colorAccent)
         }).oneShot();
-        updateExpProgressBar(ExpUtil.incExp(), true);
+        updateExpProgressBar(ExpUtil.addExp(streak), true);
+    }
+
+    public void onWrongAnswer() {
+        streak = 0;
     }
 
     private void onLevelGained(final long level) {

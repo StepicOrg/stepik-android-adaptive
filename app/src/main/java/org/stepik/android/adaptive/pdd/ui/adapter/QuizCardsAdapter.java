@@ -9,7 +9,7 @@ import org.stepik.android.adaptive.pdd.core.presenter.CardPresenter;
 import org.stepik.android.adaptive.pdd.data.model.Card;
 import org.stepik.android.adaptive.pdd.ui.fragment.CardsFragment;
 import org.stepik.android.adaptive.pdd.ui.listener.AdaptiveReactionListener;
-import org.stepik.android.adaptive.pdd.ui.listener.ExperienceListener;
+import org.stepik.android.adaptive.pdd.ui.listener.AnswerListener;
 import org.stepik.android.adaptive.pdd.ui.view.QuizCardsContainer;
 
 import java.lang.ref.WeakReference;
@@ -19,11 +19,11 @@ import java.util.List;
 public class QuizCardsAdapter extends QuizCardsContainer.CardsAdapter<QuizCardViewHolder> {
     private List<CardPresenter> presenters = new ArrayList<>();
     private final AdaptiveReactionListener listener;
-    private final ExperienceListener experienceListener;
+    private final AnswerListener answerListener;
 
-    public QuizCardsAdapter(AdaptiveReactionListener listener, ExperienceListener experienceListener) {
+    public QuizCardsAdapter(AdaptiveReactionListener listener, AnswerListener answerListener) {
         this.listener = listener;
-        this.experienceListener = experienceListener;
+        this.answerListener = answerListener;
     }
 
     private WeakReference<CardsFragment> fragmentWeakReference = new WeakReference<>(null);
@@ -76,7 +76,7 @@ public class QuizCardsAdapter extends QuizCardsContainer.CardsAdapter<QuizCardVi
     }
 
     public void add(Card card) {
-        presenters.add(new CardPresenter(card, listener, experienceListener));
+        presenters.add(new CardPresenter(card, listener, answerListener));
         notifyDataAdded();
     }
 
