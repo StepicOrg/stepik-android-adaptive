@@ -169,11 +169,8 @@ public final class API {
         OkHttpClient.Builder okHttpBuilder = new OkHttpClient.Builder();
         okHttpBuilder.addNetworkInterceptor(chain -> {
             Request newRequest = addUserAgentTo(chain);
+            updateCookieForBaseUrl();
             String cookies = CookieManager.getInstance().getCookie(API.HOST);
-            if (cookies == null) {
-                updateCookieForBaseUrl();
-                cookies = android.webkit.CookieManager.getInstance().getCookie(API.HOST);
-            }
             if (cookies == null)
                 return chain.proceed(newRequest);
 
