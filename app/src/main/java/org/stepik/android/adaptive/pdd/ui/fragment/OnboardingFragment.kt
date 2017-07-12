@@ -53,16 +53,21 @@ class OnboardingFragment : Fragment(), LoginView {
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         binding = DataBindingUtil.inflate<FragmentRecommendationsBinding>(inflater, R.layout.fragment_recommendations, container, false)
-        (activity as AppCompatActivity).setSupportActionBar(binding.fragmentRecommendationsToolbar)
+        (activity as AppCompatActivity).setSupportActionBar(binding.toolbar)
 
-        binding.fragmentRecommendationsCardsContainer.setAdapter(adapter)
-        binding.fragmentRecommendationsProgress.visibility = View.GONE
+        binding.cardsContainer.setAdapter(adapter)
+        binding.progress.visibility = View.GONE
 
-        binding.fragmentRecommendationsTryAgain.setOnClickListener {
-            binding.fragmentRecommendationsError.visibility = View.GONE
-            binding.fragmentRecommendationsCardsContainer.visibility = View.VISIBLE
+        binding.tryAgain.setOnClickListener {
+            binding.error.visibility = View.GONE
+            binding.cardsContainer.visibility = View.VISIBLE
             createMockAccount()
         }
+
+        binding.expCounter.visibility = View.GONE
+        binding.expLevelNext.visibility = View.GONE
+        binding.expLevel.text = getString(R.string.app_name)
+        binding.expLevel.setTextAppearance(context, R.style.TextAppearance_AppCompat_Widget_ActionBar_Title)
 
         return binding.root
     }
@@ -83,10 +88,10 @@ class OnboardingFragment : Fragment(), LoginView {
     }
 
     override fun onNetworkError() {
-        binding.fragmentRecommendationsError.visibility = View.VISIBLE
+        binding.error.visibility = View.VISIBLE
 
-        binding.fragmentRecommendationsProgress.visibility = View.GONE
-        binding.fragmentRecommendationsCardsContainer.visibility = View.GONE
+        binding.progress.visibility = View.GONE
+        binding.cardsContainer.visibility = View.GONE
     }
 
     override fun onError(errorBody: String) {
@@ -95,7 +100,7 @@ class OnboardingFragment : Fragment(), LoginView {
 
     override fun onLoading() {
         if (completed == 1) {
-            binding.fragmentRecommendationsProgress.visibility = View.VISIBLE
+            binding.progress.visibility = View.VISIBLE
         }
     }
 

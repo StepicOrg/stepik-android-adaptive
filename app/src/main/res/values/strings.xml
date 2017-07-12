@@ -88,7 +88,12 @@
             </div>
         </div>
         <p>Solve tasks every day and gain exp points. For the certain amount of points you\'ll gain levels. Higher level means you better know this topic.</p>
+        <p>Streaks of correct answers increase points gain.</p>
     ]]></string>
-    <string name="exp_title">Current experience level is: <b>%d</b></string>
+    <string name="exp_title">Level <b>%d</b></string>
     <string name="exp_level_title">New level!</string>
+    <string name="exp_inc" translatable="false">+%d</string>
+    <string name="exp_current_progress" translatable="false">%d / %d</string>
+    <string name="exp_subtitle">%d points until next level</string>
+    <string name="onboarding_title">Intro</string>
 </resources>

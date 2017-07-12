@@ -7,6 +7,7 @@ import com.vk.sdk.VKSdk;
 
 import org.stepik.android.adaptive.pdd.Util;
 import org.stepik.android.adaptive.pdd.data.SharedPreferenceMgr;
+import org.stepik.android.adaptive.pdd.util.ExpUtil;
 
 import io.reactivex.Completable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -20,6 +21,7 @@ public class LogoutHelper {
                     removeCookiesCompat();
                     VKSdk.logout();
                     SharedPreferenceMgr.getInstance().removeProfile();
+                    ExpUtil.reset();
                 })
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
