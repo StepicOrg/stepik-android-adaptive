@@ -20,6 +20,7 @@ import android.widget.ImageView
 import org.stepik.android.adaptive.pdd.R
 import org.stepik.android.adaptive.pdd.data.AnalyticMgr
 import org.stepik.android.adaptive.pdd.databinding.RateAppDialogBinding
+import org.stepik.android.adaptive.pdd.util.RateAppUtil
 
 class RateAppDialog : DialogFragment() {
     companion object {
@@ -38,7 +39,8 @@ class RateAppDialog : DialogFragment() {
         binding = DataBindingUtil.inflate(activity.layoutInflater, R.layout.rate_app_dialog, null, false)
 
         adapter = StarsAdapter(5, savedInstanceState?.getInt(RATING_COUNT_KEY) ?: -1, binding)
-        adapter.enabled = savedInstanceState?.getBoolean(RATING_COUNT_KEY) ?: true
+        adapter.enabled = savedInstanceState?.getBoolean(RATING_ENABLED_KEY) ?: true
+        binding.ok.isEnabled = adapter.selected > -1
 
         binding.starsContainer.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
         binding.starsContainer.adapter = adapter
@@ -55,6 +57,7 @@ class RateAppDialog : DialogFragment() {
             } else {
                 AnalyticMgr.getInstance().rateNegativeLater()
             }
+            RateAppUtil.onCloseLater()
             dismiss()
         }
 
@@ -67,11 +70,14 @@ class RateAppDialog : DialogFragment() {
             intent.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.feedback_negative_title))
             intent.putExtra(Intent.EXTRA_EMAIL, arrayOf(getString(R.string.feedback_negative_title)))
             intent.type = "message/rfc822"
+
             val mailer = Intent.createChooser(intent, null)
             try {
                 startActivity(mailer)
             } catch (e: ActivityNotFoundException) {}
+
             AnalyticMgr.getInstance().rateNegativeEmail()
+            RateAppUtil.onCloseNegative()
             dismiss()
         }
 
@@ -85,6 +91,7 @@ class RateAppDialog : DialogFragment() {
                 startActivity(intent)
             }
             AnalyticMgr.getInstance().ratePositiveGooglePlay()
+            RateAppUtil.onRated()
             dismiss()
         }
 

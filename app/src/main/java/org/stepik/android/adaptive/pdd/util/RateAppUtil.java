@@ -3,7 +3,7 @@ package org.stepik.android.adaptive.pdd.util;
 import org.stepik.android.adaptive.pdd.data.SharedPreferenceMgr;
 
 public class RateAppUtil {
-    private static long NOTIFY_DELAY_LATER    = 1000 * 60 * 60 * 24;
+    private static long NOTIFY_DELAY_LATER    = 1000 * 60 * 60 * 24 * 2;
     private static long NOTIFY_DELAY_NEGATIVE = 1000 * 60 * 60 * 24 * 14;
 
     private static int REQUIRED_ENGAGEMENT = 10;
