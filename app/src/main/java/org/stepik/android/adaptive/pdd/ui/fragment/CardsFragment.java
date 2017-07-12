@@ -143,12 +143,14 @@ public final class CardsFragment extends Fragment implements AnswerListener {
 
         final long prev = ExpUtil.getNextLevelExp(level - 1);
         final long next = ExpUtil.getNextLevelExp(level);
-        binding.expProgress.setMax((int) (next - prev));
-        binding.expProgress.setProgress((int) (exp - prev));
+        if (binding != null) {
+            binding.expProgress.setMax((int) (next - prev));
+            binding.expProgress.setProgress((int) (exp - prev));
 
-        binding.expCounter.setText(Long.toString(exp)); //String.format(getString(R.string.exp_current_progress), exp - prev, next - prev));
-        binding.expLevel.setText(String.format(getString(R.string.exp_title), level));
-        binding.expLevelNext.setText(String.format(getString(R.string.exp_subtitle), next - exp));
+            binding.expCounter.setText(Long.toString(exp)); //String.format(getString(R.string.exp_current_progress), exp - prev, next - prev));
+            binding.expLevel.setText(String.format(getString(R.string.exp_title), level));
+            binding.expLevelNext.setText(String.format(getString(R.string.exp_subtitle), next - exp));
+        }
 
         if (showLevelDialog && level != ExpUtil.getCurrentLevel(exp - streak)) {
             onLevelGained(level);
@@ -157,20 +159,22 @@ public final class CardsFragment extends Fragment implements AnswerListener {
 
     public void onCorrectAnswer() {
         final long streak = ExpUtil.incStreak();
-        binding.expInc.setText(String.format(getString(R.string.exp_inc), streak));
-        binding.expInc.setAlpha(1);
-        binding.expInc.animate()
-                .alpha(0)
-                .setInterpolator(new DecelerateInterpolator())
-                .setStartDelay(1500)
-                .setDuration(200)
-                .start();
+        if (binding != null) {
+            binding.expInc.setText(String.format(getString(R.string.exp_inc), streak));
+            binding.expInc.setAlpha(1);
+            binding.expInc.animate()
+                    .alpha(0)
+                    .setInterpolator(new DecelerateInterpolator())
+                    .setStartDelay(1500)
+                    .setDuration(200)
+                    .start();
 
-        final int x = binding.toolbar.getWidth()
-                - binding.expInc.getWidth() / 2
-                - ((FrameLayout.LayoutParams) binding.expInc.getLayoutParams()).getMarginEnd();
-        final int y = binding.toolbar.getHeight() / 2;
-        CommonConfetti.explosion((CoordinatorLayout) binding.getRoot(), x, y, confettiColors).oneShot();
+            final int x = binding.toolbar.getWidth()
+                    - binding.expInc.getWidth() / 2
+                    - ((FrameLayout.LayoutParams) binding.expInc.getLayoutParams()).getMarginEnd();
+            final int y = binding.toolbar.getHeight() / 2;
+            CommonConfetti.explosion((CoordinatorLayout) binding.getRoot(), x, y, confettiColors).oneShot();
+        }
 
         updateExpProgressBar(ExpUtil.addExp(streak), streak, true);
     }
