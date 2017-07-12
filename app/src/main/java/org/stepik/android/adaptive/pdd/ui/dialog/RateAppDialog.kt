@@ -2,6 +2,7 @@ package org.stepik.android.adaptive.pdd.ui.dialog
 
 import android.app.Dialog
 import android.content.ActivityNotFoundException
+import android.content.DialogInterface
 import android.content.Intent
 import android.databinding.DataBindingUtil
 import android.net.Uri
@@ -17,6 +18,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import org.stepik.android.adaptive.pdd.R
+import org.stepik.android.adaptive.pdd.data.AnalyticMgr
 import org.stepik.android.adaptive.pdd.databinding.RateAppDialogBinding
 
 class RateAppDialog : DialogFragment() {
@@ -44,6 +46,16 @@ class RateAppDialog : DialogFragment() {
         binding.ok.setOnClickListener {
             adapter.enabled = false
             adapter.refresh()
+            AnalyticMgr.getInstance().rate(adapter.selected + 1)
+        }
+
+        binding.later.setOnClickListener {
+            if (adapter.selected >= StarsAdapter.MIN_POSITIVE) {
+                AnalyticMgr.getInstance().ratePositiveLater()
+            } else {
+                AnalyticMgr.getInstance().rateNegativeLater()
+            }
+            dismiss()
         }
 
         if (!adapter.enabled) {
@@ -59,6 +71,7 @@ class RateAppDialog : DialogFragment() {
             try {
                 startActivity(mailer)
             } catch (e: ActivityNotFoundException) {}
+            AnalyticMgr.getInstance().rateNegativeEmail()
             dismiss()
         }
 
@@ -71,6 +84,7 @@ class RateAppDialog : DialogFragment() {
                 intent.data = Uri.parse("http://play.google.com/store/apps/details?id=${context.packageName}")
                 startActivity(intent)
             }
+            AnalyticMgr.getInstance().ratePositiveGooglePlay()
             dismiss()
         }
 
@@ -86,6 +100,11 @@ class RateAppDialog : DialogFragment() {
         outState?.putInt(RATING_COUNT_KEY, adapter.selected)
         outState?.putBoolean(RATING_ENABLED_KEY, adapter.enabled)
         super.onSaveInstanceState(outState)
+    }
+
+    override fun onDismiss(dialog: DialogInterface?) {
+        AnalyticMgr.getInstance().rateCanceled()
+        super.onDismiss(dialog)
     }
 
     private class StarsAdapter(private val stars: Int, var selected: Int, val binding: RateAppDialogBinding) : RecyclerView.Adapter<StarsAdapter.StarViewHolder>() {

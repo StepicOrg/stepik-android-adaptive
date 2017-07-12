@@ -25,6 +25,16 @@ public final class AnalyticMgr {
 
     private final static String PARAM_LESSON = "lesson";
 
+    private final static String EVENT_APP_RATE = "app_rate";
+    private final static String EVENT_APP_RATE_CANCELED = "app_rate_canceled";
+    private final static String PARAM_RATING = "rating";
+
+    private final static String EVENT_APP_RATE_POSITIVE_LATER = "app_rate_positive_later";
+    private final static String EVENT_APP_RATE_POSITIVE_GOOGLE_PLAY = "app_rate_positive_google_play";
+
+    private final static String EVENT_APP_RATE_NEGATIVE_LATER = "app_rate_negative_later";
+    private final static String EVENT_APP_RATE_NEGATIVE_EMAIL = "app_rate_negative_email";
+
     private static AnalyticMgr instance;
 
     private final FirebaseAnalytics firebaseAnalytics;
@@ -82,5 +92,31 @@ public final class AnalyticMgr {
                 logEventWithLesson(EVENT_WRONG_ANSWER, lesson);
             break;
         }
+    }
+
+    public void rate(int rating) {
+        final Bundle bundle = new Bundle();
+        bundle.putInt(PARAM_RATING, rating);
+        firebaseAnalytics.logEvent(EVENT_APP_RATE, bundle);
+    }
+
+    public void rateCanceled() {
+        firebaseAnalytics.logEvent(EVENT_APP_RATE_CANCELED, null);
+    }
+
+    public void ratePositiveLater() {
+        firebaseAnalytics.logEvent(EVENT_APP_RATE_POSITIVE_LATER, null);
+    }
+
+    public void ratePositiveGooglePlay() {
+        firebaseAnalytics.logEvent(EVENT_APP_RATE_POSITIVE_GOOGLE_PLAY, null);
+    }
+
+    public void rateNegativeLater() {
+        firebaseAnalytics.logEvent(EVENT_APP_RATE_NEGATIVE_LATER, null);
+    }
+
+    public void rateNegativeEmail() {
+        firebaseAnalytics.logEvent(EVENT_APP_RATE_NEGATIVE_EMAIL, null);
     }
 }
