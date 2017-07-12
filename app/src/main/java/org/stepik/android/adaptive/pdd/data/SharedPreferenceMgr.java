@@ -109,7 +109,7 @@ public final class SharedPreferenceMgr {
         return getLong(PROFILE_ID);
     }
 
-    private void saveBoolean(String name, Boolean data) {
+    public void saveBoolean(String name, Boolean data) {
         sharedPreferences.edit().putBoolean(name, data).apply();
     }
 
@@ -129,7 +129,7 @@ public final class SharedPreferenceMgr {
         return sharedPreferences.getLong(name, 0);
     }
 
-    private boolean getBoolean(final String name) {
+    public boolean getBoolean(final String name) {
         return sharedPreferences.getBoolean(name, false);
     }
 

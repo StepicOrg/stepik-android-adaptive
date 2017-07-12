@@ -26,9 +26,11 @@ import org.stepik.android.adaptive.pdd.data.model.RecommendationReaction;
 import org.stepik.android.adaptive.pdd.databinding.FragmentRecommendationsBinding;
 import org.stepik.android.adaptive.pdd.ui.adapter.QuizCardsAdapter;
 import org.stepik.android.adaptive.pdd.ui.dialog.ExpLevelDialog;
+import org.stepik.android.adaptive.pdd.ui.dialog.RateAppDialog;
 import org.stepik.android.adaptive.pdd.ui.helper.CardHelper;
 import org.stepik.android.adaptive.pdd.ui.listener.AnswerListener;
 import org.stepik.android.adaptive.pdd.util.ExpUtil;
+import org.stepik.android.adaptive.pdd.util.RateAppUtil;
 
 import java.util.ArrayDeque;
 import java.util.List;
@@ -43,6 +45,9 @@ import io.reactivex.subjects.PublishSubject;
 
 public final class CardsFragment extends Fragment implements AnswerListener {
     private final static String TAG = "CardsFragment";
+
+    private static final String LEVEL_DIALOG_TAG = "level_dialog";
+    private static final String RATE_APP_DIALOG_TAG = "rate_app_dialog";
 
     private final CompositeDisposable compositeDisposable = new CompositeDisposable();
     private final PublishSubject<View> retrySubject = PublishSubject.create();
@@ -176,6 +181,10 @@ public final class CardsFragment extends Fragment implements AnswerListener {
             CommonConfetti.explosion((CoordinatorLayout) binding.getRoot(), x, y, confettiColors).oneShot();
         }
 
+        if (RateAppUtil.onEngagement()) {
+            new RateAppDialog().show(getChildFragmentManager(), RATE_APP_DIALOG_TAG);
+        }
+
         updateExpProgressBar(ExpUtil.addExp(streak), streak, true);
     }
 
@@ -184,7 +193,7 @@ public final class CardsFragment extends Fragment implements AnswerListener {
     }
 
     private void onLevelGained(final long level) {
-        ExpLevelDialog.Companion.newInstance(level).show(getChildFragmentManager(), "LEVEL");
+        ExpLevelDialog.Companion.newInstance(level).show(getChildFragmentManager(), LEVEL_DIALOG_TAG);
     }
 
     /**
