@@ -96,4 +96,12 @@
     <string name="exp_current_progress" translatable="false">%d / %d</string>
     <string name="exp_subtitle">%d points until next level</string>
     <string name="onboarding_title">Intro</string>
+    <string name="rate_app_title">Rate app</string>
+    <string name="rate_app_message">How much do you like this app?</string>
+    <string name="google_play" translatable="false">Google Play</string>
+    <string name="feedback_positive">Thank you! Please, leave your feedback in the Google Play.</string>
+    <string name="feedback_negative">Thank you! Please, send your feedback by email.</string>
+    <string name="confirm">Confirm</string>
+    <string name="later">Later</string>
+    <string name="feedback_negative_title">Feedback for Android adaptive application</string>
 </resources>

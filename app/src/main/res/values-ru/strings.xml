@@ -92,4 +92,11 @@
     <string name="exp_level_title">Новый уровень!</string>
     <string name="exp_subtitle">%d опыта до нового уровня</string>
     <string name="onboarding_title">Вступление</string>
+    <string name="rate_app_title">Оцените приложение</string>
+    <string name="rate_app_message">Насколько вам нравится пользоваться этим приложением?</string>
+    <string name="feedback_positive">Спасибо! Пожалуйста, оставьте ваш отзыв в Google Play.</string>
+    <string name="feedback_negative">Спасибо! Пожалуйста, отправьте ваш отзыв по email, чтобы мы смогли исправить все недочёты.</string>
+    <string name="confirm">Подтвердить</string>
+    <string name="later">Позже</string>
+    <string name="feedback_negative_title">Отзыв об адаптивном приложении для Android</string>
 </resources>
