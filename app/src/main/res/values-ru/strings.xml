@@ -86,8 +86,10 @@
             </div>
         </div>
         <p>Тренируйтесь каждый день и получайте очки опыта. За определенное количество очков опыта вы будете получать уровни, а чем выше ваш уровень, тем лучше вы знаете данную тему.</p>
+        <p>Также несколько правильных ответов подряд увеличивают количество получаемого опыта.
     ]]></string>
-    <string name="exp_title">Уровень: <b>%d</b></string>
+    <string name="exp_title">Уровень <b>%d</b></string>
     <string name="exp_level_title">Новый уровень!</string>
-    <string name="exp_subtitle">%d опыта до следующего</string>
+    <string name="exp_subtitle">%d опыта до нового уровня</string>
+    <string name="onboarding_title">Вступление</string>
 </resources>

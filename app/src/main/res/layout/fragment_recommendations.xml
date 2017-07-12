@@ -7,7 +7,7 @@
         android:background="@color/primaryBackground">
 
         <android.support.design.widget.AppBarLayout
-            android:id="@+id/fragment_recommendations_appbar"
+            android:id="@+id/appbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:fitsSystemWindows="true"
@@ -16,7 +16,7 @@
             app:elevation="0dp">
 
             <android.support.v7.widget.Toolbar
-                android:id="@+id/fragment_recommendations_toolbar"
+                android:id="@+id/toolbar"
                 android:title=""
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
@@ -32,7 +32,7 @@
                         android:layout_marginStart="4dp"
                         android:orientation="vertical">
                         <TextView
-                            android:id="@+id/fragment_recommendations_exp_level"
+                            android:id="@+id/exp_level"
                             android:layout_gravity="start"
                             android:text="@string/exp_title"
                             android:layout_width="wrap_content"
@@ -40,7 +40,7 @@
                             android:textColor="@color/colorGrayText"
                             style="@style/TextAppearance.AppCompat.Widget.ActionBar.Subtitle"/>
                         <TextView
-                            android:id="@+id/fragment_recommendations_exp_level_next"
+                            android:id="@+id/exp_level_next"
                             android:layout_gravity="start"
                             android:text="@string/exp_title"
                             android:layout_width="wrap_content"
@@ -56,21 +56,20 @@
                         android:layout_gravity="end|center_vertical"
                         android:layout_marginEnd="16dp">
                         <TextView
-                            android:id="@+id/fragment_recommendations_exp_counter"
+                            android:id="@+id/exp_counter"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:fontFamily="sans-serif-black"
+                            android:textStyle="bold"
                             android:background="@drawable/gray_circle"
                             android:gravity="center"/>
                         <TextView
-                            android:id="@+id/fragment_recommendations_exp_inc"
-                            android:alpha="0"
-                            android:text="@string/exp_inc"
-                            android:background="@drawable/green_circle"
-                            android:textColor="@android:color/white"
-                            android:fontFamily="sans-serif-black"
+                            android:id="@+id/exp_inc"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
+                            android:textStyle="bold"
+                            android:background="@drawable/green_circle"
+                            android:textColor="@android:color/white"
+                            android:alpha="0"
                             android:gravity="center" />
                     </FrameLayout>
                 </FrameLayout>
@@ -78,7 +77,7 @@
             </android.support.v7.widget.Toolbar>
 
             <me.zhanghai.android.materialprogressbar.MaterialProgressBar
-                android:id="@+id/fragment_recommendations_exp_progress"
+                android:id="@+id/exp_progress"
                 style="@style/Widget.MaterialProgressBar.ProgressBar.Horizontal"
                 android:layout_width="match_parent"
                 android:layout_height="2dp"
@@ -103,7 +102,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:orientation="vertical"
-                android:id="@+id/fragment_recommendations_progress">
+                android:id="@+id/progress">
 
                 <pl.droidsonroids.gif.GifImageView
                     android:layout_width="wrap_content"
@@ -116,11 +115,11 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
                     android:layout_gravity="center_horizontal"
-                    android:id="@+id/fragment_recommendations_loading_placeholder"/>
+                    android:id="@+id/loading_placeholder"/>
             </LinearLayout>
 
             <org.stepik.android.adaptive.pdd.ui.view.QuizCardsContainer
-                android:id="@+id/fragment_recommendations_cards_container"
+                android:id="@+id/cards_container"
                 android:layout_gravity="center"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
@@ -132,7 +131,7 @@
                 android:orientation="vertical"
                 android:layout_gravity="center"
                 android:gravity="center_horizontal"
-                android:id="@+id/fragment_recommendations_course_completed">
+                android:id="@+id/course_completed">
 
                 <ImageView
                     android:layout_width="125dp"
@@ -147,7 +146,7 @@
                     android:layout_marginTop="16dp"
                     android:textColor="@color/colorGrayText"
                     android:text="@string/course_completed"
-                    android:id="@+id/fragment_recommendations_course_completed_text"/>
+                    android:id="@+id/course_completed_text"/>
 
             </LinearLayout>
 
@@ -158,7 +157,7 @@
                 android:orientation="vertical"
                 android:layout_gravity="center"
                 android:gravity="center_horizontal"
-                android:id="@+id/fragment_recommendations_error">
+                android:id="@+id/error">
 
                 <ImageView
                     android:layout_width="125dp"
@@ -180,7 +179,7 @@
                     style="@style/Widget.AppCompat.Button.Borderless"
                     android:textColor="@color/borderless_button_text_color"
                     android:text="@string/try_again"
-                    android:id="@+id/fragment_recommendations_try_again" />
+                    android:id="@+id/try_again" />
             </LinearLayout>
         </FrameLayout>
     </android.support.design.widget.CoordinatorLayout>
