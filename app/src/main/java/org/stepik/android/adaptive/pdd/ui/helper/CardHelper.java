@@ -14,8 +14,8 @@ import io.reactivex.Observable;
 
 public class CardHelper {
 
-    private final static int CARDS_IN_CACHE = 10;
-    private final static int MIN_CARDS_IN_CACHE = 5;
+    private final static int CARDS_IN_CACHE = 6;
+    private final static int MIN_CARDS_IN_CACHE = 4;
 
     public static Observable<RecommendationsResponse> createReactionObservable(final long lesson, final RecommendationReaction.Reaction reaction, final int cacheSize) {
         final Observable<RecommendationsResponse> responseObservable = API.getInstance().getNextRecommendations(CARDS_IN_CACHE);
