@@ -117,8 +117,10 @@ class QuizCardViewHolder(val binding: QuizCardViewBinding) : ContainerView.ViewH
                 binding.fragmentRecommendationsNext.visibility = View.VISIBLE
                 binding.fragmentRecommendationsContainer.isEnabled = true
 
-                binding.fragmentRecommendationsHint.text = submission.hint
-                binding.fragmentRecommendationsHint.visibility = View.VISIBLE
+                if (submission.hint.isNotBlank()) {
+                    binding.fragmentRecommendationsHint.text = submission.hint
+                    binding.fragmentRecommendationsHint.visibility = View.VISIBLE
+                }
 
                 if (animate) {
                     CardHelper.scrollDown(binding.fragmentRecommendationsScroll)
