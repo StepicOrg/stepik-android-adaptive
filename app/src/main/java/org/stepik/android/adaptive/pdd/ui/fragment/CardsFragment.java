@@ -9,12 +9,10 @@ import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.text.method.LinkMovementMethod;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.DecelerateInterpolator;
-import android.widget.FrameLayout;
 
 import com.github.jinatonic.confetti.CommonConfetti;
 
@@ -197,7 +195,6 @@ public final class CardsFragment extends Fragment implements AnswerListener {
     private void confetti() {
         if (binding != null) {
             final int x = (int) (binding.expBubble.getX() + ((View) binding.expBubble.getParent()).getX()) + binding.expBubble.getWidth() / 2;
-            Log.d(getClass().getCanonicalName(), binding.expBubble.getX() + "   " + binding.expBubble.getWidth());
             final int y = (int) (binding.expBubble.getY() + binding.expBubble.getPivotY());
             CommonConfetti.explosion((CoordinatorLayout) binding.getRoot(), x, y, confettiColors).oneShot();
         }

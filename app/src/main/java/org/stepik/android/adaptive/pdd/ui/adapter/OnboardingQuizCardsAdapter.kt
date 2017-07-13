@@ -8,21 +8,20 @@ class OnboardingQuizCardsAdapter(private val onOnboardingEnd: () -> Unit) : Quiz
         super.onBindViewHolder(holder, pos)
         holder.binding.answers.visibility = View.GONE
         holder.binding.question.setOnWebViewClickListener(null)
+
+        holder.binding.separatorAnswers.visibility = View.GONE
+        holder.binding.separatorHint.visibility = View.GONE
     }
 
     override fun onBindTopCard(holder: QuizCardViewHolder, pos: Int) {
         super.onBindTopCard(holder, pos)
         holder.binding.submit.visibility = View.GONE
 
-        holder.binding.separatorAnswers.visibility = View.GONE
-        holder.binding.separatorHint.visibility = View.GONE
-
         when (getItemCount()) {
             4, 1 -> {
                 holder.binding.next.visibility = View.VISIBLE
                 holder.binding.container.isEnabled = false
             }
-
         }
     }
 
