@@ -34,6 +34,7 @@ public class ListContainer extends LinearLayout implements ContainerView {
     @Override
     public void setAdapter(@NotNull ContainerAdapter adapter) {
         this.adapter = adapter;
+        this.adapter.setContainer(this);
         holders.clear();
         for (int i = 0; i < adapter.getItemCount(); i++)
             holders.add(adapter.onCreateViewHolder(this));
