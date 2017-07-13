@@ -49,8 +49,6 @@ public final class Card extends Observable<Card> {
     public Card(final long lessonId) {
         this.lessonId = lessonId;
         this.adapter = new AttemptAnswersAdapter();
-
-        init();
     }
 
     public void init() {
@@ -141,6 +139,7 @@ public final class Card extends Observable<Card> {
     @Override
     protected void subscribeActual(Observer<? super Card> observer) {
         this.observer = observer;
+        init();
         notifyDataChanged();
     }
 
