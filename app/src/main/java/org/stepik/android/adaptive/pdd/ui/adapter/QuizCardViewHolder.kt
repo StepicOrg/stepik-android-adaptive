@@ -10,7 +10,6 @@ import org.stepik.android.adaptive.pdd.databinding.QuizCardViewBinding
 import org.stepik.android.adaptive.pdd.ui.helper.AnimationHelper
 import org.stepik.android.adaptive.pdd.ui.helper.CardHelper
 import org.stepik.android.adaptive.pdd.ui.view.QuizCardView
-import org.stepik.android.adaptive.pdd.ui.view.QuizCardsContainer
 import org.stepik.android.adaptive.pdd.util.HtmlUtil
 import android.support.v7.widget.LinearLayoutManager
 import android.view.ViewGroup
@@ -18,8 +17,9 @@ import android.webkit.WebSettings
 import org.stepik.android.adaptive.pdd.R
 import org.stepik.android.adaptive.pdd.core.ScreenManager
 import org.stepik.android.adaptive.pdd.ui.DefaultWebViewClient
+import org.stepik.android.adaptive.pdd.ui.view.container.ContainerView
 
-class QuizCardViewHolder(val binding: QuizCardViewBinding) : QuizCardsContainer.CardViewHolder(binding.root), CardView {
+class QuizCardViewHolder(val binding: QuizCardViewBinding) : ContainerView.ViewHolder(binding.root), CardView {
     init {
         val settings = binding.fragmentRecommendationsQuestion.settings
         settings.allowContentAccess = false
@@ -31,8 +31,8 @@ class QuizCardViewHolder(val binding: QuizCardViewBinding) : QuizCardsContainer.
         binding.fragmentRecommendationsQuestion.setOnWebViewClickListener { path -> ScreenManager.showImage(binding.root.context, path) }
         binding.fragmentRecommendationsQuestion.setLayerType(View.LAYER_TYPE_SOFTWARE, null)
 
-        binding.fragmentRecommendationsAnswers.isNestedScrollingEnabled = false
-        binding.fragmentRecommendationsAnswers.layoutManager = LinearLayoutManager(binding.root.context)
+//        binding.fragmentRecommendationsAnswers.isNestedScrollingEnabled = false
+//        binding.fragmentRecommendationsAnswers.layoutManager = LinearLayoutManager(binding.root.context)
 
         binding.fragmentRecommendationsNext.setOnClickListener { binding.fragmentRecommendationsContainer.swipeDown() }
         binding.fragmentRecommendationsSubmit.setOnClickListener { presenter?.createSubmission() }
