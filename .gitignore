@@ -33,4 +33,5 @@ Thumbs.db
 .idea
 .gradle
 build/
+buildsystem/
 google-services.json
