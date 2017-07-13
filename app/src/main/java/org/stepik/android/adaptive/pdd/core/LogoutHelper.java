@@ -33,7 +33,7 @@ public class LogoutHelper {
         }
     }
 
-    private static void removeCookiesCompat() {
+    public static void removeCookiesCompat() {
         if (Util.isLowAndroidVersion()) {
             CookieManager.getInstance().removeAllCookie();
         } else {

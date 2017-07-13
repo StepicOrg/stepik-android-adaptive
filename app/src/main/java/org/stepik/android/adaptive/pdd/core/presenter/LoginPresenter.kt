@@ -38,7 +38,7 @@ class LoginPresenter : PresenterBase<LoginView>() {
         disposable.add(API.getInstance()
                 .joinCourse(Config.getInstance().courseId)
                 .subscribeOn(Schedulers.io())
-                .subscribe())
+                .subscribe({}, { this.onError() }))
 
         disposable.add(API.getInstance().profile
                 .doOnNext({ SharedPreferenceMgr.getInstance().saveProfile(it.profile) })

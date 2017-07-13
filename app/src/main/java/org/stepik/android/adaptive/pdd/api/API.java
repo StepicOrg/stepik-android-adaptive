@@ -169,6 +169,7 @@ public final class API {
         OkHttpClient.Builder okHttpBuilder = new OkHttpClient.Builder();
         okHttpBuilder.addNetworkInterceptor(chain -> {
             Request newRequest = addUserAgentTo(chain);
+            LogoutHelper.removeCookiesCompat();
             updateCookieForBaseUrl();
             String cookies = CookieManager.getInstance().getCookie(API.HOST);
             if (cookies == null)
