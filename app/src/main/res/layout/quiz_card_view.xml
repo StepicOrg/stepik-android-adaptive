@@ -129,7 +129,7 @@
                 android:background="@color/colorStroke"
                 android:id="@+id/fragment_recommendations_bottom_divider"/>
 
-            <android.support.v4.widget.NestedScrollView
+            <ScrollView
                 android:background="@android:color/white"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -150,7 +150,7 @@
                         android:layout_height="1dp"
                         android:background="@color/colorStroke"/>
 
-                    <android.support.v7.widget.RecyclerView
+                    <org.stepik.android.adaptive.pdd.ui.view.ListContainer
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:id="@+id/fragment_recommendations_answers" />
@@ -176,7 +176,7 @@
                         android:id="@+id/fragment_recommendations_answers_progress" />
 
                 </LinearLayout>
-            </android.support.v4.widget.NestedScrollView>
+            </ScrollView>
 
 
             <View

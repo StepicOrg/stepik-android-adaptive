@@ -73,7 +73,6 @@ public final class CardsFragment extends Fragment implements AnswerListener {
         setRetainInstance(true);
         compositeDisposable.add(retrySubject.observeOn(AndroidSchedulers.mainThread()).subscribe(v -> retry()));
         loadingPlaceholders = getResources().getStringArray(R.array.recommendation_loading_placeholders);
-        adapter.attachFragment(this);
 
         confettiColors = new int[]{
                 Color.BLACK,

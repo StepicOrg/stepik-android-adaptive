@@ -4,15 +4,14 @@ import android.databinding.DataBindingUtil;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
+import org.jetbrains.annotations.NotNull;
 import org.stepik.android.adaptive.pdd.R;
 import org.stepik.android.adaptive.pdd.core.presenter.CardPresenter;
 import org.stepik.android.adaptive.pdd.data.model.Card;
-import org.stepik.android.adaptive.pdd.ui.fragment.CardsFragment;
 import org.stepik.android.adaptive.pdd.ui.listener.AdaptiveReactionListener;
 import org.stepik.android.adaptive.pdd.ui.listener.AnswerListener;
 import org.stepik.android.adaptive.pdd.ui.view.QuizCardsContainer;
 
-import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,14 +25,7 @@ public class QuizCardsAdapter extends QuizCardsContainer.CardsAdapter<QuizCardVi
         this.answerListener = answerListener;
     }
 
-    private WeakReference<CardsFragment> fragmentWeakReference = new WeakReference<>(null);
-
-    public void attachFragment(CardsFragment fragment) {
-        fragmentWeakReference = new WeakReference<>(fragment);
-    }
-
     public void recycle() {
-        fragmentWeakReference.clear();
         for (final CardPresenter presenter : presenters) {
             presenter.destroy();
         }
@@ -55,8 +47,9 @@ public class QuizCardsAdapter extends QuizCardsContainer.CardsAdapter<QuizCardVi
         return false;
     }
 
+    @NotNull
     @Override
-    protected QuizCardViewHolder onCreateViewHolder(ViewGroup parent) {
+    public QuizCardViewHolder onCreateViewHolder(@NotNull ViewGroup parent) {
         return new QuizCardViewHolder(DataBindingUtil.inflate(LayoutInflater.from(parent.getContext()), R.layout.quiz_card_view, parent, false));
     }
 
@@ -66,7 +59,7 @@ public class QuizCardsAdapter extends QuizCardsContainer.CardsAdapter<QuizCardVi
     }
 
     @Override
-    protected void onBindViewHolder(QuizCardViewHolder holder, int pos) {
+    public void onBindViewHolder(@NotNull QuizCardViewHolder holder, int pos) {
         holder.bind(presenters.get(pos));
     }
 
@@ -77,7 +70,7 @@ public class QuizCardsAdapter extends QuizCardsContainer.CardsAdapter<QuizCardVi
 
     public void add(Card card) {
         presenters.add(new CardPresenter(card, listener, answerListener));
-        notifyDataAdded();
+        onDataAdded();
     }
 
     @Override

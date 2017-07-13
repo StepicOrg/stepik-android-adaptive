@@ -7,16 +7,17 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
 import org.jetbrains.annotations.NotNull;
 import org.stepik.android.adaptive.pdd.Util;
+import org.stepik.android.adaptive.pdd.ui.view.container.ContainerAdapter;
+import org.stepik.android.adaptive.pdd.ui.view.container.ContainerView;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class QuizCardsContainer extends FrameLayout {
+public class QuizCardsContainer extends FrameLayout implements ContainerView {
     private final static int BUFFER_SIZE = 4;
     private final static int CARD_OFFSET = (int)(Resources.getSystem().getDisplayMetrics().density * 10);
 
@@ -58,20 +59,11 @@ public class QuizCardsContainer extends FrameLayout {
         }
     };
 
-    private CardsAdapter adapter;
-
-    public final void setAdapter(@NotNull CardsAdapter adapter) {
-        this.adapter = adapter;
-        this.adapter.container = this;
-        initCards();
-    }
-
-
-    private List<CardViewHolder> cardHolders = new ArrayList<>();
+    private List<ContainerView.ViewHolder> cardHolders = new ArrayList<>();
 
     @org.jetbrains.annotations.Nullable
     public View getTopCardView() {
-        CardViewHolder holder = cardHolders.get(0);
+        ContainerView.ViewHolder holder = cardHolders.get(0);
         return holder.isAttached() ? holder.getView() : null;
     }
 
@@ -80,20 +72,69 @@ public class QuizCardsContainer extends FrameLayout {
         for (int i = 0; i < BUFFER_SIZE; i++) {
             cardHolders.add(adapter.onCreateViewHolder(this));
         }
-        notifyDataSetChanged();
+        onDataSetChanged();
     }
 
+    private void poll() {
+        removeView(cardHolders.remove(0).getView());
+        adapter.poll();
+        cardHolders.add(adapter.onCreateViewHolder(this));
+        onRebind();
+    }
 
-    public void notifyDataSetChanged() {
+    private void setViewState(View view, float mul, boolean allowEnable) {
+        view.setScaleX(1 - (0.02f * mul));
+        view.setScaleY(1 - (0.02f * mul));
+
+        view.setEnabled(mul == 0 && allowEnable);
+        view.setTranslationY(CARD_OFFSET * mul);
+
+        if (mul >= BUFFER_SIZE - 2) {
+            view.setAlpha(BUFFER_SIZE - mul - 1);
+        }
+    }
+
+    private CardsAdapter adapter;
+
+    @Override
+    public final void setAdapter(@NotNull ContainerAdapter adapter) {
+        if (adapter instanceof CardsAdapter) {
+            this.adapter = (CardsAdapter) adapter;
+            this.adapter.setContainer(this);
+            initCards();
+        }
+    }
+
+    @Override
+    public void onDataSetChanged() {
         if (adapter == null) return;
         removeAllViews();
-        bindHolders();
+        onRebind();
     }
 
-    private void bindHolders() {
+    @Override
+    public void onDataAdded() {
+        onRebind();
+    }
+
+    @Override
+    public void onRebind() {
         final int size = Math.min(adapter.getItemCount(), BUFFER_SIZE);
         for (int i = 0; i < size; i++) {
-            CardViewHolder holder = cardHolders.get(i);
+            onRebind(i);
+        }
+
+        if (Util.isLowAndroidVersion()) {
+            for (int i = size - 1; i >= 0; i--)
+                cardHolders.get(i).getView().bringToFront();
+        }
+    }
+
+    @Override
+    public void onRebind(int i) {
+        final int size = Math.min(adapter.getItemCount(), BUFFER_SIZE);
+        if (0 <= i && i < cardHolders.size()) {
+            ContainerView.ViewHolder holder = cardHolders.get(i);
             View view = holder.getView();
             if (!holder.isAttached()) {
                 adapter.onBindViewHolder(holder, i);
@@ -113,64 +154,10 @@ public class QuizCardsContainer extends FrameLayout {
                 adapter.onBindTopCard(holder, 0);
             }
         }
-
-        if (Util.isLowAndroidVersion()) {
-            for (int i = size - 1; i >= 0; i--)
-                cardHolders.get(i).getView().bringToFront();
-        }
     }
 
-    private void poll() {
-        removeView(cardHolders.remove(0).getView());
-        adapter.poll();
-        cardHolders.add(adapter.onCreateViewHolder(this));
-        bindHolders();
-    }
-
-    private void setViewState(View view, float mul, boolean allowEnable) {
-        view.setScaleX(1 - (0.02f * mul));
-        view.setScaleY(1 - (0.02f * mul));
-
-        view.setEnabled(mul == 0 && allowEnable);
-        view.setTranslationY(CARD_OFFSET * mul);
-
-        if (mul >= BUFFER_SIZE - 2) {
-            view.setAlpha(BUFFER_SIZE - mul - 1);
-        }
-    }
-
-    public static abstract class CardsAdapter<VH extends CardViewHolder> {
-        private QuizCardsContainer container;
-
-        protected final void notifyDataAdded() {
-            if (container != null) container.bindHolders();
-        }
-
-        protected abstract VH onCreateViewHolder(ViewGroup parent);
-        protected abstract int getItemCount();
-        protected abstract void onBindViewHolder(VH holder, int pos);
+    public static abstract class CardsAdapter<VH extends ContainerView.ViewHolder> extends ContainerAdapter<VH> {
         protected abstract void poll();
         protected abstract void onBindTopCard(VH holder, int pos);
-    }
-
-    public static abstract class CardViewHolder {
-        private View view;
-        private boolean attached = false;
-
-        protected CardViewHolder(View view) {
-            this.view = view;
-        }
-
-        public View getView() {
-            return view;
-        }
-
-        private boolean isAttached() {
-            return attached;
-        }
-
-        private void setAttached(boolean attached) {
-            this.attached = attached;
-        }
     }
 }

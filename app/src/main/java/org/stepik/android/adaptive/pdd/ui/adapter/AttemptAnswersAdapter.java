@@ -5,21 +5,22 @@ import android.databinding.DataBindingUtil;
 import android.graphics.drawable.Drawable;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.graphics.drawable.DrawableCompat;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import org.jetbrains.annotations.NotNull;
 import org.stepik.android.adaptive.pdd.R;
 import org.stepik.android.adaptive.pdd.data.model.Attempt;
 import org.stepik.android.adaptive.pdd.data.model.Reply;
 import org.stepik.android.adaptive.pdd.data.model.Submission;
 import org.stepik.android.adaptive.pdd.databinding.ItemAnswerBinding;
+import org.stepik.android.adaptive.pdd.ui.view.container.ContainerAdapter;
+import org.stepik.android.adaptive.pdd.ui.view.container.ContainerView;
 
 import java.util.List;
 
-
-public class AttemptAnswersAdapter extends RecyclerView.Adapter<AttemptAnswersAdapter.AttemptAnswerViewHolder> {
+public class AttemptAnswersAdapter extends ContainerAdapter<AttemptAnswersAdapter.AttemptAnswerViewHolder> {
     private Attempt attempt;
     private List<String> options;
     private boolean[] selection;
@@ -41,7 +42,7 @@ public class AttemptAnswersAdapter extends RecyclerView.Adapter<AttemptAnswersAd
         }
         this.lastSelection = -1;
         this.selectedCount = 0;
-        this.notifyDataSetChanged();
+        this.onDataSetChanged();
     }
 
     public void setSubmitButton(final Button submitButton) {
@@ -67,14 +68,14 @@ public class AttemptAnswersAdapter extends RecyclerView.Adapter<AttemptAnswersAd
         } else {
             if (lastSelection != -1) {
                 selection[lastSelection] = false;
-                notifyItemChanged(lastSelection);
+                onRebind(lastSelection);
                 selectedCount--;
             }
             selection[pos] = true;
             selectedCount++;
         }
         lastSelection = pos;
-        notifyItemChanged(pos);
+        onRebind(pos);
         refreshSubmitButton();
     }
 
@@ -82,14 +83,15 @@ public class AttemptAnswersAdapter extends RecyclerView.Adapter<AttemptAnswersAd
         return new Submission(new Reply(selection), attempt.getId());
     }
 
+    @NotNull
     @Override
-    public AttemptAnswerViewHolder onCreateViewHolder(final ViewGroup parent, final int viewType) {
+    public AttemptAnswerViewHolder onCreateViewHolder(@NotNull final ViewGroup parent) {
         return new AttemptAnswerViewHolder(
                 DataBindingUtil.inflate(LayoutInflater.from(parent.getContext()), R.layout.item_answer, parent, false));
     }
 
     @Override
-    public void onBindViewHolder(final AttemptAnswerViewHolder holder, int position) {
+    public void onBindViewHolder(@NotNull final AttemptAnswerViewHolder holder, int position) {
         if (options != null) {
             holder.binding.itemAnswerText.setText(options.get(position));
 
@@ -105,10 +107,10 @@ public class AttemptAnswersAdapter extends RecyclerView.Adapter<AttemptAnswersAd
             final Drawable selectionImageDrawable =
                     DrawableCompat.wrap(ContextCompat.getDrawable(context, selectionImageDrawableId));
             DrawableCompat.setTint(selectionImageDrawable,
-                    context.getResources().getColor(selection[position] ? R.color.colorAccent : R.color.colorRadioButtonDefault));
+                    ContextCompat.getColor(context, selection[position] ? R.color.colorAccent : R.color.colorRadioButtonDefault));
             holder.binding.itemAnswerSelectionImage.setImageDrawable(selectionImageDrawable);
 
-            holder.binding.getRoot().setOnClickListener((v) -> this.select(holder.getAdapterPosition()));
+            holder.binding.getRoot().setOnClickListener((v) -> this.select(position));
         }
     }
 
@@ -125,7 +127,7 @@ public class AttemptAnswersAdapter extends RecyclerView.Adapter<AttemptAnswersAd
     }
 
 
-    class AttemptAnswerViewHolder extends RecyclerView.ViewHolder {
+    class AttemptAnswerViewHolder extends ContainerView.ViewHolder {
         private final ItemAnswerBinding binding;
 
         AttemptAnswerViewHolder(final ItemAnswerBinding binding) {
