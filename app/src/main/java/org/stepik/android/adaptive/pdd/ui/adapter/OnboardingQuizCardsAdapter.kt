@@ -6,17 +6,21 @@ class OnboardingQuizCardsAdapter(private val onOnboardingEnd: () -> Unit) : Quiz
 
     override fun onBindViewHolder(holder: QuizCardViewHolder, pos: Int) {
         super.onBindViewHolder(holder, pos)
-        holder.binding.fragmentRecommendationsAnswers?.visibility = View.GONE
-        holder.binding.fragmentRecommendationsQuestion?.setOnWebViewClickListener(null)
+        holder.binding.answers.visibility = View.GONE
+        holder.binding.question.setOnWebViewClickListener(null)
     }
 
-    override fun onBindTopCard(holder: QuizCardViewHolder?, pos: Int) {
+    override fun onBindTopCard(holder: QuizCardViewHolder, pos: Int) {
         super.onBindTopCard(holder, pos)
-        holder?.binding?.fragmentRecommendationsSubmit?.visibility = View.GONE
+        holder.binding.submit.visibility = View.GONE
+
+        holder.binding.separatorAnswers.visibility = View.GONE
+        holder.binding.separatorHint.visibility = View.GONE
+
         when (getItemCount()) {
             4, 1 -> {
-                holder?.binding?.fragmentRecommendationsNext?.visibility = View.VISIBLE
-                holder?.binding?.fragmentRecommendationsContainer?.isEnabled = false
+                holder.binding.next.visibility = View.VISIBLE
+                holder.binding.container.isEnabled = false
             }
 
         }

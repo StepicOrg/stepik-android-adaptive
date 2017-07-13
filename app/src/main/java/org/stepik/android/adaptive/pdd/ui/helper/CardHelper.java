@@ -1,6 +1,5 @@
 package org.stepik.android.adaptive.pdd.ui.helper;
 
-import android.support.v4.widget.NestedScrollView;
 import android.view.View;
 import android.widget.ScrollView;
 
@@ -34,13 +33,13 @@ public class CardHelper {
     }
 
     public static void resetSupplementalActions(final QuizCardViewBinding binding) {
-        binding.fragmentRecommendationsNext.setVisibility(View.GONE);
-        binding.fragmentRecommendationsCorrect.setVisibility(View.GONE);
-        binding.fragmentRecommendationsWrong.setVisibility(View.GONE);
-        binding.fragmentRecommendationsWrongRetry.setVisibility(View.GONE);
-        binding.fragmentRecommendationsAnswersProgress.setVisibility(View.GONE);
-        binding.fragmentRecommendationsHint.setVisibility(View.GONE);
-        binding.fragmentRecommendationsSubmit.setVisibility(View.VISIBLE);
+        binding.next.setVisibility(View.GONE);
+        binding.correct.setVisibility(View.GONE);
+        binding.wrong.setVisibility(View.GONE);
+        binding.wrongRetry.setVisibility(View.GONE);
+        binding.answersProgress.setVisibility(View.GONE);
+        binding.hint.setVisibility(View.GONE);
+        binding.submit.setVisibility(View.VISIBLE);
     }
 
     public static void scrollDown(final ScrollView view) {

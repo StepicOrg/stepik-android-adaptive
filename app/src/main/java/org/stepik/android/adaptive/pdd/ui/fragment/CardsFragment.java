@@ -9,6 +9,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.text.method.LinkMovementMethod;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -156,8 +157,12 @@ public final class CardsFragment extends Fragment implements AnswerListener {
             binding.expLevelNext.setText(String.format(getString(R.string.exp_subtitle), next - exp));
         }
 
-        if (showLevelDialog && level != ExpUtil.getCurrentLevel(exp - streak)) {
-            onLevelGained(level);
+        if (showLevelDialog) {
+            if (level != ExpUtil.getCurrentLevel(exp - streak)) {
+                onLevelGained(level);
+            } else if (streak > 1) {
+                confetti();
+            }
         }
     }
 
@@ -172,12 +177,6 @@ public final class CardsFragment extends Fragment implements AnswerListener {
                     .setStartDelay(1500)
                     .setDuration(200)
                     .start();
-
-            final int x = binding.toolbar.getWidth()
-                    - binding.expInc.getWidth() / 2
-                    - ((FrameLayout.LayoutParams) binding.expInc.getLayoutParams()).getMarginEnd();
-            final int y = binding.toolbar.getHeight() / 2;
-            CommonConfetti.explosion((CoordinatorLayout) binding.getRoot(), x, y, confettiColors).oneShot();
         }
 
         if (RateAppUtil.onEngagement()) {
@@ -193,6 +192,15 @@ public final class CardsFragment extends Fragment implements AnswerListener {
 
     private void onLevelGained(final long level) {
         ExpLevelDialog.Companion.newInstance(level).show(getChildFragmentManager(), LEVEL_DIALOG_TAG);
+    }
+
+    private void confetti() {
+        if (binding != null) {
+            final int x = (int) (binding.expBubble.getX() + ((View) binding.expBubble.getParent()).getX()) + binding.expBubble.getWidth() / 2;
+            Log.d(getClass().getCanonicalName(), binding.expBubble.getX() + "   " + binding.expBubble.getWidth());
+            final int y = (int) (binding.expBubble.getY() + binding.expBubble.getPivotY());
+            CommonConfetti.explosion((CoordinatorLayout) binding.getRoot(), x, y, confettiColors).oneShot();
+        }
     }
 
     /**

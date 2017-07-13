@@ -9,14 +9,14 @@
         android:layout_margin="16dp"
         android:layerType="hardware"
         app:cardUseCompatPadding="true"
-        android:id="@+id/fragment_recommendations_container">
+        android:id="@+id/container">
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
             <TextView
-                android:id="@+id/fragment_recommendations_title"
+                android:id="@+id/title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textColor="#FFF"
@@ -31,14 +31,14 @@
                 android:layout_alignParentBottom="true"
                 android:paddingLeft="4dp"
                 android:paddingRight="4dp"
-                android:id="@+id/fragment_recommendations_supplemental_actions">
+                android:id="@+id/supplemental_actions">
                 <Button
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     style="@style/Widget.AppCompat.Button.Borderless"
                     android:textColor="@color/borderless_button_text_color"
                     android:text="@string/attempt_button"
-                    android:id="@+id/fragment_recommendations_solve"
+                    android:id="@+id/solve"
                     android:visibility="gone"
                     android:layout_alignParentStart="true" />
 
@@ -49,7 +49,7 @@
                     android:textColor="@color/borderless_button_text_color"
                     android:text="@string/make_submission"
                     android:gravity="start|center_vertical"
-                    android:id="@+id/fragment_recommendations_submit"
+                    android:id="@+id/submit"
                     android:visibility="gone"
                     android:layout_alignParentStart="true" />
 
@@ -59,7 +59,7 @@
                     style="@style/Widget.AppCompat.Button.Borderless"
                     android:textColor="@color/borderless_button_text_color"
                     android:text="@string/next"
-                    android:id="@+id/fragment_recommendations_next"
+                    android:id="@+id/next"
                     android:visibility="gone"
                     android:layout_alignParentEnd="true" />
 
@@ -69,12 +69,12 @@
                     style="@style/Widget.AppCompat.Button.Borderless"
                     android:textColor="@color/borderless_button_text_color"
                     android:text="@string/wrong_retry"
-                    android:id="@+id/fragment_recommendations_wrong_retry"
+                    android:id="@+id/wrong_retry"
                     android:visibility="gone"
                     android:layout_alignParentEnd="true" />
 
                 <LinearLayout
-                    android:id="@+id/fragment_recommendations_correct"
+                    android:id="@+id/correct"
                     android:layout_width="wrap_content"
                     android:layout_height="48dp"
                     android:orientation="horizontal"
@@ -98,7 +98,7 @@
                 </LinearLayout>
 
                 <LinearLayout
-                    android:id="@+id/fragment_recommendations_wrong"
+                    android:id="@+id/wrong"
                     android:layout_width="wrap_content"
                     android:layout_height="48dp"
                     android:orientation="horizontal"
@@ -125,27 +125,28 @@
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:layout_above="@id/fragment_recommendations_supplemental_actions"
+                android:layout_above="@id/supplemental_actions"
                 android:background="@color/colorStroke"
-                android:id="@+id/fragment_recommendations_bottom_divider"/>
+                android:id="@+id/bottom_divider"/>
 
             <ScrollView
                 android:background="@android:color/white"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:id="@+id/fragment_recommendations_scroll"
-                android:layout_below="@id/fragment_recommendations_title"
-                android:layout_above="@id/fragment_recommendations_bottom_divider">
+                android:id="@+id/scroll"
+                android:layout_below="@id/title"
+                android:layout_above="@id/bottom_divider">
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical">
                     <org.stepik.android.adaptive.pdd.ui.view.LatexSupportableWebView
-                        android:id="@+id/fragment_recommendations_question"
+                        android:id="@+id/question"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content" />
 
                     <View
+                        android:id="@+id/separator_answers"
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
                         android:background="@color/colorStroke"/>
@@ -153,9 +154,10 @@
                     <org.stepik.android.adaptive.pdd.ui.view.ListContainer
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:id="@+id/fragment_recommendations_answers" />
+                        android:id="@+id/answers" />
 
                     <View
+                        android:id="@+id/separator_hint"
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
                         android:background="@color/colorStroke"/>
@@ -163,7 +165,7 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:id="@+id/fragment_recommendations_hint"
+                        android:id="@+id/hint"
                         android:visibility="gone"
                         android:padding="16dp" />
 
@@ -173,7 +175,7 @@
                         android:layout_height="32dp"
                         android:layout_margin="16dp"
                         android:layout_gravity="center_horizontal"
-                        android:id="@+id/fragment_recommendations_answers_progress" />
+                        android:id="@+id/answers_progress" />
 
                 </LinearLayout>
             </ScrollView>
@@ -183,9 +185,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="5dp"
                 android:layout_marginBottom="-5dp"
-                android:layout_below="@id/fragment_recommendations_title"
+                android:layout_below="@id/title"
                 android:background="@drawable/shadow"
-                android:id="@+id/fragment_recommendations_top_divider"/>
+                android:id="@+id/top_divider"/>
 
         </RelativeLayout>
 
@@ -201,7 +203,7 @@
             android:layout_marginTop="36dp"
             android:alpha="0"
             style="@style/AppTheme.ReactionStamp"
-            android:id="@+id/fragment_recommendations_hard_reaction" />
+            android:id="@+id/hard_reaction" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -215,10 +217,10 @@
             android:layout_marginTop="36dp"
             android:alpha="0"
             style="@style/AppTheme.ReactionStamp"
-            android:id="@+id/fragment_recommendations_easy_reaction" />
+            android:id="@+id/easy_reaction" />
 
         <FrameLayout
-            android:id="@+id/fragment_recommendations_curtain"
+            android:id="@+id/curtain"
             android:background="@android:color/white"
             android:layout_width="match_parent"
             android:layout_height="match_parent"

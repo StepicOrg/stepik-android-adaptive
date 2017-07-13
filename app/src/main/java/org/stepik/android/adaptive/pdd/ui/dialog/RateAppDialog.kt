@@ -111,6 +111,7 @@ class RateAppDialog : DialogFragment() {
 
     override fun onDismiss(dialog: DialogInterface?) {
         AnalyticMgr.getInstance().rateCanceled()
+        RateAppUtil.onCloseLater()
         super.onDismiss(dialog)
     }
 
