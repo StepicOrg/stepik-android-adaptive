@@ -2,6 +2,8 @@ package org.stepik.android.adaptive.pdd.ui.activity
 
 import android.databinding.DataBindingUtil
 import android.os.Bundle
+import android.support.v4.content.ContextCompat
+import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.LinearLayoutManager
 import android.view.MenuItem
 import org.stepik.android.adaptive.pdd.R
@@ -9,6 +11,7 @@ import org.stepik.android.adaptive.pdd.core.presenter.BasePresenterActivity
 import org.stepik.android.adaptive.pdd.core.presenter.PresenterFactory
 import org.stepik.android.adaptive.pdd.core.presenter.StatsPresenter
 import org.stepik.android.adaptive.pdd.core.presenter.contracts.StatsView
+import org.stepik.android.adaptive.pdd.data.model.Achievement
 import org.stepik.android.adaptive.pdd.databinding.ActivityStatsBinding
 import org.stepik.android.adaptive.pdd.ui.adapter.AchievementsAdapter
 
@@ -26,12 +29,44 @@ class StatsActivity : BasePresenterActivity<StatsPresenter, StatsView>(), StatsV
 
         setSupportActionBar(binding.toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        supportActionBar?.title = getString(R.string.stats)
+        supportActionBar?.title = getString(R.string.achievements)
 
-        val adapter = AchievementsAdapter()
+        val adapter = AchievementsAdapter() // some stubs to display
+        adapter.addAll(listOf(
+                Achievement(1, R.drawable.ic_correct, R.string.rate_app_title, R.string.rate_app_message, false),
+                Achievement(1, R.drawable.ic_correct, R.string.rate_app_title, R.string.rate_app_message, false),
+                Achievement(1, R.drawable.ic_correct, R.string.rate_app_title, R.string.rate_app_message, false),
+                Achievement(1, R.drawable.ic_correct, R.string.rate_app_title, R.string.rate_app_message, false),
+                Achievement(1, R.drawable.ic_correct, R.string.rate_app_title, R.string.rate_app_message, false),
+                Achievement(1, R.drawable.ic_correct, R.string.rate_app_title, R.string.rate_app_message, false),
+                Achievement(1, R.drawable.ic_correct, R.string.rate_app_title, R.string.rate_app_message, false),
+                Achievement(1, R.drawable.ic_correct, R.string.rate_app_title, R.string.rate_app_message, false),
+                Achievement(1, R.drawable.ic_correct, R.string.rate_app_title, R.string.rate_app_message, false),
+                Achievement(1, R.drawable.ic_correct, R.string.rate_app_title, R.string.rate_app_message, false),
+                Achievement(1, R.drawable.ic_correct, R.string.rate_app_title, R.string.rate_app_message, false),
+                Achievement(1, R.drawable.ic_correct, R.string.rate_app_title, R.string.rate_app_message, false),
+                Achievement(1, R.drawable.ic_correct, R.string.rate_app_title, R.string.rate_app_message, false),
+                Achievement(1, R.drawable.ic_correct, R.string.rate_app_title, R.string.rate_app_message, false),
+                Achievement(1, R.drawable.ic_correct, R.string.rate_app_title, R.string.rate_app_message, false),
+                Achievement(1, R.drawable.ic_correct, R.string.rate_app_title, R.string.rate_app_message, false),
+                Achievement(1, R.drawable.ic_correct, R.string.rate_app_title, R.string.rate_app_message, false),
+                Achievement(1, R.drawable.ic_correct, R.string.rate_app_title, R.string.rate_app_message, false),
+                Achievement(1, R.drawable.ic_correct, R.string.rate_app_title, R.string.rate_app_message, false),
+                Achievement(1, R.drawable.ic_correct, R.string.rate_app_title, R.string.rate_app_message, false),
+                Achievement(1, R.drawable.ic_correct, R.string.rate_app_title, R.string.rate_app_message, false),
+                Achievement(1, R.drawable.ic_correct, R.string.rate_app_title, R.string.rate_app_message, false),
+                Achievement(1, R.drawable.ic_correct, R.string.rate_app_title, R.string.rate_app_message, false),
+                Achievement(1, R.drawable.ic_correct, R.string.rate_app_title, R.string.rate_app_message, false),
+                Achievement(1, R.drawable.ic_correct, R.string.rate_app_title, R.string.rate_app_message, false)
+
+        ))
 
         binding.achievements.adapter = adapter
         binding.achievements.layoutManager = LinearLayoutManager(this)
+
+        val divider = DividerItemDecoration(this, DividerItemDecoration.VERTICAL)
+        divider.setDrawable(ContextCompat.getDrawable(this, R.drawable.stroke))
+        binding.achievements.addItemDecoration(divider)
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {

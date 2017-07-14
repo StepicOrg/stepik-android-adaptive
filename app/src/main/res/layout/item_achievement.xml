@@ -9,7 +9,7 @@
 
         <ImageView
             android:id="@+id/icon"
-            android:contentDescription="@string/achievement"
+            android:contentDescription="@string/achievements"
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:layout_marginEnd="16dp" />
