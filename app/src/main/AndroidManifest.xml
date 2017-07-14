@@ -56,6 +56,10 @@
         <activity
             android:theme="@style/AppTheme.NoActionBar"
             android:name="org.stepik.android.adaptive.pdd.ui.activity.SocialAuthActivity"/>
+
+        <activity
+            android:theme="@style/AppTheme.NoActionBar"
+            android:name="org.stepik.android.adaptive.pdd.ui.activity.StatsActivity"/>
     </application>
 
 </manifest>

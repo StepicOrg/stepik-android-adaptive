@@ -1,5 +1,6 @@
 package org.stepik.android.adaptive.pdd.ui.fragment;
 
+import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -23,6 +24,7 @@ import org.stepik.android.adaptive.pdd.data.model.Card;
 import org.stepik.android.adaptive.pdd.data.model.Recommendation;
 import org.stepik.android.adaptive.pdd.data.model.RecommendationReaction;
 import org.stepik.android.adaptive.pdd.databinding.FragmentRecommendationsBinding;
+import org.stepik.android.adaptive.pdd.ui.activity.StatsActivity;
 import org.stepik.android.adaptive.pdd.ui.adapter.QuizCardsAdapter;
 import org.stepik.android.adaptive.pdd.ui.dialog.ExpLevelDialog;
 import org.stepik.android.adaptive.pdd.ui.dialog.RateAppDialog;
@@ -93,6 +95,10 @@ public final class CardsFragment extends Fragment implements AnswerListener {
         binding.loadingPlaceholder.setText(loadingPlaceholders[Util.getRandomNumberBetween(0, 3)]);
 
         binding.progress.setVisibility(adapter.getItemCount() == 0 ? View.VISIBLE : View.GONE);
+
+        binding.toolbar.setOnClickListener((__) -> {
+            startActivity(new Intent(getContext(), StatsActivity.class));
+        });
 
         binding.cardsContainer.setAdapter(adapter);
 
