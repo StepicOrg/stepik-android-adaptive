@@ -8,15 +8,8 @@ import android.databinding.DataBindingUtil
 import android.net.Uri
 import android.support.v4.app.DialogFragment
 import android.os.Bundle
-import android.support.v4.content.ContextCompat
-import android.support.v4.graphics.drawable.DrawableCompat
 import android.support.v7.app.AlertDialog
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
-import android.widget.ImageView
 import org.stepik.android.adaptive.pdd.R
 import org.stepik.android.adaptive.pdd.data.AnalyticMgr
 import org.stepik.android.adaptive.pdd.databinding.RateAppDialogBinding
@@ -26,10 +19,10 @@ class RateAppDialog : DialogFragment() {
     companion object {
         private val RATING_COUNT_KEY = "rating"
         private val RATING_ENABLED_KEY = "rating_enabled"
+        private val MIN_POSITIVE = 4
     }
 
     private lateinit var binding: RateAppDialogBinding
-    private lateinit var adapter: StarsAdapter
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val builder = AlertDialog.Builder(context)
@@ -38,21 +31,20 @@ class RateAppDialog : DialogFragment() {
 
         binding = DataBindingUtil.inflate(activity.layoutInflater, R.layout.rate_app_dialog, null, false)
 
-        adapter = StarsAdapter(5, savedInstanceState?.getInt(RATING_COUNT_KEY) ?: -1, binding)
-        adapter.enabled = savedInstanceState?.getBoolean(RATING_ENABLED_KEY) ?: true
-        binding.ok.isEnabled = adapter.selected > -1
+        binding.starsContainer.setIsIndicator(savedInstanceState?.getBoolean(RATING_ENABLED_KEY) ?: false)
+        binding.starsContainer.rating = (savedInstanceState?.getInt(RATING_COUNT_KEY) ?: 0).toFloat()
+        binding.starsContainer.setOnRatingBarChangeListener { _, _, _ -> refresh() }
 
-        binding.starsContainer.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-        binding.starsContainer.adapter = adapter
+        binding.ok.isEnabled = binding.starsContainer.rating > 0
 
         binding.ok.setOnClickListener {
-            adapter.enabled = false
-            adapter.refresh()
-            AnalyticMgr.getInstance().rate(adapter.selected + 1)
+            binding.starsContainer.setIsIndicator(true)
+            refresh()
+            AnalyticMgr.getInstance().rate(binding.starsContainer.rating.toInt())
         }
 
         binding.later.setOnClickListener {
-            if (adapter.selected >= StarsAdapter.MIN_POSITIVE) {
+            if (binding.starsContainer.rating >= MIN_POSITIVE) {
                 AnalyticMgr.getInstance().ratePositiveLater()
             } else {
                 AnalyticMgr.getInstance().rateNegativeLater()
@@ -61,8 +53,8 @@ class RateAppDialog : DialogFragment() {
             dismiss()
         }
 
-        if (!adapter.enabled) {
-            adapter.refresh()
+        if (binding.starsContainer.isIndicator) {
+            refresh()
         }
 
         binding.sendEmail.setOnClickListener {
@@ -104,67 +96,35 @@ class RateAppDialog : DialogFragment() {
     }
 
     override fun onSaveInstanceState(outState: Bundle?) {
-        outState?.putInt(RATING_COUNT_KEY, adapter.selected)
-        outState?.putBoolean(RATING_ENABLED_KEY, adapter.enabled)
+        outState?.putInt(RATING_COUNT_KEY, binding.starsContainer.rating.toInt())
+        outState?.putBoolean(RATING_ENABLED_KEY, binding.starsContainer.isIndicator)
         super.onSaveInstanceState(outState)
     }
 
     override fun onDismiss(dialog: DialogInterface?) {
         AnalyticMgr.getInstance().rateCanceled()
-        RateAppUtil.onCloseLater()
         super.onDismiss(dialog)
     }
 
-    private class StarsAdapter(private val stars: Int, var selected: Int, val binding: RateAppDialogBinding) : RecyclerView.Adapter<StarsAdapter.StarViewHolder>() {
-        companion object {
-            val MIN_POSITIVE = 3
+    private fun refresh() {
+        if (binding.starsContainer.rating > 0) {
+            binding.ok.isEnabled = true
         }
-        var enabled = true
 
-        override fun onBindViewHolder(holder: StarViewHolder, position: Int) {
-            val color = holder.view.context.resources.getColor(if (position <= selected) R.color.colorAccent else R.color.colorRadioButtonDefault)
+        if (binding.starsContainer.isIndicator) {
+            binding.message.visibility = View.GONE
+            binding.starsContainer.visibility = View.GONE
+            binding.ok.visibility = View.GONE
+            binding.feedbackText.visibility = View.VISIBLE
+            binding.later.visibility = View.VISIBLE
 
-            val imageDrawable = DrawableCompat.wrap(ContextCompat.getDrawable(holder.view.context, R.drawable.ic_star)).mutate()
-            DrawableCompat.setTint(imageDrawable, color)
-            holder.view.setImageDrawable(imageDrawable)
-
-            if (enabled) {
-                holder.view.setOnClickListener {
-                    selected = position
-                    refresh()
-                }
+            if (binding.starsContainer.rating >= MIN_POSITIVE) {
+                binding.openGooglePlay.visibility = View.VISIBLE
+                binding.feedbackText.setText(R.string.feedback_positive)
             } else {
-                holder.view.isClickable = false
+                binding.sendEmail.visibility = View.VISIBLE
+                binding.feedbackText.setText(R.string.feedback_negative)
             }
         }
-
-        override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int) =
-                StarViewHolder(LayoutInflater.from(parent?.context).inflate(R.layout.star_view, parent, false) as ImageView)
-
-        override fun getItemCount() = stars
-
-        fun refresh() {
-            if (selected > -1) {
-                binding.ok.isEnabled = true
-            }
-            if (!enabled) {
-                binding.message.visibility = View.GONE
-                binding.starsContainer.visibility = View.GONE
-                binding.ok.visibility = View.GONE
-                binding.feedbackText.visibility = View.VISIBLE
-                binding.later.visibility = View.VISIBLE
-
-                if (selected >= MIN_POSITIVE) {
-                    binding.openGooglePlay.visibility = View.VISIBLE
-                    binding.feedbackText.setText(R.string.feedback_positive)
-                } else {
-                    binding.sendEmail.visibility = View.VISIBLE
-                    binding.feedbackText.setText(R.string.feedback_negative)
-                }
-            }
-            notifyDataSetChanged()
-        }
-
-        class StarViewHolder(val view: ImageView) : RecyclerView.ViewHolder(view)
     }
 }
