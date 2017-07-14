@@ -59,7 +59,6 @@ dependencies {
     compile 'com.squareup.okhttp3:okhttp:3.6.0'
     compile 'com.squareup.okhttp3:logging-interceptor:3.6.0'
     compile 'com.google.code.gson:gson:2.7'
-    compile 'com.github.paolorotolo:appintro:4.1.0'
     compile 'com.vk:androidsdk:+'
     compile 'com.facebook.android:facebook-android-sdk:4.17.0'
     compile 'pl.droidsonroids.gif:android-gif-drawable:1.2.7'
