@@ -78,6 +78,7 @@ public final class CardsFragment extends Fragment implements AnswerListener {
                 ContextCompat.getColor(getContext(), R.color.colorAccentDisabled),
                 ContextCompat.getColor(getContext(), R.color.colorAccent)
         };
+        createReaction(0, RecommendationReaction.Reaction.INTERESTING);
     }
 
     @Nullable
@@ -86,10 +87,6 @@ public final class CardsFragment extends Fragment implements AnswerListener {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_recommendations, container, false);
 
         ((AppCompatActivity) getActivity()).setSupportActionBar(binding.toolbar);
-
-        if (savedInstanceState == null) {
-            createReaction(0, RecommendationReaction.Reaction.INTERESTING);
-        }
 
         binding.tryAgain.setOnClickListener(retrySubject::onNext);
         binding.courseCompletedText.setMovementMethod(LinkMovementMethod.getInstance());
@@ -113,7 +110,7 @@ public final class CardsFragment extends Fragment implements AnswerListener {
     }
 
     public void createReaction(final long lesson, final RecommendationReaction.Reaction reaction) {
-        if (adapter.getItemCount() == 0) {
+        if (adapter.getItemCount() == 0 && binding != null) {
             binding.progress.setVisibility(View.VISIBLE);
             binding.loadingPlaceholder.setText(loadingPlaceholders[Util.getRandomNumberBetween(0, 3)]);
         }
