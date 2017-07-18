@@ -103,13 +103,12 @@ class RateAppDialog : DialogFragment() {
 
     override fun onDismiss(dialog: DialogInterface?) {
         AnalyticMgr.getInstance().rateCanceled()
+        RateAppUtil.onCloseLater()
         super.onDismiss(dialog)
     }
 
     private fun refresh() {
-        if (binding.starsContainer.rating > 0) {
-            binding.ok.isEnabled = true
-        }
+        binding.ok.isEnabled = binding.starsContainer.rating > 0
 
         if (binding.starsContainer.isIndicator) {
             binding.message.visibility = View.GONE
