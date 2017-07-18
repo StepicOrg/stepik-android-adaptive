@@ -67,6 +67,7 @@ class StatsActivity : BasePresenterActivity<StatsPresenter, StatsView>(), StatsV
         dataSet.fillAlpha = 100
         dataSet.setDrawValues(true)
         dataSet.setValueFormatter { v, _, _, _ -> v.toLong().toString() }
+        dataSet.valueTextSize = 12f
         dataSet.setDrawHorizontalHighlightIndicator(false)
 
         dataSet.setDrawCircles(true)
@@ -76,12 +77,12 @@ class StatsActivity : BasePresenterActivity<StatsPresenter, StatsView>(), StatsV
         binding.chart.data.isHighlightEnabled = true
 
         if (dataSet.entryCount > 0) {
+            binding.chart.animateY(1400)
             binding.chart.invalidate()
             binding.chart.visibility = View.VISIBLE
         } else {
             binding.chart.visibility = View.GONE
         }
-
     }
 
 
