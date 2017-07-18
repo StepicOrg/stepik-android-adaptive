@@ -99,7 +99,7 @@
                                         android:layout_height="wrap_content"
                                         android:textColor="@color/colorLightGrayText"
                                         android:gravity="center"
-                                        android:text="@string/stats_exp_this_week"/>
+                                        android:text="@string/stats_last_7_days"/>
                                 </LinearLayout>
                                 <include layout="@layout/stroke"/>
                                 <LinearLayout

@@ -106,7 +106,7 @@
     <string name="feedback_negative_title">Feedback for Android adaptive application</string>
     <string name="achievements">Achievements</string>
     <string name="stats_total_exp">POINTS IN TOTAL</string>
-    <string name="stats_exp_this_week">THIS WEEK</string>
+    <string name="stats_last_7_days">LAST 7 DAYS</string>
     <string name="stats_level">LEVEL</string>
     <string name="stats_exp_for_a_week">points for a week</string>
 </resources>
