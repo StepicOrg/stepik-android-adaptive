@@ -3,7 +3,6 @@ package org.stepik.android.adaptive.pdd.api.oauth;
 import org.stepik.android.adaptive.pdd.api.RegistrationResponse;
 import org.stepik.android.adaptive.pdd.api.UserRegistrationRequest;
 
-import io.reactivex.Completable;
 import io.reactivex.Observable;
 import retrofit2.Call;
 import retrofit2.Response;
