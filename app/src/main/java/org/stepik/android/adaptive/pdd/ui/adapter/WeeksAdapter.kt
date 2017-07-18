@@ -23,11 +23,8 @@ class WeeksAdapter : RecyclerView.Adapter<WeeksAdapter.WeekViewHolder>() {
         holder?.binding?.let {
             it.total.text = weeks[p].total.toString()
 
-
-            val week = DateTime.now().minusWeeks(p)
-
-            it.start.text = week.withDayOfWeek(1).toString("dd MMMM yyyy", Resources.getSystem().configuration.locale)
-            it.end.text = week.withDayOfWeek(7).toString("dd MMMM yyyy", Resources.getSystem().configuration.locale)
+            it.start.text = weeks[p].start.toString("dd MMMM yyyy", Resources.getSystem().configuration.locale)
+            it.end.text = weeks[p].end.toString("dd MMMM yyyy", Resources.getSystem().configuration.locale)
         }
     }
 

@@ -101,7 +101,7 @@ class CardPresenter(val card: Card, private val listener: AdaptiveReactionListen
                 AnalyticMgr.getInstance().answerResult(card.step, it)
                 if (it.status == Submission.Status.CORRECT) {
                     listener?.createReaction(card.lessonId, RecommendationReaction.Reaction.SOLVED)
-                    answerListener?.onCorrectAnswer()
+                    answerListener?.onCorrectAnswer(it.id)
                     card.onCorrect()
                 }
                 if (it.status == Submission.Status.WRONG) {

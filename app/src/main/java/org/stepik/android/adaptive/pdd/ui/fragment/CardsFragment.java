@@ -20,6 +20,7 @@ import com.github.jinatonic.confetti.CommonConfetti;
 import org.stepik.android.adaptive.pdd.R;
 import org.stepik.android.adaptive.pdd.Util;
 import org.stepik.android.adaptive.pdd.api.RecommendationsResponse;
+import org.stepik.android.adaptive.pdd.data.db.DataBaseMgr;
 import org.stepik.android.adaptive.pdd.data.model.Card;
 import org.stepik.android.adaptive.pdd.data.model.Recommendation;
 import org.stepik.android.adaptive.pdd.data.model.RecommendationReaction;
@@ -37,6 +38,7 @@ import java.util.ArrayDeque;
 import java.util.List;
 import java.util.Queue;
 
+import io.reactivex.Completable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
@@ -167,8 +169,13 @@ public final class CardsFragment extends Fragment implements AnswerListener {
         }
     }
 
-    public void onCorrectAnswer() {
+    public void onCorrectAnswer(long submissionId) {
         final long streak = ExpUtil.incStreak();
+
+        compositeDisposable.add(
+                Completable.fromRunnable(() -> DataBaseMgr.getInstance().onExpGained(streak, submissionId))
+                .subscribe(() -> {}, (e) -> {}));
+
         if (binding != null) {
             binding.expInc.setText(String.format(getString(R.string.exp_inc), streak));
             binding.expInc.setAlpha(1);
@@ -284,6 +291,7 @@ public final class CardsFragment extends Fragment implements AnswerListener {
             card.recycle();
         }
         adapter.recycle();
+        compositeDisposable.dispose();
         super.onDestroy();
     }
 }
