@@ -33,13 +33,15 @@ public class QuizCardsContainer extends FrameLayout implements ContainerView {
         super(context, attrs, defStyleAttr);
     }
 
+    private float m = 0.0f;
+
     private final QuizCardView.QuizCardFlingListener quizCardFlingListener = new QuizCardView.QuizCardFlingListener() {
         @Override
         public void onScroll(float scrollProgress) {
             final int size = Math.min(adapter.getItemCount(), BUFFER_SIZE);
-            float mul = Math.min(Math.abs(scrollProgress), 0.5f) * 2;
+            m = Math.min(Math.abs(scrollProgress), 0.5f) * 2;
             for (int j = 1; j < size; j++) {
-                setViewState(cardHolders.get(j).getView(), j - mul, false);
+                setViewState(cardHolders.get(j).getView(), j - m, false);
             }
         }
 
@@ -55,6 +57,7 @@ public class QuizCardsContainer extends FrameLayout implements ContainerView {
 
         @Override
         public void onSwiped() {
+            m = 0;
             poll();
         }
     };
@@ -83,6 +86,8 @@ public class QuizCardsContainer extends FrameLayout implements ContainerView {
     }
 
     private void setViewState(View view, float mul, boolean allowEnable) {
+        if (mul < 0) return;
+
         view.setScaleX(1 - (0.02f * mul));
         view.setScaleY(1 - (0.02f * mul));
 
@@ -146,7 +151,8 @@ public class QuizCardsContainer extends FrameLayout implements ContainerView {
                 view.setElevation(size + 3 - i);
             }
 
-            setViewState(view, i, true);
+            setViewState(view, i - m, true);
+
             if (i == 0) {
                 if (view instanceof QuizCardView) {
                     ((QuizCardView) view).setQuizCardFlingListener(quizCardFlingListener);
