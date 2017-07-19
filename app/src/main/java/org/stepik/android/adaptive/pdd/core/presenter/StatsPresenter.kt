@@ -1,0 +1,55 @@
+package org.stepik.android.adaptive.pdd.core.presenter
+
+import com.github.mikephil.charting.data.Entry
+import com.github.mikephil.charting.data.LineDataSet
+import io.reactivex.Observable
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.schedulers.Schedulers
+import org.stepik.android.adaptive.pdd.core.presenter.contracts.StatsView
+import org.stepik.android.adaptive.pdd.data.db.DataBaseMgr
+import org.stepik.android.adaptive.pdd.ui.adapter.WeeksAdapter
+import org.stepik.android.adaptive.pdd.util.ExpUtil
+
+class StatsPresenter : PresenterBase<StatsView>() {
+    companion object : PresenterFactory<StatsPresenter> {
+        override fun create() = StatsPresenter()
+    }
+
+    private val total by lazy { ExpUtil.getExp() }
+    private val level by lazy { ExpUtil.getCurrentLevel(total) }
+
+    private val adapter = WeeksAdapter()
+
+    private val composite = CompositeDisposable()
+
+    init {
+        adapter.setHeaderLevelAndTotal(level, total)
+
+        composite.add(
+            Observable.fromCallable(DataBaseMgr.instance::getWeeks)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(adapter::addAll, {})
+        )
+
+        composite.add(
+                Observable.fromCallable(DataBaseMgr.instance::getExpForLast7Days)
+                        .map {
+                            Pair(LineDataSet(it.mapIndexed { index, l -> Entry(index.toFloat(), l.toFloat()) }, ""), it.sum())
+                        }
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe({
+                            adapter.setHeaderChart(it.first, it.second)
+                        }, {})
+        )
+    }
+
+    override fun attachView(view: StatsView) {
+        super.attachView(view)
+        view.onWeeksAdapter(adapter)
+    }
+
+    override fun destroy() {}
+}

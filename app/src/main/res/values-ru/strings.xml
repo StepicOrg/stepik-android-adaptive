@@ -99,4 +99,9 @@
     <string name="confirm">Подтвердить</string>
     <string name="later">Позже</string>
     <string name="feedback_negative_title">Отзыв об адаптивном приложении для Android</string>
+    <string name="achievements">Достижения</string>
+    <string name="stats_total_exp">ВСЕГО ОПЫТА</string>
+    <string name="stats_last_7_days">ПОСЛЕДНИЕ 7 ДНЕЙ</string>
+    <string name="stats_level">УРОВЕНЬ</string>
+    <string name="stats_exp_for_a_week">опыта за неделю</string>
 </resources>

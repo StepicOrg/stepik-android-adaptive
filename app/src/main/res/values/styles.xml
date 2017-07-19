@@ -13,9 +13,14 @@
         <item name="windowNoTitle">true</item>
     </style>
 
+    <style name="AppTheme.ActionBarTheme.Colored" parent="@style/AppTheme.ActionBarTheme">
+        <item name="android:textColorPrimary">@android:color/white</item>
+        <item name="colorControlNormal">@android:color/white</item>
+    </style>
+
     <style name="AppTheme.ActionBarTheme" parent="@style/ThemeOverlay.AppCompat.ActionBar">
         <item name="android:textColorPrimary">@color/colorGrayText</item>
-        <item name="colorControlNormal">@color/colorAccent</item>
+        <item name="colorControlNormal">@color/colorGrayText</item>
     </style>
 
     <style name="AppTheme.RatingBar">
