@@ -198,45 +198,55 @@ public final class API {
         okHttpBuilder.addInterceptor(chain -> {
             Request request = addUserAgentTo(chain);
 
-            try {
-                authLock.lock();
-                OAuthResponse response = SharedPreferenceMgr.getInstance().getOAuthResponse();
-
-                if (response != null) {
-                    if (isUpdateNeeded()) {
-                        Response<OAuthResponse> oAuthResponse;
-                        try {
-                            oAuthResponse = authWithRefreshToken(response.getRefreshToken()).execute();
-                            response = oAuthResponse.body();
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                            return chain.proceed(request);
-                        }
-
-                        if (response == null || !oAuthResponse.isSuccessful()) {
-                            if (oAuthResponse.code() == 401) {
-                                LogoutHelper.logout(ScreenManager.getInstance()::showOnboardingScreen);
-                            }
-                            return chain.proceed(request);
-                        }
-
-                        SharedPreferenceMgr.getInstance().saveOAuthResponse(response);
-                    }
-                    request = request.newBuilder()
-                            .addHeader(AppConstants.authorizationHeaderName, response.getTokenType() + " " + response.getAccessToken())
-                            .build();
-                }
-            } finally {
-                authLock.unlock();
+            okhttp3.Response response = addAuthHeaderAndProceed(chain, request);
+            if (response.code() == 400) { // was bug when user has incorrect token deadline due to wrong datetime had been set on phone
+                SharedPreferenceMgr.getInstance().resetAuthResponseDeadline();
+                response = addAuthHeaderAndProceed(chain, request);
             }
 
-            return chain.proceed(request);
+            return response;
         });
 
         setTimeout(okHttpBuilder, TIMEOUT_IN_SECONDS);
         final Retrofit retrofit = buildRetrofit(okHttpBuilder.build());
 
         return retrofit.create(StepikService.class);
+    }
+
+    private okhttp3.Response addAuthHeaderAndProceed(Interceptor.Chain chain, Request request) throws IOException {
+        try {
+            authLock.lock();
+            OAuthResponse response = SharedPreferenceMgr.getInstance().getOAuthResponse();
+
+            if (response != null) {
+                if (isUpdateNeeded()) {
+                    Response<OAuthResponse> oAuthResponse;
+                    try {
+                        oAuthResponse = authWithRefreshToken(response.getRefreshToken()).execute();
+                        response = oAuthResponse.body();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                        return chain.proceed(request);
+                    }
+
+                    if (response == null || !oAuthResponse.isSuccessful()) {
+                        if (oAuthResponse.code() == 401) {
+                            LogoutHelper.logout(ScreenManager.getInstance()::showOnboardingScreen);
+                        }
+                        return chain.proceed(request);
+                    }
+
+                    SharedPreferenceMgr.getInstance().saveOAuthResponse(response);
+                }
+                request = request.newBuilder()
+                        .addHeader(AppConstants.authorizationHeaderName, response.getTokenType() + " " + response.getAccessToken())
+                        .build();
+            }
+        } finally {
+            authLock.unlock();
+        }
+
+        return chain.proceed(request);
     }
 
     private EmptyAuthService initEmptyAuthService() {

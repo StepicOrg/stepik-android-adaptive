@@ -19,6 +19,7 @@ public final class AnalyticMgr {
     private final static String EVENT_REACTION_HARD_AFTER_CORRECT = "reaction_hard_after_correct_answer";
     private final static String EVENT_REACTION_EASY_AFTER_CORRECT = "reaction_easy_after_correct_answer";
 
+    private final static String EVENT_SUBMISSION_WAS_MADE = "submission_was_made";
 
     private final static String EVENT_CORRECT_ANSWER = "correct_answer";
     private final static String EVENT_WRONG_ANSWER = "wrong_answer";
@@ -92,6 +93,10 @@ public final class AnalyticMgr {
                 logEventWithLesson(EVENT_WRONG_ANSWER, lesson);
             break;
         }
+    }
+
+    public void onSubmissionWasMade() {
+        firebaseAnalytics.logEvent(EVENT_SUBMISSION_WAS_MADE, null);
     }
 
     public void rate(int rating) {

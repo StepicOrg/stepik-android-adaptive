@@ -105,6 +105,10 @@ public final class SharedPreferenceMgr {
         return getLong(OAUTH_RESPONSE_DEADLINE);
     }
 
+    public void resetAuthResponseDeadline() {
+        remove(OAUTH_RESPONSE_DEADLINE);
+    }
+
     public long getProfileId() {
         return getLong(PROFILE_ID);
     }

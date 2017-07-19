@@ -79,6 +79,8 @@ class CardPresenter(val card: Card, private val listener: AdaptiveReactionListen
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(this::onSubmissionLoaded, this::onNetworkError)
+
+            AnalyticMgr.getInstance().onSubmissionWasMade()
         }
     }
 
