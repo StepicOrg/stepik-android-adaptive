@@ -90,8 +90,6 @@ public final class CardsFragment extends Fragment implements AnswerListener {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_recommendations, container, false);
 
-        ((AppCompatActivity) getActivity()).setSupportActionBar(binding.toolbar);
-
         binding.tryAgain.setOnClickListener(retrySubject::onNext);
         binding.courseCompletedText.setMovementMethod(LinkMovementMethod.getInstance());
         binding.loadingPlaceholder.setText(loadingPlaceholders[Util.getRandomNumberBetween(0, 3)]);

@@ -1,103 +1,86 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-    <android.support.design.widget.CoordinatorLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:orientation="vertical"
         android:background="@color/primaryBackground">
 
-        <android.support.design.widget.AppBarLayout
-            android:id="@+id/appbar"
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:title=""
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:fitsSystemWindows="true"
-            android:background="@color/primaryBackground"
-            android:orientation="vertical"
-            app:elevation="0dp">
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/selectableItemBackground">
 
-            <android.support.v7.widget.Toolbar
-                android:id="@+id/toolbar"
-                android:title=""
+            <FrameLayout
                 android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
-                android:background="?attr/selectableItemBackground">
+                android:layout_height="match_parent">
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start|center_vertical"
+                    android:layout_marginStart="4dp"
+                    android:orientation="vertical">
+                    <TextView
+                        android:id="@+id/exp_level"
+                        android:layout_gravity="start"
+                        android:text="@string/exp_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/colorGrayText"
+                        style="@style/TextAppearance.AppCompat.Widget.ActionBar.Subtitle"/>
+                    <TextView
+                        android:id="@+id/exp_level_next"
+                        android:layout_gravity="start"
+                        android:text="@string/exp_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="12sp"
+                        android:textColor="@color/colorGrayText" />
+                </LinearLayout>
+
 
                 <FrameLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent">
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="start|center_vertical"
-                        android:layout_marginStart="4dp"
-                        android:orientation="vertical">
-                        <TextView
-                            android:id="@+id/exp_level"
-                            android:layout_gravity="start"
-                            android:text="@string/exp_title"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textColor="@color/colorGrayText"
-                            style="@style/TextAppearance.AppCompat.Widget.ActionBar.Subtitle"/>
-                        <TextView
-                            android:id="@+id/exp_level_next"
-                            android:layout_gravity="start"
-                            android:text="@string/exp_title"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textSize="12sp"
-                            android:textColor="@color/colorGrayText" />
-                    </LinearLayout>
-
-
-                    <FrameLayout
-                        android:id="@+id/exp_bubble"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="end|center_vertical"
-                        android:layout_marginEnd="16dp">
-                        <TextView
-                            android:id="@+id/exp_counter"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:textStyle="bold"
-                            android:background="@drawable/gray_circle"
-                            android:gravity="center"/>
-                        <TextView
-                            android:id="@+id/exp_inc"
-                            android:text="@string/exp_inc"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:textStyle="bold"
-                            android:background="@drawable/green_circle"
-                            android:textColor="@android:color/white"
-                            android:alpha="0"
-                            android:gravity="center" />
-                    </FrameLayout>
+                    android:id="@+id/exp_bubble"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end|center_vertical"
+                    android:layout_marginEnd="16dp">
+                    <TextView
+                        android:id="@+id/exp_counter"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:textStyle="bold"
+                        android:background="@drawable/gray_circle"
+                        android:gravity="center"/>
+                    <TextView
+                        android:id="@+id/exp_inc"
+                        android:text="@string/exp_inc"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:textStyle="bold"
+                        android:background="@drawable/green_circle"
+                        android:textColor="@android:color/white"
+                        android:alpha="0"
+                        android:gravity="center" />
                 </FrameLayout>
+            </FrameLayout>
 
-            </android.support.v7.widget.Toolbar>
+        </android.support.v7.widget.Toolbar>
 
-            <me.zhanghai.android.materialprogressbar.MaterialProgressBar
-                android:id="@+id/exp_progress"
-                style="@style/Widget.MaterialProgressBar.ProgressBar.Horizontal"
-                android:layout_width="match_parent"
-                android:layout_height="2dp"
-                app:mpb_progressStyle="horizontal"
-                app:mpb_useIntrinsicPadding="false" />
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="@color/colorStroke"/>
-
-        </android.support.design.widget.AppBarLayout>
+        <me.zhanghai.android.materialprogressbar.MaterialProgressBar
+            android:id="@+id/exp_progress"
+            style="@style/Widget.MaterialProgressBar.ProgressBar.Horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            app:mpb_progressStyle="horizontal"
+            app:mpb_useIntrinsicPadding="false" />
 
         <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:paddingTop="?attr/actionBarSize"
-            android:clipToPadding="false">
+            android:layout_height="match_parent">
 
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -184,6 +167,6 @@
                     android:id="@+id/try_again" />
             </LinearLayout>
         </FrameLayout>
-    </android.support.design.widget.CoordinatorLayout>
+    </LinearLayout>
 </layout>
 
