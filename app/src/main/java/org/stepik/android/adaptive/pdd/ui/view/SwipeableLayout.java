@@ -3,11 +3,11 @@ package org.stepik.android.adaptive.pdd.ui.view;
 import android.content.Context;
 import android.content.res.Resources;
 import android.support.annotation.NonNull;
-import android.support.v7.widget.CardView;
 import android.util.AttributeSet;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.animation.AccelerateDecelerateInterpolator;
+import android.widget.FrameLayout;
 
 import org.stepik.android.adaptive.pdd.Util;
 import org.stepik.android.adaptive.pdd.ui.helper.AnimationHelper;
@@ -15,7 +15,7 @@ import org.stepik.android.adaptive.pdd.ui.helper.AnimationHelper;
 import java.util.HashSet;
 import java.util.Set;
 
-public final class QuizCardView extends CardView {
+public final class SwipeableLayout extends FrameLayout {
     private float startX = 0;
     private float startY = 0;
 
@@ -43,9 +43,9 @@ public final class QuizCardView extends CardView {
 
     private final float MIN_SWIPE_TRANSLATION;
 
-    private Set<QuizCardFlingListener> listeners = new HashSet<>();
+    private Set<SwipeListener> listeners = new HashSet<>();
 
-    public QuizCardView(Context context, AttributeSet attrs) {
+    public SwipeableLayout(Context context, AttributeSet attrs) {
         super(context, attrs);
 
         this.flingDetector = new GestureDetector(context, new GestureDetector.SimpleOnGestureListener() {
@@ -56,7 +56,7 @@ public final class QuizCardView extends CardView {
             }
         });
 
-//        this.listener = new QuizCardFlingListener();
+//        this.listener = new SwipeListener();
 
         this.screenHeight = Resources.getSystem().getDisplayMetrics().heightPixels;
         this.screenWidth = Resources.getSystem().getDisplayMetrics().widthPixels;
@@ -124,15 +124,15 @@ public final class QuizCardView extends CardView {
                     setTranslationX(elemX);
                     setTranslationY(elemY);
 
-                    if (!Util.isLowAndroidVersion()) { // due to some lags on < 5.0
-                        float rotation = ROTATION_ANGLE * 2 * (elemX - viewX) / getWidth();
-                        if (touchPosition == TOUCH_BELOW) {
-                            rotation = -rotation;
-                        }
-                        setRotation(rotation);
+//                    if (!Util.isLowAndroidVersion()) { // due to some lags on < 5.0
+                    float rotation = ROTATION_ANGLE * 2 * (elemX - viewX) / getWidth();
+                    if (touchPosition == TOUCH_BELOW) {
+                        rotation = -rotation;
                     }
+                    setRotation(rotation);
+//                    } // seems that webview bug disappeared :thinking_face:
 
-                    for (QuizCardFlingListener l : listeners) {
+                    for (SwipeListener l : listeners) {
                         l.onScroll(elemX / screenWidth);
                     }
                 }
@@ -148,11 +148,11 @@ public final class QuizCardView extends CardView {
                 || Math.abs(x) > MIN_SWIPE_TRANSLATION) {
 
             if (x > 0) {
-                for (QuizCardFlingListener l : listeners) {
+                for (SwipeListener l : listeners) {
                     l.onSwipeRight();
                 }
             } else {
-                for (QuizCardFlingListener l : listeners) {
+                for (SwipeListener l : listeners) {
                     l.onSwipeLeft();
                 }
             }
@@ -160,18 +160,18 @@ public final class QuizCardView extends CardView {
                     .rotation(0)
                     .setDuration(AnimationHelper.ANIMATION_DURATION * 2)
                     .withEndAction(() -> {
-                        for (QuizCardFlingListener l : listeners) {
+                        for (SwipeListener l : listeners) {
                             l.onSwiped();
                         }
                     });
         } else {
             if (Math.abs(vy) > MIN_FLING_VELOCITY) {
-                for (QuizCardFlingListener l : listeners) {
+                for (SwipeListener l : listeners) {
                     l.onFlingDown();
                 }
             }
 
-            for (QuizCardFlingListener l : listeners) {
+            for (SwipeListener l : listeners) {
                 l.onScroll(0);
             }
             AnimationHelper.playRollBackAnimation(this);
@@ -179,7 +179,7 @@ public final class QuizCardView extends CardView {
     }
 
     public void swipeDown() {
-        for (QuizCardFlingListener l : listeners) {
+        for (SwipeListener l : listeners) {
             l.onSwipeDown();
         }
 
@@ -187,17 +187,17 @@ public final class QuizCardView extends CardView {
                 .rotation(0)
                 .setInterpolator(new AccelerateDecelerateInterpolator())
                 .withEndAction(() -> {
-                    for (QuizCardFlingListener l : listeners) {
+                    for (SwipeListener l : listeners) {
                         l.onSwiped();
                     }
                 });
     }
 
-    public void setQuizCardFlingListener(@NonNull final QuizCardFlingListener listener) {
+    public void setSwipeListener(@NonNull final SwipeListener listener) {
         this.listeners.add(listener);
     }
 
-    public static class QuizCardFlingListener {
+    public static class SwipeListener {
         public void onSwiped() {}
         public void onFlingDown() {}
         public void onSwipeLeft() {}

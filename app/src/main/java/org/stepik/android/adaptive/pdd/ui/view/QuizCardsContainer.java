@@ -19,7 +19,7 @@ import java.util.List;
 
 public class QuizCardsContainer extends FrameLayout implements ContainerView {
     private final static int BUFFER_SIZE = 4;
-    private final static int CARD_OFFSET = (int)(Resources.getSystem().getDisplayMetrics().density * 10);
+    public final static int CARD_OFFSET = (int)(Resources.getSystem().getDisplayMetrics().density * 10);
 
     public QuizCardsContainer(@NonNull Context context) {
         super(context);
@@ -35,10 +35,10 @@ public class QuizCardsContainer extends FrameLayout implements ContainerView {
 
     private float m = 0.0f;
 
-    private final QuizCardView.QuizCardFlingListener quizCardFlingListener = new QuizCardView.QuizCardFlingListener() {
+    private final SwipeableLayout.SwipeListener swipeListener = new SwipeableLayout.SwipeListener() {
         @Override
         public void onScroll(float scrollProgress) {
-            final int size = Math.min(adapter.getItemCount(), BUFFER_SIZE);
+            final int size = getVisibleItemCount();
             m = Math.min(Math.abs(scrollProgress), 0.5f) * 2;
             for (int j = 1; j < size; j++) {
                 setViewState(cardHolders.get(j).getView(), j - m, false);
@@ -82,8 +82,11 @@ public class QuizCardsContainer extends FrameLayout implements ContainerView {
         removeView(cardHolders.remove(0).getView());
         adapter.poll();
         cardHolders.add(adapter.onCreateViewHolder(this));
+        onPolled = true;
         onRebind();
     }
+
+    private boolean onPolled = false;
 
     private void setViewState(View view, float mul, boolean allowEnable) {
         if (mul < 0) return;
@@ -124,7 +127,7 @@ public class QuizCardsContainer extends FrameLayout implements ContainerView {
 
     @Override
     public void onRebind() {
-        final int size = Math.min(adapter.getItemCount(), BUFFER_SIZE);
+        final int size = getVisibleItemCount();
         for (int i = 0; i < size; i++) {
             onRebind(i);
         }
@@ -135,9 +138,13 @@ public class QuizCardsContainer extends FrameLayout implements ContainerView {
         }
     }
 
+    private int getVisibleItemCount() {
+        return Math.min(adapter.getItemCount(), BUFFER_SIZE);
+    }
+
     @Override
     public void onRebind(int i) {
-        final int size = Math.min(adapter.getItemCount(), BUFFER_SIZE);
+        final int size = getVisibleItemCount();
         if (0 <= i && i < cardHolders.size()) {
             ContainerView.ViewHolder holder = cardHolders.get(i);
             View view = holder.getView();
@@ -151,19 +158,25 @@ public class QuizCardsContainer extends FrameLayout implements ContainerView {
                 view.setElevation(size + 3 - i);
             }
 
+            if (m == 0 && onPolled) {
+                adapter.onPositionChanged(holder, i);
+            }
+
             setViewState(view, i - m, true);
 
             if (i == 0) {
-                if (view instanceof QuizCardView) {
-                    ((QuizCardView) view).setQuizCardFlingListener(quizCardFlingListener);
+                if (view instanceof SwipeableLayout) {
+                    ((SwipeableLayout) view).setSwipeListener(swipeListener);
                 }
                 adapter.onBindTopCard(holder, 0);
             }
         }
+        onPolled = false;
     }
 
     public static abstract class CardsAdapter<VH extends ContainerView.ViewHolder> extends ContainerAdapter<VH> {
         protected abstract void poll();
+        protected abstract void onPositionChanged(VH holder, int pos);
         protected abstract void onBindTopCard(VH holder, int pos);
     }
 }

@@ -1,8 +1,11 @@
 package org.stepik.android.adaptive.pdd.ui.adapter;
 
 import android.databinding.DataBindingUtil;
+import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 
 import org.jetbrains.annotations.NotNull;
 import org.stepik.android.adaptive.pdd.R;
@@ -13,6 +16,8 @@ import org.stepik.android.adaptive.pdd.ui.listener.AnswerListener;
 import org.stepik.android.adaptive.pdd.ui.view.QuizCardsContainer;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 public class QuizCardsAdapter extends QuizCardsContainer.CardsAdapter<QuizCardViewHolder> {
@@ -66,6 +71,28 @@ public class QuizCardsAdapter extends QuizCardsContainer.CardsAdapter<QuizCardVi
     @Override
     protected void onBindTopCard(QuizCardViewHolder holder, int pos) {
         holder.onTopCard();
+    }
+
+    @Override
+    protected void onPositionChanged(QuizCardViewHolder holder, int pos) {
+        FrameLayout.LayoutParams p = (FrameLayout.LayoutParams) holder.getBinding().card.getLayoutParams();
+        if (pos > 1) {
+            p.height = 40;
+            changeVisibilityOfAllChildrenTo(holder.getBinding().card, View.GONE, Collections.singletonList(R.id.curtain));
+        } else {
+            p.height = FrameLayout.LayoutParams.MATCH_PARENT;
+            changeVisibilityOfAllChildrenTo(holder.getBinding().card, View.VISIBLE, Collections.singletonList(R.id.curtain));
+        }
+        holder.getBinding().card.setLayoutParams(p);
+    }
+
+    private static void changeVisibilityOfAllChildrenTo(ViewGroup viewGroup, int visibility, List<Integer> exclude) {
+        final int count = viewGroup.getChildCount();
+        for (int i = 0; i < count; ++i) {
+            final View view = viewGroup.getChildAt(i);
+            if (exclude != null && exclude.contains(view.getId())) continue;
+            view.setVisibility(visibility);
+        }
     }
 
     public void add(Card card) {

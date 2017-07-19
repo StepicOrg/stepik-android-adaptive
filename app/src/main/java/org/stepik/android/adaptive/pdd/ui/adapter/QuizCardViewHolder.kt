@@ -9,7 +9,7 @@ import org.stepik.android.adaptive.pdd.data.model.Submission
 import org.stepik.android.adaptive.pdd.databinding.QuizCardViewBinding
 import org.stepik.android.adaptive.pdd.ui.helper.AnimationHelper
 import org.stepik.android.adaptive.pdd.ui.helper.CardHelper
-import org.stepik.android.adaptive.pdd.ui.view.QuizCardView
+import org.stepik.android.adaptive.pdd.ui.view.SwipeableLayout
 import org.stepik.android.adaptive.pdd.util.HtmlUtil
 import android.view.ViewGroup
 import android.webkit.WebSettings
@@ -59,7 +59,7 @@ class QuizCardViewHolder(val binding: QuizCardViewBinding) : ContainerView.ViewH
             }
         }
 
-        binding.container.setQuizCardFlingListener(object : QuizCardView.QuizCardFlingListener() {
+        binding.container.setSwipeListener(object : SwipeableLayout.SwipeListener() {
             override fun onScroll(scrollProgress: Float) {
                 binding.hardReaction.alpha = Math.max(2 * scrollProgress, 0f)
                 binding.easyReaction.alpha = Math.max(2 * -scrollProgress, 0f)
