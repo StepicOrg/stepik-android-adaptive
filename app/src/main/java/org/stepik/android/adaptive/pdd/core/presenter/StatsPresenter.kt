@@ -21,13 +21,11 @@ class StatsPresenter : PresenterBase<StatsView>() {
 
     private val adapter = WeeksAdapter()
 
-    private var last7Days = -1L
-
     private val composite = CompositeDisposable()
 
-    private var dataSet: LineDataSet? = null
-
     init {
+        adapter.setHeaderLevelAndTotal(level, total)
+
         composite.add(
             Observable.fromCallable(DataBaseMgr.instance::getWeeks)
                     .subscribeOn(Schedulers.io())
@@ -43,31 +41,14 @@ class StatsPresenter : PresenterBase<StatsView>() {
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe({
-                            onDataSet(it.first)
-                            onLast7Days(it.second)
+                            adapter.setHeaderChart(it.first, it.second)
                         }, {})
         )
     }
 
-    private fun onDataSet(ds: LineDataSet) {
-        this.dataSet = ds
-        view?.onChartData(ds)
-    }
-
-    private fun onLast7Days(exp: Long) {
-        this.last7Days = exp
-        view?.onLast7Days(exp)
-    }
-
     override fun attachView(view: StatsView) {
         super.attachView(view)
-        view.onTotal(total)
-        view.onLevel(level)
         view.onWeeksAdapter(adapter)
-        if (last7Days != -1L) {
-            view.onLast7Days(last7Days)
-        }
-        dataSet?.let { view.onChartData(it) }
     }
 
     override fun destroy() {}
