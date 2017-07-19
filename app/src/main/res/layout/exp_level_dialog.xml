@@ -31,6 +31,15 @@
                     android:textSize="24sp"
                     android:text="@string/exp_level_title"
                     android:gravity="center_horizontal" />
+
+                <Button
+                    android:id="@+id/continue_button"
+                    android:layout_marginTop="10dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    style="@style/Widget.AppCompat.Button.Borderless"
+                    android:textColor="@color/borderless_button_text_color"
+                    android:text="@string/ex_dialog_continue" />
             </LinearLayout>
         </FrameLayout>
     </LinearLayout>

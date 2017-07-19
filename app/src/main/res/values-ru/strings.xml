@@ -104,4 +104,5 @@
     <string name="stats_last_7_days">ПОСЛЕДНИЕ 7 ДНЕЙ</string>
     <string name="stats_level">УРОВЕНЬ</string>
     <string name="stats_exp_for_a_week">опыта за неделю</string>
+    <string name="ex_dialog_continue">Продолжить</string>
 </resources>

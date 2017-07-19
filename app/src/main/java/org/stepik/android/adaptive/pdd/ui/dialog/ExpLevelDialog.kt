@@ -35,12 +35,10 @@ class ExpLevelDialog : DialogFragment() {
         binding = DataBindingUtil.inflate(activity.layoutInflater, R.layout.exp_level_dialog, null, false)
         binding.expLevelDialogTitle.text = arguments.getLong(LEVEL_KEY).toString()
 
+        binding.continueButton.setOnClickListener { dismiss() }
+
         alertDialogBuilder.setView(binding.root)
         return alertDialogBuilder.create()
-    }
-
-    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
     }
 
     override fun onResume() {

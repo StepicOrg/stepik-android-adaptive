@@ -109,4 +109,5 @@
     <string name="stats_last_7_days">LAST 7 DAYS</string>
     <string name="stats_level">LEVEL</string>
     <string name="stats_exp_for_a_week">points for a week</string>
+    <string name="ex_dialog_continue">Continue</string>
 </resources>
