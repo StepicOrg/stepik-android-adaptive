@@ -1,7 +1,6 @@
 package org.stepik.android.adaptive.pdd.ui.adapter;
 
 import android.databinding.DataBindingUtil;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -77,7 +76,7 @@ public class QuizCardsAdapter extends QuizCardsContainer.CardsAdapter<QuizCardVi
     protected void onPositionChanged(QuizCardViewHolder holder, int pos) {
         FrameLayout.LayoutParams p = (FrameLayout.LayoutParams) holder.getBinding().card.getLayoutParams();
         if (pos > 1) {
-            p.height = 40;
+            p.height = QuizCardsContainer.CARD_OFFSET * 2;
             changeVisibilityOfAllChildrenTo(holder.getBinding().card, View.GONE, Collections.singletonList(R.id.curtain));
         } else {
             p.height = FrameLayout.LayoutParams.MATCH_PARENT;

@@ -82,11 +82,8 @@ public class QuizCardsContainer extends FrameLayout implements ContainerView {
         removeView(cardHolders.remove(0).getView());
         adapter.poll();
         cardHolders.add(adapter.onCreateViewHolder(this));
-        onPolled = true;
         onRebind();
     }
-
-    private boolean onPolled = false;
 
     private void setViewState(View view, float mul, boolean allowEnable) {
         if (mul < 0) return;
@@ -158,10 +155,7 @@ public class QuizCardsContainer extends FrameLayout implements ContainerView {
                 view.setElevation(size + 3 - i);
             }
 
-            if (m == 0 && onPolled) {
-                adapter.onPositionChanged(holder, i);
-            }
-
+            adapter.onPositionChanged(holder, i);
             setViewState(view, i - m, true);
 
             if (i == 0) {
@@ -171,7 +165,6 @@ public class QuizCardsContainer extends FrameLayout implements ContainerView {
                 adapter.onBindTopCard(holder, 0);
             }
         }
-        onPolled = false;
     }
 
     public static abstract class CardsAdapter<VH extends ContainerView.ViewHolder> extends ContainerAdapter<VH> {

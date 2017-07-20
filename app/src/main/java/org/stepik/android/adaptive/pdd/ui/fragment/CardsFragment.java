@@ -20,6 +20,7 @@ import com.github.jinatonic.confetti.CommonConfetti;
 import org.stepik.android.adaptive.pdd.R;
 import org.stepik.android.adaptive.pdd.Util;
 import org.stepik.android.adaptive.pdd.api.RecommendationsResponse;
+import org.stepik.android.adaptive.pdd.data.AnalyticMgr;
 import org.stepik.android.adaptive.pdd.data.db.DataBaseMgr;
 import org.stepik.android.adaptive.pdd.data.model.Card;
 import org.stepik.android.adaptive.pdd.data.model.Recommendation;
@@ -97,6 +98,7 @@ public final class CardsFragment extends Fragment implements AnswerListener {
         binding.progress.setVisibility(adapter.getItemCount() == 0 ? View.VISIBLE : View.GONE);
 
         binding.toolbar.setOnClickListener((__) -> {
+            AnalyticMgr.getInstance().statsOpened();
             startActivity(new Intent(getContext(), StatsActivity.class));
         });
 

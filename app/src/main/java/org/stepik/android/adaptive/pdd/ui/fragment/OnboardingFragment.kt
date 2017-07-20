@@ -25,12 +25,17 @@ import org.stepik.android.adaptive.pdd.ui.activity.StudyActivity
 import org.stepik.android.adaptive.pdd.ui.adapter.OnboardingQuizCardsAdapter
 
 class OnboardingFragment : Fragment(), LoginView {
+    companion object {
+        private val ONBOARDING_CARDS_COUNT = 4
+    }
+
     private lateinit var binding : FragmentRecommendationsBinding
     private val presenter = LoginPresenter()
     private var completed = 0
 
     private val adapter = OnboardingQuizCardsAdapter {
-        Completable.fromAction { SharedPreferenceMgr.getInstance().isNotFirstTime = true }
+        updateToolbar()
+        if (it == 0) Completable.fromAction { SharedPreferenceMgr.getInstance().isNotFirstTime = true }
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(this::onSuccess)
     }
@@ -64,12 +69,25 @@ class OnboardingFragment : Fragment(), LoginView {
             createMockAccount()
         }
 
-        binding.expCounter.visibility = View.GONE
-        binding.expLevelNext.visibility = View.GONE
-        binding.expLevel.text = getString(R.string.app_name)
-        binding.expLevel.setTextAppearance(context, R.style.TextAppearance_AppCompat_Widget_ActionBar_Title)
+        binding.expLevel.text = getString(R.string.tutorial)
+
+        binding.expProgress.max = ONBOARDING_CARDS_COUNT
+
+        updateToolbar()
 
         return binding.root
+    }
+
+    private fun updateToolbar() {
+        val progress = ONBOARDING_CARDS_COUNT - adapter.getItemCount()
+        binding.expProgress.progress = progress
+        binding.expCounter.text =  progress.toString()
+        if (adapter.getItemCount() == 0) {
+            binding.expLevelNext.visibility = View.GONE
+        } else {
+            binding.expLevelNext.visibility = View.VISIBLE
+            binding.expLevelNext.text = resources.getQuantityString(R.plurals.steps_in_tutorial, adapter.getItemCount(), adapter.getItemCount())
+        }
     }
 
     override fun onDestroyView() {

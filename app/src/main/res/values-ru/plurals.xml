@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <plurals name="steps_in_tutorial">
+        <item quantity="one">Остался %1$d шаг</item>
+        <item quantity="few">Ещё %1$d шага</item>
+        <item quantity="many">Ещё %1$d шага</item>
+        <item quantity="other">Ещё %1$d шага</item>
+    </plurals>
+</resources>

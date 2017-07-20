@@ -2,7 +2,7 @@ package org.stepik.android.adaptive.pdd.ui.adapter
 
 import android.view.View
 
-class OnboardingQuizCardsAdapter(private val onOnboardingEnd: () -> Unit) : QuizCardsAdapter(null, null) {
+class OnboardingQuizCardsAdapter(private val onCardPolled: (Int) -> Unit) : QuizCardsAdapter(null, null) {
 
     override fun onBindViewHolder(holder: QuizCardViewHolder, pos: Int) {
         super.onBindViewHolder(holder, pos)
@@ -11,6 +11,8 @@ class OnboardingQuizCardsAdapter(private val onOnboardingEnd: () -> Unit) : Quiz
 
         holder.binding.separatorAnswers.visibility = View.GONE
         holder.binding.separatorHint.visibility = View.GONE
+
+        holder.binding.scroll.setLayerType(View.LAYER_TYPE_SOFTWARE, null)
     }
 
     override fun onBindTopCard(holder: QuizCardViewHolder, pos: Int) {
@@ -27,7 +29,6 @@ class OnboardingQuizCardsAdapter(private val onOnboardingEnd: () -> Unit) : Quiz
 
     override fun poll() {
         super.poll()
-        if (getItemCount() == 0)
-            onOnboardingEnd()
+        onCardPolled(getItemCount())
     }
 }

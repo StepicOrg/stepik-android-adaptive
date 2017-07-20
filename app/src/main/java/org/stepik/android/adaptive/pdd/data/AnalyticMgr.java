@@ -36,6 +36,8 @@ public final class AnalyticMgr {
     private final static String EVENT_APP_RATE_NEGATIVE_LATER = "app_rate_negative_later";
     private final static String EVENT_APP_RATE_NEGATIVE_EMAIL = "app_rate_negative_email";
 
+    private final static String EVENT_STATS_OPENED = "stats_opened";
+
     private static AnalyticMgr instance;
 
     private final FirebaseAnalytics firebaseAnalytics;
@@ -123,5 +125,9 @@ public final class AnalyticMgr {
 
     public void rateNegativeEmail() {
         firebaseAnalytics.logEvent(EVENT_APP_RATE_NEGATIVE_EMAIL, null);
+    }
+
+    public void statsOpened() {
+        firebaseAnalytics.logEvent(EVENT_STATS_OPENED, null);
     }
 }
