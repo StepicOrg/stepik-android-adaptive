@@ -9,6 +9,7 @@ import android.support.v7.app.AppCompatActivity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.DecelerateInterpolator
 import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -34,7 +35,7 @@ class OnboardingFragment : Fragment(), LoginView {
     private var completed = 0
 
     private val adapter = OnboardingQuizCardsAdapter {
-        updateToolbar()
+        updateToolbar(true)
         if (it == 0) Completable.fromAction { SharedPreferenceMgr.getInstance().isNotFirstTime = true }
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(this::onSuccess)
@@ -72,16 +73,28 @@ class OnboardingFragment : Fragment(), LoginView {
         binding.expLevel.text = getString(R.string.tutorial)
 
         binding.expProgress.max = ONBOARDING_CARDS_COUNT
+        binding.expInc.text = getString(R.string.exp_inc, 1)
 
-        updateToolbar()
+        updateToolbar(false)
 
         return binding.root
     }
 
-    private fun updateToolbar() {
+    private fun updateToolbar(animate: Boolean) {
         val progress = ONBOARDING_CARDS_COUNT - adapter.getItemCount()
         binding.expProgress.progress = progress
         binding.expCounter.text =  progress.toString()
+
+        if (animate) {
+            binding.expInc.alpha = 1f
+            binding.expInc.animate()
+                    .alpha(0f)
+                    .setInterpolator(DecelerateInterpolator())
+                    .setStartDelay(1500)
+                    .setDuration(200)
+                    .start()
+        }
+
         if (adapter.getItemCount() == 0) {
             binding.expLevelNext.visibility = View.GONE
         } else {
