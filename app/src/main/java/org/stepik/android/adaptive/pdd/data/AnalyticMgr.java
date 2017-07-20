@@ -38,6 +38,10 @@ public final class AnalyticMgr {
 
     private final static String EVENT_STATS_OPENED = "stats_opened";
 
+    private final static String EVENT_REACHED_EXP_500 = "reached_exp_500";
+    private final static String EVENT_REACHED_EXP_1000 = "reached_exp_1000";
+    private final static String EVENT_REACHED_EXP_5000 = "reached_exp_5000";
+
     private static AnalyticMgr instance;
 
     private final FirebaseAnalytics firebaseAnalytics;
@@ -129,5 +133,17 @@ public final class AnalyticMgr {
 
     public void statsOpened() {
         firebaseAnalytics.logEvent(EVENT_STATS_OPENED, null);
+    }
+
+    public void onExpReached(final long exp, final long delta) {
+        String event = null;
+        if (exp <= 500 && exp + delta >= 500)
+            event = EVENT_REACHED_EXP_500;
+        else if (exp <= 1000 && exp + delta >= 1000)
+            event = EVENT_REACHED_EXP_1000;
+        else if (exp <= 5000 && exp + delta >= 5000)
+            event = EVENT_REACHED_EXP_5000;
+        if (event != null)
+            firebaseAnalytics.logEvent(event, null);
     }
 }

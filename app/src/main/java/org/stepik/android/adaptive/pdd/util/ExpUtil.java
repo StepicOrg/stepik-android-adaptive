@@ -1,5 +1,6 @@
 package org.stepik.android.adaptive.pdd.util;
 
+import org.stepik.android.adaptive.pdd.data.AnalyticMgr;
 import org.stepik.android.adaptive.pdd.data.SharedPreferenceMgr;
 
 public class ExpUtil {
@@ -11,7 +12,9 @@ public class ExpUtil {
     }
 
     public static long addExp(long delta) {
-        return addValue(EXP_KEY, delta);
+        long exp = addValue(EXP_KEY, delta);
+        AnalyticMgr.getInstance().onExpReached(exp - delta, delta);
+        return exp;
     }
 
     public static long incStreak() {
