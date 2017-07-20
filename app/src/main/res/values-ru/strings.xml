@@ -78,15 +78,14 @@
             </div>
         </div>
     ]]></string>
-    <string name="onboarding_card_title_4">Процесс обучения</string>
+    <string name="onboarding_card_title_4">Уровни и опыт</string>
     <string name="onboarding_card_question_4"><![CDATA[
-        <div class="center">
-            <div class="padding-box">
-                <img src="images/04.png" />
-            </div>
-        </div>
-        <p>Тренируйтесь каждый день и получайте очки опыта. За определенное количество очков опыта вы будете получать уровни, а чем выше ваш уровень, тем лучше вы знаете данную тему.</p>
-        <p>Также несколько правильных ответов подряд увеличивают количество получаемого опыта.
+        <p>За правильные ответы вы будете <b>получать опыт</b>.</p>
+        <p>
+            <img src="images/onb4str.png" />
+        </p>
+        <p><b>Больше правильных ответов подряд &mdash; больше опыта за каждый ответ.</b></p>
+        <p>Посмотреть свою статистику вы можете, <b>нажав на панель с уровнем</b>.</p>
     ]]></string>
     <string name="exp_title">Уровень <b>%d</b></string>
     <string name="exp_level_title">Новый уровень!</string>
@@ -105,4 +104,5 @@
     <string name="stats_level">УРОВЕНЬ</string>
     <string name="stats_exp_for_a_week">опыта за неделю</string>
     <string name="ex_dialog_continue">Продолжить</string>
+    <string name="tutorial">Обучение</string>
 </resources>
