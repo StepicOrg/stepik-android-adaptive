@@ -16,6 +16,7 @@ import org.stepik.android.adaptive.pdd.core.LogoutHelper;
 import org.stepik.android.adaptive.pdd.core.ScreenManager;
 import org.stepik.android.adaptive.pdd.data.SharedPreferenceMgr;
 import org.stepik.android.adaptive.pdd.data.model.EnrollmentWrapper;
+import org.stepik.android.adaptive.pdd.data.model.Profile;
 import org.stepik.android.adaptive.pdd.data.model.RecommendationReaction;
 import org.stepik.android.adaptive.pdd.data.model.RegistrationUser;
 import org.stepik.android.adaptive.pdd.data.model.Submission;
@@ -347,6 +348,10 @@ public final class API {
 
     public Observable<LessonsResponse> getLessons(final long lesson) {
         return stepikService.getLessons(lesson);
+    }
+
+    public Completable setProfile(final Profile profile) {
+        return stepikService.setProfile(profile.getId(), new ProfileRequest(profile));
     }
 
 

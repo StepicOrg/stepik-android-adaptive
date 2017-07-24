@@ -38,4 +38,8 @@ public final class Profile {
     public String getAvatar() {
         return avatar;
     }
+
+    public void setSubscribed_for_mail(boolean subscribed_for_mail) {
+        this.subscribed_for_mail = subscribed_for_mail;
+    }
 }

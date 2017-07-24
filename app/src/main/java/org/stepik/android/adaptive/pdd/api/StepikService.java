@@ -8,6 +8,7 @@ import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.Headers;
 import retrofit2.http.POST;
+import retrofit2.http.PUT;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
 
@@ -65,6 +66,12 @@ Observable<ProfileResponse> getProfile();
 @POST("api/recommendation-reactions")
 Completable createRecommendationReaction(
         @Body final RecommendationReactionsRequest reactionsRequest
+);
+
+@PUT("api/profiles/{userId}")
+Completable setProfile(
+        @Path("userId") final long userId,
+        @Body final ProfileRequest profileRequest
 );
 
 }

@@ -159,6 +159,6 @@ class OnboardingFragment : Fragment(), LoginView {
         val password = Util.randomString(16)
         val firstName = Util.randomString(10)
         val lastName = Util.randomString(10)
-        presenter.createAccount(firstName, lastName, email, password)
+        presenter.createAccount(firstName, lastName, email, password, true)
     }
 }

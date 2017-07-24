@@ -9,6 +9,7 @@ import org.stepik.android.adaptive.pdd.api.login.SocialManager
 import org.stepik.android.adaptive.pdd.core.presenter.contracts.LoginView
 import org.stepik.android.adaptive.pdd.data.AnalyticMgr
 import org.stepik.android.adaptive.pdd.data.SharedPreferenceMgr
+import org.stepik.android.adaptive.pdd.data.model.Profile
 
 class LoginPresenter : PresenterBase<LoginView>() {
     companion object : PresenterFactory<LoginPresenter> {
@@ -24,17 +25,17 @@ class LoginPresenter : PresenterBase<LoginView>() {
     }
 
 
-    fun authWithLoginPassword(login: String, password: String) {
+    fun authWithLoginPassword(login: String, password: String, isFake: Boolean = false) {
         view?.onLoading()
 
         disposable.add(API.getInstance()
                 .authWithLoginPassword(login, password)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({ this.onLogin() }, { this.onError() }))
+                .subscribe({ this.onLogin(isFake) }, { this.onError() }))
     }
 
-    fun onLogin() {
+    fun onLogin(isFake: Boolean = false) {
         disposable.add(API.getInstance()
                 .joinCourse(Config.getInstance().courseId)
                 .subscribeOn(Schedulers.io())
@@ -44,7 +45,20 @@ class LoginPresenter : PresenterBase<LoginView>() {
                 .doOnNext({ SharedPreferenceMgr.getInstance().saveProfile(it.profile) })
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({ onSuccess() }, { this.onError() }))
+                .subscribe({
+                    if (isFake)
+                        unsubscribeFake(it.profile)
+                    else
+                        onSuccess()
+                }, { this.onError() }))
+    }
+
+    private fun unsubscribeFake(profile: Profile) {
+        profile.setSubscribed_for_mail(false)
+        disposable.add(API.getInstance().setProfile(profile)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(this::onSuccess, { this.onError() }))
     }
 
     fun onSocialLogin(token: String, type: SocialManager.SocialType) {
@@ -71,7 +85,7 @@ class LoginPresenter : PresenterBase<LoginView>() {
         view?.onNetworkError()
     }
 
-    fun createAccount(firstName: String, lastName: String, email: String, password: String) {
+    fun createAccount(firstName: String, lastName: String, email: String, password: String, isFake: Boolean = false) {
         view?.onLoading()
 
         disposable.add(API.getInstance()
@@ -80,7 +94,7 @@ class LoginPresenter : PresenterBase<LoginView>() {
                 .subscribeOn(Schedulers.io())
                 .subscribe({
                     if (it.isSuccessful) {
-                        authWithLoginPassword(email, password)
+                        authWithLoginPassword(email, password, isFake)
                     } else {
                         if (it.errorBody() != null) {
                             view?.onError(it.errorBody().string())
