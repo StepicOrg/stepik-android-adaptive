@@ -13,9 +13,8 @@ import android.view.animation.DecelerateInterpolator
 import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
-import org.stepik.android.adaptive.pdd.Config
+import io.reactivex.schedulers.Schedulers
 import org.stepik.android.adaptive.pdd.R
-import org.stepik.android.adaptive.pdd.Util
 import org.stepik.android.adaptive.pdd.core.presenter.LoginPresenter
 import org.stepik.android.adaptive.pdd.core.presenter.contracts.LoginView
 import org.stepik.android.adaptive.pdd.data.AnalyticMgr
@@ -155,10 +154,16 @@ class OnboardingFragment : Fragment(), LoginView {
 
 
     private fun createMockAccount() {
-        val email = "adaptive_${Config.getInstance().courseId}_android_${System.currentTimeMillis()}${Util.randomString(5)}@stepik.org"
-        val password = Util.randomString(16)
-        val firstName = Util.randomString(10)
-        val lastName = Util.randomString(10)
-        presenter.createAccount(firstName, lastName, email, password, true)
+        Observable.fromCallable(SharedPreferenceMgr.getInstance()::getFakeUser)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .subscribe {
+                    if (it.isNotEmpty) {
+                        // we got here if on some reason server returns us 401, so we try to re-login with existing fake account
+                        presenter.authWithLoginPassword(it.value.login, it.value.password, true)
+                    } else {
+                        presenter.createFakeUser()
+                    }
+                }
     }
 }

@@ -21,7 +21,7 @@ public class LogoutHelper {
                     removeCookiesCompat();
                     VKSdk.logout();
                     SharedPreferenceMgr.getInstance().removeProfile();
-                    ExpUtil.reset();
+//                    ExpUtil.reset();
                 })
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());

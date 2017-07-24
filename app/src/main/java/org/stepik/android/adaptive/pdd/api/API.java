@@ -1,5 +1,6 @@
 package org.stepik.android.adaptive.pdd.api;
 
+import android.annotation.SuppressLint;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.webkit.CookieManager;
@@ -8,6 +9,7 @@ import org.jetbrains.annotations.Nullable;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.stepik.android.adaptive.pdd.Config;
+import org.stepik.android.adaptive.pdd.Util;
 import org.stepik.android.adaptive.pdd.api.oauth.EmptyAuthService;
 import org.stepik.android.adaptive.pdd.api.oauth.OAuthService;
 import org.stepik.android.adaptive.pdd.api.oauth.OAuthResponse;
@@ -16,6 +18,7 @@ import org.stepik.android.adaptive.pdd.core.LogoutHelper;
 import org.stepik.android.adaptive.pdd.core.ScreenManager;
 import org.stepik.android.adaptive.pdd.data.SharedPreferenceMgr;
 import org.stepik.android.adaptive.pdd.data.model.EnrollmentWrapper;
+import org.stepik.android.adaptive.pdd.data.model.AccountCredentials;
 import org.stepik.android.adaptive.pdd.data.model.Profile;
 import org.stepik.android.adaptive.pdd.data.model.RecommendationReaction;
 import org.stepik.android.adaptive.pdd.data.model.RegistrationUser;
@@ -49,6 +52,8 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public final class API {
     private final static String TAG = "API";
     private final static String HOST = "https://stepik.org/";
+
+    private final static String FAKE_MAIL_PATTERN = "adaptive_%s_android_%d%s@stepik.org";
 
     private final static int TIMEOUT_IN_SECONDS = 60;
 
@@ -163,6 +168,15 @@ public final class API {
     private Call<OAuthResponse> authWithRefreshToken(final String refreshToken) {
         return getAuthService(SharedPreferenceMgr.getInstance().isAuthTokenSocial() ? TokenType.SOCIAL : TokenType.PASSWORD)
                 .refreshAccessToken(Config.getInstance().getRefreshGrantType(), refreshToken);
+    }
+
+    @SuppressLint("DefaultLocale")
+    public static AccountCredentials createFakeAccount() {
+        final String email = String.format(FAKE_MAIL_PATTERN, Config.getInstance().getCourseId(), System.currentTimeMillis(), Util.randomString(5));
+        final String password = Util.randomString(16);
+        final String firstName = Util.randomString(10);
+        final String lastName = Util.randomString(10);
+        return new AccountCredentials(email, password, firstName, lastName);
     }
 
     public Observable<Response<RegistrationResponse>> createAccount(final String firstName, final String lastName,

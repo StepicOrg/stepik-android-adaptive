@@ -9,7 +9,9 @@ import org.stepik.android.adaptive.pdd.api.login.SocialManager
 import org.stepik.android.adaptive.pdd.core.presenter.contracts.LoginView
 import org.stepik.android.adaptive.pdd.data.AnalyticMgr
 import org.stepik.android.adaptive.pdd.data.SharedPreferenceMgr
+import org.stepik.android.adaptive.pdd.data.model.AccountCredentials
 import org.stepik.android.adaptive.pdd.data.model.Profile
+import retrofit2.HttpException
 
 class LoginPresenter : PresenterBase<LoginView>() {
     companion object : PresenterFactory<LoginPresenter> {
@@ -24,7 +26,6 @@ class LoginPresenter : PresenterBase<LoginView>() {
         disposable.dispose()
     }
 
-
     fun authWithLoginPassword(login: String, password: String, isFake: Boolean = false) {
         view?.onLoading()
 
@@ -32,7 +33,14 @@ class LoginPresenter : PresenterBase<LoginView>() {
                 .authWithLoginPassword(login, password)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({ this.onLogin(isFake) }, { this.onError() }))
+                .subscribe({ this.onLogin(isFake) }, {
+                    if (isFake && it is HttpException && it.code() == 401) {
+                        // on some reason we can't login for fake user, so recreate fake user
+                        createFakeUser()
+                    } else {
+                        this.onError()
+                    }
+                }))
     }
 
     fun onLogin(isFake: Boolean = false) {
@@ -85,16 +93,21 @@ class LoginPresenter : PresenterBase<LoginView>() {
         view?.onNetworkError()
     }
 
-    fun createAccount(firstName: String, lastName: String, email: String, password: String, isFake: Boolean = false) {
+    fun createFakeUser() = createAccount(API.createFakeAccount(), true)
+
+    fun createAccount(credentials: AccountCredentials, isFake: Boolean = false) {
         view?.onLoading()
 
         disposable.add(API.getInstance()
-                .createAccount(firstName, lastName, email, password)
+                .createAccount(credentials.firstName, credentials.lastName, credentials.login, credentials.password)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe({
                     if (it.isSuccessful) {
-                        authWithLoginPassword(email, password, isFake)
+                        if (isFake) { // save only if it's fake account
+                            SharedPreferenceMgr.getInstance().saveFakeUser(credentials)
+                        }
+                        authWithLoginPassword(credentials.login, credentials.password, isFake)
                     } else {
                         if (it.errorBody() != null) {
                             view?.onError(it.errorBody().string())

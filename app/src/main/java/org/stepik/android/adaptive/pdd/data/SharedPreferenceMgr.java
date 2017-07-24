@@ -6,11 +6,14 @@ import android.preference.PreferenceManager;
 
 import com.google.gson.Gson;
 
+import org.jetbrains.annotations.NotNull;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.stepik.android.adaptive.pdd.api.API;
 import org.stepik.android.adaptive.pdd.api.oauth.OAuthResponse;
+import org.stepik.android.adaptive.pdd.data.model.AccountCredentials;
 import org.stepik.android.adaptive.pdd.data.model.Profile;
+import org.stepik.android.adaptive.pdd.util.Optional;
 
 public final class SharedPreferenceMgr {
     private static final String OAUTH_RESPONSE = "oauth_response";
@@ -21,6 +24,8 @@ public final class SharedPreferenceMgr {
     private static final String PROFILE_ID = "profile_id";
 
     private static final String NOT_FIRST_TIME = "not_first_time";
+
+    private static final String FAKE_USER = "fake_user";
 
     private static SharedPreferenceMgr instance;
 
@@ -83,6 +88,25 @@ public final class SharedPreferenceMgr {
         remove(IS_OAUTH_TOKEN_SOCIAL);
         remove(OAUTH_RESPONSE_DEADLINE);
         API.authLock.unlock();
+    }
+
+    public void removeFakeUser() {
+        remove(FAKE_USER);
+    }
+
+    public void saveFakeUser(AccountCredentials credentials) {
+        final Gson gson = new Gson();
+        final String json = gson.toJson(credentials);
+
+        saveString(FAKE_USER, json);
+    }
+
+    @NotNull
+    public Optional<AccountCredentials> getFakeUser() {
+        String json = getString(FAKE_USER);
+        if (json == null) return new Optional<>(null);
+
+        return new Optional<>(new Gson().fromJson(json, AccountCredentials.class));
     }
 
     public void setNotFirstTime(final boolean notFirstTime) {
