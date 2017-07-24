@@ -368,6 +368,13 @@ public final class API {
         return stepikService.setProfile(profile.getId(), new ProfileRequest(profile));
     }
 
+    public Observable<UnitsResponse> getUnits(final long lesson) {
+        return stepikService.getUnits(Config.getInstance().getCourseId(), lesson);
+    }
+
+    public Completable reportView(final long assignment, final long step) {
+        return stepikService.reportView(new ViewRequest(assignment, step));
+    }
 
     private void setTimeout(OkHttpClient.Builder builder, int seconds) {
         builder.connectTimeout(seconds, TimeUnit.SECONDS);

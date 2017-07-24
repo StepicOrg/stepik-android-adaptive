@@ -68,6 +68,19 @@ Completable createRecommendationReaction(
         @Body final RecommendationReactionsRequest reactionsRequest
 );
 
+
+@GET("api/units")
+Observable<UnitsResponse> getUnits(
+        @Query("course") final long course,
+        @Query("lesson") final long lesson
+);
+
+@POST("api/views")
+Completable reportView(
+        @Body final ViewRequest viewRequest
+);
+
+
 @PUT("api/profiles/{userId}")
 Completable setProfile(
         @Path("userId") final long userId,
