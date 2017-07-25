@@ -50,7 +50,7 @@
             android:name="org.stepik.android.adaptive.pdd.ui.activity.IntroActivity" />
 
         <activity
-            android:theme="@style/AppTheme.NoActionBar"
+            android:theme="@style/AppTheme.NoActionBar.Dark"
             android:name="org.stepik.android.adaptive.pdd.ui.activity.PhotoViewActivity"/>
 
         <activity
