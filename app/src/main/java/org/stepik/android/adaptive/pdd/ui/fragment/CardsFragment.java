@@ -118,7 +118,7 @@ public final class CardsFragment extends Fragment implements AnswerListener {
     }
 
     public void createReaction(final long lesson, final RecommendationReaction.Reaction reaction) {
-        if (adapter.getItemCount() == 0 && binding != null) {
+        if (adapter.isEmptyOrContainsOnlySwipedCard(lesson) && binding != null) {
             binding.progress.setVisibility(View.VISIBLE);
             binding.loadingPlaceholder.setText(loadingPlaceholders[Util.getRandomNumberBetween(0, 3)]);
         }
