@@ -99,6 +99,10 @@ public class QuizCardsAdapter extends QuizCardsContainer.CardsAdapter<QuizCardVi
         onDataAdded();
     }
 
+    public boolean isEmptyOrContainsOnlySwipedCard(final long lesson) {
+        return presenters.isEmpty() || (presenters.size() == 1 && presenters.get(0).getCard().getLessonId() == lesson);
+    }
+
     @Override
     protected void poll() {
         presenters.remove(0).destroy();
