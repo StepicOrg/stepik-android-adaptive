@@ -6,6 +6,7 @@ import org.stepik.android.adaptive.pdd.ui.adapter.AttemptAnswersAdapter;
 
 import io.reactivex.Observable;
 import io.reactivex.Observer;
+import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
@@ -29,7 +30,9 @@ public final class Card extends Observable<Card> {
     private Attempt attempt;
     private Disposable attemptDisposable;
 
-    private final AttemptAnswersAdapter adapter;
+    private final AttemptAnswersAdapter adapter = new AttemptAnswersAdapter();
+
+    private final CompositeDisposable compositeDisposable = new CompositeDisposable();
 
     private Throwable error;
 
@@ -42,15 +45,11 @@ public final class Card extends Observable<Card> {
         this.lesson = lesson;
         this.step = step;
         this.attempt = attempt;
-        this.adapter = new AttemptAnswersAdapter();
         adapter.setAttempt(attempt);
     }
 
     public Card(final long lessonId) {
         this.lessonId = lessonId;
-        this.adapter = new AttemptAnswersAdapter();
-
-        init();
     }
 
     public void init() {
@@ -91,8 +90,24 @@ public final class Card extends Observable<Card> {
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(this::setAttempt, this::onError);
             }
+
+            compositeDisposable.add(API.getInstance().getUnits(lessonId)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(Schedulers.io())
+                    .subscribe((res) -> reportView(res.getTopUnit(), step.getId()), (__) -> {}));
             notifyDataChanged();
         }
+    }
+
+    private void reportView(final Unit unit, final long stepId) {
+        if (unit == null) return;
+        final long assignment = unit.getTopAssignment();
+        if (assignment == 0) return;
+
+        compositeDisposable.add(API.getInstance().reportView(assignment, stepId)
+                .subscribeOn(Schedulers.io())
+                .observeOn(Schedulers.io())
+                .subscribe(() -> {}, (__) -> {}));
     }
 
     private void setLesson(Lesson lesson) {
@@ -134,6 +149,7 @@ public final class Card extends Observable<Card> {
         if (lessonDisposable != null) lessonDisposable.dispose();
         if (stepSubscription != null) stepSubscription.dispose();
         if (attemptDisposable != null) attemptDisposable.dispose();
+        compositeDisposable.dispose();
         observer = null;
         adapter.clear();
     }
@@ -141,6 +157,7 @@ public final class Card extends Observable<Card> {
     @Override
     protected void subscribeActual(Observer<? super Card> observer) {
         this.observer = observer;
+        init();
         notifyDataChanged();
     }
 

@@ -16,6 +16,7 @@ import org.stepik.android.adaptive.pdd.core.presenter.BasePresenterActivity
 import org.stepik.android.adaptive.pdd.core.presenter.PresenterFactory
 import org.stepik.android.adaptive.pdd.core.presenter.LoginPresenter
 import org.stepik.android.adaptive.pdd.core.presenter.contracts.LoginView
+import org.stepik.android.adaptive.pdd.data.model.AccountCredentials
 import org.stepik.android.adaptive.pdd.databinding.ActivityRegisterBinding
 import org.stepik.android.adaptive.pdd.util.ValidateUtil
 
@@ -91,7 +92,7 @@ class RegisterActivity : BasePresenterActivity<LoginPresenter, LoginView>(), Log
         isOk = isOk && ValidateUtil.validatePassword(binding.registerActivityPasswordWrapper, binding.registerActivityPassword)
 
         if (isOk) {
-            presenter?.createAccount(firstName, secondName, email, password)
+            presenter?.createAccount(AccountCredentials(firstName, secondName, email, password))
         }
     }
 

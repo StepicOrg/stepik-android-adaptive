@@ -4,12 +4,11 @@ import org.stepik.android.adaptive.pdd.data.model.EnrollmentWrapper;
 
 import io.reactivex.Completable;
 import io.reactivex.Observable;
-import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.Headers;
 import retrofit2.http.POST;
-import retrofit2.http.Part;
+import retrofit2.http.PUT;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
 
@@ -67,6 +66,25 @@ Observable<ProfileResponse> getProfile();
 @POST("api/recommendation-reactions")
 Completable createRecommendationReaction(
         @Body final RecommendationReactionsRequest reactionsRequest
+);
+
+
+@GET("api/units")
+Observable<UnitsResponse> getUnits(
+        @Query("course") final long course,
+        @Query("lesson") final long lesson
+);
+
+@POST("api/views")
+Completable reportView(
+        @Body final ViewRequest viewRequest
+);
+
+
+@PUT("api/profiles/{userId}")
+Completable setProfile(
+        @Path("userId") final long userId,
+        @Body final ProfileRequest profileRequest
 );
 
 }

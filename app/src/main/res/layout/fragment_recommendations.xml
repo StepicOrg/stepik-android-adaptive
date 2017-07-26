@@ -5,122 +5,171 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/primaryBackground">
-
-        <android.support.design.widget.AppBarLayout
-            android:id="@+id/fragment_recommendations_appbar"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:fitsSystemWindows="true"
-            android:background="@color/primaryBackground"
-            android:orientation="vertical"
-            app:elevation="0dp">
-
+            android:layout_height="match_parent"
+            android:orientation="vertical">
             <android.support.v7.widget.Toolbar
-                android:id="@+id/fragment_recommendations_toolbar"
+                android:id="@+id/toolbar"
                 android:title=""
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
-                app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-                android:theme="@style/AppTheme.ActionBarTheme" />
+                android:background="?attr/selectableItemBackground">
 
-            <View
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="start|center_vertical"
+                        android:layout_marginStart="4dp"
+                        android:orientation="vertical">
+                        <TextView
+                            android:id="@+id/exp_level"
+                            android:layout_gravity="start"
+                            android:text="@string/exp_title"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/colorGrayText"
+                            style="@style/TextAppearance.AppCompat.Widget.ActionBar.Subtitle"/>
+                        <TextView
+                            android:id="@+id/exp_level_next"
+                            android:layout_gravity="start"
+                            android:text="@string/exp_title"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textSize="12sp"
+                            android:textColor="@color/colorGrayText" />
+                    </LinearLayout>
+
+
+                    <FrameLayout
+                        android:id="@+id/exp_bubble"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="end|center_vertical"
+                        android:layout_marginEnd="16dp">
+                        <TextView
+                            android:id="@+id/exp_counter"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:textStyle="bold"
+                            android:background="@drawable/gray_circle"
+                            android:gravity="center"/>
+                        <TextView
+                            android:id="@+id/exp_inc"
+                            android:text="@string/exp_inc"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:textStyle="bold"
+                            android:background="@drawable/green_circle"
+                            android:textColor="@android:color/white"
+                            android:alpha="0"
+                            android:gravity="center" />
+                    </FrameLayout>
+                </FrameLayout>
+
+            </android.support.v7.widget.Toolbar>
+
+            <me.zhanghai.android.materialprogressbar.MaterialProgressBar
+                android:id="@+id/exp_progress"
+                style="@style/Widget.MaterialProgressBar.ProgressBar.Horizontal"
                 android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="@color/colorStroke"/>
+                android:layout_height="2dp"
+                app:mpb_progressStyle="horizontal"
+                app:mpb_useIntrinsicPadding="false" />
 
-        </android.support.design.widget.AppBarLayout>
-
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:paddingTop="?attr/actionBarSize"
-            android:clipToPadding="false">
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:orientation="vertical"
-                android:id="@+id/fragment_recommendations_progress">
-
-                <pl.droidsonroids.gif.GifImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/loading_robot"
-                    android:layout_gravity="center_horizontal"/>
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:layout_gravity="center_horizontal"
-                    android:id="@+id/fragment_recommendations_loading_placeholder"/>
-            </LinearLayout>
-
-            <org.stepik.android.adaptive.pdd.ui.view.QuizCardsContainer
-                android:id="@+id/fragment_recommendations_cards_container"
-                android:layout_gravity="center"
+            <FrameLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+                android:layout_height="match_parent">
 
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:visibility="gone"
-                android:orientation="vertical"
-                android:layout_gravity="center"
-                android:gravity="center_horizontal"
-                android:id="@+id/fragment_recommendations_course_completed">
-
-                <ImageView
-                    android:layout_width="125dp"
-                    android:layout_height="125dp"
-                    android:src="@drawable/course_passed" />
-
-                <TextView
+                <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:maxWidth="256dp"
-                    android:gravity="center"
-                    android:layout_marginTop="16dp"
-                    android:textColor="@color/colorGrayText"
-                    android:text="@string/course_completed"
-                    android:id="@+id/fragment_recommendations_course_completed_text"/>
+                    android:layout_gravity="center"
+                    android:orientation="vertical"
+                    android:id="@+id/progress">
 
-            </LinearLayout>
+                    <pl.droidsonroids.gif.GifImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/loading_robot"
+                        android:layout_gravity="center_horizontal"/>
 
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:visibility="gone"
-                android:orientation="vertical"
-                android:layout_gravity="center"
-                android:gravity="center_horizontal"
-                android:id="@+id/fragment_recommendations_error">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:layout_gravity="center_horizontal"
+                        android:id="@+id/loading_placeholder"/>
+                </LinearLayout>
 
-                <ImageView
-                    android:layout_width="125dp"
-                    android:layout_height="125dp"
-                    android:src="@drawable/ic_no_wifi" />
+                <org.stepik.android.adaptive.pdd.ui.view.QuizCardsContainer
+                    android:id="@+id/cards_container"
+                    android:layout_gravity="center"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
 
-                <TextView
+                <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:maxWidth="256dp"
-                    android:gravity="center"
-                    android:text="@string/network_error"
-                    android:textColor="@color/colorGrayText"/>
+                    android:visibility="gone"
+                    android:orientation="vertical"
+                    android:layout_gravity="center"
+                    android:gravity="center_horizontal"
+                    android:id="@+id/course_completed">
 
-                <Button
+                    <ImageView
+                        android:layout_width="125dp"
+                        android:layout_height="125dp"
+                        android:src="@drawable/course_passed" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:maxWidth="256dp"
+                        android:gravity="center"
+                        android:layout_marginTop="16dp"
+                        android:textColor="@color/colorGrayText"
+                        android:text="@string/course_completed"
+                        android:id="@+id/course_completed_text"/>
+
+                </LinearLayout>
+
+                <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    style="@style/Widget.AppCompat.Button.Borderless"
-                    android:textColor="@color/borderless_button_text_color"
-                    android:text="@string/try_again"
-                    android:id="@+id/fragment_recommendations_try_again" />
-            </LinearLayout>
-        </FrameLayout>
+                    android:visibility="gone"
+                    android:orientation="vertical"
+                    android:layout_gravity="center"
+                    android:gravity="center_horizontal"
+                    android:id="@+id/error">
+
+                    <ImageView
+                        android:layout_width="125dp"
+                        android:layout_height="125dp"
+                        android:src="@drawable/ic_no_wifi" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:maxWidth="256dp"
+                        android:gravity="center"
+                        android:text="@string/network_error"
+                        android:textColor="@color/colorGrayText"/>
+
+                    <Button
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        style="@style/Widget.AppCompat.Button.Borderless"
+                        android:textColor="@color/borderless_button_text_color"
+                        android:text="@string/try_again"
+                        android:id="@+id/try_again" />
+                </LinearLayout>
+            </FrameLayout>
+        </LinearLayout>
     </android.support.design.widget.CoordinatorLayout>
 </layout>
 

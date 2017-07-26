@@ -2,221 +2,239 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <org.stepik.android.adaptive.pdd.ui.view.QuizCardView
-        android:layout_width="@dimen/card_width"
-        android:layout_height="@dimen/card_height"
+    <org.stepik.android.adaptive.pdd.ui.view.SwipeableLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:layout_gravity="center"
         android:layout_margin="16dp"
         android:layerType="hardware"
-        app:cardUseCompatPadding="true"
-        android:id="@+id/fragment_recommendations_container">
+        android:id="@+id/container">
 
-        <RelativeLayout
+        <android.support.v7.widget.CardView
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <TextView
-                android:id="@+id/fragment_recommendations_title"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textColor="#FFF"
-                android:background="@color/colorAccent"
-                android:fontFamily="sans-serif-medium"
-                android:layout_alignParentTop="true"
-                android:padding="16dp" />
+            android:layout_height="match_parent"
+            app:cardUseCompatPadding="true"
+            android:layout_gravity="bottom"
+            android:id="@+id/card">
 
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
-                android:paddingLeft="4dp"
-                android:paddingRight="4dp"
-                android:id="@+id/fragment_recommendations_supplemental_actions">
-                <Button
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    style="@style/Widget.AppCompat.Button.Borderless"
-                    android:textColor="@color/borderless_button_text_color"
-                    android:text="@string/attempt_button"
-                    android:id="@+id/fragment_recommendations_solve"
-                    android:visibility="gone"
-                    android:layout_alignParentStart="true" />
+                android:layout_height="match_parent">
 
-                <Button
+                <TextView
+                    android:id="@+id/title"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    style="@style/Widget.AppCompat.Button.Borderless"
-                    android:textColor="@color/borderless_button_text_color"
-                    android:text="@string/make_submission"
-                    android:gravity="start|center_vertical"
-                    android:id="@+id/fragment_recommendations_submit"
-                    android:visibility="gone"
-                    android:layout_alignParentStart="true" />
+                    android:textColor="#FFF"
+                    android:background="@color/colorAccent"
+                    android:fontFamily="sans-serif-medium"
+                    android:layout_alignParentTop="true"
+                    android:padding="16dp" />
 
-                <Button
-                    android:layout_width="wrap_content"
+                <RelativeLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    style="@style/Widget.AppCompat.Button.Borderless"
-                    android:textColor="@color/borderless_button_text_color"
-                    android:text="@string/next"
-                    android:id="@+id/fragment_recommendations_next"
-                    android:visibility="gone"
-                    android:layout_alignParentEnd="true" />
-
-                <Button
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    style="@style/Widget.AppCompat.Button.Borderless"
-                    android:textColor="@color/borderless_button_text_color"
-                    android:text="@string/wrong_retry"
-                    android:id="@+id/fragment_recommendations_wrong_retry"
-                    android:visibility="gone"
-                    android:layout_alignParentEnd="true" />
-
-                <LinearLayout
-                    android:id="@+id/fragment_recommendations_correct"
-                    android:layout_width="wrap_content"
-                    android:layout_height="48dp"
-                    android:orientation="horizontal"
-                    android:gravity="start"
-                    android:visibility="gone"
-                    android:layout_marginStart="10dp"
-                    android:layout_alignParentStart="true" >
-                    <ImageView
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
-                        app:srcCompat="@drawable/ic_correct"
-                        android:tint="@color/colorCorrect"
-                        android:layout_gravity="center_vertical"
-                        android:layout_marginEnd="6dp" />
-                    <TextView
+                    android:layout_alignParentBottom="true"
+                    android:paddingLeft="4dp"
+                    android:paddingRight="4dp"
+                    android:id="@+id/supplemental_actions">
+                    <Button
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
-                        android:textColor="@color/colorCorrect"
-                        android:text="@string/correct" />
-                </LinearLayout>
+                        style="@style/Widget.AppCompat.Button.Borderless"
+                        android:textColor="@color/borderless_button_text_color"
+                        android:text="@string/attempt_button"
+                        android:id="@+id/solve"
+                        android:visibility="gone"
+                        android:layout_alignParentStart="true" />
 
-                <LinearLayout
-                    android:id="@+id/fragment_recommendations_wrong"
-                    android:layout_width="wrap_content"
-                    android:layout_height="48dp"
-                    android:orientation="horizontal"
-                    android:gravity="start"
-                    android:visibility="gone"
-                    android:layout_marginStart="10dp"
-                    android:layout_alignParentStart="true">
-                    <ImageView
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
-                        app:srcCompat="@drawable/ic_wrong"
-                        android:tint="@color/colorWrong"
-                        android:layout_gravity="center_vertical"
-                        android:layout_marginEnd="6dp" />
-                    <TextView
+                    <Button
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        style="@style/Widget.AppCompat.Button.Borderless"
+                        android:textColor="@color/borderless_button_text_color"
+                        android:text="@string/make_submission"
+                        android:gravity="start|center_vertical"
+                        android:id="@+id/submit"
+                        android:visibility="gone"
+                        android:layout_alignParentStart="true" />
+
+                    <Button
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
-                        android:textColor="@color/colorWrong"
-                        android:text="@string/wrong" />
-                </LinearLayout>
+                        style="@style/Widget.AppCompat.Button.Borderless"
+                        android:textColor="@color/borderless_button_text_color"
+                        android:text="@string/next"
+                        android:id="@+id/next"
+                        android:visibility="gone"
+                        android:layout_alignParentEnd="true" />
+
+                    <Button
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        style="@style/Widget.AppCompat.Button.Borderless"
+                        android:textColor="@color/borderless_button_text_color"
+                        android:text="@string/wrong_retry"
+                        android:id="@+id/wrong_retry"
+                        android:visibility="gone"
+                        android:layout_alignParentEnd="true" />
+
+                    <LinearLayout
+                        android:id="@+id/correct"
+                        android:layout_width="wrap_content"
+                        android:layout_height="48dp"
+                        android:orientation="horizontal"
+                        android:gravity="start"
+                        android:visibility="gone"
+                        android:layout_marginStart="10dp"
+                        android:layout_alignParentStart="true" >
+                        <ImageView
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            app:srcCompat="@drawable/ic_correct"
+                            android:tint="@color/colorCorrect"
+                            android:layout_gravity="center_vertical"
+                            android:layout_marginEnd="6dp" />
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:textColor="@color/colorCorrect"
+                            android:text="@string/correct" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/wrong"
+                        android:layout_width="wrap_content"
+                        android:layout_height="48dp"
+                        android:orientation="horizontal"
+                        android:gravity="start"
+                        android:visibility="gone"
+                        android:layout_marginStart="10dp"
+                        android:layout_alignParentStart="true">
+                        <ImageView
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            app:srcCompat="@drawable/ic_wrong"
+                            android:tint="@color/colorWrong"
+                            android:layout_gravity="center_vertical"
+                            android:layout_marginEnd="6dp" />
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:textColor="@color/colorWrong"
+                            android:text="@string/wrong" />
+                    </LinearLayout>
+                </RelativeLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_above="@id/supplemental_actions"
+                    android:background="@color/colorStroke"
+                    android:id="@+id/bottom_divider"/>
+
+                <ScrollView
+                    android:background="@android:color/white"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:id="@+id/scroll"
+                    android:layout_below="@id/title"
+                    android:layout_above="@id/bottom_divider">
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+                        <org.stepik.android.adaptive.pdd.ui.view.LatexSupportableWebView
+                            android:id="@+id/question"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content" />
+
+                        <View
+                            android:id="@+id/separator_answers"
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:background="@color/colorStroke"/>
+
+                        <org.stepik.android.adaptive.pdd.ui.view.ListContainer
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/answers" />
+
+                        <View
+                            android:id="@+id/separator_hint"
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:background="@color/colorStroke"/>
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/hint"
+                            android:visibility="gone"
+                            android:padding="16dp" />
+
+                        <ProgressBar
+                            android:visibility="gone"
+                            android:layout_width="32dp"
+                            android:layout_height="32dp"
+                            android:layout_margin="16dp"
+                            android:layout_gravity="center_horizontal"
+                            android:id="@+id/answers_progress" />
+
+                    </LinearLayout>
+                </ScrollView>
+
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="5dp"
+                    android:layout_marginBottom="-5dp"
+                    android:layout_below="@id/title"
+                    android:background="@drawable/shadow"
+                    android:id="@+id/top_divider"/>
+
             </RelativeLayout>
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_above="@id/fragment_recommendations_supplemental_actions"
-                android:background="@color/colorStroke"
-                android:id="@+id/fragment_recommendations_bottom_divider"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start|top"
+                android:textColor="@color/colorWrong"
+                android:text="@string/too_hard"
+                android:background="@drawable/hard_button_bg"
+                android:rotation="-30"
+                android:layout_marginStart="12dp"
+                android:layout_marginTop="36dp"
+                android:alpha="0"
+                style="@style/AppTheme.ReactionStamp"
+                android:id="@+id/hard_reaction" />
 
-            <ScrollView
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end|top"
+                android:textColor="@color/colorEasy"
+                android:text="@string/too_easy"
+                android:background="@drawable/easy_button_bg"
+                android:rotation="30"
+                android:layout_marginEnd="12dp"
+                android:layout_marginTop="36dp"
+                android:alpha="0"
+                style="@style/AppTheme.ReactionStamp"
+                android:id="@+id/easy_reaction" />
+
+            <FrameLayout
+                android:id="@+id/curtain"
                 android:background="@android:color/white"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:id="@+id/fragment_recommendations_scroll"
-                android:layout_below="@id/fragment_recommendations_title"
-                android:layout_above="@id/fragment_recommendations_bottom_divider">
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
-                    <org.stepik.android.adaptive.pdd.ui.view.LatexSupportableWebView
-                        android:id="@+id/fragment_recommendations_question"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
-
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:background="@color/colorStroke"/>
-
-                    <android.support.v7.widget.RecyclerView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/fragment_recommendations_answers" />
-
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:background="@color/colorStroke"/>
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/fragment_recommendations_hint"
-                        android:visibility="gone"
-                        android:padding="16dp" />
-
-                    <ProgressBar
-                        android:visibility="gone"
-                        android:layout_width="32dp"
-                        android:layout_height="32dp"
-                        android:layout_margin="16dp"
-                        android:layout_gravity="center_horizontal"
-                        android:id="@+id/fragment_recommendations_answers_progress" />
-
-                </LinearLayout>
-            </ScrollView>
-
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="5dp"
-                android:layout_marginBottom="-5dp"
-                android:layout_below="@id/fragment_recommendations_title"
-                android:background="@drawable/shadow"
-                android:id="@+id/fragment_recommendations_top_divider"/>
-
-        </RelativeLayout>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="start|top"
-            android:textColor="@color/colorWrong"
-            android:text="@string/too_hard"
-            android:background="@drawable/hard_button_bg"
-            android:rotation="-30"
-            android:layout_marginStart="12dp"
-            android:layout_marginTop="36dp"
-            android:alpha="0"
-            style="@style/AppTheme.ReactionStamp"
-            android:id="@+id/fragment_recommendations_hard_reaction" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="end|top"
-            android:textColor="@color/colorEasy"
-            android:text="@string/too_easy"
-            android:background="@drawable/easy_button_bg"
-            android:rotation="30"
-            android:layout_marginEnd="12dp"
-            android:layout_marginTop="36dp"
-            android:alpha="0"
-            style="@style/AppTheme.ReactionStamp"
-            android:id="@+id/fragment_recommendations_easy_reaction" />
-
-    </org.stepik.android.adaptive.pdd.ui.view.QuizCardView>
-
+                android:layout_height="match_parent">
+                <ProgressBar
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:layout_gravity="center" />
+            </FrameLayout>
+        </android.support.v7.widget.CardView>
+    </org.stepik.android.adaptive.pdd.ui.view.SwipeableLayout>
 </layout>

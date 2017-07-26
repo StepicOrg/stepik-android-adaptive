@@ -2,8 +2,6 @@ package org.stepik.android.adaptive.pdd.util;
 
 import android.webkit.WebView;
 
-import org.stepik.android.adaptive.pdd.Util;
-
 public class HtmlUtil {
 
     public static String prepareCardHtml(final String html) {

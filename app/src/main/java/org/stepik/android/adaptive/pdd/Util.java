@@ -16,6 +16,7 @@ import org.stepik.android.adaptive.pdd.api.UserAgentProvider;
 import org.stepik.android.adaptive.pdd.core.ScreenManager;
 import org.stepik.android.adaptive.pdd.data.AnalyticMgr;
 import org.stepik.android.adaptive.pdd.data.SharedPreferenceMgr;
+import org.stepik.android.adaptive.pdd.data.db.DataBaseMgr;
 
 import java.util.Random;
 
@@ -29,6 +30,7 @@ public class Util {
         FacebookSdk.sdkInitialize(context.getApplicationContext());
         AnalyticMgr.init(context);
         UserAgentProvider.init(context);
+        DataBaseMgr.Companion.init(context);
     }
 
     public static void hideSoftKeyboard(final Activity a) {

@@ -49,11 +49,60 @@
     <string name="register_error">При регистрации возникла ошибка</string>
     <string name="retry">Попробовать снова</string>
     <string name="onboarding_card_title_1">Добро пожаловать</string>
-    <string name="onboarding_card_question_1"><![CDATA[<p><img style="margin: 0 64px;" src="images/01.svg" /></p><p>Добро пожаловать на адаптивный курс. Этот курс будет автоматически подстраиваться под уровень ваших знаний.</p>]]></string>
-    <string name="onboarding_card_title_2">Очень простой вопрос</string>
-    <string name="onboarding_card_question_2"><![CDATA[<p><img src="images/02.jpg" /></p><p>Что означает красный сигнал светофора?</p>]]></string>
-    <string name="onboarding_card_title_3">Слишком сложный вопрос</string>
-    <string name="onboarding_card_title_4">Удачи в обучении</string>
-    <string name="exp_title">Текущий уровень знаний: <b>%d</b></string>
-    <string name="exp_level_title">Поздравляем! Вы достигли <b>%d</b> уровня знаний!</string>
+    <string name="onboarding_card_question_1"><![CDATA[
+        <div class="center">
+            <div class="padding-box">
+                <img src="images/01.svg" />
+            </div>
+            <h3>ПДД 2017</h3>
+        </div>
+        <p>Добро пожаловать на адаптивный курс по ПДД. В этом курсе вопросы подбираются автоматически, адаптируясь к вашим ответам и реакциям. Давайте посмотрим как это работает.</p>
+    ]]></string>
+    <string name="onboarding_card_title_2">Сложный вопрос</string>
+    <string name="onboarding_card_question_2"><![CDATA[
+        <p>Представьте, что это сложный вопрос, на который вы не знаете ответа или не хотите сейчас отвечать. Вы можете отложить его, смахнув карточку с вопросом <b>вправо</b>.</p>
+        <p>Попробуйте сделать так с этой карточкой.</p>
+        <div class="center">
+            <div class="padding-box">
+                <img src="images/arrow_right.svg" />
+            </div>
+        </div>
+    ]]></string>
+    <string name="onboarding_card_title_3">Простой вопрос</string>
+    <string name="onboarding_card_question_3"><![CDATA[
+        <p>Теперь представьте, что это, наоборот, слишком простой вопрос, на который вам уже лень отвечать. Вы можете пропустить его, смахнув карточку <b>влево</b>. Больше вы <b>никогда</b> не увидите этот вопрос.</p>
+        <p>Попробуйте смахнуть эту карточку <b>влево</b>.</p>
+        <div class="center">
+            <div class="padding-box">
+                <img src="images/arrow_left.svg" />
+            </div>
+        </div>
+    ]]></string>
+    <string name="onboarding_card_title_4">Уровни и опыт</string>
+    <string name="onboarding_card_question_4"><![CDATA[
+        <p>За правильные ответы вы будете <b>получать опыт</b>.</p>
+        <p>
+            <img src="images/onb4str.png" />
+        </p>
+        <p><b>Больше правильных ответов подряд &mdash; больше опыта за каждый ответ.</b></p>
+        <p>Посмотреть свою статистику вы можете, <b>нажав на панель с уровнем</b>.</p>
+    ]]></string>
+    <string name="exp_title">Уровень <b>%d</b></string>
+    <string name="exp_level_title">Новый уровень!</string>
+    <string name="exp_subtitle">%d опыта до нового уровня</string>
+    <string name="onboarding_title">Вступление</string>
+    <string name="rate_app_title">Оцените приложение</string>
+    <string name="rate_app_message">Насколько вам нравится пользоваться этим приложением?</string>
+    <string name="feedback_positive">Спасибо! Пожалуйста, оставьте ваш отзыв в Google Play.</string>
+    <string name="feedback_negative">Спасибо! Пожалуйста, отправьте ваш отзыв по email, чтобы мы смогли исправить все недочёты.</string>
+    <string name="confirm">Подтвердить</string>
+    <string name="later">Позже</string>
+    <string name="feedback_negative_title">Отзыв об адаптивном приложении для Android</string>
+    <string name="achievements">Достижения</string>
+    <string name="stats_total_exp">ВСЕГО ОПЫТА</string>
+    <string name="stats_last_7_days">ПОСЛЕДНИЕ 7 ДНЕЙ</string>
+    <string name="stats_level">УРОВЕНЬ</string>
+    <string name="stats_exp_for_a_week">опыта за неделю</string>
+    <string name="ex_dialog_continue">Продолжить</string>
+    <string name="tutorial">Обучение</string>
 </resources>

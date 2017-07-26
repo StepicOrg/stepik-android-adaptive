@@ -13,13 +13,9 @@ body {
     line-height: 1.3em;
 }
 
-.main img{
-    width: 100%;
-    box-sizing: border-box;
-}
-
 p > img {
     width: 100%;
+    box-sizing: border-box;
 }
 
 p {
@@ -33,9 +29,16 @@ p {
         margin: -16px;
         width: calc(100% + 32px);
     }
+}
 
-    .main img{
-        width: calc(100% + 32px);
-        margin: -16px;
-    }
+.center {
+    text-align: center;
+}
+
+.padding-box {
+    margin: 24px auto;
+}
+
+.padding-box img {
+    max-width: 100%;
 }

@@ -1,5 +1,6 @@
 package org.stepik.android.adaptive.pdd.api;
 
+import android.annotation.SuppressLint;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.webkit.CookieManager;
@@ -8,6 +9,7 @@ import org.jetbrains.annotations.Nullable;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.stepik.android.adaptive.pdd.Config;
+import org.stepik.android.adaptive.pdd.Util;
 import org.stepik.android.adaptive.pdd.api.oauth.EmptyAuthService;
 import org.stepik.android.adaptive.pdd.api.oauth.OAuthService;
 import org.stepik.android.adaptive.pdd.api.oauth.OAuthResponse;
@@ -16,6 +18,8 @@ import org.stepik.android.adaptive.pdd.core.LogoutHelper;
 import org.stepik.android.adaptive.pdd.core.ScreenManager;
 import org.stepik.android.adaptive.pdd.data.SharedPreferenceMgr;
 import org.stepik.android.adaptive.pdd.data.model.EnrollmentWrapper;
+import org.stepik.android.adaptive.pdd.data.model.AccountCredentials;
+import org.stepik.android.adaptive.pdd.data.model.Profile;
 import org.stepik.android.adaptive.pdd.data.model.RecommendationReaction;
 import org.stepik.android.adaptive.pdd.data.model.RegistrationUser;
 import org.stepik.android.adaptive.pdd.data.model.Submission;
@@ -33,14 +37,12 @@ import java.util.concurrent.locks.ReentrantLock;
 
 import io.reactivex.Completable;
 import io.reactivex.Observable;
-import io.reactivex.Observer;
 import okhttp3.Credentials;
 import okhttp3.Headers;
 import okhttp3.HttpUrl;
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
-import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Call;
 import retrofit2.Response;
 import retrofit2.Retrofit;
@@ -50,6 +52,8 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public final class API {
     private final static String TAG = "API";
     private final static String HOST = "https://stepik.org/";
+
+    private final static String FAKE_MAIL_PATTERN = "adaptive_%s_android_%d%s@stepik.org";
 
     private final static int TIMEOUT_IN_SECONDS = 60;
 
@@ -105,10 +109,6 @@ public final class API {
                 ).build()));
 
         setTimeout(okHttpBuilder, TIMEOUT_IN_SECONDS);
-
-        HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
-        logging.setLevel(HttpLoggingInterceptor.Level.BODY);
-        okHttpBuilder.addInterceptor(logging);
 
         final Retrofit retrofit = buildRetrofit(okHttpBuilder.build());
 
@@ -170,16 +170,23 @@ public final class API {
                 .refreshAccessToken(Config.getInstance().getRefreshGrantType(), refreshToken);
     }
 
+    @SuppressLint("DefaultLocale")
+    public static AccountCredentials createFakeAccount() {
+        final String email = String.format(FAKE_MAIL_PATTERN, Config.getInstance().getCourseId(), System.currentTimeMillis(), Util.randomString(5));
+        final String password = Util.randomString(16);
+        final String firstName = Util.randomString(10);
+        final String lastName = Util.randomString(10);
+        return new AccountCredentials(email, password, firstName, lastName);
+    }
+
     public Observable<Response<RegistrationResponse>> createAccount(final String firstName, final String lastName,
                                                           final String email, final String password) {
         OkHttpClient.Builder okHttpBuilder = new OkHttpClient.Builder();
         okHttpBuilder.addNetworkInterceptor(chain -> {
             Request newRequest = addUserAgentTo(chain);
+            LogoutHelper.removeCookiesCompat();
+            updateCookieForBaseUrl();
             String cookies = CookieManager.getInstance().getCookie(API.HOST);
-            if (cookies == null) {
-                updateCookieForBaseUrl();
-                cookies = android.webkit.CookieManager.getInstance().getCookie(API.HOST);
-            }
             if (cookies == null)
                 return chain.proceed(newRequest);
 
@@ -206,51 +213,55 @@ public final class API {
         okHttpBuilder.addInterceptor(chain -> {
             Request request = addUserAgentTo(chain);
 
-            try {
-                authLock.lock();
-                OAuthResponse response = SharedPreferenceMgr.getInstance().getOAuthResponse();
-
-                if (response != null) {
-                    if (isUpdateNeeded()) {
-                        Response<OAuthResponse> oAuthResponse;
-                        try {
-                            oAuthResponse = authWithRefreshToken(response.getRefreshToken()).execute();
-                            response = oAuthResponse.body();
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                            return chain.proceed(request);
-                        }
-
-                        if (response == null || !oAuthResponse.isSuccessful()) {
-                            if (oAuthResponse.code() == 401) {
-                                LogoutHelper.logout(ScreenManager.getInstance()::showLaunchScreen);
-                            }
-                            return chain.proceed(request);
-                        }
-
-                        SharedPreferenceMgr.getInstance().saveOAuthResponse(response);
-                    }
-                    request = request.newBuilder()
-                            .addHeader(AppConstants.authorizationHeaderName, response.getTokenType() + " " + response.getAccessToken())
-                            .build();
-                }
-            } finally {
-                authLock.unlock();
+            okhttp3.Response response = addAuthHeaderAndProceed(chain, request);
+            if (response.code() == 400) { // was bug when user has incorrect token deadline due to wrong datetime had been set on phone
+                SharedPreferenceMgr.getInstance().resetAuthResponseDeadline();
+                response = addAuthHeaderAndProceed(chain, request);
             }
 
-            return chain.proceed(request);
+            return response;
         });
 
         setTimeout(okHttpBuilder, TIMEOUT_IN_SECONDS);
-
-        HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
-        logging.setLevel(HttpLoggingInterceptor.Level.BODY);
-        okHttpBuilder.addInterceptor(logging);
-
-
         final Retrofit retrofit = buildRetrofit(okHttpBuilder.build());
 
         return retrofit.create(StepikService.class);
+    }
+
+    private okhttp3.Response addAuthHeaderAndProceed(Interceptor.Chain chain, Request request) throws IOException {
+        try {
+            authLock.lock();
+            OAuthResponse response = SharedPreferenceMgr.getInstance().getOAuthResponse();
+
+            if (response != null) {
+                if (isUpdateNeeded()) {
+                    Response<OAuthResponse> oAuthResponse;
+                    try {
+                        oAuthResponse = authWithRefreshToken(response.getRefreshToken()).execute();
+                        response = oAuthResponse.body();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                        return chain.proceed(request);
+                    }
+
+                    if (response == null || !oAuthResponse.isSuccessful()) {
+                        if (oAuthResponse.code() == 401) {
+                            LogoutHelper.logout(ScreenManager.getInstance()::showOnboardingScreen);
+                        }
+                        return chain.proceed(request);
+                    }
+
+                    SharedPreferenceMgr.getInstance().saveOAuthResponse(response);
+                }
+                request = request.newBuilder()
+                        .addHeader(AppConstants.authorizationHeaderName, response.getTokenType() + " " + response.getAccessToken())
+                        .build();
+            }
+        } finally {
+            authLock.unlock();
+        }
+
+        return chain.proceed(request);
     }
 
     private EmptyAuthService initEmptyAuthService() {
@@ -353,6 +364,17 @@ public final class API {
         return stepikService.getLessons(lesson);
     }
 
+    public Completable setProfile(final Profile profile) {
+        return stepikService.setProfile(profile.getId(), new ProfileRequest(profile));
+    }
+
+    public Observable<UnitsResponse> getUnits(final long lesson) {
+        return stepikService.getUnits(Config.getInstance().getCourseId(), lesson);
+    }
+
+    public Completable reportView(final long assignment, final long step) {
+        return stepikService.reportView(new ViewRequest(assignment, step));
+    }
 
     private void setTimeout(OkHttpClient.Builder builder, int seconds) {
         builder.connectTimeout(seconds, TimeUnit.SECONDS);

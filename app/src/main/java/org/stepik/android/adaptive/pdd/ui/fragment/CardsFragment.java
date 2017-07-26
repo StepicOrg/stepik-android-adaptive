@@ -1,37 +1,45 @@
 package org.stepik.android.adaptive.pdd.ui.fragment;
 
+import android.content.Intent;
 import android.databinding.DataBindingUtil;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.DialogFragment;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.DecelerateInterpolator;
+
+import com.github.jinatonic.confetti.CommonConfetti;
 
 import org.stepik.android.adaptive.pdd.R;
 import org.stepik.android.adaptive.pdd.Util;
 import org.stepik.android.adaptive.pdd.api.RecommendationsResponse;
+import org.stepik.android.adaptive.pdd.data.AnalyticMgr;
+import org.stepik.android.adaptive.pdd.data.db.DataBaseMgr;
 import org.stepik.android.adaptive.pdd.data.model.Card;
 import org.stepik.android.adaptive.pdd.data.model.Recommendation;
 import org.stepik.android.adaptive.pdd.data.model.RecommendationReaction;
 import org.stepik.android.adaptive.pdd.databinding.FragmentRecommendationsBinding;
+import org.stepik.android.adaptive.pdd.ui.activity.StatsActivity;
 import org.stepik.android.adaptive.pdd.ui.adapter.QuizCardsAdapter;
 import org.stepik.android.adaptive.pdd.ui.dialog.ExpLevelDialog;
-import org.stepik.android.adaptive.pdd.ui.dialog.LogoutDialog;
+import org.stepik.android.adaptive.pdd.ui.dialog.RateAppDialog;
 import org.stepik.android.adaptive.pdd.ui.helper.CardHelper;
-import org.stepik.android.adaptive.pdd.ui.view.ExpProgressSnackBar;
+import org.stepik.android.adaptive.pdd.ui.listener.AnswerListener;
 import org.stepik.android.adaptive.pdd.util.ExpUtil;
+import org.stepik.android.adaptive.pdd.util.RateAppUtil;
 
 import java.util.ArrayDeque;
 import java.util.List;
 import java.util.Queue;
 
+import io.reactivex.Completable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
@@ -39,8 +47,11 @@ import io.reactivex.schedulers.Schedulers;
 import io.reactivex.subjects.PublishSubject;
 
 
-public final class CardsFragment extends Fragment {
+public final class CardsFragment extends Fragment implements AnswerListener {
     private final static String TAG = "CardsFragment";
+
+    private static final String LEVEL_DIALOG_TAG = "level_dialog";
+    private static final String RATE_APP_DIALOG_TAG = "rate_app_dialog";
 
     private final CompositeDisposable compositeDisposable = new CompositeDisposable();
     private final PublishSubject<View> retrySubject = PublishSubject.create();
@@ -56,16 +67,23 @@ public final class CardsFragment extends Fragment {
     private boolean isError = false;
     private boolean isCourseCompleted = false;
 
-    private final QuizCardsAdapter adapter = new QuizCardsAdapter(this::createReaction, this::onCorrectAnswer);
+    private final QuizCardsAdapter adapter = new QuizCardsAdapter(this::createReaction, this);
+
+    private int[] confettiColors;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
-        setHasOptionsMenu(true);
         compositeDisposable.add(retrySubject.observeOn(AndroidSchedulers.mainThread()).subscribe(v -> retry()));
         loadingPlaceholders = getResources().getStringArray(R.array.recommendation_loading_placeholders);
-        adapter.attachFragment(this);
+
+        confettiColors = new int[]{
+                Color.BLACK,
+                ContextCompat.getColor(getContext(), R.color.colorAccentDisabled),
+                ContextCompat.getColor(getContext(), R.color.colorAccent)
+        };
+        createReaction(0, RecommendationReaction.Reaction.INTERESTING);
     }
 
     @Nullable
@@ -73,19 +91,18 @@ public final class CardsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_recommendations, container, false);
 
-        ((AppCompatActivity) getActivity()).setSupportActionBar(binding.fragmentRecommendationsToolbar);
+        binding.tryAgain.setOnClickListener(retrySubject::onNext);
+        binding.courseCompletedText.setMovementMethod(LinkMovementMethod.getInstance());
+        binding.loadingPlaceholder.setText(loadingPlaceholders[Util.getRandomNumberBetween(0, 3)]);
 
-        if (savedInstanceState == null) {
-            createReaction(0, RecommendationReaction.Reaction.INTERESTING);
-        }
+        binding.progress.setVisibility(adapter.getItemCount() == 0 ? View.VISIBLE : View.GONE);
 
-        binding.fragmentRecommendationsTryAgain.setOnClickListener(retrySubject::onNext);
-        binding.fragmentRecommendationsCourseCompletedText.setMovementMethod(LinkMovementMethod.getInstance());
-        binding.fragmentRecommendationsLoadingPlaceholder.setText(loadingPlaceholders[Util.getRandomNumberBetween(0, 3)]);
+        binding.toolbar.setOnClickListener((__) -> {
+            AnalyticMgr.getInstance().statsOpened();
+            startActivity(new Intent(getContext(), StatsActivity.class));
+        });
 
-        binding.fragmentRecommendationsProgress.setVisibility(adapter.getItemCount() == 0 ? View.VISIBLE : View.GONE);
-
-        binding.fragmentRecommendationsCardsContainer.setAdapter(adapter);
+        binding.cardsContainer.setAdapter(adapter);
 
         if (isCourseCompleted) {
             courseCompleted();
@@ -95,32 +112,15 @@ public final class CardsFragment extends Fragment {
                 onError(null);
             }
         }
+
+        updateExpProgressBar(ExpUtil.getExp(), 0, false);
         return binding.getRoot();
     }
 
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.cards_menu, menu);
-        super.onCreateOptionsMenu(menu, inflater);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.menu_logout) {
-            DialogFragment dialog = new LogoutDialog();
-            dialog.show(getChildFragmentManager(), dialog.getTag());
-            return true;
-        }
-        if (item.getItemId() == R.id.menu_stats) { // TESTING
-            onLevelGained(3);
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
     public void createReaction(final long lesson, final RecommendationReaction.Reaction reaction) {
-        if (adapter.getItemCount() == 0) {
-            binding.fragmentRecommendationsProgress.setVisibility(View.VISIBLE);
-            binding.fragmentRecommendationsLoadingPlaceholder.setText(loadingPlaceholders[Util.getRandomNumberBetween(0, 3)]);
+        if (adapter.isEmptyOrContainsOnlySwipedCard(lesson) && binding != null) {
+            binding.progress.setVisibility(View.VISIBLE);
+            binding.loadingPlaceholder.setText(loadingPlaceholders[Util.getRandomNumberBetween(0, 3)]);
         }
 
         compositeDisposable.add(CardHelper.createReactionObservable(lesson, reaction, cards.size())
@@ -128,11 +128,6 @@ public final class CardsFragment extends Fragment {
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnError(this::onError)
                 .retryWhen(x -> x.zipWith(retrySubject, (a, b) -> a))
-//                .doOnComplete(() -> {
-//                    if (reaction == RecommendationReaction.Reaction.SOLVED) {
-//                        onCorrectAnswer();
-//                    }
-//                })
                 .subscribe(this::onRecommendation, this::onError));
     }
 
@@ -151,20 +146,68 @@ public final class CardsFragment extends Fragment {
         }
     }
 
-    private void onCorrectAnswer() {
-        final long exp = ExpUtil.incExp();
+    private void updateExpProgressBar(final long exp, final long streak, final boolean showLevelDialog) {
         final long level = ExpUtil.getCurrentLevel(exp);
 
-        if (level != ExpUtil.getCurrentLevel(exp - 1)) {
-            onLevelGained(level);
-        } else {
-            final long next = ExpUtil.getNextLevelExp(level);
-            ExpProgressSnackBar.Companion.make(binding.fragmentRecommendationsCardsContainer, exp, level, next).show();
+        final long prev = ExpUtil.getNextLevelExp(level - 1);
+        final long next = ExpUtil.getNextLevelExp(level);
+        if (binding != null) {
+            binding.expProgress.setMax((int) (next - prev));
+            binding.expProgress.setProgress((int) (exp - prev));
+
+            binding.expCounter.setText(Long.toString(exp)); //String.format(getString(R.string.exp_current_progress), exp - prev, next - prev));
+            binding.expLevel.setText(String.format(getString(R.string.exp_title), level));
+            binding.expLevelNext.setText(String.format(getString(R.string.exp_subtitle), next - exp));
+        }
+
+        if (showLevelDialog) {
+            if (level != ExpUtil.getCurrentLevel(exp - streak)) {
+                onLevelGained(level);
+            } else if (streak > 1) {
+                confetti();
+            }
         }
     }
 
+    public void onCorrectAnswer(long submissionId) {
+        final long streak = ExpUtil.incStreak();
+
+        compositeDisposable.add(
+                Completable.fromRunnable(() -> DataBaseMgr.getInstance().onExpGained(streak, submissionId))
+                .subscribe(() -> {}, (e) -> {}));
+
+        if (binding != null) {
+            binding.expInc.setText(String.format(getString(R.string.exp_inc), streak));
+            binding.expInc.setAlpha(1);
+            binding.expInc.animate()
+                    .alpha(0)
+                    .setInterpolator(new DecelerateInterpolator())
+                    .setStartDelay(1500)
+                    .setDuration(200)
+                    .start();
+        }
+
+        if (RateAppUtil.onEngagement()) {
+            new RateAppDialog().show(getChildFragmentManager(), RATE_APP_DIALOG_TAG);
+        }
+
+        updateExpProgressBar(ExpUtil.addExp(streak), streak, true);
+    }
+
+    public void onWrongAnswer() {
+        ExpUtil.resetStreak();
+    }
+
     private void onLevelGained(final long level) {
-        ExpLevelDialog.Companion.newInstance(level).show(getChildFragmentManager(), "LEVEL");
+        ExpLevelDialog.Companion.newInstance(level).show(getChildFragmentManager(), LEVEL_DIALOG_TAG);
+    }
+
+    private void confetti() {
+        if (binding != null) {
+            final int x = (int) (binding.expBubble.getX() + ((View) binding.expBubble.getParent()).getX()) + binding.expBubble.getWidth() / 2;
+            final int y = (int) (binding.expBubble.getY() + binding.expBubble.getPivotY());
+            CommonConfetti.explosion((CoordinatorLayout) binding.getRoot(), x, y, confettiColors).oneShot();
+        }
     }
 
     /**
@@ -184,9 +227,9 @@ public final class CardsFragment extends Fragment {
         isError = true;
         if (error != null) error.printStackTrace();
         if (binding != null) {
-            binding.fragmentRecommendationsCardsContainer.setVisibility(View.GONE);
-            binding.fragmentRecommendationsError.setVisibility(View.VISIBLE);
-            binding.fragmentRecommendationsProgress.setVisibility(View.GONE);
+            binding.cardsContainer.setVisibility(View.GONE);
+            binding.error.setVisibility(View.VISIBLE);
+            binding.progress.setVisibility(View.GONE);
         }
     }
 
@@ -195,10 +238,10 @@ public final class CardsFragment extends Fragment {
      */
     private void retry() {
         isError = false;
-        binding.fragmentRecommendationsError.setVisibility(View.GONE);
-        binding.fragmentRecommendationsProgress.setVisibility(View.VISIBLE);
-        binding.fragmentRecommendationsCardsContainer.setVisibility(View.VISIBLE);
-        binding.fragmentRecommendationsLoadingPlaceholder.setText(loadingPlaceholders[Util.getRandomNumberBetween(0, 3)]);
+        binding.error.setVisibility(View.GONE);
+        binding.progress.setVisibility(View.VISIBLE);
+        binding.cardsContainer.setVisibility(View.VISIBLE);
+        binding.loadingPlaceholder.setText(loadingPlaceholders[Util.getRandomNumberBetween(0, 3)]);
         if (!cards.isEmpty()) {
             cards.peek().init();
             resubscribe();
@@ -211,8 +254,8 @@ public final class CardsFragment extends Fragment {
      */
     private void onCardDataLoaded(final Card card) {
         adapter.add(card);
-        binding.fragmentRecommendationsProgress.setVisibility(View.GONE);
-        binding.fragmentRecommendationsCardsContainer.setVisibility(View.VISIBLE);
+        binding.progress.setVisibility(View.GONE);
+        binding.cardsContainer.setVisibility(View.VISIBLE);
         cards.poll();
         resubscribe();
     }
@@ -221,9 +264,9 @@ public final class CardsFragment extends Fragment {
     private void courseCompleted() {
         isCourseCompleted = true;
         if (binding != null) {
-            binding.fragmentRecommendationsCardsContainer.setVisibility(View.GONE);
-            binding.fragmentRecommendationsProgress.setVisibility(View.GONE);
-            binding.fragmentRecommendationsCourseCompleted.setVisibility(View.VISIBLE);
+            binding.cardsContainer.setVisibility(View.GONE);
+            binding.progress.setVisibility(View.GONE);
+            binding.courseCompleted.setVisibility(View.VISIBLE);
         }
     }
 
@@ -248,6 +291,7 @@ public final class CardsFragment extends Fragment {
             card.recycle();
         }
         adapter.recycle();
+        compositeDisposable.dispose();
         super.onDestroy();
     }
 }

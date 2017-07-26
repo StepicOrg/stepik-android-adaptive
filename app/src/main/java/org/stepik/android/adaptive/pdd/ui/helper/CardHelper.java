@@ -1,6 +1,5 @@
 package org.stepik.android.adaptive.pdd.ui.helper;
 
-import android.util.Log;
 import android.view.View;
 import android.widget.ScrollView;
 
@@ -15,8 +14,8 @@ import io.reactivex.Observable;
 
 public class CardHelper {
 
-    private final static int CARDS_IN_CACHE = 10;
-    private final static int MIN_CARDS_IN_CACHE = 5;
+    private final static int CARDS_IN_CACHE = 6;
+    private final static int MIN_CARDS_IN_CACHE = 4;
 
     public static Observable<RecommendationsResponse> createReactionObservable(final long lesson, final RecommendationReaction.Reaction reaction, final int cacheSize) {
         final Observable<RecommendationsResponse> responseObservable = API.getInstance().getNextRecommendations(CARDS_IN_CACHE);
@@ -34,13 +33,13 @@ public class CardHelper {
     }
 
     public static void resetSupplementalActions(final QuizCardViewBinding binding) {
-        binding.fragmentRecommendationsNext.setVisibility(View.GONE);
-        binding.fragmentRecommendationsCorrect.setVisibility(View.GONE);
-        binding.fragmentRecommendationsWrong.setVisibility(View.GONE);
-        binding.fragmentRecommendationsWrongRetry.setVisibility(View.GONE);
-        binding.fragmentRecommendationsAnswersProgress.setVisibility(View.GONE);
-        binding.fragmentRecommendationsHint.setVisibility(View.GONE);
-        binding.fragmentRecommendationsSubmit.setVisibility(View.VISIBLE);
+        binding.next.setVisibility(View.GONE);
+        binding.correct.setVisibility(View.GONE);
+        binding.wrong.setVisibility(View.GONE);
+        binding.wrongRetry.setVisibility(View.GONE);
+        binding.answersProgress.setVisibility(View.GONE);
+        binding.hint.setVisibility(View.GONE);
+        binding.submit.setVisibility(View.VISIBLE);
     }
 
     public static void scrollDown(final ScrollView view) {

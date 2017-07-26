@@ -9,41 +9,35 @@ import org.stepik.android.adaptive.pdd.data.model.Submission
 import org.stepik.android.adaptive.pdd.databinding.QuizCardViewBinding
 import org.stepik.android.adaptive.pdd.ui.helper.AnimationHelper
 import org.stepik.android.adaptive.pdd.ui.helper.CardHelper
-import org.stepik.android.adaptive.pdd.ui.view.QuizCardView
-import org.stepik.android.adaptive.pdd.ui.view.QuizCardsContainer
+import org.stepik.android.adaptive.pdd.ui.view.SwipeableLayout
 import org.stepik.android.adaptive.pdd.util.HtmlUtil
-import android.support.v7.widget.LinearLayoutManager
 import android.view.ViewGroup
 import android.webkit.WebSettings
 import org.stepik.android.adaptive.pdd.R
 import org.stepik.android.adaptive.pdd.core.ScreenManager
 import org.stepik.android.adaptive.pdd.ui.DefaultWebViewClient
+import org.stepik.android.adaptive.pdd.ui.view.container.ContainerView
 
-class QuizCardViewHolder(val binding: QuizCardViewBinding) : QuizCardsContainer.CardViewHolder(binding.root), CardView {
+class QuizCardViewHolder(val binding: QuizCardViewBinding) : ContainerView.ViewHolder(binding.root), CardView {
     init {
-        val settings = binding.fragmentRecommendationsQuestion.settings
+        val settings = binding.question.settings
         settings.allowContentAccess = false
         settings.loadWithOverviewMode = true
         settings.useWideViewPort = true
         settings.layoutAlgorithm = WebSettings.LayoutAlgorithm.NORMAL
 
-        binding.fragmentRecommendationsQuestion.setWebViewClient(DefaultWebViewClient(null) { _, _ -> onCardLoaded() })
-        binding.fragmentRecommendationsQuestion.setOnWebViewClickListener { path -> ScreenManager.showImage(binding.root.context, path) }
-        binding.fragmentRecommendationsQuestion.setLayerType(View.LAYER_TYPE_SOFTWARE, null)
+        binding.question.setWebViewClient(DefaultWebViewClient(null) { _, _ -> onCardLoaded() })
+        binding.question.setOnWebViewClickListener { path -> ScreenManager.showImage(binding.root.context, path) }
+        binding.question.setLayerType(View.LAYER_TYPE_SOFTWARE, null)
 
-        binding.fragmentRecommendationsAnswers.isNestedScrollingEnabled = false
-        binding.fragmentRecommendationsAnswers.layoutManager = LinearLayoutManager(binding.root.context)
-
-        binding.fragmentRecommendationsNext.setOnClickListener { binding.fragmentRecommendationsContainer.swipeDown() }
-        binding.fragmentRecommendationsSubmit.setOnClickListener { presenter?.createSubmission() }
-        binding.fragmentRecommendationsWrongRetry.setOnClickListener {
+        binding.next.setOnClickListener { binding.container.swipeDown() }
+        binding.submit.setOnClickListener { presenter?.createSubmission() }
+        binding.wrongRetry.setOnClickListener {
             presenter?.let {
                 it.retrySubmission()
                 CardHelper.resetSupplementalActions(binding)
             }
         }
-
-        binding.fragmentRecommendationsContainer.visibility = View.INVISIBLE // to hide loading of web view
     }
 
     private var hasSubmission = false
@@ -58,86 +52,88 @@ class QuizCardViewHolder(val binding: QuizCardViewBinding) : QuizCardsContainer.
         if (!hasSubmission) {
             if (presenter?.isLoading ?: false) {
                 onSubmissionLoading()
-                binding.fragmentRecommendationsAnswersProgress.visibility = View.VISIBLE
             } else {
-                binding.fragmentRecommendationsSubmit.visibility = View.VISIBLE
-                (binding.fragmentRecommendationsAnswers.adapter as AttemptAnswersAdapter).setEnabled(true)
+                binding.submit.visibility = View.VISIBLE
+                (binding.answers.adapter as AttemptAnswersAdapter).setEnabled(true)
+                CardHelper.scrollDown(binding.scroll)
             }
         }
 
-        binding.fragmentRecommendationsContainer.setQuizCardFlingListener(object : QuizCardView.QuizCardFlingListener() {
+        binding.container.setSwipeListener(object : SwipeableLayout.SwipeListener() {
             override fun onScroll(scrollProgress: Float) {
-                binding.fragmentRecommendationsHardReaction.alpha = Math.max(2 * scrollProgress, 0f)
-                binding.fragmentRecommendationsEasyReaction.alpha = Math.max(2 * -scrollProgress, 0f)
+                binding.hardReaction.alpha = Math.max(2 * scrollProgress, 0f)
+                binding.easyReaction.alpha = Math.max(2 * -scrollProgress, 0f)
             }
 
             override fun onSwipeLeft() {
-                binding.fragmentRecommendationsEasyReaction.alpha = 1f
+                binding.easyReaction.alpha = 1f
                 presenter?.createReaction(RecommendationReaction.Reaction.NEVER_AGAIN)
             }
 
             override fun onSwipeRight() {
-                binding.fragmentRecommendationsHardReaction.alpha = 1f
+                binding.hardReaction.alpha = 1f
                 presenter?.createReaction(RecommendationReaction.Reaction.MAYBE_LATER)
             }
         })
     }
 
     private fun onCardLoaded() {
-        binding.fragmentRecommendationsContainer.visibility = View.VISIBLE
-        if (!(presenter?.isLoading ?: false)) binding.fragmentRecommendationsAnswersProgress.visibility = View.GONE
+        binding.curtain.visibility = View.GONE
+        if (!(presenter?.isLoading ?: false)) binding.answersProgress.visibility = View.GONE
 
-        CardHelper.scrollDown(binding.fragmentRecommendationsScroll)
+        CardHelper.scrollDown(binding.scroll)
     }
 
     override fun setTitle(title: String) {
-        binding.fragmentRecommendationsTitle.text = title
+        binding.title.text = title
     }
 
     override fun setQuestion(html: String) {
         HtmlUtil.setCardWebViewHtml(
-                binding.fragmentRecommendationsQuestion,
+                binding.question,
                 HtmlUtil.prepareCardHtml(html))
     }
 
     override fun setAnswerAdapter(adapter: AttemptAnswersAdapter) {
-        binding.fragmentRecommendationsAnswers.adapter = adapter
-        adapter.setSubmitButton(binding.fragmentRecommendationsSubmit)
+        binding.answers.adapter = adapter
+        adapter.setSubmitButton(binding.submit)
         adapter.setEnabled(false)
 
-        binding.fragmentRecommendationsSubmit.visibility = View.GONE
+        binding.submit.visibility = View.GONE
     }
 
     override fun setSubmission(submission: Submission, animate: Boolean) {
         CardHelper.resetSupplementalActions(binding)
         when (submission.status) {
             Submission.Status.CORRECT -> {
-                binding.fragmentRecommendationsSubmit.visibility = View.GONE
+                binding.submit.visibility = View.GONE
                 hasSubmission = true
 
-                binding.fragmentRecommendationsCorrect.visibility = View.VISIBLE
-                binding.fragmentRecommendationsNext.visibility = View.VISIBLE
-                binding.fragmentRecommendationsContainer.isEnabled = true
+                binding.correct.visibility = View.VISIBLE
+                binding.next.visibility = View.VISIBLE
+                binding.container.isEnabled = true
 
-                binding.fragmentRecommendationsHint.text = submission.hint
-                binding.fragmentRecommendationsHint.visibility = View.VISIBLE
+                if (submission.hint.isNotBlank()) {
+                    binding.hint.text = submission.hint
+                    binding.hint.visibility = View.VISIBLE
+                }
 
                 if (animate) {
-                    CardHelper.scrollDown(binding.fragmentRecommendationsScroll)
+                    CardHelper.scrollDown(binding.scroll)
                 }
             }
 
             Submission.Status.WRONG -> {
-                binding.fragmentRecommendationsWrong.visibility = View.VISIBLE
+                binding.wrong.visibility = View.VISIBLE
                 hasSubmission = true
 
-                binding.fragmentRecommendationsWrongRetry.visibility = View.VISIBLE
-                binding.fragmentRecommendationsSubmit.visibility = View.GONE
+                binding.wrongRetry.visibility = View.VISIBLE
+                binding.submit.visibility = View.GONE
 
-                binding.fragmentRecommendationsContainer.isEnabled = true
+                binding.container.isEnabled = true
 
                 if (animate) {
-                    AnimationHelper.playWiggleAnimation(binding.fragmentRecommendationsContainer)
+                    AnimationHelper.playWiggleAnimation(binding.container)
                 }
             }
         }
@@ -145,15 +141,16 @@ class QuizCardViewHolder(val binding: QuizCardViewBinding) : QuizCardsContainer.
 
     override fun onSubmissionError() {
         Snackbar.make(binding.root.parent as ViewGroup, R.string.network_error, Snackbar.LENGTH_SHORT).show()
+        binding.container.isEnabled = true
         CardHelper.resetSupplementalActions(binding)
     }
 
     override fun onSubmissionLoading() {
         CardHelper.resetSupplementalActions(binding)
-        binding.fragmentRecommendationsContainer.isEnabled = false
-        binding.fragmentRecommendationsSubmit.visibility = View.GONE
-        binding.fragmentRecommendationsAnswersProgress.visibility = View.VISIBLE
+        binding.container.isEnabled = false
+        binding.submit.visibility = View.GONE
+        binding.answersProgress.visibility = View.VISIBLE
 
-        CardHelper.scrollDown(binding.fragmentRecommendationsScroll)
+        CardHelper.scrollDown(binding.scroll)
     }
 }

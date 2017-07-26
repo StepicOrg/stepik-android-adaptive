@@ -5,8 +5,8 @@
     android:fitsSystemWindows="true"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <ImageView
-        android:layout_width="256dp"
-        android:layout_height="256dp"
-        app:srcCompat="@drawable/ic_stepik_logotype_square_black"
+        android:layout_width="128dp"
+        android:layout_height="128dp"
+        app:srcCompat="@drawable/ic_logo"
         android:layout_gravity="center" />
 </FrameLayout>

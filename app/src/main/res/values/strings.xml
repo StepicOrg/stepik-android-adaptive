@@ -51,11 +51,63 @@
     <string name="retry">Retry</string>
     <string name="facebook_app_id" translatable="false">100481807271297</string>
     <string name="onboarding_card_title_1">Welcome</string>
-    <string name="onboarding_card_question_1"><![CDATA[<p><img style="margin: 0 64px;" src="images/01.svg" /></p><p>Welcome to adaptive course. This course will automatically adjust questions according to your skill.</p>]]></string>
-    <string name="onboarding_card_title_2">Very easy question</string>
-    <string name="onboarding_card_question_2"><![CDATA[<p><img src="images/02.jpg" /></p><p>What means red traffic light?</p>]]></string>
-    <string name="onboarding_card_title_3">Very hard question</string>
-    <string name="onboarding_card_title_4">Good luck</string>
-    <string name="exp_title">Current experience level is: <b>%d</b></string>
-    <string name="exp_level_title">Congratulations! You\'ve reached %d experience leve!</string>
+    <string name="onboarding_card_question_1"><![CDATA[
+        <div class="center">
+            <div class="padding-box">
+                <img src="images/01.svg" />
+            </div>
+            <h3>ПДД 2017</h3>
+        </div>
+        <p>Welcome to adaptive PDD course. During this course you\'ll receive tasks depending on your answers and reactions. Let\'s look how is it work.</p>
+    ]]></string>
+    <string name="onboarding_card_title_2">Hard question</string>
+    <string name="onboarding_card_question_2"><![CDATA[
+        <p>Imagine that this card contains some hard question and you don\'t know answer. You can postpone hard question by swiping card to <b>right</b>.</p>
+        <p>Try to swipe this card to <b>right</b>.</p>
+        <div class="center">
+            <div class="padding-box">
+                <img src="images/arrow_right.svg" />
+            </div>
+        </div>
+    ]]></string>
+    <string name="onboarding_card_title_3">Easy question</string>
+    <string name="onboarding_card_question_3"><![CDATA[
+        <p>Now imagine that this card contains very easy question. You can skip it by swiping card to <b>left</b>. You\'ll <b>never</b> see it again.</p>
+        <p>Try to swipe this card to <b>left</b>.</p>
+        <div class="center">
+            <div class="padding-box">
+                <img src="images/arrow_left.svg" />
+            </div>
+        </div>
+    ]]></string>
+    <string name="onboarding_card_title_4">Levels &amp; exp points</string>
+    <string name="onboarding_card_question_4"><![CDATA[
+        <p><b>You\'ll gain exp points for correct answers.</b></p>
+        <p>
+            <img src="images/onb4str.png" />
+        </p>
+        <p>Streaks of correct answers increase exp points gain.</p>
+        <p>You can check your stats by clicking on toolbar.</p>
+    ]]></string>
+    <string name="exp_title">Level <b>%d</b></string>
+    <string name="exp_level_title">New level!</string>
+    <string name="exp_inc" translatable="false">+%d</string>
+    <string name="exp_current_progress" translatable="false">%d / %d</string>
+    <string name="exp_subtitle">%d points until next level</string>
+    <string name="onboarding_title">Intro</string>
+    <string name="rate_app_title">Rate app</string>
+    <string name="rate_app_message">How much do you like this app?</string>
+    <string name="google_play" translatable="false">Google Play</string>
+    <string name="feedback_positive">Thank you! Please, leave your feedback in the Google Play.</string>
+    <string name="feedback_negative">Thank you! Please, send your feedback by email.</string>
+    <string name="confirm">Confirm</string>
+    <string name="later">Later</string>
+    <string name="feedback_negative_title">Feedback for Android adaptive application</string>
+    <string name="achievements">Achievements</string>
+    <string name="stats_total_exp">POINTS IN TOTAL</string>
+    <string name="stats_last_7_days">LAST 7 DAYS</string>
+    <string name="stats_level">LEVEL</string>
+    <string name="stats_exp_for_a_week">points for a week</string>
+    <string name="ex_dialog_continue">Continue</string>
+    <string name="tutorial">Tutorial</string>
 </resources>

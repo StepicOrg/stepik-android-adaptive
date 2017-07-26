@@ -19,11 +19,28 @@ public final class AnalyticMgr {
     private final static String EVENT_REACTION_HARD_AFTER_CORRECT = "reaction_hard_after_correct_answer";
     private final static String EVENT_REACTION_EASY_AFTER_CORRECT = "reaction_easy_after_correct_answer";
 
+    private final static String EVENT_SUBMISSION_WAS_MADE = "submission_was_made";
 
     private final static String EVENT_CORRECT_ANSWER = "correct_answer";
     private final static String EVENT_WRONG_ANSWER = "wrong_answer";
 
     private final static String PARAM_LESSON = "lesson";
+
+    private final static String EVENT_APP_RATE = "app_rate";
+    private final static String EVENT_APP_RATE_CANCELED = "app_rate_canceled";
+    private final static String PARAM_RATING = "rating";
+
+    private final static String EVENT_APP_RATE_POSITIVE_LATER = "app_rate_positive_later";
+    private final static String EVENT_APP_RATE_POSITIVE_GOOGLE_PLAY = "app_rate_positive_google_play";
+
+    private final static String EVENT_APP_RATE_NEGATIVE_LATER = "app_rate_negative_later";
+    private final static String EVENT_APP_RATE_NEGATIVE_EMAIL = "app_rate_negative_email";
+
+    private final static String EVENT_STATS_OPENED = "stats_opened";
+
+    private final static String EVENT_REACHED_EXP_500 = "reached_exp_500";
+    private final static String EVENT_REACHED_EXP_1000 = "reached_exp_1000";
+    private final static String EVENT_REACHED_EXP_5000 = "reached_exp_5000";
 
     private static AnalyticMgr instance;
 
@@ -82,5 +99,51 @@ public final class AnalyticMgr {
                 logEventWithLesson(EVENT_WRONG_ANSWER, lesson);
             break;
         }
+    }
+
+    public void onSubmissionWasMade() {
+        firebaseAnalytics.logEvent(EVENT_SUBMISSION_WAS_MADE, null);
+    }
+
+    public void rate(int rating) {
+        final Bundle bundle = new Bundle();
+        bundle.putInt(PARAM_RATING, rating);
+        firebaseAnalytics.logEvent(EVENT_APP_RATE, bundle);
+    }
+
+    public void rateCanceled() {
+        firebaseAnalytics.logEvent(EVENT_APP_RATE_CANCELED, null);
+    }
+
+    public void ratePositiveLater() {
+        firebaseAnalytics.logEvent(EVENT_APP_RATE_POSITIVE_LATER, null);
+    }
+
+    public void ratePositiveGooglePlay() {
+        firebaseAnalytics.logEvent(EVENT_APP_RATE_POSITIVE_GOOGLE_PLAY, null);
+    }
+
+    public void rateNegativeLater() {
+        firebaseAnalytics.logEvent(EVENT_APP_RATE_NEGATIVE_LATER, null);
+    }
+
+    public void rateNegativeEmail() {
+        firebaseAnalytics.logEvent(EVENT_APP_RATE_NEGATIVE_EMAIL, null);
+    }
+
+    public void statsOpened() {
+        firebaseAnalytics.logEvent(EVENT_STATS_OPENED, null);
+    }
+
+    public void onExpReached(final long exp, final long delta) {
+        String event = null;
+        if (exp <= 500 && exp + delta >= 500)
+            event = EVENT_REACHED_EXP_500;
+        else if (exp <= 1000 && exp + delta >= 1000)
+            event = EVENT_REACHED_EXP_1000;
+        else if (exp <= 5000 && exp + delta >= 5000)
+            event = EVENT_REACHED_EXP_5000;
+        if (event != null)
+            firebaseAnalytics.logEvent(event, null);
     }
 }

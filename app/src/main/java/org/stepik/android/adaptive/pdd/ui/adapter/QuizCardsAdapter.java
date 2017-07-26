@@ -1,53 +1,35 @@
 package org.stepik.android.adaptive.pdd.ui.adapter;
 
 import android.databinding.DataBindingUtil;
-import android.support.v7.widget.LinearLayoutManager;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.webkit.WebSettings;
+import android.widget.FrameLayout;
 
+import org.jetbrains.annotations.NotNull;
 import org.stepik.android.adaptive.pdd.R;
-import org.stepik.android.adaptive.pdd.core.ScreenManager;
 import org.stepik.android.adaptive.pdd.core.presenter.CardPresenter;
-import org.stepik.android.adaptive.pdd.data.AnalyticMgr;
 import org.stepik.android.adaptive.pdd.data.model.Card;
-import org.stepik.android.adaptive.pdd.data.model.RecommendationReaction;
-import org.stepik.android.adaptive.pdd.databinding.QuizCardViewBinding;
-import org.stepik.android.adaptive.pdd.ui.DefaultWebViewClient;
-import org.stepik.android.adaptive.pdd.ui.fragment.CardsFragment;
-import org.stepik.android.adaptive.pdd.ui.helper.CardHelper;
 import org.stepik.android.adaptive.pdd.ui.listener.AdaptiveReactionListener;
-import org.stepik.android.adaptive.pdd.ui.listener.ExperienceListener;
-import org.stepik.android.adaptive.pdd.ui.view.QuizCardView;
+import org.stepik.android.adaptive.pdd.ui.listener.AnswerListener;
 import org.stepik.android.adaptive.pdd.ui.view.QuizCardsContainer;
-import org.stepik.android.adaptive.pdd.util.HtmlUtil;
 
-import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
-
-import io.reactivex.disposables.CompositeDisposable;
 
 public class QuizCardsAdapter extends QuizCardsContainer.CardsAdapter<QuizCardViewHolder> {
     private List<CardPresenter> presenters = new ArrayList<>();
     private final AdaptiveReactionListener listener;
-    private final ExperienceListener experienceListener;
+    private final AnswerListener answerListener;
 
-    public QuizCardsAdapter(AdaptiveReactionListener listener, ExperienceListener experienceListener) {
+    public QuizCardsAdapter(AdaptiveReactionListener listener, AnswerListener answerListener) {
         this.listener = listener;
-        this.experienceListener = experienceListener;
-    }
-
-    private WeakReference<CardsFragment> fragmentWeakReference = new WeakReference<>(null);
-
-    public void attachFragment(CardsFragment fragment) {
-        fragmentWeakReference = new WeakReference<>(fragment);
+        this.answerListener = answerListener;
     }
 
     public void recycle() {
-        fragmentWeakReference.clear();
         for (final CardPresenter presenter : presenters) {
             presenter.destroy();
         }
@@ -69,8 +51,9 @@ public class QuizCardsAdapter extends QuizCardsContainer.CardsAdapter<QuizCardVi
         return false;
     }
 
+    @NotNull
     @Override
-    protected QuizCardViewHolder onCreateViewHolder(ViewGroup parent) {
+    public QuizCardViewHolder onCreateViewHolder(@NotNull ViewGroup parent) {
         return new QuizCardViewHolder(DataBindingUtil.inflate(LayoutInflater.from(parent.getContext()), R.layout.quiz_card_view, parent, false));
     }
 
@@ -80,7 +63,7 @@ public class QuizCardsAdapter extends QuizCardsContainer.CardsAdapter<QuizCardVi
     }
 
     @Override
-    protected void onBindViewHolder(QuizCardViewHolder holder, int pos) {
+    public void onBindViewHolder(@NotNull QuizCardViewHolder holder, int pos) {
         holder.bind(presenters.get(pos));
     }
 
@@ -89,9 +72,35 @@ public class QuizCardsAdapter extends QuizCardsContainer.CardsAdapter<QuizCardVi
         holder.onTopCard();
     }
 
+    @Override
+    protected void onPositionChanged(QuizCardViewHolder holder, int pos) {
+        FrameLayout.LayoutParams p = (FrameLayout.LayoutParams) holder.getBinding().card.getLayoutParams();
+        if (pos > 1) {
+            p.height = QuizCardsContainer.CARD_OFFSET * 2;
+            changeVisibilityOfAllChildrenTo(holder.getBinding().card, View.GONE, Collections.singletonList(R.id.curtain));
+        } else {
+            p.height = FrameLayout.LayoutParams.MATCH_PARENT;
+            changeVisibilityOfAllChildrenTo(holder.getBinding().card, View.VISIBLE, Collections.singletonList(R.id.curtain));
+        }
+        holder.getBinding().card.setLayoutParams(p);
+    }
+
+    private static void changeVisibilityOfAllChildrenTo(ViewGroup viewGroup, int visibility, List<Integer> exclude) {
+        final int count = viewGroup.getChildCount();
+        for (int i = 0; i < count; ++i) {
+            final View view = viewGroup.getChildAt(i);
+            if (exclude != null && exclude.contains(view.getId())) continue;
+            view.setVisibility(visibility);
+        }
+    }
+
     public void add(Card card) {
-        presenters.add(new CardPresenter(card, listener, experienceListener));
-        notifyDataAdded();
+        presenters.add(new CardPresenter(card, listener, answerListener));
+        onDataAdded();
+    }
+
+    public boolean isEmptyOrContainsOnlySwipedCard(final long lesson) {
+        return presenters.isEmpty() || (presenters.size() == 1 && presenters.get(0).getCard().getLessonId() == lesson);
     }
 
     @Override

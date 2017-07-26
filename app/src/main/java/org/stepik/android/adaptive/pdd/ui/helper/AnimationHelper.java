@@ -9,7 +9,7 @@ import android.view.animation.OvershootInterpolator;
 public final class AnimationHelper {
     public static final long ANIMATION_DURATION = 200;
 
-    public static OvershootInterpolator OvershootInterpolator2F = new OvershootInterpolator(1.5f);
+    private static final OvershootInterpolator OvershootInterpolator2F = new OvershootInterpolator(2f);
 
     public static void playWiggleAnimation(final View view) {
         final ObjectAnimator animator = ObjectAnimator.ofFloat(view, "translationX", 0, 10);
