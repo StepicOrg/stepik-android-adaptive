@@ -49,7 +49,7 @@ public final class SwipeableLayout extends FrameLayout {
         this.flingDetector = new GestureDetector(context, new GestureDetector.SimpleOnGestureListener() {
             @Override
             public boolean onFling(MotionEvent e1, MotionEvent e2, float vx, float vy) {
-                onActionUp(vx, vy);
+                onMotionEnd(vx, vy);
                 return true;
             }
         });
@@ -107,13 +107,6 @@ public final class SwipeableLayout extends FrameLayout {
                 intercepted = false;
                 break;
 
-            case MotionEvent.ACTION_UP:
-                if (!isFling) {
-                    onActionUp(0, 0);
-                }
-                getParent().requestDisallowInterceptTouchEvent(false);
-                intercepted = false;
-                break;
             case MotionEvent.ACTION_MOVE:
                 float dx = motionEvent.getX() - startX;
                 float dy = motionEvent.getY() - startY;
@@ -147,6 +140,21 @@ public final class SwipeableLayout extends FrameLayout {
                     }
                 }
                 break;
+
+            case MotionEvent.ACTION_CANCEL: // same as ACTION_UP, but we reset card to initial position
+                elemX = 0;
+                elemY = 0;
+
+                setTranslationX(elemX);
+                setTranslationY(elemY);
+
+            case MotionEvent.ACTION_UP:
+                if (!isFling) {
+                    onMotionEnd(0, 0);
+                }
+                getParent().requestDisallowInterceptTouchEvent(false);
+                intercepted = false;
+                break;
         }
     }
 
@@ -155,12 +163,9 @@ public final class SwipeableLayout extends FrameLayout {
         return (float) regression.predict(targetX);
     }
 
-    private void onActionUp(final float vx, final float vy) {
-        final float x = getTranslationX();
-//        final float y = getTranslationY();
-
-        if (Math.abs(x) > MIN_FLING_TRANSLATION) {
-            if (x > 0) {
+    private void onMotionEnd(final float vx, final float vy) {
+        if (Math.abs(elemX) > MIN_FLING_TRANSLATION) {
+            if (elemX > 0) {
                 for (SwipeListener l : listeners) {
                     l.onSwipeRight();
                 }
@@ -169,7 +174,7 @@ public final class SwipeableLayout extends FrameLayout {
                     l.onSwipeLeft();
                 }
             }
-            final float targetX = Math.signum(x) * screenWidth;
+            final float targetX = Math.signum(elemX) * screenWidth;
             final float targetY = getTargetY(targetX);
             AnimationHelper.createTransitionAnimation(this, targetX, targetY)
                     .rotation(0)
