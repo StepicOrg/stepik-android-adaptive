@@ -29,13 +29,13 @@ public class QuizCardsContainer extends FrameLayout implements ContainerView {
 
     static {
         // approx height
-        final int TOOLBAR_HEIGHT = 56;
+        final int TOOLBAR_HEIGHT_DP = 56;
 
         final DisplayMetrics metrics = Resources.getSystem().getDisplayMetrics();
 
         // desired params of second card
         final float cardWidth = metrics.widthPixels - 2 * CARD_MARGIN_DP * metrics.density;
-        final float cardHeight = metrics.heightPixels - (2 * CARD_MARGIN_DP + TOOLBAR_HEIGHT) * metrics.density;
+        final float cardHeight = metrics.heightPixels - (2 * CARD_MARGIN_DP + TOOLBAR_HEIGHT_DP) * metrics.density;
 
         SCALE = 2 * CARD_OFFSET_DP * metrics.density / cardWidth; // formulas to calculate correct offset of second card on different screens
         CARD_OFFSET = (int) (CARD_OFFSET_DP * metrics.density / (1f - 2 * SCALE) + cardHeight * SCALE / 2);
