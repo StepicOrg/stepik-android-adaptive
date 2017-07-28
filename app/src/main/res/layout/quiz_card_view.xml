@@ -135,7 +135,7 @@
                     android:background="@color/colorStroke"
                     android:id="@+id/bottom_divider"/>
 
-                <ScrollView
+                <org.stepik.android.adaptive.pdd.ui.view.CardScrollView
                     android:background="@android:color/white"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
@@ -184,16 +184,18 @@
                             android:id="@+id/answers_progress" />
 
                     </LinearLayout>
-                </ScrollView>
+                </org.stepik.android.adaptive.pdd.ui.view.CardScrollView>
 
 
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="5dp"
-                    android:layout_marginBottom="-5dp"
-                    android:layout_below="@id/title"
-                    android:background="@drawable/shadow"
-                    android:id="@+id/top_divider"/>
+                <!--<View-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="5dp"-->
+                <!--android:layout_marginBottom="-5dp"-->
+                <!--android:layout_below="@id/title"-->
+                <!--android:background="@drawable/shadow"-->
+                <!--android:id="@+id/top_divider"/>-->
+
+                <!--<include layout="@layout/stroke" />-->
 
             </RelativeLayout>
 

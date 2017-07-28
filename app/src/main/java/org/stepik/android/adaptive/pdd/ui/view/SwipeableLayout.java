@@ -9,7 +9,7 @@ import android.view.MotionEvent;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.FrameLayout;
 
-import org.stepik.android.adaptive.pdd.Util;
+import org.stepik.android.adaptive.pdd.math.LinearRegression;
 import org.stepik.android.adaptive.pdd.ui.helper.AnimationHelper;
 
 import java.util.HashSet;
@@ -31,7 +31,7 @@ public final class SwipeableLayout extends FrameLayout {
     private final static float MIN_FLING_VELOCITY = 400;
     private final static float ROTATION_ANGLE = 15.5f;
 
-    private final static float MIN_DELTA = 32;
+    private final static float MIN_DELTA = Resources.getSystem().getDisplayMetrics().density * 16;
 
     private final static int TOUCH_ABOVE = 0;
     private final static int TOUCH_BELOW = 1;
@@ -40,8 +40,6 @@ public final class SwipeableLayout extends FrameLayout {
     private boolean intercepted = false;
 
     private final float MIN_FLING_TRANSLATION;
-
-    private final float MIN_SWIPE_TRANSLATION;
 
     private Set<SwipeListener> listeners = new HashSet<>();
 
@@ -63,19 +61,24 @@ public final class SwipeableLayout extends FrameLayout {
 
         this.viewX = getX();
 
-        MIN_SWIPE_TRANSLATION = this.screenWidth / 2;
         MIN_FLING_TRANSLATION = this.screenWidth / 4;
+    }
+
+    private CardScrollView nestedScroll;
+
+    public void setNestedScroll(CardScrollView nestedScroll) {
+        this.nestedScroll = nestedScroll;
     }
 
     @Override
     public boolean onInterceptTouchEvent(final MotionEvent motionEvent) {
-        processTouchEvent(motionEvent);
+        processTouchEvent(motionEvent, false);
         return intercepted || super.onInterceptTouchEvent(motionEvent);
     }
 
     @Override
     public boolean onTouchEvent(MotionEvent motionEvent) {
-        processTouchEvent(motionEvent);
+        processTouchEvent(motionEvent, true);
         if (motionEvent.getAction() == MotionEvent.ACTION_DOWN && isEnabled()) {
             return true;
         } else {
@@ -83,7 +86,7 @@ public final class SwipeableLayout extends FrameLayout {
         }
     }
 
-    private void processTouchEvent(MotionEvent motionEvent) {
+    private void processTouchEvent(MotionEvent motionEvent, boolean isOwnEvent) {
         if (!this.isEnabled()) return;
         boolean isFling = flingDetector.onTouchEvent(motionEvent);
         switch (motionEvent.getAction() & MotionEvent.ACTION_MASK) {
@@ -115,7 +118,14 @@ public final class SwipeableLayout extends FrameLayout {
                 float dx = motionEvent.getX() - startX;
                 float dy = motionEvent.getY() - startY;
 
-                intercepted = intercepted || Math.abs(dx) > MIN_DELTA || Math.abs(dy) > MIN_DELTA;
+                float adx = Math.abs(dx);
+                float ady = Math.abs(dy);
+
+                intercepted =
+                        intercepted ||
+                        isOwnEvent ||
+                        nestedScroll != null && !nestedScroll.canScrollVertically() && (ady > MIN_DELTA || adx > MIN_DELTA) ||
+                        adx > MIN_DELTA && adx > ady;// || Math.abs(dy) > MIN_DELTA;
 
                 if (intercepted) {
                     elemX += dx;
@@ -133,20 +143,23 @@ public final class SwipeableLayout extends FrameLayout {
 //                    } // seems that webview bug disappeared :thinking_face:
 
                     for (SwipeListener l : listeners) {
-                        l.onScroll(elemX / screenWidth);
+                        l.onScroll(elemX / MIN_FLING_TRANSLATION / 2);
                     }
                 }
                 break;
         }
     }
 
+    private float getTargetY(final float targetX) {
+        final LinearRegression regression = new LinearRegression(new double[]{0, elemX}, new double[]{0, elemY});
+        return (float) regression.predict(targetX);
+    }
+
     private void onActionUp(final float vx, final float vy) {
         final float x = getTranslationX();
 //        final float y = getTranslationY();
 
-        if (Math.abs(x) > MIN_FLING_TRANSLATION && Math.abs(vx) > MIN_FLING_VELOCITY && Math.abs(vx) > Math.abs(vy)
-                || Math.abs(x) > MIN_SWIPE_TRANSLATION) {
-
+        if (Math.abs(x) > MIN_FLING_TRANSLATION) {
             if (x > 0) {
                 for (SwipeListener l : listeners) {
                     l.onSwipeRight();
@@ -156,9 +169,11 @@ public final class SwipeableLayout extends FrameLayout {
                     l.onSwipeLeft();
                 }
             }
-            AnimationHelper.createTransitionAnimation(this, Math.signum(x) * 2 * screenWidth, 0)
+            final float targetX = Math.signum(x) * screenWidth;
+            final float targetY = getTargetY(targetX);
+            AnimationHelper.createTransitionAnimation(this, targetX, targetY)
                     .rotation(0)
-                    .setDuration(AnimationHelper.ANIMATION_DURATION * 2)
+                    .setDuration(AnimationHelper.ANIMATION_DURATION)
                     .withEndAction(() -> {
                         for (SwipeListener l : listeners) {
                             l.onSwiped();
