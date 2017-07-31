@@ -105,4 +105,6 @@
     <string name="stats_exp_for_a_week">опыта за неделю</string>
     <string name="ex_dialog_continue">Продолжить</string>
     <string name="tutorial">Обучение</string>
+    <string name="streak_success">Серия из %d ответов</string>
+    <string name="streak_failed">Серия потеряна</string>
 </resources>

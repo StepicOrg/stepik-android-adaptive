@@ -185,6 +185,15 @@ public final class CardsFragment extends Fragment implements AnswerListener {
                     .setStartDelay(1500)
                     .setDuration(200)
                     .start();
+
+            binding.streakSuccess.setText(getString(R.string.streak_success, streak));
+            binding.streakSuccess.setAlpha(1);
+            binding.streakSuccess.animate()
+                    .setStartDelay(1500)
+                    .alpha(0)
+                    .withEndAction(() -> binding.expProgress.setVisibility(View.VISIBLE))
+                    .start();
+            binding.expProgress.setVisibility(View.GONE);
         }
 
         if (RateAppUtil.onEngagement()) {
@@ -195,6 +204,22 @@ public final class CardsFragment extends Fragment implements AnswerListener {
     }
 
     public void onWrongAnswer() {
+        if (binding != null && ExpUtil.getStreak() != 0) {
+            binding.streakFailed.animate()
+                    .alpha(1)
+                    .setStartDelay(0)
+                    .withEndAction(() -> {
+                        if (binding != null) {
+                            binding.streakFailed.animate()
+                                    .setStartDelay(1500)
+                                    .alpha(0)
+                                    .withEndAction(() -> binding.expProgress.setVisibility(View.VISIBLE))
+                                    .start();
+                        }
+                    })
+                    .start();
+            binding.expProgress.setVisibility(View.GONE);
+        }
         ExpUtil.resetStreak();
     }
 

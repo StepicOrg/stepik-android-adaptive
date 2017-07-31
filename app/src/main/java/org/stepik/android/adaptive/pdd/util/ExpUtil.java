@@ -21,6 +21,10 @@ public class ExpUtil {
         return addValue(STREAK_KEY, 1);
     }
 
+    public static long getStreak() {
+        return SharedPreferenceMgr.getInstance().getLong(STREAK_KEY);
+    }
+
     private static long addValue(final String key, final long delta) {
         long current = SharedPreferenceMgr.getInstance().getLong(key);
         SharedPreferenceMgr.getInstance().saveLong(key, current + delta);

@@ -110,4 +110,6 @@
     <string name="stats_exp_for_a_week">points for a week</string>
     <string name="ex_dialog_continue">Continue</string>
     <string name="tutorial">Tutorial</string>
+    <string name="streak_success">%d in a row</string>
+    <string name="streak_failed">Streak lost</string>
 </resources>
