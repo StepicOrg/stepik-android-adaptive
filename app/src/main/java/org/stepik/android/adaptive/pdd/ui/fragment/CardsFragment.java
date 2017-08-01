@@ -3,6 +3,7 @@ package org.stepik.android.adaptive.pdd.ui.fragment;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.graphics.Color;
+import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.CoordinatorLayout;
@@ -32,6 +33,8 @@ import org.stepik.android.adaptive.pdd.ui.dialog.ExpLevelDialog;
 import org.stepik.android.adaptive.pdd.ui.dialog.RateAppDialog;
 import org.stepik.android.adaptive.pdd.ui.helper.CardHelper;
 import org.stepik.android.adaptive.pdd.ui.listener.AnswerListener;
+import org.stepik.android.adaptive.pdd.ui.view.morphing.MorphingHelper;
+import org.stepik.android.adaptive.pdd.ui.view.morphing.MorphingView;
 import org.stepik.android.adaptive.pdd.util.ExpUtil;
 import org.stepik.android.adaptive.pdd.util.RateAppUtil;
 
@@ -113,6 +116,9 @@ public final class CardsFragment extends Fragment implements AnswerListener {
             }
         }
 
+        binding.streakSuccessContainer.setNestedTextView(binding.streakSuccess);
+        binding.streakSuccessContainer.setGradientDrawableParams(ContextCompat.getColor(getContext(), R.color.colorAccent), 0);
+
         updateExpProgressBar(ExpUtil.getExp(), 0, false);
         return binding.getRoot();
     }
@@ -123,7 +129,7 @@ public final class CardsFragment extends Fragment implements AnswerListener {
             binding.loadingPlaceholder.setText(loadingPlaceholders[Util.getRandomNumberBetween(0, 3)]);
         }
 
-        compositeDisposable.add(CardHelper.createReactionObservable(lesson, reaction, cards.size())
+        compositeDisposable.add(CardHelper.createReactionObservable(lesson, reaction, cards.size() + adapter.getItemCount())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnError(this::onError)
@@ -164,7 +170,7 @@ public final class CardsFragment extends Fragment implements AnswerListener {
             if (level != ExpUtil.getCurrentLevel(exp - streak)) {
                 onLevelGained(level);
             } else if (streak > 1) {
-                confetti();
+//                confetti();
             }
         }
     }
@@ -178,22 +184,23 @@ public final class CardsFragment extends Fragment implements AnswerListener {
 
         if (binding != null) {
             binding.expInc.setText(String.format(getString(R.string.exp_inc), streak));
-            binding.expInc.setAlpha(1);
-            binding.expInc.animate()
-                    .alpha(0)
-                    .setInterpolator(new DecelerateInterpolator())
-                    .setStartDelay(1500)
-                    .setDuration(200)
-                    .start();
-
             binding.streakSuccess.setText(getString(R.string.streak_success, streak));
-            binding.streakSuccess.setAlpha(1);
-            binding.streakSuccess.animate()
-                    .setStartDelay(1500)
-                    .alpha(0)
-                    .withEndAction(() -> binding.expProgress.setVisibility(View.VISIBLE))
-                    .start();
-            binding.expProgress.setVisibility(View.GONE);
+            if (streak > 1) {
+                binding.streakSuccessContainer.animate()
+                        .alpha(1)
+                        .setStartDelay(0)
+                        .setDuration(200)
+                        .withEndAction(this::startStreakMorphAnimation)
+                        .start();
+            } else {
+                binding.expInc.setAlpha(1);
+                binding.expInc.animate()
+                        .alpha(0)
+                        .setInterpolator(new DecelerateInterpolator())
+                        .setStartDelay(1500)
+                        .setDuration(200)
+                        .start();
+            }
         }
 
         if (RateAppUtil.onEngagement()) {
@@ -203,22 +210,47 @@ public final class CardsFragment extends Fragment implements AnswerListener {
         updateExpProgressBar(ExpUtil.addExp(streak), streak, true);
     }
 
+    private void startStreakMorphAnimation() {
+        final MorphingView.MorphParams params = binding.streakSuccessContainer.getMorphParams();
+
+        MorphingHelper.morphStreakHeaderToIncBubble(binding.streakSuccessContainer, binding.expInc)
+                .setStartDelay(1500)
+                .withEndAction(() -> {
+                    binding.expProgress.setVisibility(View.VISIBLE);
+                    confetti();
+
+                    binding.streakSuccessContainer.animate()
+                            .alpha(0)
+                            .setInterpolator(new DecelerateInterpolator())
+                            .setStartDelay(1500)
+                            .setDuration(200)
+                            .withEndAction(() -> binding.streakSuccessContainer.morph(params))
+                            .start();
+                })
+                .setDuration(100)
+                .start();
+
+        binding.expProgress.setVisibility(View.INVISIBLE);
+    }
+
     public void onWrongAnswer() {
-        if (binding != null && ExpUtil.getStreak() != 0) {
+        if (binding != null && ExpUtil.getStreak() > 1) {
             binding.streakFailed.animate()
                     .alpha(1)
                     .setStartDelay(0)
+                    .setDuration(200)
                     .withEndAction(() -> {
                         if (binding != null) {
                             binding.streakFailed.animate()
                                     .setStartDelay(1500)
+                                    .setDuration(200)
                                     .alpha(0)
                                     .withEndAction(() -> binding.expProgress.setVisibility(View.VISIBLE))
                                     .start();
                         }
                     })
                     .start();
-            binding.expProgress.setVisibility(View.GONE);
+            binding.expProgress.setVisibility(View.INVISIBLE);
         }
         ExpUtil.resetStreak();
     }

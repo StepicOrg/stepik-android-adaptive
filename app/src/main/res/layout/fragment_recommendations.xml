@@ -79,17 +79,22 @@
                             android:gravity="center" />
                     </FrameLayout>
 
-                    <TextView
-                        android:id="@+id/streak_success"
-                        android:alpha="0"
-                        android:textSize="18sp"
-                        android:textStyle="bold"
+                    <org.stepik.android.adaptive.pdd.ui.view.morphing.MorphingView
+                        android:id="@+id/streak_success_container"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:background="@color/colorAccent"
-                        android:textColor="@android:color/white"
-                        android:layout_gravity="center"
-                        android:gravity="center" />
+                        android:alpha="0"
+                        android:layout_gravity="end|center_vertical">
+                        <TextView
+                            android:id="@+id/streak_success"
+                            android:textSize="18sp"
+                            android:textStyle="bold"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:textColor="@android:color/white"
+                            android:layout_gravity="center"
+                            android:gravity="center" />
+                    </org.stepik.android.adaptive.pdd.ui.view.morphing.MorphingView>
 
                     <TextView
                         android:id="@+id/streak_failed"
