@@ -2,21 +2,15 @@ package org.stepik.android.adaptive.pdd.ui.fragment;
 
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
-import android.graphics.Color;
-import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.DecelerateInterpolator;
-
-import com.github.jinatonic.confetti.CommonConfetti;
 
 import org.stepik.android.adaptive.pdd.R;
 import org.stepik.android.adaptive.pdd.Util;
@@ -29,12 +23,11 @@ import org.stepik.android.adaptive.pdd.data.model.RecommendationReaction;
 import org.stepik.android.adaptive.pdd.databinding.FragmentRecommendationsBinding;
 import org.stepik.android.adaptive.pdd.ui.activity.StatsActivity;
 import org.stepik.android.adaptive.pdd.ui.adapter.QuizCardsAdapter;
+import org.stepik.android.adaptive.pdd.ui.animation.CardsFragmentAnimations;
 import org.stepik.android.adaptive.pdd.ui.dialog.ExpLevelDialog;
 import org.stepik.android.adaptive.pdd.ui.dialog.RateAppDialog;
 import org.stepik.android.adaptive.pdd.ui.helper.CardHelper;
 import org.stepik.android.adaptive.pdd.ui.listener.AnswerListener;
-import org.stepik.android.adaptive.pdd.ui.view.morphing.MorphingHelper;
-import org.stepik.android.adaptive.pdd.ui.view.morphing.MorphingView;
 import org.stepik.android.adaptive.pdd.util.ExpUtil;
 import org.stepik.android.adaptive.pdd.util.RateAppUtil;
 
@@ -72,7 +65,6 @@ public final class CardsFragment extends Fragment implements AnswerListener {
 
     private final QuizCardsAdapter adapter = new QuizCardsAdapter(this::createReaction, this);
 
-    private int[] confettiColors;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -81,11 +73,6 @@ public final class CardsFragment extends Fragment implements AnswerListener {
         compositeDisposable.add(retrySubject.observeOn(AndroidSchedulers.mainThread()).subscribe(v -> retry()));
         loadingPlaceholders = getResources().getStringArray(R.array.recommendation_loading_placeholders);
 
-        confettiColors = new int[]{
-                Color.BLACK,
-                ContextCompat.getColor(getContext(), R.color.colorAccentDisabled),
-                ContextCompat.getColor(getContext(), R.color.colorAccent)
-        };
         createReaction(0, RecommendationReaction.Reaction.INTERESTING);
     }
 
@@ -169,8 +156,6 @@ public final class CardsFragment extends Fragment implements AnswerListener {
         if (showLevelDialog) {
             if (level != ExpUtil.getCurrentLevel(exp - streak)) {
                 onLevelGained(level);
-            } else if (streak > 1) {
-//                confetti();
             }
         }
     }
@@ -186,20 +171,15 @@ public final class CardsFragment extends Fragment implements AnswerListener {
             binding.expInc.setText(String.format(getString(R.string.exp_inc), streak));
             binding.streakSuccess.setText(getString(R.string.streak_success, streak));
             if (streak > 1) {
-                binding.streakSuccessContainer.animate()
-                        .alpha(1)
-                        .setStartDelay(0)
-                        .setDuration(200)
-                        .withEndAction(this::startStreakMorphAnimation)
-                        .start();
+                CardsFragmentAnimations.playStreakSuccessAnimationSequence(new CardsFragmentAnimations.StreakSuccessAnimationViewBundle(
+                        (CoordinatorLayout) binding.getRoot(),
+                        binding.streakSuccessContainer,
+                        binding.expInc,
+                        binding.expProgress,
+                        binding.expBubble
+                ));
             } else {
-                binding.expInc.setAlpha(1);
-                binding.expInc.animate()
-                        .alpha(0)
-                        .setInterpolator(new DecelerateInterpolator())
-                        .setStartDelay(1500)
-                        .setDuration(200)
-                        .start();
+                CardsFragmentAnimations.playStreakBubbleAnimation(binding.expInc);
             }
         }
 
@@ -210,61 +190,15 @@ public final class CardsFragment extends Fragment implements AnswerListener {
         updateExpProgressBar(ExpUtil.addExp(streak), streak, true);
     }
 
-    private void startStreakMorphAnimation() {
-        final MorphingView.MorphParams params = binding.streakSuccessContainer.getMorphParams();
-
-        MorphingHelper.morphStreakHeaderToIncBubble(binding.streakSuccessContainer, binding.expInc)
-                .setStartDelay(1500)
-                .withEndAction(() -> {
-                    binding.expProgress.setVisibility(View.VISIBLE);
-                    confetti();
-
-                    binding.streakSuccessContainer.animate()
-                            .alpha(0)
-                            .setInterpolator(new DecelerateInterpolator())
-                            .setStartDelay(1500)
-                            .setDuration(200)
-                            .withEndAction(() -> binding.streakSuccessContainer.morph(params))
-                            .start();
-                })
-                .setDuration(100)
-                .start();
-
-        binding.expProgress.setVisibility(View.INVISIBLE);
-    }
-
     public void onWrongAnswer() {
         if (binding != null && ExpUtil.getStreak() > 1) {
-            binding.streakFailed.animate()
-                    .alpha(1)
-                    .setStartDelay(0)
-                    .setDuration(200)
-                    .withEndAction(() -> {
-                        if (binding != null) {
-                            binding.streakFailed.animate()
-                                    .setStartDelay(1500)
-                                    .setDuration(200)
-                                    .alpha(0)
-                                    .withEndAction(() -> binding.expProgress.setVisibility(View.VISIBLE))
-                                    .start();
-                        }
-                    })
-                    .start();
-            binding.expProgress.setVisibility(View.INVISIBLE);
+            CardsFragmentAnimations.playStreakFailedAnimation(binding.streakFailed, binding.expProgress);
         }
         ExpUtil.resetStreak();
     }
 
     private void onLevelGained(final long level) {
         ExpLevelDialog.Companion.newInstance(level).show(getChildFragmentManager(), LEVEL_DIALOG_TAG);
-    }
-
-    private void confetti() {
-        if (binding != null) {
-            final int x = (int) (binding.expBubble.getX() + ((View) binding.expBubble.getParent()).getX()) + binding.expBubble.getWidth() / 2;
-            final int y = (int) (binding.expBubble.getY() + binding.expBubble.getPivotY());
-            CommonConfetti.explosion((CoordinatorLayout) binding.getRoot(), x, y, confettiColors).oneShot();
-        }
     }
 
     /**
