@@ -107,4 +107,5 @@
     <string name="tutorial">Обучение</string>
     <string name="streak_success">Серия из %d ответов</string>
     <string name="streak_failed">Серия потеряна</string>
+    <string name="streak_restored">Серия восстановлена</string>
 </resources>

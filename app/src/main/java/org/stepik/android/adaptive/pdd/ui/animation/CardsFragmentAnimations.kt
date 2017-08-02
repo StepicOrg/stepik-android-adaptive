@@ -9,6 +9,7 @@ import android.view.animation.DecelerateInterpolator
 import android.widget.TextView
 import com.github.jinatonic.confetti.CommonConfetti
 import org.stepik.android.adaptive.pdd.R
+import org.stepik.android.adaptive.pdd.databinding.FragmentRecommendationsBinding
 import org.stepik.android.adaptive.pdd.ui.view.morphing.MorphingHelper
 import org.stepik.android.adaptive.pdd.ui.view.morphing.MorphingView
 
@@ -42,46 +43,56 @@ object CardsFragmentAnimations {
                 .start()
     }
 
-    data class StreakSuccessAnimationViewBundle(
-            val root: CoordinatorLayout,
-            val streakContainer: MorphingView,
-            val expInc: TextView,
-            val expProgress: View,
-            val expBubble: View
-    )
+    @JvmStatic
+    fun playStreakRestoreAnimation(streakContainer: MorphingView) {
+        streakContainer.morph(MorphingView.MorphParams(text = streakContainer.context.getString(R.string.streak_restored)))
+
+        streakContainer.animate()
+                .alpha(1f)
+                .setDuration(ANIMATION_SPEED_MS)
+                .setStartDelay(0)
+                .withEndAction {
+                    streakContainer.animate()
+                            .alpha(0f)
+                            .setStartDelay(VIEW_VISIBLE_MS)
+                            .setDuration(ANIMATION_SPEED_MS)
+                            .start()
+                }
+                .start()
+    }
 
     @JvmStatic
-    fun playStreakSuccessAnimationSequence(views: StreakSuccessAnimationViewBundle) {
-        views.streakContainer.animate()
+    fun playStreakSuccessAnimationSequence(binding: FragmentRecommendationsBinding) {
+        binding.streakSuccessContainer.animate()
                 .alpha(1f)
                 .setStartDelay(0)
                 .setDuration(ANIMATION_SPEED_MS)
-                .withEndAction { CardsFragmentAnimations.playStreakMorphAnimation(views) }
+                .withEndAction { CardsFragmentAnimations.playStreakMorphAnimation(binding) }
                 .start()
     }
 
 
-    private fun playStreakMorphAnimation(views: StreakSuccessAnimationViewBundle) {
-        val params = views.streakContainer.getMorphParams()
+    private fun playStreakMorphAnimation(binding: FragmentRecommendationsBinding) {
+        val params = binding.streakSuccessContainer.getMorphParams()
 
-        MorphingHelper.morphStreakHeaderToIncBubble(views.streakContainer, views.expInc)
+        MorphingHelper.morphStreakHeaderToIncBubble(binding.streakSuccessContainer, binding.expInc)
                 .setStartDelay(VIEW_VISIBLE_MS)
                 .withEndAction(Runnable {
-                    views.expProgress.visibility = View.VISIBLE
-                    confetti(views.root, views.expBubble)
+                    binding.expProgress.visibility = View.VISIBLE
+                    confetti(binding.root as CoordinatorLayout, binding.expBubble)
 
-                    views.streakContainer.animate()
+                    binding.streakSuccessContainer.animate()
                             .alpha(0f)
                             .setInterpolator(DecelerateInterpolator())
                             .setStartDelay(VIEW_VISIBLE_MS)
                             .setDuration(ANIMATION_SPEED_MS)
-                            .withEndAction { views.streakContainer.morph(params) }
+                            .withEndAction { binding.streakSuccessContainer.morph(params) }
                             .start()
                 })
                 .setDuration(FAST_ANIMATION_SPEED_MS)
                 .start()
 
-        views.expProgress.visibility = View.INVISIBLE
+        binding.expProgress.visibility = View.INVISIBLE
     }
 
 

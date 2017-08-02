@@ -4,7 +4,7 @@ import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.design.widget.CoordinatorLayout;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.text.method.LinkMovementMethod;
@@ -26,6 +26,7 @@ import org.stepik.android.adaptive.pdd.ui.adapter.QuizCardsAdapter;
 import org.stepik.android.adaptive.pdd.ui.animation.CardsFragmentAnimations;
 import org.stepik.android.adaptive.pdd.ui.dialog.ExpLevelDialog;
 import org.stepik.android.adaptive.pdd.ui.dialog.RateAppDialog;
+import org.stepik.android.adaptive.pdd.ui.dialog.StreakRestoreDialog;
 import org.stepik.android.adaptive.pdd.ui.helper.CardHelper;
 import org.stepik.android.adaptive.pdd.ui.listener.AnswerListener;
 import org.stepik.android.adaptive.pdd.util.ExpUtil;
@@ -42,11 +43,17 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 import io.reactivex.subjects.PublishSubject;
 
+import static android.app.Activity.RESULT_OK;
+
 
 public final class CardsFragment extends Fragment implements AnswerListener {
+    public final static int STREAK_RESTORE_REQUEST_CODE = 3423;
+    public final static String STREAK_RESTORE_KEY = "streak";
+
     private final static String TAG = "CardsFragment";
 
     private static final String LEVEL_DIALOG_TAG = "level_dialog";
+    private static final String STREAK_RESTORE_DIALOG_TAG = "streak_restore_dialog";
     private static final String RATE_APP_DIALOG_TAG = "rate_app_dialog";
 
     private final CompositeDisposable compositeDisposable = new CompositeDisposable();
@@ -168,16 +175,10 @@ public final class CardsFragment extends Fragment implements AnswerListener {
                 .subscribe(() -> {}, (e) -> {}));
 
         if (binding != null) {
-            binding.expInc.setText(String.format(getString(R.string.exp_inc), streak));
+            binding.expInc.setText(getString(R.string.exp_inc, streak));
             binding.streakSuccess.setText(getString(R.string.streak_success, streak));
             if (streak > 1) {
-                CardsFragmentAnimations.playStreakSuccessAnimationSequence(new CardsFragmentAnimations.StreakSuccessAnimationViewBundle(
-                        (CoordinatorLayout) binding.getRoot(),
-                        binding.streakSuccessContainer,
-                        binding.expInc,
-                        binding.expProgress,
-                        binding.expBubble
-                ));
+                CardsFragmentAnimations.playStreakSuccessAnimationSequence(binding);
             } else {
                 CardsFragmentAnimations.playStreakBubbleAnimation(binding.expInc);
             }
@@ -191,8 +192,13 @@ public final class CardsFragment extends Fragment implements AnswerListener {
     }
 
     public void onWrongAnswer() {
-        if (binding != null && ExpUtil.getStreak() > 1) {
+        final long streak = ExpUtil.getStreak();
+        if (binding != null && streak > 1) {
             CardsFragmentAnimations.playStreakFailedAnimation(binding.streakFailed, binding.expProgress);
+
+            final DialogFragment dialogFragment = StreakRestoreDialog.Companion.newInstance(streak);
+            dialogFragment.setTargetFragment(this, STREAK_RESTORE_REQUEST_CODE);
+            dialogFragment.show(getChildFragmentManager(), STREAK_RESTORE_DIALOG_TAG);
         }
         ExpUtil.resetStreak();
     }
@@ -284,5 +290,16 @@ public final class CardsFragment extends Fragment implements AnswerListener {
         adapter.recycle();
         compositeDisposable.dispose();
         super.onDestroy();
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == STREAK_RESTORE_REQUEST_CODE && resultCode == RESULT_OK && binding != null) {
+            CardsFragmentAnimations.playStreakRestoreAnimation(binding.streakSuccessContainer);
+            final long streak = data != null ? data.getLongExtra(STREAK_RESTORE_KEY, 0) : 0;
+
+//            data.getLongExtra()
+        }
+        super.onActivityResult(requestCode, resultCode, data);
     }
 }

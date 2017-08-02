@@ -112,4 +112,5 @@
     <string name="tutorial">Tutorial</string>
     <string name="streak_success">%d in a row</string>
     <string name="streak_failed">Streak lost</string>
+    <string name="streak_restored">Streak restored</string>
 </resources>
