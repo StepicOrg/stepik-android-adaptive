@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
@@ -8,37 +7,25 @@
         android:gravity="center_horizontal">
 
         <TextView
-            android:text="Восстановить серию из 8 ответов за купон на ошибку?"
+            android:text="@string/streak_restore_text"
             android:textColor="@color/colorDarkGrayText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:layout_margin="16dp" />
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginTop="16dp" />
 
-        <LinearLayout
-            android:orientation="vertical"
-            android:layout_width="wrap_content"
+        <include android:id="@+id/ticket_item" layout="@layout/item_ticket" />
+
+        <include layout="@layout/stroke" />
+        <Button
+            android:id="@+id/use_coupon_button"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center_horizontal"
-            android:layout_marginBottom="16dp">
-
-            <ImageView
-                android:layout_width="64dp"
-                android:layout_height="64dp"
-                android:background="@drawable/circle_stroke"
-                android:tint="@color/colorDarkGrayText"
-                app:srcCompat="@drawable/ic_tickets" />
-
-            <TextView
-                android:text="14"
-                android:textColor="@android:color/white"
-                android:textSize="12sp"
-                android:layout_marginTop="-14dp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/dark_small_circle"/>
-
-        </LinearLayout>
+            style="@style/Widget.AppCompat.Button.Borderless"
+            android:textColor="@color/borderless_button_text_color"
+            android:text="@string/use_coupon" />
 
     </LinearLayout>
 </layout>

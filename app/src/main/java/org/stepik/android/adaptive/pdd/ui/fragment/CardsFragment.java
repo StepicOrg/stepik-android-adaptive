@@ -30,6 +30,7 @@ import org.stepik.android.adaptive.pdd.ui.dialog.StreakRestoreDialog;
 import org.stepik.android.adaptive.pdd.ui.helper.CardHelper;
 import org.stepik.android.adaptive.pdd.ui.listener.AnswerListener;
 import org.stepik.android.adaptive.pdd.util.ExpUtil;
+import org.stepik.android.adaptive.pdd.util.InventoryUtil;
 import org.stepik.android.adaptive.pdd.util.RateAppUtil;
 
 import java.util.ArrayDeque;
@@ -81,6 +82,8 @@ public final class CardsFragment extends Fragment implements AnswerListener {
         loadingPlaceholders = getResources().getStringArray(R.array.recommendation_loading_placeholders);
 
         createReaction(0, RecommendationReaction.Reaction.INTERESTING);
+
+        InventoryUtil.starterPack();
     }
 
     @Nullable
@@ -188,17 +191,21 @@ public final class CardsFragment extends Fragment implements AnswerListener {
             new RateAppDialog().show(getChildFragmentManager(), RATE_APP_DIALOG_TAG);
         }
 
-        updateExpProgressBar(ExpUtil.addExp(streak), streak, true);
+        updateExpProgressBar(ExpUtil.changeExp(streak), streak, true);
     }
 
     public void onWrongAnswer() {
         final long streak = ExpUtil.getStreak();
-        if (binding != null && streak > 1) {
-            CardsFragmentAnimations.playStreakFailedAnimation(binding.streakFailed, binding.expProgress);
+        if (streak > 1) {
+            if (binding != null) {
+                CardsFragmentAnimations.playStreakFailedAnimation(binding.streakFailed, binding.expProgress);
+            }
 
-            final DialogFragment dialogFragment = StreakRestoreDialog.Companion.newInstance(streak);
-            dialogFragment.setTargetFragment(this, STREAK_RESTORE_REQUEST_CODE);
-            dialogFragment.show(getChildFragmentManager(), STREAK_RESTORE_DIALOG_TAG);
+            if (InventoryUtil.hasTickets()) {
+                final DialogFragment dialogFragment = StreakRestoreDialog.Companion.newInstance(streak);
+                dialogFragment.setTargetFragment(this, STREAK_RESTORE_REQUEST_CODE);
+                dialogFragment.show(getChildFragmentManager(), STREAK_RESTORE_DIALOG_TAG);
+            }
         }
         ExpUtil.resetStreak();
     }
@@ -294,11 +301,12 @@ public final class CardsFragment extends Fragment implements AnswerListener {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == STREAK_RESTORE_REQUEST_CODE && resultCode == RESULT_OK && binding != null) {
-            CardsFragmentAnimations.playStreakRestoreAnimation(binding.streakSuccessContainer);
+        if (requestCode == STREAK_RESTORE_REQUEST_CODE && resultCode == RESULT_OK) {
+            if (binding != null) {
+                CardsFragmentAnimations.playStreakRestoreAnimation(binding.streakSuccessContainer);
+            }
             final long streak = data != null ? data.getLongExtra(STREAK_RESTORE_KEY, 0) : 0;
-
-//            data.getLongExtra()
+            ExpUtil.changeStreak(streak);
         }
         super.onActivityResult(requestCode, resultCode, data);
     }

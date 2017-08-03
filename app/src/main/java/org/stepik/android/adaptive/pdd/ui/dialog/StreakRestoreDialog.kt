@@ -1,12 +1,15 @@
 package org.stepik.android.adaptive.pdd.ui.dialog
 
+import android.app.Activity
 import android.app.Dialog
-import android.databinding.DataBindingUtil
+import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.DialogFragment
 import android.support.v7.app.AlertDialog
 import org.stepik.android.adaptive.pdd.R
 import org.stepik.android.adaptive.pdd.databinding.DialogStreakRestoreBinding
+import org.stepik.android.adaptive.pdd.ui.fragment.CardsFragment
+import org.stepik.android.adaptive.pdd.util.InventoryUtil
 
 class StreakRestoreDialog : DialogFragment() {
     companion object {
@@ -24,13 +27,29 @@ class StreakRestoreDialog : DialogFragment() {
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val alertDialogBuilder = AlertDialog.Builder(context, R.style.ExpLevelDialogTheme)
-        binding = DataBindingUtil.inflate(activity.layoutInflater, R.layout.dialog_streak_restore, null, false)
+        binding = DialogStreakRestoreBinding.inflate(activity.layoutInflater, null, false)
 
+        binding.ticketItem.counter.text = getString(R.string.amount, InventoryUtil.getItemsCount(InventoryUtil.TICKETS_KEY))
 
+        binding.useCouponButton.setOnClickListener {
+            if (InventoryUtil.useItem(InventoryUtil.TICKETS_KEY)) {
+                binding.ticketItem.counter.text = getString(R.string.amount, InventoryUtil.getItemsCount(InventoryUtil.TICKETS_KEY))
+                onStreakRestore()
+            }
+            dismiss()
+        }
 
         alertDialogBuilder.setView(binding.root)
-        return alertDialogBuilder.create()
+
+        val dg = alertDialogBuilder.create()
+        dg.setCancelable(false)
+        dg.setCanceledOnTouchOutside(false)
+        return dg
     }
 
-
+    private fun onStreakRestore() {
+        val intent = Intent()
+        intent.putExtra(CardsFragment.STREAK_RESTORE_KEY, arguments?.getLong(STREAK_KEY) ?: 0)
+        targetFragment?.onActivityResult(CardsFragment.STREAK_RESTORE_REQUEST_CODE, Activity.RESULT_OK, intent)
+    }
 }
