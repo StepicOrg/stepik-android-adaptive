@@ -11,21 +11,49 @@
             android:textColor="@color/colorDarkGrayText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center"
+            android:gravity="start"
             android:layout_marginStart="16dp"
             android:layout_marginEnd="16dp"
             android:layout_marginTop="16dp" />
 
         <include android:id="@+id/ticket_item" layout="@layout/item_ticket" />
 
-        <include layout="@layout/stroke" />
-        <Button
-            android:id="@+id/use_coupon_button"
+        <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            style="@style/Widget.AppCompat.Button.Borderless"
-            android:textColor="@color/borderless_button_text_color"
-            android:text="@string/use_coupon" />
+            android:gravity="start"
+
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="16dp"
+            android:textColor="@color/colorDarkGrayText"
+
+            android:text="@string/streak_restore_question"
+            />
+
+        <include layout="@layout/stroke" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="end">
+            <Button
+                android:id="@+id/cancel_button"
+                android:layout_width="wrap_content"
+                android:gravity="end|center_vertical"
+                android:layout_height="wrap_content"
+                style="@style/Widget.AppCompat.Button.Borderless"
+                android:textColor="@color/borderless_cancel_button_text_color"
+                android:text="@string/not_now" />
+            <Button
+                android:id="@+id/use_coupon_button"
+                android:layout_width="wrap_content"
+                android:gravity="end|center_vertical"
+                android:layout_height="wrap_content"
+                style="@style/Widget.AppCompat.Button.Borderless"
+                android:textColor="@color/borderless_button_text_color"
+                android:text="@string/use_coupon" />
+        </LinearLayout>
 
     </LinearLayout>
 </layout>

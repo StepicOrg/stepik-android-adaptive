@@ -39,6 +39,8 @@ class StreakRestoreDialog : DialogFragment() {
             dismiss()
         }
 
+        binding.cancelButton.setOnClickListener { dismiss() }
+
         alertDialogBuilder.setView(binding.root)
 
         val dg = alertDialogBuilder.create()
