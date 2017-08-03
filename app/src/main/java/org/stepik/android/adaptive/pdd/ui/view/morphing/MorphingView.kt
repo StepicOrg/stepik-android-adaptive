@@ -74,6 +74,8 @@ class MorphingView : FrameLayout {
         )
     }
 
+    val initialMorphParams by lazy { getMorphParams() }
+
     data class MorphParams(
             val cornerRadius: Float = -1f,
 

@@ -73,7 +73,7 @@ object CardsFragmentAnimations {
 
 
     private fun playStreakMorphAnimation(binding: FragmentRecommendationsBinding) {
-        val params = binding.streakSuccessContainer.getMorphParams()
+        val params = binding.streakSuccessContainer.initialMorphParams
 
         MorphingHelper.morphStreakHeaderToIncBubble(binding.streakSuccessContainer, binding.expInc)
                 .setStartDelay(VIEW_VISIBLE_MS)
