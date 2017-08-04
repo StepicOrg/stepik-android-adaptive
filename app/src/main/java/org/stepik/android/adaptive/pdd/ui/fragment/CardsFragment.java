@@ -24,11 +24,13 @@ import org.stepik.android.adaptive.pdd.databinding.FragmentRecommendationsBindin
 import org.stepik.android.adaptive.pdd.ui.activity.StatsActivity;
 import org.stepik.android.adaptive.pdd.ui.adapter.QuizCardsAdapter;
 import org.stepik.android.adaptive.pdd.ui.animation.CardsFragmentAnimations;
+import org.stepik.android.adaptive.pdd.ui.dialog.DailyRewardDialog;
 import org.stepik.android.adaptive.pdd.ui.dialog.ExpLevelDialog;
 import org.stepik.android.adaptive.pdd.ui.dialog.RateAppDialog;
 import org.stepik.android.adaptive.pdd.ui.dialog.StreakRestoreDialog;
 import org.stepik.android.adaptive.pdd.ui.helper.CardHelper;
 import org.stepik.android.adaptive.pdd.ui.listener.AnswerListener;
+import org.stepik.android.adaptive.pdd.util.DailyRewardManager;
 import org.stepik.android.adaptive.pdd.util.ExpUtil;
 import org.stepik.android.adaptive.pdd.util.InventoryUtil;
 import org.stepik.android.adaptive.pdd.util.RateAppUtil;
@@ -56,6 +58,7 @@ public final class CardsFragment extends Fragment implements AnswerListener {
     private static final String LEVEL_DIALOG_TAG = "level_dialog";
     private static final String STREAK_RESTORE_DIALOG_TAG = "streak_restore_dialog";
     private static final String RATE_APP_DIALOG_TAG = "rate_app_dialog";
+    private static final String DAILY_REWARD_DIALOG_TAG = "daily_reward_dialog";
 
     private final CompositeDisposable compositeDisposable = new CompositeDisposable();
     private final PublishSubject<View> retrySubject = PublishSubject.create();
@@ -84,6 +87,14 @@ public final class CardsFragment extends Fragment implements AnswerListener {
         createReaction(0, RecommendationReaction.Reaction.INTERESTING);
 
         InventoryUtil.starterPack();
+
+        resolveDailyReward();
+    }
+
+    private void resolveDailyReward() {
+        final long progress = DailyRewardManager.INSTANCE.getCurrentRewardDay();
+        if (progress != DailyRewardManager.getDISCARD())
+            DailyRewardDialog.Companion.newInstance(progress).show(getChildFragmentManager(), DAILY_REWARD_DIALOG_TAG);
     }
 
     @Nullable
