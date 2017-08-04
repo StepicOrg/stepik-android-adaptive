@@ -22,7 +22,9 @@ public class ExpUtil {
     }
 
     public static long changeStreak(long delta) {
-        return changeValue(STREAK_KEY, delta);
+        final long streak = changeValue(STREAK_KEY, delta);
+        AnalyticMgr.getInstance().onStreak(streak);
+        return streak;
     }
 
     public static long getStreak() {
@@ -48,6 +50,7 @@ public class ExpUtil {
     }
 
     public static void resetStreak() {
+        AnalyticMgr.getInstance().onStreakLost(getStreak());
         SharedPreferenceMgr.getInstance().saveLong(STREAK_KEY, 0);
     }
 

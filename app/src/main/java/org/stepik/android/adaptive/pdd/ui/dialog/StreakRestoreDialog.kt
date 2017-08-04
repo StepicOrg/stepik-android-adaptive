@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.support.v4.app.DialogFragment
 import android.support.v7.app.AlertDialog
 import org.stepik.android.adaptive.pdd.R
+import org.stepik.android.adaptive.pdd.data.AnalyticMgr
 import org.stepik.android.adaptive.pdd.databinding.DialogStreakRestoreBinding
 import org.stepik.android.adaptive.pdd.ui.fragment.CardsFragment
 import org.stepik.android.adaptive.pdd.util.InventoryUtil
@@ -16,6 +17,7 @@ class StreakRestoreDialog : DialogFragment() {
         private val STREAK_KEY = "streak"
 
         fun newInstance(streak: Long) : StreakRestoreDialog {
+            AnalyticMgr.getInstance().onStreakRestoreDialogShown()
             val dialog = StreakRestoreDialog()
             dialog.arguments = Bundle()
             dialog.arguments.putLong(STREAK_KEY, streak)
@@ -39,7 +41,10 @@ class StreakRestoreDialog : DialogFragment() {
             dismiss()
         }
 
-        binding.cancelButton.setOnClickListener { dismiss() }
+        binding.cancelButton.setOnClickListener {
+            AnalyticMgr.getInstance().onStreakRestoreCanceled(arguments?.getLong(STREAK_KEY) ?: 0)
+            dismiss()
+        }
 
         alertDialogBuilder.setView(binding.root)
 
@@ -50,8 +55,10 @@ class StreakRestoreDialog : DialogFragment() {
     }
 
     private fun onStreakRestore() {
+        val streak = arguments?.getLong(STREAK_KEY) ?: 0
+        AnalyticMgr.getInstance().onStreakRestored(streak)
         val intent = Intent()
-        intent.putExtra(CardsFragment.STREAK_RESTORE_KEY, arguments?.getLong(STREAK_KEY) ?: 0)
+        intent.putExtra(CardsFragment.STREAK_RESTORE_KEY, streak)
         targetFragment?.onActivityResult(CardsFragment.STREAK_RESTORE_REQUEST_CODE, Activity.RESULT_OK, intent)
     }
 }
