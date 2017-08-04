@@ -38,6 +38,7 @@ class QuizCardViewHolder(val binding: QuizCardViewBinding) : ContainerView.ViewH
                 CardHelper.resetSupplementalActions(binding)
             }
         }
+        binding.container.setNestedScroll(binding.scroll)
     }
 
     private var hasSubmission = false
