@@ -12,7 +12,7 @@ public class ExpUtil {
     }
 
     public static long changeExp(long delta) {
-        long exp = changeValue(EXP_KEY, delta);
+        long exp = SharedPreferenceMgr.getInstance().changeLong(EXP_KEY, delta);
         AnalyticMgr.getInstance().onExpReached(exp - delta, delta);
         return exp;
     }
@@ -22,19 +22,13 @@ public class ExpUtil {
     }
 
     public static long changeStreak(long delta) {
-        final long streak = changeValue(STREAK_KEY, delta);
+        final long streak = SharedPreferenceMgr.getInstance().changeLong(STREAK_KEY, delta);
         AnalyticMgr.getInstance().onStreak(streak);
         return streak;
     }
 
     public static long getStreak() {
         return SharedPreferenceMgr.getInstance().getLong(STREAK_KEY);
-    }
-
-    private static long changeValue(final String key, final long delta) {
-        long current = SharedPreferenceMgr.getInstance().getLong(key);
-        SharedPreferenceMgr.getInstance().saveLong(key, current + delta);
-        return current + delta;
     }
 
     public static long getCurrentLevel(long exp) {
