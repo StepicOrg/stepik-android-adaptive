@@ -17,6 +17,9 @@ object LocalReminder {
     private val NOTIFICATION_TIMESTAMP_KEY = "notification_timestamp"
 
     @JvmStatic
+    val DAYS_MULTIPLIER_KEY = "days_multiplier"
+
+    @JvmStatic
     private val GOOD_STUDY_HOUR = 20
 
     private lateinit var context: Context
@@ -57,6 +60,7 @@ object LocalReminder {
 
 
         val intent = Intent(context, NotificationAlarmReceiver::class.java)
+        intent.putExtra(DAYS_MULTIPLIER_KEY, dayMultiplier)
 
         val pendingIntent = PendingIntent.getBroadcast(context, NotificationAlarmReceiver.REQUEST_CODE, intent, PendingIntent.FLAG_UPDATE_CURRENT)
         alarmManager.cancel(pendingIntent)
