@@ -7,8 +7,8 @@ import org.stepik.android.adaptive.pdd.data.SharedPreferenceMgr
 
 object InventoryUtil {
     enum class Item(val key: String, @DrawableRes val iconId: Int) {
-        Ticket("tickets", R.drawable.ic_tickets),
-        Chest("chest", R.drawable.ic_chest)
+        Ticket("tickets", R.drawable.ic_tickets)
+//        Chest("chest", R.drawable.ic_chest)
     }
 
     private val STARTER_PACK_VERSION_KEY = "starter_pack_version"
