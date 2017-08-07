@@ -22,8 +22,7 @@ class InventoryDialog : DialogFragment() {
         val alertDialogBuilder = AlertDialog.Builder(context, R.style.ExpLevelDialogTheme)
         binding = DialogDefaultBodyBinding.inflate(activity.layoutInflater, null, false)
 
-//        binding.title.setText(R.string.inventory_title)
-        binding.title.setText(R.string.inventory_description)
+        binding.title.setText(R.string.inventory_title)
         binding.description.visibility = View.GONE
 
         binding.continueButton.setOnClickListener { dismiss() }

@@ -117,6 +117,5 @@
     <string name="daily_reward_description">Решайте каждый день и получайте за это награду</string>
     <string name="daily_reward_button">Получить награду</string>
     <string name="day_number">День %d</string>
-    <string name="inventory_title">Запасы</string>
-    <string name="inventory_description">Ваши предметы</string>
+    <string name="inventory_title">Ваши предметы</string>
 </resources>
