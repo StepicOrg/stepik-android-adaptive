@@ -59,6 +59,6 @@ class StreakRestoreDialog : DialogFragment() {
         AnalyticMgr.getInstance().onStreakRestored(streak)
         val intent = Intent()
         intent.putExtra(CardsFragment.STREAK_RESTORE_KEY, streak)
-        targetFragment?.onActivityResult(CardsFragment.STREAK_RESTORE_REQUEST_CODE, Activity.RESULT_OK, intent)
+        parentFragment?.onActivityResult(CardsFragment.STREAK_RESTORE_REQUEST_CODE, Activity.RESULT_OK, intent) // used parentFragment instead of targetFragment due to bug on screen orientation change
     }
 }

@@ -109,7 +109,7 @@
     <string name="streak_failed">Серия потеряна</string>
     <string name="streak_restored">Серия восстановлена</string>
     <string name="use_coupon">Использовать</string>
-    <string name="streak_restore_text">Вы можете восстановить серию правильных ответов за купон на ошибку, вам доступно:</string>
+    <string name="streak_restore_text">Купоны позволяют не потерять бонус к опыту за серию правильных ответов, если вы ответили неверно. Вам доступно:</string>
     <string name="cancel">Отмена</string>
     <string name="not_now">Не сейчас</string>
     <string name="streak_restore_question">Использовать купон?</string>

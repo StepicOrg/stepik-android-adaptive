@@ -213,9 +213,7 @@ public final class CardsFragment extends Fragment implements AnswerListener {
             }
 
             if (InventoryUtil.hasTickets()) {
-                final DialogFragment dialogFragment = StreakRestoreDialog.Companion.newInstance(streak);
-                dialogFragment.setTargetFragment(this, STREAK_RESTORE_REQUEST_CODE);
-                dialogFragment.show(getChildFragmentManager(), STREAK_RESTORE_DIALOG_TAG);
+                StreakRestoreDialog.Companion.newInstance(streak).show(getChildFragmentManager(), STREAK_RESTORE_DIALOG_TAG);
             }
         }
         ExpUtil.resetStreak();
