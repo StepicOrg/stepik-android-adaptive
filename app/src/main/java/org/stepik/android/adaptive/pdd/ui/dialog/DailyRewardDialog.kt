@@ -11,6 +11,7 @@ import org.stepik.android.adaptive.pdd.R
 import org.stepik.android.adaptive.pdd.databinding.DialogBodyDailyRewardsBinding
 import org.stepik.android.adaptive.pdd.databinding.DialogDefaultBodyBinding
 import org.stepik.android.adaptive.pdd.ui.adapter.DailyRewardsAdapter
+import org.stepik.android.adaptive.pdd.ui.fragment.CardsFragment
 import org.stepik.android.adaptive.pdd.util.DailyRewardManager
 
 class DailyRewardDialog : DialogFragment() {
@@ -38,6 +39,8 @@ class DailyRewardDialog : DialogFragment() {
         binding.description.text = getString(R.string.daily_reward_description)
         binding.continueButton.text = getString(R.string.daily_reward_button)
 
+        binding.continueButton.setOnClickListener { getReward() }
+
         adapter.currentProgress = arguments?.getLong(REWARD_PROGRESS_KEY, 0)?.toInt() ?: 0
 
         discreteScrollView = DialogBodyDailyRewardsBinding.inflate(activity.layoutInflater, binding.container, false).discreteScrollView
@@ -55,5 +58,12 @@ class DailyRewardDialog : DialogFragment() {
         alertDialogBuilder.setView(binding.root)
 
         return alertDialogBuilder.create()
+    }
+
+    private fun getReward() {
+        parentFragment?.childFragmentManager?.let {
+            InventoryDialog().show(it, CardsFragment.INVENTORY_DIALOG_TAG)
+        }
+        dismiss()
     }
 }

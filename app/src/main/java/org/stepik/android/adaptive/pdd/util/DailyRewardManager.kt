@@ -12,12 +12,12 @@ object DailyRewardManager {
     private val REWARD_PROGRESS_KEY = "reward_progress"
 
     val rewards = listOf(
-            listOf(InventoryUtil.Item.Ticket to 2),
-            listOf(InventoryUtil.Item.Ticket to 2),
             listOf(InventoryUtil.Item.Ticket to 3),
             listOf(InventoryUtil.Item.Ticket to 3),
             listOf(InventoryUtil.Item.Ticket to 5),
             listOf(InventoryUtil.Item.Ticket to 5),
+            listOf(InventoryUtil.Item.Ticket to 7),
+            listOf(InventoryUtil.Item.Ticket to 7),
             listOf(InventoryUtil.Item.Ticket to 25)
     )
 
@@ -46,6 +46,16 @@ object DailyRewardManager {
             DISCARD
         else
             progress
+    }
+
+    fun giveRewardAndGetCurrentRewardDay() : Long {
+        val day = getCurrentRewardDay()
+        if (day != DISCARD)
+            rewards[day.toInt()].forEach {
+                InventoryUtil.changeItemCount(it.first, it.second.toLong())
+            }
+
+        return day
     }
 
     private fun resetProgress() = SharedPreferenceMgr.getInstance().remove(REWARD_PROGRESS_KEY)

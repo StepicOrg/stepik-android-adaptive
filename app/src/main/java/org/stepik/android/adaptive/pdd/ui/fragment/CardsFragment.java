@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.text.method.LinkMovementMethod;
@@ -60,6 +59,8 @@ public final class CardsFragment extends Fragment implements AnswerListener {
     private static final String RATE_APP_DIALOG_TAG = "rate_app_dialog";
     private static final String DAILY_REWARD_DIALOG_TAG = "daily_reward_dialog";
 
+    public static final String INVENTORY_DIALOG_TAG = "inventory_dialog";
+
     private final CompositeDisposable compositeDisposable = new CompositeDisposable();
     private final PublishSubject<View> retrySubject = PublishSubject.create();
 
@@ -92,7 +93,7 @@ public final class CardsFragment extends Fragment implements AnswerListener {
     }
 
     private void resolveDailyReward() {
-        final long progress = DailyRewardManager.INSTANCE.getCurrentRewardDay();
+        final long progress = DailyRewardManager.INSTANCE.giveRewardAndGetCurrentRewardDay();
         if (progress != DailyRewardManager.getDISCARD())
             DailyRewardDialog.Companion.newInstance(progress).show(getChildFragmentManager(), DAILY_REWARD_DIALOG_TAG);
     }

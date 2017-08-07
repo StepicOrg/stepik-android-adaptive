@@ -13,7 +13,7 @@ object InventoryUtil {
 
     private val STARTER_PACK_VERSION_KEY = "starter_pack_version"
 
-    private val START_TICKETS_COUNT = 10L
+    private val START_TICKETS_COUNT = 7L
 
     @JvmStatic
     fun getItemsCount(item: Item) =
@@ -33,6 +33,10 @@ object InventoryUtil {
     }
 
     @JvmStatic
+    fun changeItemCount(item: Item, delta: Long) =
+        SharedPreferenceMgr.getInstance().changeLong(item.key, delta)
+
+    @JvmStatic
     fun hasTickets() = getItemsCount(Item.Ticket) > 0
 
     @JvmStatic
@@ -42,4 +46,12 @@ object InventoryUtil {
             setItemsCount(Item.Ticket, START_TICKETS_COUNT)
         }
     }
+
+    @JvmStatic
+    fun getInventory() : List<Pair<Item, Int>> =
+        Item.values()
+                .map { it to InventoryUtil.getItemsCount(it).toInt() }
+                .filter { it.second > 0 }
+                .toList()
+
 }
