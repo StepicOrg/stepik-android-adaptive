@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.text.method.LinkMovementMethod;
@@ -179,7 +178,7 @@ public final class CardsFragment extends Fragment implements AnswerListener {
 
         if (binding != null) {
             binding.expInc.setText(getString(R.string.exp_inc, streak));
-            binding.streakSuccess.setText(getString(R.string.streak_success, streak));
+            binding.streakSuccess.setText(getResources().getQuantityString(R.plurals.streak_success, (int) streak, streak));
             if (streak > 1) {
                 CardsFragmentAnimations.playStreakSuccessAnimationSequence(binding);
             } else {
