@@ -48,11 +48,11 @@ object LocalReminder {
             if (isGoodTime(next.hourOfDay)) {
                 next.millis
             } else {
-                val tgt = next.withHourOfDay(GOOD_STUDY_HOUR)
-                if (Hours.hoursBetween(now, tgt).hours > dayMultiplier * 24) {
-                    tgt.minusDays(1).millis
+                val desiredDayWithGoodHour = next.withHourOfDay(GOOD_STUDY_HOUR)
+                if (Hours.hoursBetween(now, desiredDayWithGoodHour).hours > dayMultiplier * 24) {
+                    desiredDayWithGoodHour.minusDays(1).millis
                 } else {
-                    tgt.millis
+                    desiredDayWithGoodHour.millis
                 }
             }
         } else {

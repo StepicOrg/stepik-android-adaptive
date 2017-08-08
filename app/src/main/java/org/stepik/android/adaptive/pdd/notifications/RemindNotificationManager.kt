@@ -62,7 +62,7 @@ object RemindNotificationManager {
 
     private fun showNotification(title: String, description: String, days: Int) {
         val notificationBuilder = NotificationCompat.Builder(context)
-                .setSmallIcon(R.drawable.ic_car)
+                .setSmallIcon(R.drawable.ic_small_notification)
                 .setContentTitle(title)
                 .setContentText(description)
                 .setAutoCancel(true)
