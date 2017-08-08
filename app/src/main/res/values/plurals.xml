@@ -4,4 +4,7 @@
         <item quantity="one">Last step</item>
         <item quantity="other">%1$d steps more in tutorial</item>
     </plurals>
+    <plurals name="streak_success">
+        <item quantity="other">%1$d in a row</item>
+    </plurals>
 </resources>

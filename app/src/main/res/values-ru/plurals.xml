@@ -6,4 +6,10 @@
         <item quantity="many">Осталось %1$d шага</item>
         <item quantity="other">Осталось %1$d шага</item>
     </plurals>
+    <plurals name="streak_success">
+        <item quantity="one">Серия из %1$d ответа</item>
+        <item quantity="few">Серия из %1$d ответов</item>
+        <item quantity="many">Серия из %1$d ответов</item>
+        <item quantity="other">Серия из %1$d ответов</item>
+    </plurals>
 </resources>
