@@ -22,15 +22,14 @@ class NotificationsReceiver : BroadcastReceiver() {
         Util.initMgr(context)
 
         intent?.let {
+            val days = it.getIntExtra(LocalReminder.DAYS_MULTIPLIER_KEY, 0)
             if (it.action == NOTIFICATION_CANCELED) {
                 LocalReminder.resolveDailyRemind()
-                AnalyticMgr.getInstance().onNotificationCanceled(it.getIntExtra(LocalReminder.DAYS_MULTIPLIER_KEY, 0))
+                AnalyticMgr.getInstance().onNotificationCanceled(days)
             } else if (it.action == SHOW_NOTIFICATION) {
-                it.extras?.get(LocalReminder.DAYS_MULTIPLIER_KEY)?.let { days ->
-                    when (days) {
-                        1 -> RemindNotificationManager.showEveryDayNotification()
-                        3 -> RemindNotificationManager.show3DaysNotification()
-                    }
+                when (days) {
+                    1 -> RemindNotificationManager.showEveryDayNotification()
+                    3 -> RemindNotificationManager.show3DaysNotification()
                 }
             }
         }
