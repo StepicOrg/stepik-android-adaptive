@@ -12,4 +12,10 @@
         <item quantity="many">Серия из %1$d ответов</item>
         <item quantity="other">Серия из %1$d ответов</item>
     </plurals>
+    <plurals name="day">
+        <item quantity="one">%1$d день</item>
+        <item quantity="few">%1$d дня</item>
+        <item quantity="many">%1$d дней</item>
+        <item quantity="other">%1$d дней</item>
+    </plurals>
 </resources>
