@@ -42,6 +42,14 @@ public final class AnalyticMgr {
     private final static String EVENT_REACHED_EXP_1000 = "reached_exp_1000";
     private final static String EVENT_REACHED_EXP_5000 = "reached_exp_5000";
 
+    private final static String EVENT_STREAK_RESTORE_DIALOG_SHOWN = "streak_restore_dialog_shown";
+    private final static String EVENT_STREAK_RESTORED = "streak_restored";
+    private final static String EVENT_STREAK_RESTORE_CANCELED = "streak_restore_canceled";
+    private final static String EVENT_STREAK_LOST = "streak_lost";
+    private final static String EVENT_STREAK = "streak";
+
+    private final static String PARAM_STREAK = "streak";
+
     private static AnalyticMgr instance;
 
     private final FirebaseAnalytics firebaseAnalytics;
@@ -67,36 +75,36 @@ public final class AnalyticMgr {
         firebaseAnalytics.logEvent(EVENT_ONBOARDING_FINISHED, null);
     }
 
-    private void logEventWithLesson(final String event, final long lesson) {
+    private void logEventWithLongParam(final String event, final String param, final long value) {
         final Bundle bundle = new Bundle();
-        bundle.putLong(PARAM_LESSON, lesson);
+        bundle.putLong(param, value);
         firebaseAnalytics.logEvent(event, bundle);
     }
 
     public void reactionHard(final long lesson) {
-        logEventWithLesson(EVENT_REACTION_HARD, lesson);
+        logEventWithLongParam(EVENT_REACTION_HARD, PARAM_LESSON, lesson);
     }
 
     public void reactionEasy(final long lesson) {
-        logEventWithLesson(EVENT_REACTION_EASY, lesson);
+        logEventWithLongParam(EVENT_REACTION_EASY, PARAM_LESSON, lesson);
     }
 
     public void reactionHardAfterCorrect(final long lesson) {
-        logEventWithLesson(EVENT_REACTION_HARD_AFTER_CORRECT, lesson);
+        logEventWithLongParam(EVENT_REACTION_HARD_AFTER_CORRECT, PARAM_LESSON, lesson);
     }
 
     public void reactionEasyAfterCorrect(final long lesson) {
-        logEventWithLesson(EVENT_REACTION_EASY_AFTER_CORRECT, lesson);
+        logEventWithLongParam(EVENT_REACTION_EASY_AFTER_CORRECT, PARAM_LESSON, lesson);
     }
 
     public void answerResult(final Step step, @NonNull final Submission submission) {
         final long lesson = step != null ? step.getLesson() : 0;
         switch (submission.getStatus()) {
             case CORRECT:
-                logEventWithLesson(EVENT_CORRECT_ANSWER, lesson);
+                logEventWithLongParam(EVENT_CORRECT_ANSWER, PARAM_LESSON, lesson);
             break;
             case WRONG:
-                logEventWithLesson(EVENT_WRONG_ANSWER, lesson);
+                logEventWithLongParam(EVENT_WRONG_ANSWER, PARAM_LESSON, lesson);
             break;
         }
     }
@@ -106,9 +114,7 @@ public final class AnalyticMgr {
     }
 
     public void rate(int rating) {
-        final Bundle bundle = new Bundle();
-        bundle.putInt(PARAM_RATING, rating);
-        firebaseAnalytics.logEvent(EVENT_APP_RATE, bundle);
+        logEventWithLongParam(EVENT_APP_RATE, PARAM_RATING, rating);
     }
 
     public void rateCanceled() {
@@ -145,5 +151,25 @@ public final class AnalyticMgr {
             event = EVENT_REACHED_EXP_5000;
         if (event != null)
             firebaseAnalytics.logEvent(event, null);
+    }
+
+    public void onStreakRestoreDialogShown() {
+        firebaseAnalytics.logEvent(EVENT_STREAK_RESTORE_DIALOG_SHOWN, null);
+    }
+
+    public void onStreakRestored(long streak) {
+        logEventWithLongParam(EVENT_STREAK_RESTORED, PARAM_STREAK, streak);
+    }
+
+    public void onStreakRestoreCanceled(long streak) {
+        logEventWithLongParam(EVENT_STREAK_RESTORE_CANCELED, PARAM_STREAK, streak);
+    }
+
+    public void onStreakLost(long streak) {
+        logEventWithLongParam(EVENT_STREAK_LOST, PARAM_STREAK, streak);
+    }
+
+    public void onStreak(long streak) {
+        logEventWithLongParam(EVENT_STREAK, PARAM_STREAK, streak);
     }
 }

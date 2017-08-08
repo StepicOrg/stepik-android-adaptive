@@ -110,4 +110,12 @@
     <string name="stats_exp_for_a_week">points for a week</string>
     <string name="ex_dialog_continue">Continue</string>
     <string name="tutorial">Tutorial</string>
+    <string name="streak_failed">Streak lost</string>
+    <string name="streak_restored">Streak restored</string>
+    <string name="amount" translatable="false">x%d</string>
+    <string name="use_coupon">Use coupon</string>
+    <string name="streak_restore_text">You can restore your streak by using error coupon, you have:</string>
+    <string name="cancel">Cancel</string>
+    <string name="not_now">Not now</string>
+    <string name="streak_restore_question">Use coupon?</string>
 </resources>

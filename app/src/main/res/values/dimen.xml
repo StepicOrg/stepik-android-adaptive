@@ -6,4 +6,6 @@
     <dimen name="intro_asset_size">256dp</dimen>
     <dimen name="card_width">@dimen/match_parent</dimen>
     <dimen name="card_height">@dimen/match_parent</dimen>
+    <dimen name="exp_bubble_corner_radius">24dp</dimen>
+    <dimen name="exp_bubble_margin">16dp</dimen>
 </resources>

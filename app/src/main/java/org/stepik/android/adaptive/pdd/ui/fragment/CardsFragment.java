@@ -2,20 +2,14 @@ package org.stepik.android.adaptive.pdd.ui.fragment;
 
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.DecelerateInterpolator;
-
-import com.github.jinatonic.confetti.CommonConfetti;
 
 import org.stepik.android.adaptive.pdd.R;
 import org.stepik.android.adaptive.pdd.Util;
@@ -28,11 +22,14 @@ import org.stepik.android.adaptive.pdd.data.model.RecommendationReaction;
 import org.stepik.android.adaptive.pdd.databinding.FragmentRecommendationsBinding;
 import org.stepik.android.adaptive.pdd.ui.activity.StatsActivity;
 import org.stepik.android.adaptive.pdd.ui.adapter.QuizCardsAdapter;
+import org.stepik.android.adaptive.pdd.ui.animation.CardsFragmentAnimations;
 import org.stepik.android.adaptive.pdd.ui.dialog.ExpLevelDialog;
 import org.stepik.android.adaptive.pdd.ui.dialog.RateAppDialog;
+import org.stepik.android.adaptive.pdd.ui.dialog.StreakRestoreDialog;
 import org.stepik.android.adaptive.pdd.ui.helper.CardHelper;
 import org.stepik.android.adaptive.pdd.ui.listener.AnswerListener;
 import org.stepik.android.adaptive.pdd.util.ExpUtil;
+import org.stepik.android.adaptive.pdd.util.InventoryUtil;
 import org.stepik.android.adaptive.pdd.util.RateAppUtil;
 
 import java.util.ArrayDeque;
@@ -46,11 +43,17 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 import io.reactivex.subjects.PublishSubject;
 
+import static android.app.Activity.RESULT_OK;
+
 
 public final class CardsFragment extends Fragment implements AnswerListener {
+    public final static int STREAK_RESTORE_REQUEST_CODE = 3423;
+    public final static String STREAK_RESTORE_KEY = "streak";
+
     private final static String TAG = "CardsFragment";
 
     private static final String LEVEL_DIALOG_TAG = "level_dialog";
+    private static final String STREAK_RESTORE_DIALOG_TAG = "streak_restore_dialog";
     private static final String RATE_APP_DIALOG_TAG = "rate_app_dialog";
 
     private final CompositeDisposable compositeDisposable = new CompositeDisposable();
@@ -69,7 +72,6 @@ public final class CardsFragment extends Fragment implements AnswerListener {
 
     private final QuizCardsAdapter adapter = new QuizCardsAdapter(this::createReaction, this);
 
-    private int[] confettiColors;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -78,12 +80,9 @@ public final class CardsFragment extends Fragment implements AnswerListener {
         compositeDisposable.add(retrySubject.observeOn(AndroidSchedulers.mainThread()).subscribe(v -> retry()));
         loadingPlaceholders = getResources().getStringArray(R.array.recommendation_loading_placeholders);
 
-        confettiColors = new int[]{
-                Color.BLACK,
-                ContextCompat.getColor(getContext(), R.color.colorAccentDisabled),
-                ContextCompat.getColor(getContext(), R.color.colorAccent)
-        };
         createReaction(0, RecommendationReaction.Reaction.INTERESTING);
+
+        InventoryUtil.starterPack();
     }
 
     @Nullable
@@ -113,6 +112,9 @@ public final class CardsFragment extends Fragment implements AnswerListener {
             }
         }
 
+        binding.streakSuccessContainer.setNestedTextView(binding.streakSuccess);
+        binding.streakSuccessContainer.setGradientDrawableParams(ContextCompat.getColor(getContext(), R.color.colorAccent), 0);
+
         updateExpProgressBar(ExpUtil.getExp(), 0, false);
         return binding.getRoot();
     }
@@ -123,7 +125,7 @@ public final class CardsFragment extends Fragment implements AnswerListener {
             binding.loadingPlaceholder.setText(loadingPlaceholders[Util.getRandomNumberBetween(0, 3)]);
         }
 
-        compositeDisposable.add(CardHelper.createReactionObservable(lesson, reaction, cards.size())
+        compositeDisposable.add(CardHelper.createReactionObservable(lesson, reaction, cards.size() + adapter.getItemCount())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnError(this::onError)
@@ -163,8 +165,6 @@ public final class CardsFragment extends Fragment implements AnswerListener {
         if (showLevelDialog) {
             if (level != ExpUtil.getCurrentLevel(exp - streak)) {
                 onLevelGained(level);
-            } else if (streak > 1) {
-                confetti();
             }
         }
     }
@@ -177,37 +177,38 @@ public final class CardsFragment extends Fragment implements AnswerListener {
                 .subscribe(() -> {}, (e) -> {}));
 
         if (binding != null) {
-            binding.expInc.setText(String.format(getString(R.string.exp_inc), streak));
-            binding.expInc.setAlpha(1);
-            binding.expInc.animate()
-                    .alpha(0)
-                    .setInterpolator(new DecelerateInterpolator())
-                    .setStartDelay(1500)
-                    .setDuration(200)
-                    .start();
+            binding.expInc.setText(getString(R.string.exp_inc, streak));
+            binding.streakSuccess.setText(getResources().getQuantityString(R.plurals.streak_success, (int) streak, streak));
+            if (streak > 1) {
+                CardsFragmentAnimations.playStreakSuccessAnimationSequence(binding);
+            } else {
+                CardsFragmentAnimations.playStreakBubbleAnimation(binding.expInc);
+            }
         }
 
         if (RateAppUtil.onEngagement()) {
             new RateAppDialog().show(getChildFragmentManager(), RATE_APP_DIALOG_TAG);
         }
 
-        updateExpProgressBar(ExpUtil.addExp(streak), streak, true);
+        updateExpProgressBar(ExpUtil.changeExp(streak), streak, true);
     }
 
     public void onWrongAnswer() {
+        final long streak = ExpUtil.getStreak();
+        if (streak > 1) {
+            if (binding != null) {
+                CardsFragmentAnimations.playStreakFailedAnimation(binding.streakFailed, binding.expProgress);
+            }
+
+            if (InventoryUtil.hasTickets()) {
+                StreakRestoreDialog.Companion.newInstance(streak).show(getChildFragmentManager(), STREAK_RESTORE_DIALOG_TAG);
+            }
+        }
         ExpUtil.resetStreak();
     }
 
     private void onLevelGained(final long level) {
         ExpLevelDialog.Companion.newInstance(level).show(getChildFragmentManager(), LEVEL_DIALOG_TAG);
-    }
-
-    private void confetti() {
-        if (binding != null) {
-            final int x = (int) (binding.expBubble.getX() + ((View) binding.expBubble.getParent()).getX()) + binding.expBubble.getWidth() / 2;
-            final int y = (int) (binding.expBubble.getY() + binding.expBubble.getPivotY());
-            CommonConfetti.explosion((CoordinatorLayout) binding.getRoot(), x, y, confettiColors).oneShot();
-        }
     }
 
     /**
@@ -293,5 +294,17 @@ public final class CardsFragment extends Fragment implements AnswerListener {
         adapter.recycle();
         compositeDisposable.dispose();
         super.onDestroy();
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == STREAK_RESTORE_REQUEST_CODE && resultCode == RESULT_OK) {
+            if (binding != null) {
+                CardsFragmentAnimations.playStreakRestoreAnimation(binding.streakSuccessContainer);
+            }
+            final long streak = data != null ? data.getLongExtra(STREAK_RESTORE_KEY, 0) : 0;
+            ExpUtil.changeStreak(streak);
+        }
+        super.onActivityResult(requestCode, resultCode, data);
     }
 }

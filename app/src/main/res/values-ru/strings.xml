@@ -105,4 +105,11 @@
     <string name="stats_exp_for_a_week">опыта за неделю</string>
     <string name="ex_dialog_continue">Продолжить</string>
     <string name="tutorial">Обучение</string>
+    <string name="streak_failed">Серия потеряна</string>
+    <string name="streak_restored">Серия восстановлена</string>
+    <string name="use_coupon">Использовать</string>
+    <string name="streak_restore_text">Купоны позволяют не потерять бонус к опыту за серию правильных ответов, если вы ответили неверно. Вам доступно:</string>
+    <string name="cancel">Отмена</string>
+    <string name="not_now">Не сейчас</string>
+    <string name="streak_restore_question">Использовать купон?</string>
 </resources>

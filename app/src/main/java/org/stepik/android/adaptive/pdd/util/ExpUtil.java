@@ -11,17 +11,27 @@ public class ExpUtil {
         return SharedPreferenceMgr.getInstance().getLong(EXP_KEY);
     }
 
-    public static long addExp(long delta) {
-        long exp = addValue(EXP_KEY, delta);
+    public static long changeExp(long delta) {
+        long exp = changeValue(EXP_KEY, delta);
         AnalyticMgr.getInstance().onExpReached(exp - delta, delta);
         return exp;
     }
 
     public static long incStreak() {
-        return addValue(STREAK_KEY, 1);
+        return changeStreak(1);
     }
 
-    private static long addValue(final String key, final long delta) {
+    public static long changeStreak(long delta) {
+        final long streak = changeValue(STREAK_KEY, delta);
+        AnalyticMgr.getInstance().onStreak(streak);
+        return streak;
+    }
+
+    public static long getStreak() {
+        return SharedPreferenceMgr.getInstance().getLong(STREAK_KEY);
+    }
+
+    private static long changeValue(final String key, final long delta) {
         long current = SharedPreferenceMgr.getInstance().getLong(key);
         SharedPreferenceMgr.getInstance().saveLong(key, current + delta);
         return current + delta;
@@ -40,6 +50,7 @@ public class ExpUtil {
     }
 
     public static void resetStreak() {
+        AnalyticMgr.getInstance().onStreakLost(getStreak());
         SharedPreferenceMgr.getInstance().saveLong(STREAK_KEY, 0);
     }
 
