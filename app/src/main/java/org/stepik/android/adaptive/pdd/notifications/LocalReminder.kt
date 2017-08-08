@@ -72,7 +72,7 @@ object LocalReminder {
     }
 
     @JvmStatic
-    fun isGoodTime(hour: Int) = hour in 10..21
+    fun isGoodTime(hour: Int) = hour in 7..23
 
     private fun scheduleCompat(scheduleMillis: Long, interval: Long, pendingIntent: PendingIntent) {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
