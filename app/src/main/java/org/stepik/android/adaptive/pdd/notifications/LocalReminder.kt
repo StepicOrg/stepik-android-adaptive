@@ -9,7 +9,7 @@ import org.joda.time.DateTime
 import org.joda.time.Days
 import org.joda.time.Hours
 import org.stepik.android.adaptive.pdd.data.SharedPreferenceMgr
-import org.stepik.android.adaptive.pdd.receivers.NotificationAlarmReceiver
+import org.stepik.android.adaptive.pdd.receivers.NotificationsReceiver
 import org.stepik.android.adaptive.pdd.util.DailyRewardManager
 
 object LocalReminder {
@@ -36,13 +36,14 @@ object LocalReminder {
 
         val lastSession = DateTime(DailyRewardManager.getLastSessionTimestamp())
 
-        val dayMultiplier = if (Days.daysBetween(lastSession.withTimeAtStartOfDay(), now.withTimeAtStartOfDay()).days > 2) {
+        val daysSinceLastSession = Days.daysBetween(lastSession.withTimeAtStartOfDay(), now.withTimeAtStartOfDay()).days
+        val dayMultiplier = if (daysSinceLastSession > 2) {
             3 // if user wasn't present for more than 2 days remind him in 3 days
         } else {
             1
         }
 
-        val newNotificationTimestamp = if (notificationTimestamp < now.millis) {
+        val newNotificationTimestamp = if (notificationTimestamp < now.millis || daysSinceLastSession < 1) {
             val next = now.plusDays(dayMultiplier)
             if (isGoodTime(next.hourOfDay)) {
                 next.millis
@@ -59,10 +60,11 @@ object LocalReminder {
         }
 
 
-        val intent = Intent(context, NotificationAlarmReceiver::class.java)
+        val intent = Intent(context, NotificationsReceiver::class.java)
         intent.putExtra(DAYS_MULTIPLIER_KEY, dayMultiplier)
+        intent.action = NotificationsReceiver.SHOW_NOTIFICATION
 
-        val pendingIntent = PendingIntent.getBroadcast(context, NotificationAlarmReceiver.REQUEST_CODE, intent, PendingIntent.FLAG_UPDATE_CURRENT)
+        val pendingIntent = PendingIntent.getBroadcast(context, NotificationsReceiver.REQUEST_CODE, intent, PendingIntent.FLAG_UPDATE_CURRENT)
         alarmManager.cancel(pendingIntent)
 
         SharedPreferenceMgr.getInstance().saveLong(NOTIFICATION_TIMESTAMP_KEY, newNotificationTimestamp)
@@ -70,7 +72,7 @@ object LocalReminder {
     }
 
     @JvmStatic
-    fun isGoodTime(hour: Int) = hour in 13..21
+    fun isGoodTime(hour: Int) = hour in 10..21
 
     private fun scheduleCompat(scheduleMillis: Long, interval: Long, pendingIntent: PendingIntent) {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {

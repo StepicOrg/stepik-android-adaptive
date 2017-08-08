@@ -120,4 +120,5 @@
     <string name="local_push_yesterday">Вчера Вы набрали %d опыта. Возвращайтесь и улучшите свой результат!</string>
     <string name="local_push_3days">Вы давно не занимались. Возвращайтесь и продолжайте учиться!</string>
     <string name="local_push_streak">Вы занимаетесь уже %s подряд. Возвращайтесь и продолжайте учиться!</string>
+    <string name="local_push_title">Время заниматься</string>
 </resources>

@@ -20,6 +20,8 @@ import org.stepik.android.adaptive.pdd.data.model.Card;
 import org.stepik.android.adaptive.pdd.data.model.Recommendation;
 import org.stepik.android.adaptive.pdd.data.model.RecommendationReaction;
 import org.stepik.android.adaptive.pdd.databinding.FragmentRecommendationsBinding;
+import org.stepik.android.adaptive.pdd.notifications.LocalReminder;
+import org.stepik.android.adaptive.pdd.notifications.RemindNotificationManager;
 import org.stepik.android.adaptive.pdd.ui.activity.StatsActivity;
 import org.stepik.android.adaptive.pdd.ui.adapter.QuizCardsAdapter;
 import org.stepik.android.adaptive.pdd.ui.animation.CardsFragmentAnimations;
@@ -90,6 +92,7 @@ public final class CardsFragment extends Fragment implements AnswerListener {
         InventoryUtil.starterPack();
 
         resolveDailyReward();
+        LocalReminder.INSTANCE.resolveDailyRemind();
     }
 
     private void resolveDailyReward() {

@@ -9,7 +9,5 @@ public class App extends MultiDexApplication {
     public void onCreate() {
         super.onCreate();
         Util.initMgr(getApplicationContext());
-
-        LocalReminder.INSTANCE.resolveDailyRemind();
     }
 }

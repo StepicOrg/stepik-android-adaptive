@@ -18,6 +18,7 @@ import org.stepik.android.adaptive.pdd.data.AnalyticMgr;
 import org.stepik.android.adaptive.pdd.data.SharedPreferenceMgr;
 import org.stepik.android.adaptive.pdd.data.db.DataBaseMgr;
 import org.stepik.android.adaptive.pdd.notifications.LocalReminder;
+import org.stepik.android.adaptive.pdd.notifications.RemindNotificationManager;
 
 import java.util.Random;
 
@@ -33,6 +34,7 @@ public class Util {
         UserAgentProvider.init(context);
         DataBaseMgr.Companion.init(context);
         LocalReminder.INSTANCE.init(context);
+        RemindNotificationManager.INSTANCE.init(context);
     }
 
     public static void hideSoftKeyboard(final Activity a) {
