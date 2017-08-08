@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.util.Log
 import org.stepik.android.adaptive.pdd.Util
+import org.stepik.android.adaptive.pdd.data.AnalyticMgr
 import org.stepik.android.adaptive.pdd.notifications.LocalReminder
 import org.stepik.android.adaptive.pdd.notifications.RemindNotificationManager
 
@@ -23,6 +24,7 @@ class NotificationsReceiver : BroadcastReceiver() {
         intent?.let {
             if (it.action == NOTIFICATION_CANCELED) {
                 LocalReminder.resolveDailyRemind()
+                AnalyticMgr.getInstance().onNotificationCanceled(it.getIntExtra(LocalReminder.DAYS_MULTIPLIER_KEY, 0))
             } else if (it.action == SHOW_NOTIFICATION) {
                 it.extras?.get(LocalReminder.DAYS_MULTIPLIER_KEY)?.let { days ->
                     when (days) {

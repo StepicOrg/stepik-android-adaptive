@@ -45,21 +45,22 @@ object RemindNotificationManager {
                     } else {
                         context.getString(R.string.local_push_yesterday, it[5])
                     }
-                    showNotification(title, description)
+                    showNotification(title, description, 1)
                 }, {})
     }
 
     fun show3DaysNotification() {
-        showNotification(context.getString(R.string.local_push_title), context.getString(R.string.local_push_3days))
+        showNotification(context.getString(R.string.local_push_title), context.getString(R.string.local_push_3days), 3)
     }
 
-    private fun getDeleteIntent() : PendingIntent {
+    private fun getDeleteIntent(days: Int) : PendingIntent {
         val intent = Intent(context, NotificationsReceiver::class.java)
         intent.action = NotificationsReceiver.NOTIFICATION_CANCELED
+        intent.putExtra(LocalReminder.DAYS_MULTIPLIER_KEY, days)
         return PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT)
     }
 
-    private fun showNotification(title: String, description: String) {
+    private fun showNotification(title: String, description: String, days: Int) {
         val notificationBuilder = NotificationCompat.Builder(context)
                 .setSmallIcon(R.drawable.ic_car)
                 .setContentTitle(title)
@@ -75,7 +76,7 @@ object RemindNotificationManager {
         val resultPendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT)
         notificationBuilder.setContentIntent(resultPendingIntent)
 
-        notificationBuilder.setDeleteIntent(getDeleteIntent())
+        notificationBuilder.setDeleteIntent(getDeleteIntent(days))
 
         notificationManager.notify(notificationId, notificationBuilder.build())
     }
