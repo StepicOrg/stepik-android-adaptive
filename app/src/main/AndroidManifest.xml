@@ -3,6 +3,7 @@
     package="org.stepik.android.adaptive.pdd">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
 
     <application
         android:allowBackup="false"
@@ -60,6 +61,16 @@
         <activity
             android:theme="@style/AppTheme.NoActionBar"
             android:name="org.stepik.android.adaptive.pdd.ui.activity.StatsActivity"/>
+
+        <receiver
+            android:name=".receivers.BootCompletedReceiver"
+            android:enabled="true">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED"/>
+            </intent-filter>
+        </receiver>
+
+        <receiver android:name=".receivers.NotificationsReceiver"/>
     </application>
 
 </manifest>

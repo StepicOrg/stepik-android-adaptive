@@ -21,6 +21,9 @@ object DailyRewardManager {
             listOf(InventoryUtil.Item.Ticket to 25)
     )
 
+    fun getLastSessionTimestamp() =
+            SharedPreferenceMgr.getInstance().getLong(LAST_SESSION_KEY)
+
     fun getCurrentRewardDay() : Long {
         val lastSession = SharedPreferenceMgr.getInstance().getLong(LAST_SESSION_KEY)
 

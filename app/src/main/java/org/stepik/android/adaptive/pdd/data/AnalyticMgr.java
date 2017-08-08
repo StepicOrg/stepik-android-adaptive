@@ -50,6 +50,9 @@ public final class AnalyticMgr {
 
     private final static String PARAM_STREAK = "streak";
 
+    private final static String EVENT_NOTIFICATION_CANCELED = "notification_canceled";
+    private final static String PARAM_NOTIFICATION_DAYS = "days";
+
     private static AnalyticMgr instance;
 
     private final FirebaseAnalytics firebaseAnalytics;
@@ -171,5 +174,9 @@ public final class AnalyticMgr {
 
     public void onStreak(long streak) {
         logEventWithLongParam(EVENT_STREAK, PARAM_STREAK, streak);
+    }
+
+    public void onNotificationCanceled(int days) {
+        logEventWithLongParam(EVENT_STREAK, PARAM_NOTIFICATION_DAYS, days);
     }
 }

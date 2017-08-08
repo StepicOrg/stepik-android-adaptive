@@ -7,4 +7,8 @@
     <plurals name="streak_success">
         <item quantity="other">%d in a row</item>
     </plurals>
+    <plurals name="day">
+        <item quantity="one">%d day</item>
+        <item quantity="other">%d days</item>
+    </plurals>
 </resources>
