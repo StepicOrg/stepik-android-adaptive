@@ -26,6 +26,11 @@ class StreakRestoreDialog : DialogFragment() {
 
     private lateinit var binding : DialogStreakRestoreBinding
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        isCancelable = false
+    }
+
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         if (savedInstanceState == null) {
             AnalyticMgr.getInstance().onStreakRestoreDialogShown()
@@ -51,10 +56,7 @@ class StreakRestoreDialog : DialogFragment() {
 
         alertDialogBuilder.setView(binding.root)
 
-        val dg = alertDialogBuilder.create()
-        dg.setCancelable(false)
-        dg.setCanceledOnTouchOutside(false)
-        return dg
+        return alertDialogBuilder.create()
     }
 
     private fun onStreakRestore() {
