@@ -41,7 +41,7 @@ object InventoryUtil {
 
     @JvmStatic
     fun starterPack() {
-        if (SharedPreferenceMgr.getInstance().getLong(STARTER_PACK_VERSION_KEY) < BuildConfig.VERSION_CODE) {
+        if (SharedPreferenceMgr.getInstance().getLong(STARTER_PACK_VERSION_KEY) == 0L) {
             SharedPreferenceMgr.getInstance().saveLong(STARTER_PACK_VERSION_KEY, BuildConfig.VERSION_CODE.toLong())
             setItemsCount(Item.Ticket, START_TICKETS_COUNT)
         }

@@ -17,7 +17,6 @@ class StreakRestoreDialog : DialogFragment() {
         private val STREAK_KEY = "streak"
 
         fun newInstance(streak: Long) : StreakRestoreDialog {
-            AnalyticMgr.getInstance().onStreakRestoreDialogShown()
             val dialog = StreakRestoreDialog()
             dialog.arguments = Bundle()
             dialog.arguments.putLong(STREAK_KEY, streak)
@@ -27,7 +26,16 @@ class StreakRestoreDialog : DialogFragment() {
 
     private lateinit var binding : DialogStreakRestoreBinding
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        isCancelable = false
+    }
+
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        if (savedInstanceState == null) {
+            AnalyticMgr.getInstance().onStreakRestoreDialogShown()
+        }
+
         val alertDialogBuilder = AlertDialog.Builder(context, R.style.ExpLevelDialogTheme)
         binding = DialogStreakRestoreBinding.inflate(activity.layoutInflater, null, false)
 
@@ -48,10 +56,7 @@ class StreakRestoreDialog : DialogFragment() {
 
         alertDialogBuilder.setView(binding.root)
 
-        val dg = alertDialogBuilder.create()
-        dg.setCancelable(false)
-        dg.setCanceledOnTouchOutside(false)
-        return dg
+        return alertDialogBuilder.create()
     }
 
     private fun onStreakRestore() {

@@ -6,7 +6,6 @@ import android.support.design.widget.CoordinatorLayout
 import android.support.v4.content.ContextCompat
 import android.view.View
 import android.view.animation.DecelerateInterpolator
-import android.widget.TextView
 import com.github.jinatonic.confetti.CommonConfetti
 import org.stepik.android.adaptive.pdd.R
 import org.stepik.android.adaptive.pdd.databinding.FragmentRecommendationsBinding
@@ -14,9 +13,9 @@ import org.stepik.android.adaptive.pdd.ui.view.morphing.MorphingHelper
 import org.stepik.android.adaptive.pdd.ui.view.morphing.MorphingView
 
 object CardsFragmentAnimations {
-    private val VIEW_VISIBLE_MS = 1500L
-    private val ANIMATION_SPEED_MS = 200L
-    private val FAST_ANIMATION_SPEED_MS = 100L
+    private val ANIMATION_START_DELAY_FOR_VIEWS_MS = 1500L
+    private val ANIMATION_DURATION_MS = 200L
+    private val FAST_ANIMATION_DURATION_MS = 100L
 
     @JvmStatic
     private var confettiColors: IntArray? = null
@@ -33,13 +32,13 @@ object CardsFragmentAnimations {
     }
 
     @JvmStatic
-    fun playStreakBubbleAnimation(expInc: View) {
-        expInc.alpha = 1f
-        expInc.animate()
+    fun playStreakBubbleAnimation(greenStreakBubble: View) {
+        greenStreakBubble.alpha = 1f
+        greenStreakBubble.animate()
                 .alpha(0f)
                 .setInterpolator(DecelerateInterpolator())
-                .setStartDelay(VIEW_VISIBLE_MS)
-                .setDuration(ANIMATION_SPEED_MS)
+                .setStartDelay(ANIMATION_START_DELAY_FOR_VIEWS_MS)
+                .setDuration(ANIMATION_DURATION_MS)
                 .start()
     }
 
@@ -49,13 +48,13 @@ object CardsFragmentAnimations {
 
         streakContainer.animate()
                 .alpha(1f)
-                .setDuration(ANIMATION_SPEED_MS)
+                .setDuration(ANIMATION_DURATION_MS)
                 .setStartDelay(0)
                 .withEndAction {
                     streakContainer.animate()
                             .alpha(0f)
-                            .setStartDelay(VIEW_VISIBLE_MS)
-                            .setDuration(ANIMATION_SPEED_MS)
+                            .setStartDelay(ANIMATION_START_DELAY_FOR_VIEWS_MS)
+                            .setDuration(ANIMATION_DURATION_MS)
                             .start()
                 }
                 .start()
@@ -66,7 +65,7 @@ object CardsFragmentAnimations {
         binding.streakSuccessContainer.animate()
                 .alpha(1f)
                 .setStartDelay(0)
-                .setDuration(ANIMATION_SPEED_MS)
+                .setDuration(ANIMATION_DURATION_MS)
                 .withEndAction { CardsFragmentAnimations.playStreakMorphAnimation(binding) }
                 .start()
     }
@@ -76,27 +75,27 @@ object CardsFragmentAnimations {
         val params = binding.streakSuccessContainer.initialMorphParams
 
         MorphingHelper.morphStreakHeaderToIncBubble(binding.streakSuccessContainer, binding.expInc)
-                .setStartDelay(VIEW_VISIBLE_MS)
+                .setStartDelay(ANIMATION_START_DELAY_FOR_VIEWS_MS)
                 .withEndAction(Runnable {
                     binding.expProgress.visibility = View.VISIBLE
-                    confetti(binding.root as CoordinatorLayout, binding.expBubble)
+                    startConfettiExplosion(binding.root as CoordinatorLayout, binding.expBubble)
 
                     binding.streakSuccessContainer.animate()
                             .alpha(0f)
                             .setInterpolator(DecelerateInterpolator())
-                            .setStartDelay(VIEW_VISIBLE_MS)
-                            .setDuration(ANIMATION_SPEED_MS)
+                            .setStartDelay(ANIMATION_START_DELAY_FOR_VIEWS_MS)
+                            .setDuration(ANIMATION_DURATION_MS)
                             .withEndAction { binding.streakSuccessContainer.morph(params) }
                             .start()
                 })
-                .setDuration(FAST_ANIMATION_SPEED_MS)
+                .setDuration(FAST_ANIMATION_DURATION_MS)
                 .start()
 
         binding.expProgress.visibility = View.INVISIBLE
     }
 
 
-    fun confetti(root: CoordinatorLayout, expBubble: View) {
+    fun startConfettiExplosion(root: CoordinatorLayout, expBubble: View) {
         initColors(root.context)
 
         val x = (expBubble.x + (expBubble.parent as View).x).toInt() + expBubble.width / 2
@@ -109,11 +108,11 @@ object CardsFragmentAnimations {
         streakContainer.animate()
                 .alpha(1f)
                 .setStartDelay(0)
-                .setDuration(ANIMATION_SPEED_MS)
+                .setDuration(ANIMATION_DURATION_MS)
                 .withEndAction {
                     streakContainer.animate()
-                            .setStartDelay(VIEW_VISIBLE_MS)
-                            .setDuration(ANIMATION_SPEED_MS)
+                            .setStartDelay(ANIMATION_START_DELAY_FOR_VIEWS_MS)
+                            .setDuration(ANIMATION_DURATION_MS)
                             .alpha(0f)
                             .withEndAction { expProgress.visibility = View.VISIBLE }
                             .start()

@@ -6,6 +6,5 @@
     <translate
         android:fromYDelta="-100%p"
         android:toYDelta="0"
-        android:startOffset="200"
-        android:duration="300" />
+        android:duration="@integer/dialog_appear_animation_duration" />
 </set>

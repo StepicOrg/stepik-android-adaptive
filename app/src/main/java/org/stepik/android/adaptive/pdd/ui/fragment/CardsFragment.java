@@ -191,7 +191,7 @@ public final class CardsFragment extends Fragment implements AnswerListener {
 
         if (binding != null) {
             binding.expInc.setText(getString(R.string.exp_inc, streak));
-            binding.streakSuccess.setText(getString(R.string.streak_success, streak));
+            binding.streakSuccess.setText(getResources().getQuantityString(R.plurals.streak_success, (int) streak, streak));
             if (streak > 1) {
                 CardsFragmentAnimations.playStreakSuccessAnimationSequence(binding);
             } else {
