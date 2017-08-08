@@ -39,11 +39,11 @@ class StreakRestoreDialog : DialogFragment() {
         val alertDialogBuilder = AlertDialog.Builder(context, R.style.ExpLevelDialogTheme)
         binding = DialogStreakRestoreBinding.inflate(activity.layoutInflater, null, false)
 
-        binding.ticketItem.counter.text = getString(R.string.amount, InventoryUtil.getItemsCount(InventoryUtil.TICKETS_KEY))
+        binding.ticketItem.counter.text = getString(R.string.amount, InventoryUtil.getItemsCount(InventoryUtil.Item.Ticket))
 
         binding.useCouponButton.setOnClickListener {
-            if (InventoryUtil.useItem(InventoryUtil.TICKETS_KEY)) {
-                binding.ticketItem.counter.text = getString(R.string.amount, InventoryUtil.getItemsCount(InventoryUtil.TICKETS_KEY))
+            if (InventoryUtil.useItem(InventoryUtil.Item.Ticket)) {
+                binding.ticketItem.counter.text = getString(R.string.amount, InventoryUtil.getItemsCount(InventoryUtil.Item.Ticket))
                 onStreakRestore()
             }
             dismiss()

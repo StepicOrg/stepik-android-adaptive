@@ -112,4 +112,9 @@
     <string name="cancel">Отмена</string>
     <string name="not_now">Не сейчас</string>
     <string name="streak_restore_question">Использовать купон?</string>
+    <string name="daily_reward_title">Ежедневная награда</string>
+    <string name="daily_reward_description">Решайте каждый день и получайте за это награду</string>
+    <string name="daily_reward_button">Получить награду</string>
+    <string name="day_number">День %d</string>
+    <string name="inventory_title">Ваши предметы</string>
 </resources>

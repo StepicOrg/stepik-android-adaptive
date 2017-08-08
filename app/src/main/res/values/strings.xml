@@ -118,4 +118,9 @@
     <string name="cancel">Cancel</string>
     <string name="not_now">Not now</string>
     <string name="streak_restore_question">Use coupon?</string>
+    <string name="daily_reward_title">Daily reward</string>
+    <string name="daily_reward_description">Solve every day and earn rewards</string>
+    <string name="daily_reward_button">Get reward</string>
+    <string name="day_number">Day %d</string>
+    <string name="inventory_title">Your items</string>
 </resources>
