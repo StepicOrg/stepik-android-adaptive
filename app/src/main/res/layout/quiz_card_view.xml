@@ -151,8 +151,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:id="@+id/scroll"
-                    android:requiresFadingEdge="vertical"
-                    android:fadingEdgeLength="16dp"
                     android:layout_below="@id/title_container"
                     android:layout_above="@id/bottom_divider">
                     <LinearLayout
