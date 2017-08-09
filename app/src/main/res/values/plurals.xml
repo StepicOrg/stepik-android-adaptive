@@ -2,6 +2,13 @@
 <resources>
     <plurals name="steps_in_tutorial">
         <item quantity="one">Last step</item>
-        <item quantity="other">%1$d steps more in tutorial</item>
+        <item quantity="other">%d steps more in tutorial</item>
+    </plurals>
+    <plurals name="streak_success">
+        <item quantity="other">%d in a row</item>
+    </plurals>
+    <plurals name="day">
+        <item quantity="one">%d day</item>
+        <item quantity="other">%d days</item>
     </plurals>
 </resources>

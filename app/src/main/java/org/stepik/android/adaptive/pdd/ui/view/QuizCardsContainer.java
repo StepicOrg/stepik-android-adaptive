@@ -6,6 +6,7 @@ import android.support.annotation.AttrRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
+import android.util.DisplayMetrics;
 import android.view.View;
 import android.widget.FrameLayout;
 
@@ -18,8 +19,27 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class QuizCardsContainer extends FrameLayout implements ContainerView {
-    private final static int BUFFER_SIZE = 4;
-    public final static int CARD_OFFSET = (int)(Resources.getSystem().getDisplayMetrics().density * 10);
+    private final static int BUFFER_SIZE = 3;
+
+    private final static float CARD_OFFSET_DP = 4;
+    private final static float CARD_MARGIN_DP = 8;
+
+    public final static int CARD_OFFSET;
+    private final static float SCALE;
+
+    static {
+        // approx height
+        final int TOOLBAR_HEIGHT_DP = 56;
+
+        final DisplayMetrics metrics = Resources.getSystem().getDisplayMetrics();
+
+        // desired params of second card
+        final float cardWidth = metrics.widthPixels - 2 * CARD_MARGIN_DP * metrics.density;
+        final float cardHeight = metrics.heightPixels - (2 * CARD_MARGIN_DP + TOOLBAR_HEIGHT_DP) * metrics.density;
+
+        SCALE = 2 * CARD_OFFSET_DP * metrics.density / cardWidth; // formulas to calculate correct offset of second card on different screens
+        CARD_OFFSET = (int) (CARD_OFFSET_DP * metrics.density / (1f - 2 * SCALE) + cardHeight * SCALE / 2);
+    }
 
     public QuizCardsContainer(@NonNull Context context) {
         super(context);
@@ -88,8 +108,8 @@ public class QuizCardsContainer extends FrameLayout implements ContainerView {
     private void setViewState(View view, float mul, boolean allowEnable) {
         if (mul < 0) return;
 
-        view.setScaleX(1 - (0.02f * mul));
-        view.setScaleY(1 - (0.02f * mul));
+        view.setScaleX(1 - (SCALE * mul));
+        view.setScaleY(1 - (SCALE * mul));
 
         view.setEnabled(mul == 0 && allowEnable);
         view.setTranslationY(CARD_OFFSET * mul);

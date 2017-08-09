@@ -110,4 +110,21 @@
     <string name="stats_exp_for_a_week">points for a week</string>
     <string name="ex_dialog_continue">Continue</string>
     <string name="tutorial">Tutorial</string>
+    <string name="streak_failed">Streak lost</string>
+    <string name="streak_restored">Streak restored</string>
+    <string name="amount" translatable="false">x%d</string>
+    <string name="use_coupon">Use coupon</string>
+    <string name="streak_restore_text">You can restore your streak by using error coupon, you have:</string>
+    <string name="cancel">Cancel</string>
+    <string name="not_now">Not now</string>
+    <string name="streak_restore_question">Use coupon?</string>
+    <string name="daily_reward_title">Daily reward</string>
+    <string name="daily_reward_description">Solve every day and earn rewards</string>
+    <string name="daily_reward_button">Get reward</string>
+    <string name="day_number">Day %d</string>
+    <string name="inventory_title">Your items</string>
+    <string name="local_push_yesterday">You scored %d XP yesterday. Go back and improve your score!</string>
+    <string name="local_push_3days">You haven’t done it for a long time. Go back and keep learning!</string>
+    <string name="local_push_streak">You have been learning %s in a row. Go back and keep learning!</string>
+    <string name="local_push_title">Time to study</string>
 </resources>

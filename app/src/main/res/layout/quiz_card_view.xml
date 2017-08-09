@@ -6,7 +6,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="center"
-        android:layout_margin="16dp"
+        android:layout_margin="8dp"
         android:layerType="hardware"
         android:id="@+id/container">
 
@@ -21,15 +21,26 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
-                <TextView
-                    android:id="@+id/title"
+                <LinearLayout
+                    android:id="@+id/title_container"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textColor="#FFF"
-                    android:background="@color/colorAccent"
-                    android:fontFamily="sans-serif-medium"
                     android:layout_alignParentTop="true"
-                    android:padding="16dp" />
+                    android:orientation="vertical">
+                    <TextView
+                        android:id="@+id/title"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/colorDarkGrayText"
+                        android:textStyle="bold"
+                        android:textSize="18sp"
+                        android:paddingTop="12dp"
+                        android:paddingBottom="12dp"
+                        android:paddingLeft="16dp"
+                        android:paddingRight="16dp"
+                        android:gravity="start"/>
+                    <include layout="@layout/stroke" />
+                </LinearLayout>
 
                 <RelativeLayout
                     android:layout_width="match_parent"
@@ -135,12 +146,12 @@
                     android:background="@color/colorStroke"
                     android:id="@+id/bottom_divider"/>
 
-                <ScrollView
+                <org.stepik.android.adaptive.pdd.ui.view.CardScrollView
                     android:background="@android:color/white"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:id="@+id/scroll"
-                    android:layout_below="@id/title"
+                    android:layout_below="@id/title_container"
                     android:layout_above="@id/bottom_divider">
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -184,17 +195,7 @@
                             android:id="@+id/answers_progress" />
 
                     </LinearLayout>
-                </ScrollView>
-
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="5dp"
-                    android:layout_marginBottom="-5dp"
-                    android:layout_below="@id/title"
-                    android:background="@drawable/shadow"
-                    android:id="@+id/top_divider"/>
-
+                </org.stepik.android.adaptive.pdd.ui.view.CardScrollView>
             </RelativeLayout>
 
             <TextView
