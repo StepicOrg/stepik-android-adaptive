@@ -18,18 +18,25 @@ public class HtmlUtil {
                     " src=\"file:///android_asset/MathJax/MathJax.js?config=TeX-AMS_HTML\">\n" +
                     "</script>\n";
 
+    private static final String Body = "<html>" +
+            "<head>" +
+            "<link rel=\"stylesheet\" type=\"text/css\" href=\"css/quiz-card.css\" />" +
+            "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1, user-scalable=no\" />" +
+            "<base href=\"%s\">" +
+            "%s" +
+            "</head>" +
+            "<body>" +
+            "<div class=\"main\">" +
+            "%s" +
+            "</div></body></html>";
+
+    private static boolean hasLaTeX(String textString) {
+        return textString.contains("$") || textString.contains("\\[");
+    }
+
     public static String prepareCardHtml(final String html) {
-        return "<html>" +
-                "<head>" +
-                "<link rel=\"stylesheet\" type=\"text/css\" href=\"css/quiz-card.css\" />" +
-                "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1, user-scalable=no\" />" +
-                "<base href=\"" + Config.getInstance().getHost() + "\">" +
-                MathJaxScript +
-                "</head>" +
-                "<body>" +
-                "<div class=\"main\">" +
-                html +
-                "</div></body></html>";
+        String mathJax = hasLaTeX(html) ? MathJaxScript : "";
+        return String.format(Body, Config.getInstance().getHost(), mathJax, html);
     }
 
     public static void setCardWebViewHtml(final WebView webView, final String html) {
