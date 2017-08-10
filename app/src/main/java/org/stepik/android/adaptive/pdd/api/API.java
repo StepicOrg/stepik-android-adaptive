@@ -51,7 +51,6 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public final class API {
     private final static String TAG = "API";
-    private final static String HOST = "https://stepik.org/";
 
     private final static String FAKE_MAIL_PATTERN = "adaptive_%s_android_%d%s@stepik.org";
 
@@ -186,14 +185,14 @@ public final class API {
             Request newRequest = addUserAgentTo(chain);
             LogoutHelper.removeCookiesCompat();
             updateCookieForBaseUrl();
-            String cookies = CookieManager.getInstance().getCookie(API.HOST);
+            String cookies = CookieManager.getInstance().getCookie(Config.getInstance().getHost());
             if (cookies == null)
                 return chain.proceed(newRequest);
 
             String csrftoken = getCsrfTokenFromCookies(cookies);
             Request.Builder requestBuilder = newRequest
                     .newBuilder()
-                    .addHeader(AppConstants.refererHeaderName, API.HOST)
+                    .addHeader(AppConstants.refererHeaderName, Config.getInstance().getHost())
                     .addHeader(AppConstants.csrfTokenHeaderName, csrftoken)
                     .addHeader(AppConstants.cookieHeaderName, cookies);
             newRequest = requestBuilder.build();
@@ -307,7 +306,7 @@ public final class API {
                     .addQueryParameter("csrfmiddlewaretoken", csrftoken)
                     .build();
             newRequest = newRequest.newBuilder()
-                    .addHeader("referer", API.HOST)
+                    .addHeader("referer", Config.getInstance().getHost())
                     .addHeader("X-CSRFToken", csrftoken)
                     .addHeader("Cookie", cookieResult)
                     .url(url)
@@ -389,7 +388,7 @@ public final class API {
         java.net.CookieManager cookieManager = new java.net.CookieManager();
         URI myUri;
         try {
-            myUri = new URI(API.HOST);
+            myUri = new URI(Config.getInstance().getHost());
         } catch (URISyntaxException e) {
             return null;
         }
@@ -405,7 +404,7 @@ public final class API {
         if (!setCookieHeaders.isEmpty()) {
             for (String value : setCookieHeaders) {
                 if (value != null) {
-                    CookieManager.getInstance().setCookie(API.HOST, value); //set-cookie is not empty
+                    CookieManager.getInstance().setCookie(Config.getInstance().getHost(), value); //set-cookie is not empty
                 }
             }
         }
@@ -448,7 +447,7 @@ public final class API {
 
     private Retrofit buildRetrofit(OkHttpClient client) {
         return new Retrofit.Builder()
-                .baseUrl(API.HOST)
+                .baseUrl(Config.getInstance().getHost())
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .addConverterFactory(GsonConverterFactory.create())
                 .client(client)
@@ -457,7 +456,7 @@ public final class API {
 
     public Uri getUriForSocialAuth(SocialManager.SocialType type) {
         String socialIdentifier = type.getIdentifier();
-        String url = API.HOST + "accounts/" + socialIdentifier + "/login?next=/oauth2/authorize/?" + Uri.encode("client_id=" + Config.getInstance().getOAuthClientIdSocial() + "&response_type=code");
+        String url = Config.getInstance().getHost() + "accounts/" + socialIdentifier + "/login?next=/oauth2/authorize/?" + Uri.encode("client_id=" + Config.getInstance().getOAuthClientIdSocial() + "&response_type=code");
         return Uri.parse(url);
     }
 }
