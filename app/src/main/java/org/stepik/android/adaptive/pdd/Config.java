@@ -30,6 +30,8 @@ public final class Config {
     public static class Configuration {
         private long COURSE_ID = 0;
 
+        private String HOST = "HOST";
+
         private String OAUTH_CLIENT_ID = "OAUTH_CLIENT_ID";
         private String OAUTH_CLIENT_SECRET = "OAUTH_CLIENT_SECRET";
         private String GRANT_TYPE = "GRANT_TYPE";
@@ -45,6 +47,10 @@ public final class Config {
         private String GOOGLE_SERVER_CLIENT_ID = "GOOGLE_SERVER_CLIENT_ID";
 
         private String CODE_QUERY_PARAMETER = "CODE_QUERY_PARAMETER";
+
+        public String getHost() {
+            return HOST;
+        }
 
         public long getCourseId() {
             return COURSE_ID;
