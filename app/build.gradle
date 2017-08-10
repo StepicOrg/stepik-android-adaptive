@@ -40,6 +40,12 @@ android {
         targetCompatibility JavaVersion.VERSION_1_8
     }
     productFlavors {
+        pdd {
+            applicationId 'org.stepik.android.adaptive.pdd'
+            signingConfig signingConfigs.release
+            versionCode 6
+            versionName "1.3"
+        }
     }
 }
 
