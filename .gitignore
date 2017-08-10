@@ -1,5 +1,3 @@
-app/src/main/assets/config.json
-
 #built application files
 *.apk
 *.ap_
@@ -33,5 +31,3 @@ Thumbs.db
 .idea
 .gradle
 build/
-buildsystem/
-google-services.json
