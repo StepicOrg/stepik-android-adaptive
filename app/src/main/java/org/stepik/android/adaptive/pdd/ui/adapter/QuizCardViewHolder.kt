@@ -25,8 +25,9 @@ class QuizCardViewHolder(val binding: QuizCardViewBinding) : ContainerView.ViewH
         settings.loadWithOverviewMode = true
         settings.useWideViewPort = true
         settings.layoutAlgorithm = WebSettings.LayoutAlgorithm.NORMAL
+        settings.javaScriptEnabled = true
 
-        binding.question.setWebViewClient(DefaultWebViewClient(null) { _, _ -> onCardLoaded() })
+        binding.question.webViewClient = DefaultWebViewClient(null) { _, _ -> onCardLoaded() }
         binding.question.setOnWebViewClickListener { path -> ScreenManager.showImage(binding.root.context, path) }
         binding.question.setLayerType(View.LAYER_TYPE_SOFTWARE, null)
 
@@ -90,9 +91,7 @@ class QuizCardViewHolder(val binding: QuizCardViewBinding) : ContainerView.ViewH
     }
 
     override fun setQuestion(html: String) {
-        HtmlUtil.setCardWebViewHtml(
-                binding.question,
-                HtmlUtil.prepareCardHtml(html))
+        HtmlUtil.setCardWebViewHtml(binding.question, html)
     }
 
     override fun setAnswerAdapter(adapter: AttemptAnswersAdapter) {

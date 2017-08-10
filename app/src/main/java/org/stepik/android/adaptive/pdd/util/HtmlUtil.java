@@ -2,13 +2,29 @@ package org.stepik.android.adaptive.pdd.util;
 
 import android.webkit.WebView;
 
+import org.stepik.android.adaptive.pdd.Config;
+
 public class HtmlUtil {
+
+    private static final String MathJaxScript =
+            "<script type=\"text/x-mathjax-config\">\n" +
+                    "  MathJax.Hub.Config({" +
+                    "messageStyle: \"none\", " +
+                    "TeX: {extensions: [ \"color.js\"]}, " +
+                    "tex2jax: {preview: \"none\", inlineMath: [['$','$'], ['\\\\(','\\\\)']]}});\n" +
+                    "displayMath: [ ['$$','$$'], ['\\[','\\]'] ]" +
+                    "</script>\n" +
+                    "<script type=\"text/javascript\"\n" +
+                    " src=\"file:///android_asset/MathJax/MathJax.js?config=TeX-AMS_HTML\">\n" +
+                    "</script>\n";
 
     public static String prepareCardHtml(final String html) {
         return "<html>" +
                 "<head>" +
                 "<link rel=\"stylesheet\" type=\"text/css\" href=\"css/quiz-card.css\" />" +
-                "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" />" +
+                "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1, user-scalable=no\" />" +
+                "<base href=\"" + Config.getInstance().getHost() + "\">" +
+                MathJaxScript +
                 "</head>" +
                 "<body>" +
                 "<div class=\"main\">" +

@@ -54,7 +54,7 @@
     <string name="onboarding_card_question_1"><![CDATA[
         <div class="center">
             <div class="padding-box">
-                <img src="images/01.svg" />
+                <img src="file:///android_asset/web/images/01.svg" />
             </div>
             <h3>ПДД 2017</h3>
         </div>
@@ -66,7 +66,7 @@
         <p>Try to swipe this card to <b>right</b>.</p>
         <div class="center">
             <div class="padding-box">
-                <img src="images/arrow_right.svg" />
+                <img src="file:///android_asset/web/images/arrow_right.svg" />
             </div>
         </div>
     ]]></string>
@@ -76,7 +76,7 @@
         <p>Try to swipe this card to <b>left</b>.</p>
         <div class="center">
             <div class="padding-box">
-                <img src="images/arrow_left.svg" />
+                <img src="file:///android_asset/web/images/arrow_left.svg" />
             </div>
         </div>
     ]]></string>
@@ -84,7 +84,7 @@
     <string name="onboarding_card_question_4"><![CDATA[
         <p><b>You\'ll gain exp points for correct answers.</b></p>
         <p>
-            <img src="images/onb4str.png" />
+            <img src="file:///android_asset/web/images/onb4str.png" />
         </p>
         <p>Streaks of correct answers increase exp points gain.</p>
         <p>You can check your stats by clicking on toolbar.</p>

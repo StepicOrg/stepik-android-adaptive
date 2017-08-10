@@ -52,7 +52,7 @@
     <string name="onboarding_card_question_1"><![CDATA[
         <div class="center">
             <div class="padding-box">
-                <img src="images/01.svg" />
+                <img src="file:///android_asset/web/images/01.svg" />
             </div>
             <h3>ПДД 2017</h3>
         </div>
@@ -64,7 +64,7 @@
         <p>Попробуйте сделать так с этой карточкой.</p>
         <div class="center">
             <div class="padding-box">
-                <img src="images/arrow_right.svg" />
+                <img src="file:///android_asset/web/images/arrow_right.svg" />
             </div>
         </div>
     ]]></string>
@@ -74,7 +74,7 @@
         <p>Попробуйте смахнуть эту карточку <b>влево</b>.</p>
         <div class="center">
             <div class="padding-box">
-                <img src="images/arrow_left.svg" />
+                <img src="file:///android_asset/web/images/arrow_left.svg" />
             </div>
         </div>
     ]]></string>
@@ -82,7 +82,7 @@
     <string name="onboarding_card_question_4"><![CDATA[
         <p>За правильные ответы вы будете <b>получать опыт</b>.</p>
         <p>
-            <img src="images/onb4str.png" />
+            <img src="file:///android_asset/web/images/onb4str.png" />
         </p>
         <p><b>Больше правильных ответов подряд &mdash; больше опыта за каждый ответ.</b></p>
         <p>Посмотреть свою статистику вы можете, <b>нажав на панель с уровнем</b>.</p>
