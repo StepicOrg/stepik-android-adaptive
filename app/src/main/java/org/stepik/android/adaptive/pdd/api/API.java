@@ -20,6 +20,7 @@ import org.stepik.android.adaptive.pdd.data.SharedPreferenceMgr;
 import org.stepik.android.adaptive.pdd.data.model.EnrollmentWrapper;
 import org.stepik.android.adaptive.pdd.data.model.AccountCredentials;
 import org.stepik.android.adaptive.pdd.data.model.Profile;
+import org.stepik.android.adaptive.pdd.data.model.RatingItem;
 import org.stepik.android.adaptive.pdd.data.model.RecommendationReaction;
 import org.stepik.android.adaptive.pdd.data.model.RegistrationUser;
 import org.stepik.android.adaptive.pdd.data.model.Submission;
@@ -387,6 +388,10 @@ public final class API {
 
     public Completable reportView(final long assignment, final long step) {
         return stepikService.reportView(new ViewRequest(assignment, step));
+    }
+
+    public Observable<List<RatingItem>> getRating(final long count, final long delta) {
+        return ratingService.getRating(Config.getInstance().getCourseId(), count, delta);
     }
 
     private void setTimeout(OkHttpClient.Builder builder, int seconds) {

@@ -4,14 +4,16 @@ import android.content.Context
 import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentStatePagerAdapter
 import org.stepik.android.adaptive.pdd.R
+import org.stepik.android.adaptive.pdd.ui.fragment.AchievementsFragment
 import org.stepik.android.adaptive.pdd.ui.fragment.ProgressFragment
+import org.stepik.android.adaptive.pdd.ui.fragment.RatingFragment
 
 
 class StatsViewPagerAdapter(fm: FragmentManager, context: Context) : FragmentStatePagerAdapter(fm) {
     private val fragments = listOf(
-            ProgressFragment::class.java     to context.getString(R.string.progress)!!//,
-//            AchievementsFragment::class.java to context.getString(R.string.achievements)!!,
-//            RatingFragment::class.java       to context.getString(R.string.rating)!!
+            ProgressFragment::class.java     to context.getString(R.string.progress)!!,
+            AchievementsFragment::class.java to context.getString(R.string.achievements)!!,
+            RatingFragment::class.java       to context.getString(R.string.rating)!!
     )
 
     override fun getItem(position: Int) = fragments[position].first.newInstance()!!

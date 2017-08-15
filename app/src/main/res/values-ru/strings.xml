@@ -123,4 +123,5 @@
     <string name="local_push_title">Время заниматься</string>
     <string name="progress">Прогресс</string>
     <string name="rating">Рейтинг</string>
+    <string name="rating_you_placeholder"><b>Вы</b></string>
 </resources>

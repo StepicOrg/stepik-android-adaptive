@@ -1,5 +1,9 @@
 package org.stepik.android.adaptive.pdd.api;
 
+import org.stepik.android.adaptive.pdd.data.model.RatingItem;
+
+import java.util.List;
+
 import io.reactivex.Completable;
 import io.reactivex.Observable;
 import retrofit2.http.Body;
@@ -20,4 +24,10 @@ public interface RatingService {
             @Query("order") final String desc
     );
 
+    @GET("rating")
+    Observable<List<RatingItem>> getRating(
+            @Query("course") final long course_id,
+            @Query("count") final long count,
+            @Query("delta") final long delta
+    );
 }
