@@ -6,4 +6,8 @@
         <item>Роботы ищут задачи…</item> 
         <item>Считаем что-то…</item> 
     </string-array>
+    <string-array name="rating_periods">
+        <item>За всё время</item>
+        <item>Последние 7 дней</item>
+    </string-array>
 </resources>
