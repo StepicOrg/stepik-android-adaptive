@@ -10,7 +10,7 @@ import com.google.android.flexbox.FlexboxLayoutManager
 import com.google.android.flexbox.JustifyContent
 import org.stepik.android.adaptive.pdd.R
 import org.stepik.android.adaptive.pdd.databinding.DialogDefaultBodyBinding
-import org.stepik.android.adaptive.pdd.databinding.RecyclerViewBinding
+import org.stepik.android.adaptive.pdd.databinding.InventoryRecyclerViewBinding
 import org.stepik.android.adaptive.pdd.ui.adapter.InventoryAdapter
 import org.stepik.android.adaptive.pdd.util.InventoryUtil
 
@@ -29,7 +29,7 @@ class InventoryDialog : DialogFragment() {
 
         adapter = InventoryAdapter(InventoryUtil.getInventory())
 
-        val recycler = RecyclerViewBinding.inflate(activity.layoutInflater, binding.container, false).recycler
+        val recycler = InventoryRecyclerViewBinding.inflate(activity.layoutInflater, binding.container, false).recycler
 
         val layoutManager = FlexboxLayoutManager(context)
         layoutManager.flexDirection = FlexDirection.ROW

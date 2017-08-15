@@ -127,4 +127,6 @@
     <string name="local_push_3days">You haven’t done it for a long time. Go back and keep learning!</string>
     <string name="local_push_streak">You have been learning %s in a row. Go back and keep learning!</string>
     <string name="local_push_title">Time to study</string>
+    <string name="progress">Progress</string>
+    <string name="rating">Rating</string>
 </resources>
