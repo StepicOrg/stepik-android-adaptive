@@ -28,6 +28,6 @@ public interface RatingService {
     Observable<List<RatingItem>> getRating(
             @Query("course") final long course_id,
             @Query("count") final long count,
-            @Query("delta") final long delta
+            @Query("days") final long days
     );
 }
