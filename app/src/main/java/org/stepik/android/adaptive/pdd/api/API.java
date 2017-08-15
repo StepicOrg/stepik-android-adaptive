@@ -391,7 +391,7 @@ public final class API {
     }
 
     public Observable<List<RatingItem>> getRating(final int count, final int days) {
-        return ratingService.getRating(Config.getInstance().getCourseId(), count, days);
+        return ratingService.getRating(Config.getInstance().getCourseId(), count, days, SharedPreferenceMgr.getInstance().getProfileId());
     }
 
     private void setTimeout(OkHttpClient.Builder builder, int seconds) {
