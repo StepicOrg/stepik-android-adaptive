@@ -7,7 +7,7 @@
         <item>Считаем что-то…</item> 
     </string-array>
     <string-array name="rating_periods">
-        <item>За всё время</item>
         <item>Последние 7 дней</item>
+        <item>За всё время</item>
     </string-array>
 </resources>
