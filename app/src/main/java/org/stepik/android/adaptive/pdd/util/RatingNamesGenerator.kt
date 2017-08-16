@@ -27,7 +27,7 @@ object RatingNamesGenerator {
                 val animal = animals[(hash % animals.size).toInt()]
 
                 val adjIndex = (hash / animals.size).toInt()
-                val adj = if (animal.endsWith('а')) { // russian letter а
+                val adj = if (isFemaleNoun(animal)) {
                     adjectivesFemale[adjIndex]
                 } else {
                     adjectives[adjIndex]
@@ -35,6 +35,10 @@ object RatingNamesGenerator {
 
                 adj.capitalize() + ' ' + animal
             }
+
+    @JvmStatic
+    private fun isFemaleNoun(noun: String) =
+            noun.endsWith('а') // russian letter а
 
     @JvmStatic
     private fun hash(x: Long): Long {
