@@ -53,7 +53,8 @@
                 <android.support.v7.widget.AppCompatSpinner
                     android:id="@+id/spinner"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/spinner_arrow_margin"/>
 
             </LinearLayout>
             <include layout="@layout/stroke" />
