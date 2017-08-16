@@ -1,13 +1,8 @@
 package org.stepik.android.adaptive.pdd.util
 
-import android.annotation.TargetApi
 import android.content.Context
-import android.os.Build
 import org.stepik.android.adaptive.pdd.R
 import org.stepik.android.adaptive.pdd.data.SharedPreferenceMgr
-import android.os.Build.VERSION.SDK_INT
-import org.stepik.android.adaptive.pdd.Util
-import java.util.*
 
 
 object RatingNamesGenerator {
@@ -28,22 +23,25 @@ object RatingNamesGenerator {
             if (user == SharedPreferenceMgr.getInstance().profileId) {
                 context.getString(R.string.rating_you_placeholder)
             } else {
-                val animal = animals[getAnimalIndex(user)]
+                val hash = hash(user)
+                val animal = animals[(hash % animals.size).toInt()]
+
+                val adjIndex = (hash / animals.size).toInt()
                 val adj = if (animal.endsWith('а')) { // russian letter а
-                    adjectivesFemale[getAdjectiveIndex(user)]
+                    adjectivesFemale[adjIndex]
                 } else {
-                    adjectives[getAdjectiveIndex(user)]
+                    adjectives[adjIndex]
                 }
 
                 adj.capitalize() + ' ' + animal
             }
 
     @JvmStatic
-    fun getAnimalIndex(user: Long) =
-            Util.getRandomNumberBetween(0, animals.size - 1)
-
-    @JvmStatic
-    fun getAdjectiveIndex(user: Long) =
-            Util.getRandomNumberBetween(0, adjectives.size - 1)
-
+    private fun hash(x: Long): Long {
+        var h = x
+        h = h.ushr(16).xor(h) * 0x45d9f3b
+        h = h.ushr(16).xor(h) * 0x45d9f3b
+        h = h.ushr(16).xor(h)
+        return h % (animals.size * adjectives.size)
+    }
 }
