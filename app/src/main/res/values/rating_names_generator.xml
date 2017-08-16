@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string-array name="animals">
+    <string-array name="animals_m">
         <item>alligator</item>
         <item>anteater</item>
         <item>armadillo</item>
@@ -13,51 +13,53 @@
         <item>chameleon</item>
         <item>cheetah</item>
         <item>chipmunk</item>
-        <item>chinchilla</item>
-        <item>chupacabra</item>
         <item>coyote</item>
         <item>crow</item>
         <item>dingo</item>
         <item>dinosaur</item>
         <item>dolphin</item>
-        <item>duck</item>
         <item>elephant</item>
         <item>ferret</item>
         <item>fox</item>
-        <item>frog</item>
         <item>giraffe</item>
         <item>gopher</item>
         <item>grizzly</item>
         <item>hedgehog</item>
         <item>hippo</item>
-        <item>hyena</item>
-        <item>iguana</item>
-        <item>koala</item>
         <item>kraken</item>
         <item>lemur</item>
         <item>leopard</item>
-        <item>llama</item>
-        <item>mink</item>
         <item>narwhal</item>
         <item>cat</item>
-        <item>otter</item>
-        <item>panda</item>
         <item>penguin</item>
         <item>platypus</item>
         <item>python</item>
-        <item>pumpkin</item>
         <item>quagga</item>
         <item>rabbit</item>
         <item>raccoon</item>
         <item>rhino</item>
+        <item>walrus</item>
+        <item>wolf</item>
+        <item>wombat</item>
+        <item>bear</item>
+    </string-array>
+    <string-array name="animals_f">
+        <item>chinchilla</item>
+        <item>chupacabra</item>
+        <item>duck</item>
+        <item>frog</item>
+        <item>hyena</item>
+        <item>iguana</item>
+        <item>koala</item>
+        <item>llama</item>
+        <item>mink</item>
+        <item>otter</item>
+        <item>panda</item>
+        <item>pumpkin</item>
         <item>shrew</item>
         <item>squirrel</item>
         <item>turtle</item>
-        <item>walrus</item>
-        <item>wolf</item>
         <item>wolverine</item>
-        <item>wombat</item>
-        <item>bear</item>
     </string-array>
     <string-array name="adjectives">
         <item>apricot</item>

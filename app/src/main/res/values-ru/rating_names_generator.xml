@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string-array name="animals">
+    <string-array name="animals_m">
         <item>крокодил</item>
         <item>муравьед</item>
         <item>броненосец</item>
@@ -13,51 +13,53 @@
         <item>хамелеон</item>
         <item>гепард</item>
         <item>бурундук</item>
-        <item>шиншилла</item>
-        <item>чупакабра</item>
         <item>койот</item>
         <item>ворон</item>
         <item>динго</item>
         <item>динозавр</item>
         <item>дельфин</item>
-        <item>утка</item>
         <item>слон</item>
         <item>хорек</item>
         <item>лис</item>
-        <item>лягушка</item>
         <item>жираф</item>
         <item>суслик</item>
         <item>гризли</item>
         <item>ёжик</item>
         <item>бегемот</item>
-        <item>гиена</item>
-        <item>игуана</item>
-        <item>коала</item>
         <item>кракен</item>
         <item>лемур</item>
         <item>леопард</item>
-        <item>лама</item>
-        <item>норка</item>
         <item>нарвал</item>
         <item>кот</item>
-        <item>выдра</item>
-        <item>панда</item>
         <item>пингвин</item>
         <item>утконос</item>
         <item>питон</item>
-        <item>тыква</item>
         <item>квагги</item>
         <item>кролик</item>
         <item>енот</item>
         <item>носорог</item>
+        <item>морж</item>
+        <item>волк</item>
+        <item>вомбат</item>
+        <item>медведь</item>
+    </string-array>
+    <string-array name="animals_f">
+        <item>шиншилла</item>
+        <item>чупакабра</item>
+        <item>утка</item>
+        <item>лягушка</item>
+        <item>гиена</item>
+        <item>игуана</item>
+        <item>коала</item>
+        <item>лама</item>
+        <item>норка</item>
+        <item>выдра</item>
+        <item>панда</item>
+        <item>тыква</item>
         <item>землеройка</item>
         <item>белка</item>
         <item>черепаха</item>
-        <item>морж</item>
-        <item>волк</item>
         <item>росомаха</item>
-        <item>вомбат</item>
-        <item>медведь</item>
     </string-array>
     <string-array name="adjectives">
         <item>абрикосовый</item>

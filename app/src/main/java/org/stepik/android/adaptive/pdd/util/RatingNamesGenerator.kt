@@ -8,7 +8,10 @@ import org.stepik.android.adaptive.pdd.data.SharedPreferenceMgr
 object RatingNamesGenerator {
     private lateinit var context: Context
 
-    private val animals by lazy { context.resources.getStringArray(R.array.animals) }
+    private val animalsMale by lazy { context.resources.getStringArray(R.array.animals_m) }
+    private val animalsFemale by lazy { context.resources.getStringArray(R.array.animals_f) }
+
+    private val animals by lazy { animalsMale + animalsFemale }
     private val adjectives by lazy { context.resources.getStringArray(R.array.adjectives) }
     private val adjectivesFemale by lazy { context.resources.getStringArray(R.array.adjectives_female) }
 
@@ -37,8 +40,7 @@ object RatingNamesGenerator {
             }
 
     @JvmStatic
-    private fun isFemaleNoun(noun: String) =
-            noun.endsWith('а') // russian letter а
+    private fun isFemaleNoun(noun: String) = animalsFemale.contains(noun)
 
     @JvmStatic
     private fun hash(x: Long): Long {
