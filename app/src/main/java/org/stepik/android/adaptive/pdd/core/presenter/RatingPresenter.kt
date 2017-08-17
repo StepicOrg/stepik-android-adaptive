@@ -19,7 +19,7 @@ class RatingPresenter : PresenterBase<RatingView>() {
         private val ITEMS_PER_PAGE = 10
 
         @JvmStatic
-        private val RATING_PERIODS = arrayOf(7, 0)
+        private val RATING_PERIODS = arrayOf(1, 7, 0)
     }
 
     private val adapters = RATING_PERIODS.map { RatingAdapter() }
