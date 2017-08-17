@@ -31,6 +31,7 @@ import org.stepik.android.adaptive.pdd.ui.dialog.RateAppDialog;
 import org.stepik.android.adaptive.pdd.ui.dialog.StreakRestoreDialog;
 import org.stepik.android.adaptive.pdd.ui.helper.CardHelper;
 import org.stepik.android.adaptive.pdd.ui.listener.AnswerListener;
+import org.stepik.android.adaptive.pdd.util.AchievementManager;
 import org.stepik.android.adaptive.pdd.util.DailyRewardManager;
 import org.stepik.android.adaptive.pdd.util.ExpUtil;
 import org.stepik.android.adaptive.pdd.util.InventoryUtil;

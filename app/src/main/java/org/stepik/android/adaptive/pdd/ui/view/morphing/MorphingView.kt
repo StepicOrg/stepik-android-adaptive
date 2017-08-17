@@ -35,7 +35,7 @@ class MorphingView : FrameLayout {
         setIfNot(drawableWrapper::cornerRadius::set, params.cornerRadius, -1f)
         setIfNot(drawableWrapper::color::set, params.backgroundColor, -1)
 
-        val lParams = this.layoutParams as FrameLayout.LayoutParams
+        val lParams = this.layoutParams as MarginLayoutParams
 
         setIfNot(lParams::width::set, params.width, -1)
         setIfNot(lParams::height::set, params.height, -1)
@@ -55,7 +55,7 @@ class MorphingView : FrameLayout {
     }
 
     fun getMorphParams(): MorphParams {
-        val lParams = layoutParams as FrameLayout.LayoutParams
+        val lParams = layoutParams as MarginLayoutParams
 
         return MorphParams(
                 drawableWrapper.cornerRadius,
