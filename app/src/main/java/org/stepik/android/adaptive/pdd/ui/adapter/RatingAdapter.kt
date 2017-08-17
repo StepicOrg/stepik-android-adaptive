@@ -75,9 +75,9 @@ class RatingAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     }
 
     private fun addSeparator() {
-        (items.size - 2..0)
+        (items.size - 2 downTo 0)
                 .filter { items[it].rank + 1 != items[it + 1].rank && items[it].user != SEPARATOR && items[it + 1].user != SEPARATOR }
-                .forEach { items.add(it + 1, RatingItem(0, "", SEPARATOR, 0)) }
+                .forEach { items.add(it + 1, RatingItem(0, "", 0, SEPARATOR)) }
     }
 
     class RatingViewHolder(val binding: ItemRatingBinding) : RecyclerView.ViewHolder(binding.root)

@@ -16,7 +16,7 @@ class RatingPresenter : PresenterBase<RatingView>() {
         override fun create() = RatingPresenter()
 
         @JvmStatic
-        private val ITEMS_PER_PAGE = 15
+        private val ITEMS_PER_PAGE = 10
 
         @JvmStatic
         private val RATING_PERIODS = arrayOf(7, 0)
