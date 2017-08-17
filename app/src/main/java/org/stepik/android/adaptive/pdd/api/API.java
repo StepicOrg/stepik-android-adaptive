@@ -394,6 +394,10 @@ public final class API {
         return ratingService.getRating(Config.getInstance().getCourseId(), count, days, SharedPreferenceMgr.getInstance().getProfileId());
     }
 
+    public Completable migrate(final long exp, final long streak) {
+        return ratingService.migrate(new MigrationRequest(Config.getInstance().getCourseId(), SharedPreferenceMgr.getInstance().getProfileId(), exp, streak));
+    }
+
     private void setTimeout(OkHttpClient.Builder builder, int seconds) {
         builder.connectTimeout(seconds, TimeUnit.SECONDS);
         builder.readTimeout(seconds, TimeUnit.SECONDS);

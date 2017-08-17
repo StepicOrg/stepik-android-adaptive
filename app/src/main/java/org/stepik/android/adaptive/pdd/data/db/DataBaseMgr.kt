@@ -6,6 +6,7 @@ import android.util.Log
 import org.joda.time.DateTime
 import org.joda.time.Days
 import org.stepik.android.adaptive.pdd.data.model.WeekProgress
+import org.stepik.android.adaptive.pdd.util.ExpUtil
 
 class DataBaseMgr private constructor(context: Context) {
     companion object {
@@ -97,5 +98,41 @@ class DataBaseMgr private constructor(context: Context) {
         cursor.close()
 
         return res
+    }
+
+    fun getExp(): Long {
+        val cursor = db.query(
+                DataBaseHelper.TABLE_EXP,
+                arrayOf("sum(${DataBaseHelper.FIELD_EXP}) as ${DataBaseHelper.FIELD_EXP}"),
+                null, null, null, null, null
+        )
+
+        var exp = -1L
+        if (cursor.moveToFirst()) {
+            exp = cursor.getLong(cursor.getColumnIndex(DataBaseHelper.FIELD_EXP))
+        }
+        cursor.close()
+
+        return exp
+    }
+
+    fun getStreak(): Long {
+        var exp = ExpUtil.getStreak()
+        if (exp == 0L) return exp
+
+        val cursor = db.query(
+                DataBaseHelper.TABLE_EXP,
+                arrayOf(DataBaseHelper.FIELD_EXP),
+                null, null, null, null,
+                "${DataBaseHelper.FIELD_SOLVED_AT} DESC",
+                "1"
+        )
+
+        if (cursor.moveToFirst()) {
+            exp = cursor.getLong(cursor.getColumnIndex(DataBaseHelper.FIELD_EXP))
+        }
+        cursor.close()
+
+        return exp
     }
 }

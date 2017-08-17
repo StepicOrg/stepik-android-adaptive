@@ -27,6 +27,8 @@ public final class SharedPreferenceMgr {
 
     private static final String FAKE_USER = "fake_user";
 
+    private static final String IS_MIGRATED = "is_migrated";
+
     private static SharedPreferenceMgr instance;
 
     private final SharedPreferences sharedPreferences;
@@ -135,6 +137,14 @@ public final class SharedPreferenceMgr {
 
     public long getProfileId() {
         return getLong(PROFILE_ID);
+    }
+
+    public boolean isMigrated() {
+        return getBoolean(IS_MIGRATED);
+    }
+
+    public void migrated() {
+        saveBoolean(IS_MIGRATED, true);
     }
 
     public void saveBoolean(String name, Boolean data) {

@@ -31,4 +31,9 @@ public interface RatingService {
             @Query("days") final long days,
             @Query("user") final long profile_id
     );
+
+    @POST("migrate")
+    Completable migrate(
+            @Body final MigrationRequest migrationRequest
+    );
 }

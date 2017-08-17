@@ -15,13 +15,13 @@ import org.stepik.android.adaptive.pdd.R;
 import org.stepik.android.adaptive.pdd.Util;
 import org.stepik.android.adaptive.pdd.api.RecommendationsResponse;
 import org.stepik.android.adaptive.pdd.data.AnalyticMgr;
+import org.stepik.android.adaptive.pdd.data.SharedPreferenceMgr;
 import org.stepik.android.adaptive.pdd.data.db.DataBaseMgr;
 import org.stepik.android.adaptive.pdd.data.model.Card;
 import org.stepik.android.adaptive.pdd.data.model.Recommendation;
 import org.stepik.android.adaptive.pdd.data.model.RecommendationReaction;
 import org.stepik.android.adaptive.pdd.databinding.FragmentRecommendationsBinding;
 import org.stepik.android.adaptive.pdd.notifications.LocalReminder;
-import org.stepik.android.adaptive.pdd.notifications.RemindNotificationManager;
 import org.stepik.android.adaptive.pdd.ui.activity.StatsActivity;
 import org.stepik.android.adaptive.pdd.ui.adapter.QuizCardsAdapter;
 import org.stepik.android.adaptive.pdd.ui.animation.CardsFragmentAnimations;
@@ -34,6 +34,7 @@ import org.stepik.android.adaptive.pdd.ui.listener.AnswerListener;
 import org.stepik.android.adaptive.pdd.util.DailyRewardManager;
 import org.stepik.android.adaptive.pdd.util.ExpUtil;
 import org.stepik.android.adaptive.pdd.util.InventoryUtil;
+import org.stepik.android.adaptive.pdd.util.MigrationHelper;
 import org.stepik.android.adaptive.pdd.util.RateAppUtil;
 
 import java.util.ArrayDeque;
@@ -87,10 +88,9 @@ public final class CardsFragment extends Fragment implements AnswerListener {
         compositeDisposable.add(retrySubject.observeOn(AndroidSchedulers.mainThread()).subscribe(v -> retry()));
         loadingPlaceholders = getResources().getStringArray(R.array.recommendation_loading_placeholders);
 
-        createReaction(0, RecommendationReaction.Reaction.INTERESTING);
-
         InventoryUtil.starterPack();
 
+        resolveMigration();
         resolveDailyReward();
         LocalReminder.INSTANCE.resolveDailyRemind();
     }
@@ -99,6 +99,24 @@ public final class CardsFragment extends Fragment implements AnswerListener {
         final long progress = DailyRewardManager.INSTANCE.giveRewardAndGetCurrentRewardDay();
         if (progress != DailyRewardManager.getDISCARD())
             DailyRewardDialog.Companion.newInstance(progress).show(getChildFragmentManager(), DAILY_REWARD_DIALOG_TAG);
+    }
+
+    private void resolveMigration() {
+        if (!SharedPreferenceMgr.getInstance().isMigrated()) {
+            onLoading();
+            compositeDisposable.add(MigrationHelper.migrate()
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .doOnError(this::onError)
+                    .doOnComplete(() -> {
+                        SharedPreferenceMgr.getInstance().migrated();
+                        createReaction(0, RecommendationReaction.Reaction.INTERESTING);
+                    })
+                    .retryWhen(x -> x.zipWith(retrySubject, (a, __) -> a))
+                    .subscribe());
+        } else {
+            createReaction(0, RecommendationReaction.Reaction.INTERESTING);
+        }
     }
 
     @Nullable
@@ -135,10 +153,16 @@ public final class CardsFragment extends Fragment implements AnswerListener {
         return binding.getRoot();
     }
 
-    public void createReaction(final long lesson, final RecommendationReaction.Reaction reaction) {
-        if (adapter.isEmptyOrContainsOnlySwipedCard(lesson) && binding != null) {
+    public void onLoading() {
+        if (binding != null) {
             binding.progress.setVisibility(View.VISIBLE);
             binding.loadingPlaceholder.setText(loadingPlaceholders[Util.getRandomNumberBetween(0, 3)]);
+        }
+    }
+
+    public void createReaction(final long lesson, final RecommendationReaction.Reaction reaction) {
+        if (adapter.isEmptyOrContainsOnlySwipedCard(lesson)) {
+            onLoading();
         }
 
         compositeDisposable.add(CardHelper.createReactionObservable(lesson, reaction, cards.size() + adapter.getItemCount())
@@ -256,9 +280,8 @@ public final class CardsFragment extends Fragment implements AnswerListener {
     private void retry() {
         isError = false;
         binding.error.setVisibility(View.GONE);
-        binding.progress.setVisibility(View.VISIBLE);
         binding.cardsContainer.setVisibility(View.VISIBLE);
-        binding.loadingPlaceholder.setText(loadingPlaceholders[Util.getRandomNumberBetween(0, 3)]);
+        onLoading();
         if (!cards.isEmpty()) {
             cards.peek().init();
             resubscribe();
