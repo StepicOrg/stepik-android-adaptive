@@ -45,9 +45,9 @@ object RatingNamesGenerator {
     @JvmStatic
     private fun hash(x: Long): Long {
         var h = x
-        h = h.ushr(16).xor(h) * 0x45d9f3b
-        h = h.ushr(16).xor(h) * 0x45d9f3b
-        h = h.ushr(16).xor(h)
+        h = h.shr(16).xor(h) * 0x45d9f3b
+        h = h.shr(16).xor(h) * 0x45d9f3b
+        h = h.shr(16).xor(h)
         return h % (animals.size * adjectives.size)
     }
 }

@@ -40,6 +40,7 @@ class RatingPresenter : PresenterBase<RatingView>() {
                     .observeOn(AndroidSchedulers.mainThread())
                     .doOnError { onError() }
                     .retryWhen { x -> x.zipWith(retrySubject, BiFunction<Throwable, Int, Throwable> { a, _ -> a }) }
+                    .map { it.users }
                     .subscribe({
                         adapters[pos].add(prepareRatingItems(it))
                         periodsLoaded++

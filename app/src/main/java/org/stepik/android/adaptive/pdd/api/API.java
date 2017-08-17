@@ -390,7 +390,7 @@ public final class API {
         return stepikService.reportView(new ViewRequest(assignment, step));
     }
 
-    public Observable<List<RatingItem>> getRating(final int count, final int days) {
+    public Observable<RatingResponse> getRating(final int count, final int days) {
         return ratingService.getRating(Config.getInstance().getCourseId(), count, days, SharedPreferenceMgr.getInstance().getProfileId());
     }
 
