@@ -5,6 +5,7 @@ import android.support.v4.content.ContextCompat
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AccelerateDecelerateInterpolator
 import android.view.animation.OvershootInterpolator
 import org.stepik.android.adaptive.pdd.R
 import org.stepik.android.adaptive.pdd.databinding.PopupAchievementBinding
@@ -76,15 +77,19 @@ object AchievementManager {
                 .setStartDelay(400)
                 .setDuration(200)
                 .translationY(-binding.title.height / 2f)
-                .withEndAction(then)
+                .withEndAction {
+                    binding.title.visibility = View.GONE
+                    then()
+                }
                 .start()
     }
 
     private fun hide(binding: PopupAchievementBinding) {
-        MorphingAnimation(binding.morphing, MorphingView.MorphParams(width = 4)).setDuration(2000).setStartDelay(200).withEndAction(Runnable {
+        MorphingAnimation(binding.morphing, MorphingView.MorphParams(width = 0), AccelerateDecelerateInterpolator()).setDuration(200).setStartDelay(200).withEndAction(Runnable {
             binding.root.animate()
                     .scaleX(0f)
                     .scaleY(0f)
+                    .setInterpolator(AccelerateDecelerateInterpolator())
                     .setStartDelay(400)
                     .setDuration(400).start()
         }).start()
