@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="ach_prefix" translatable="false">achievement_</string>
+
+    <string name="ach_onboarding_event" translatable="false">onboarding</string>
+    <string name="ach_onboarding_prefix" translatable="false">onboarding</string>
+    <string name="ach_onboarding_title" translatable="true">First steps</string>
+    <string name="ach_onboarding_description">Complete tutorial</string>
+
+
+    <string name="ach_exp_event" translatable="false">exp</string>
+    <string name="ach_exp_prefix" translatable="false">exp_%d</string>
+    <string-array name="ach_exp_titles">
+        <item>Learner</item>
+        <item>Student</item>
+        <item>Experienced</item>
+        <item>Professional</item>
+        <item>Guru</item>
+    </string-array>
+    <string name="ach_exp_description">Gain %d exp points</string>
+    <integer-array name="ach_exp_values">
+        <item>10</item>
+        <item>100</item>
+        <item>500</item>
+        <item>5000</item>
+        <item>10000</item>
+    </integer-array>
+
+
+    <string name="ach_streak_event" translatable="false">streak</string>
+    <string name="ach_streak_prefix" translatable="false">streak_%d</string>
+    <string-array name="ach_streak_titles">
+        <item>Combo</item>
+        <item>Was easy</item>
+        <item>Exactly</item>
+        <item>Clairvoyant</item>
+    </string-array>
+    <string name="ach_streak_description">Make %d correct answers in a row</string>
+    <integer-array name="ach_streak_values">
+        <item>5</item>
+        <item>15</item>
+        <item>30</item>
+        <item>60</item>
+    </integer-array>
+
+
+    <string name="ach_days_event" translatable="false">days</string>
+    <string name="ach_days_prefix" translatable="false">days_%d</string>
+    <string-array name="ach_days_titles">
+        <item>Enthusiast</item>
+        <item>Labor week</item>
+        <item>Addicted</item>
+        <item>Workaholic</item>
+        <item>Hero of labor</item>
+    </string-array>
+    <string name="ach_days_description">Study for %d days in a row</string>
+    <integer-array name="ach_days_values">
+        <item>2</item>
+        <item>5</item>
+        <item>10</item>
+        <item>14</item>
+        <item>30</item>
+    </integer-array>
+
+
+    <string name="ach_level_event" translatable="false">level</string>
+    <string name="ach_level_prefix" translatable="false">level_%d</string>
+    <string-array name="ach_level_titles">
+        <item>Expert</item>
+        <item>Leader</item>
+    </string-array>
+    <string name="ach_level_description">Reach %d level</string>
+    <integer-array name="ach_level_values">
+        <item>5</item>
+        <item>10</item>
+    </integer-array>
+
+</resources>

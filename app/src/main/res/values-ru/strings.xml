@@ -124,5 +124,6 @@
     <string name="progress">Прогресс</string>
     <string name="rating">Рейтинг</string>
     <string name="rating_you_placeholder"><b>Вы</b></string>
-    <string name="achievement_unlocked">Достижение разблокировано</string>
+    <string name="achievement_unlocked">Получено достижение</string>
+    <string name="achievement_tap_for_more">Нажмите, чтобы узнать больше</string>
 </resources>

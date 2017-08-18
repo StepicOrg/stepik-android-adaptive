@@ -1,195 +1,127 @@
 package org.stepik.android.adaptive.pdd.util
 
-import android.animation.Animator
-import android.animation.AnimatorListenerAdapter
-import android.animation.AnimatorSet
-import android.animation.ObjectAnimator
-import android.graphics.drawable.GradientDrawable
-import android.support.v4.content.ContextCompat
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import android.view.animation.AccelerateDecelerateInterpolator
-import android.view.animation.AnticipateInterpolator
-import android.view.animation.OvershootInterpolator
+import android.content.Context
+import android.support.annotation.DrawableRes
+import android.support.annotation.IntegerRes
+import android.support.annotation.StringRes
+import io.reactivex.Completable
+import io.reactivex.android.schedulers.AndroidSchedulers
 import org.stepik.android.adaptive.pdd.R
-import org.stepik.android.adaptive.pdd.core.ScreenManager
-import org.stepik.android.adaptive.pdd.databinding.PopupAchievementBinding
-import org.stepik.android.adaptive.pdd.ui.view.morphing.MorphingAnimation
-import org.stepik.android.adaptive.pdd.ui.view.morphing.MorphingView
+import org.stepik.android.adaptive.pdd.Util
+import org.stepik.android.adaptive.pdd.core.presenter.Presenter
+import org.stepik.android.adaptive.pdd.core.presenter.contracts.AchievementView
+import org.stepik.android.adaptive.pdd.data.model.Achievement
+import java.util.concurrent.TimeUnit
 
-object AchievementManager {
-    private const val ANIMATION_IN_DURATION = 400L
-    private const val ANIMATION_OUT_DURATION = 400L
-    private const val ANIMATION_OUT_START_DELAY = 200L
+object AchievementManager : Presenter<AchievementView> {
+    private val views = HashSet<AchievementView>()
 
-    private const val MORPHING_ANIMATION_DURATION = 400L
-    private const val MORPHING_ANIMATION_START_DELAY = 100L
+    private val achievements = ArrayList<Achievement>()
 
-    private const val TEXT_ANIMATION_DURATION = 200L
-    private const val HIDE_ANIMATION_START_DELAY = 2000L
+    private lateinit var prefix : String
 
-    @JvmStatic
-    fun show(container: ViewGroup) {
-        val context = container.context
-        val binding = PopupAchievementBinding.inflate(LayoutInflater.from(context), container, false)
-
-        val bg = GradientDrawable()
-        bg.setColor(ContextCompat.getColor(context, R.color.colorAccent))
-        bg.cornerRadius = 4f
-
-
-        binding.root.background = bg
-
-        binding.morphing.nestedTextView = binding.title
-
-        binding.root.scaleX = 0f
-        binding.root.scaleY = 0f
-
-        binding.root.setOnClickListener { ScreenManager.showStatsScreen(context) }
-
-        container.addView(binding.root)
-
-        ChainedAnimator { inAnimation(binding) }
-                .then { showText(binding, context.getString(R.string.achievement_unlocked)) }
-                .then(hideText(binding))
-                .then { showText(binding, "Ясновидящий") }
-                .then(hideText(binding))
-                .then { showText(binding, "Решить 60 заданий подряд с первой попытки") }
-                .then(hideText(binding))
-                .then { showText(binding, "Нажмите, чтобы узнать больше") }
-                .then(hideText(binding))
-                .then(hide(container, binding))
-                .start()
+    fun init(context: Context) {
+        prefix = context.getString(R.string.ach_prefix)
+        initOnboardingAchievement(context)
+        initExpAchievements(context)
+        initStreakAchievements(context)
+        initDaysAchievements(context)
+        initLevelAchievements(context)
     }
 
-    private fun inAnimation(binding: PopupAchievementBinding) : Animator {
-        val set = AnimatorSet()
-        set.playTogether(
-                ObjectAnimator.ofFloat(binding.root, "scaleX", 1f),
-                ObjectAnimator.ofFloat(binding.root, "scaleY", 1f)
-        )
-        set.duration = ANIMATION_IN_DURATION
-        set.interpolator = OvershootInterpolator(3f)
-
-        return set
+    private fun initOnboardingAchievement(context: Context) {
+        achievements.add(Achievement(
+                context.getString(R.string.ach_onboarding_title),
+                context.getString(R.string.ach_onboarding_description),
+                prefix + context.getString(R.string.ach_onboarding_prefix),
+                context.getString(R.string.ach_onboarding_event),
+                -1
+        ))
     }
 
-
-    private fun showText(binding: PopupAchievementBinding, text: String) : Animator {
-        val set = AnimatorSet()
-
-        binding.title.text = text
-        binding.title.measure(View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED), View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED))
-        val width = Math.min(binding.title.measuredWidth, binding.root.context.resources.displayMetrics.widthPixels - (16 + 16 + 32 + 24) * 2)
-        val height = binding.title.measuredHeight
-
-        val morph = MorphingAnimation(binding.morphing, MorphingView.MorphParams(width = width), OvershootInterpolator(2f))
-                .setDuration(MORPHING_ANIMATION_DURATION)
-                .setStartDelay(MORPHING_ANIMATION_START_DELAY)
-                .getAnimator()
-
-        binding.title.alpha = 0f
-        binding.title.translationY = height.div(2).toFloat()
-
-        set.playSequentially(morph, textInAnimator(binding))
-
-        return set
+    private fun initExpAchievements(context: Context) {
+        initAchievementGroup(context,
+                R.string.ach_exp_prefix,
+                R.string.ach_exp_event,
+                R.array.ach_exp_titles,
+                R.string.ach_exp_description,
+                R.array.ach_exp_values,
+                -1)
     }
 
-    private fun textInAnimator(binding: PopupAchievementBinding): Animator {
-        val set = AnimatorSet()
+    private fun initStreakAchievements(context: Context) {
+        initAchievementGroup(context,
+                R.string.ach_streak_prefix,
+                R.string.ach_streak_event,
+                R.array.ach_streak_titles,
+                R.string.ach_streak_description,
+                R.array.ach_streak_values,
+                -1)
+    }
 
-        set.playTogether(
-                ObjectAnimator.ofFloat(binding.title, "alpha", 1f),
-                ObjectAnimator.ofFloat(binding.title, "translationY", 0f)
-        )
-        set.duration = TEXT_ANIMATION_DURATION
-        set.startDelay = MORPHING_ANIMATION_START_DELAY
+    private fun initDaysAchievements(context: Context) {
+        initAchievementGroup(context,
+                R.string.ach_days_prefix,
+                R.string.ach_days_event,
+                R.array.ach_days_titles,
+                R.string.ach_days_description,
+                R.array.ach_days_values,
+                -1)
+    }
 
-        set.addListener(object : AnimatorListenerAdapter() {
-            override fun onAnimationStart(animation: Animator?) {
-                binding.title.visibility = View.VISIBLE
-            }
+    private fun initLevelAchievements(context: Context) {
+        initAchievementGroup(context,
+                R.string.ach_level_prefix,
+                R.string.ach_level_event,
+                R.array.ach_level_titles,
+                R.string.ach_level_description,
+                R.array.ach_level_values,
+                -1)
+    }
+
+    private fun initAchievementGroup(context: Context,
+                                     @StringRes typePrefixRes: Int,
+                                     @StringRes eventTypeRes: Int,
+                                     @StringRes titlesRes: Int,
+                                     @StringRes descriptionRes: Int,
+                                     @IntegerRes valuesRes: Int,
+                                     @DrawableRes iconsRes: Int) {
+        val titles = context.resources.getStringArray(titlesRes)
+        val values = context.resources.getIntArray(valuesRes)
+        val event = context.getString(eventTypeRes)
+
+//        val drawables = context.resources.obtainTypedArray(iconsRes)
+
+        achievements.addAll(titles.mapIndexed { index, title ->
+            Achievement(
+                    title,
+                    context.getString(descriptionRes, values[index]),
+                    prefix + context.getString(typePrefixRes, values[index]),
+                    event,
+                    -1) //drawables.getResourceId(index, -1))
         })
 
-        return set
+//        drawables.recycle()
     }
 
-    @JvmStatic
-    private fun hideText(binding: PopupAchievementBinding) = ChainedAnimator {
-        val set = AnimatorSet()
-        set.playTogether(
-                ObjectAnimator.ofFloat(binding.title, "alpha", 0f),
-                ObjectAnimator.ofFloat(binding.title, "translationY", -binding.title.height / 2f)
-        )
+    override fun attachView(view: AchievementView) {
+        views.add(view)
 
-        set.duration = TEXT_ANIMATION_DURATION
-        set.startDelay = HIDE_ANIMATION_START_DELAY
+        Completable.complete()
+                .delay(2, TimeUnit.SECONDS)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { onAchievement(achievements[Util.getRandomNumberBetween(0, achievements.size - 1)]) }
 
-        set
-    }.withEndAction {
-        binding.title.visibility = View.GONE
     }
 
-    private fun outAnimation(container: ViewGroup, binding: PopupAchievementBinding) = ChainedAnimator {
-        val set = AnimatorSet()
-
-        set.playTogether(
-                ObjectAnimator.ofFloat(binding.root, "scaleX", 0f),
-                ObjectAnimator.ofFloat(binding.root, "scaleY", 0f)
-        )
-
-        set.interpolator = AnticipateInterpolator()
-        set.duration = ANIMATION_OUT_DURATION
-        set.startDelay = ANIMATION_OUT_START_DELAY
-
-        set
-    }.withEndAction { container.removeView(binding.root) }
-
-    private fun hide(container: ViewGroup, binding: PopupAchievementBinding) : ChainedAnimator {
-        val morph = ChainedAnimator {
-            MorphingAnimation(binding.morphing, MorphingView.MorphParams(width = 0), AccelerateDecelerateInterpolator())
-                    .setDuration(MORPHING_ANIMATION_DURATION)
-                    .setStartDelay(MORPHING_ANIMATION_START_DELAY)
-                    .getAnimator()
-        }
-
-        morph.then(outAnimation(container, binding))
-        return morph
+    override fun detachView(view: AchievementView) {
+        views.remove(view)
     }
 
-    private class ChainedAnimator(private val c: () -> Animator) {
-        private var prev : ChainedAnimator? = null
-        private var next : ChainedAnimator? = null
-
-        private var block : (() -> Unit)? = null
-
-        fun then(block: () -> Animator) = then(ChainedAnimator(block))
-
-
-        fun then(chainedAnimator: ChainedAnimator) : ChainedAnimator {
-            this.next = chainedAnimator
-            chainedAnimator.prev = this
-            return chainedAnimator
-        }
-
-        fun withEndAction(block: () -> Unit): ChainedAnimator {
-            this.block = block
-            return this
-        }
-
-        fun start() {
-            prev?.start() ?: c.invoke().apply {
-                addListener(object : AnimatorListenerAdapter() {
-                    override fun onAnimationEnd(animation: Animator?) {
-                        block?.invoke()
-                        next?.prev = null
-                        next?.start()
-                    }
-                })
-                start()
-            }
-        }
+    private fun onAchievement(achievement: Achievement) {
+        views.forEach { it.showAchievement(achievement) }
     }
+
+
+    override fun destroy() {}
 }
