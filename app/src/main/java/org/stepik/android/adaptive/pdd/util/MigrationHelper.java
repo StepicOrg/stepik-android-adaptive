@@ -11,6 +11,9 @@ public final class MigrationHelper {
     public static Observable<?> migrate() {
          return Observable.fromCallable(DataBaseMgr.getInstance()::getExp)
                 .zipWith(Observable.fromCallable(DataBaseMgr.getInstance()::getStreak), Pair::new)
-                .switchMap(e -> API.getInstance().migrate(e.first, e.second).toObservable());
+                .switchMap(e ->
+                    e.first == 0
+                            ? Observable.just(new Object()) // no need in migration if there is no exp
+                            : API.getInstance().migrate(e.first, e.second).toObservable());
     }
 }
