@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 import org.stepik.android.adaptive.pdd.R;
 import org.stepik.android.adaptive.pdd.Util;
 import org.stepik.android.adaptive.pdd.api.RecommendationsResponse;
+import org.stepik.android.adaptive.pdd.core.ScreenManager;
 import org.stepik.android.adaptive.pdd.data.AnalyticMgr;
 import org.stepik.android.adaptive.pdd.data.SharedPreferenceMgr;
 import org.stepik.android.adaptive.pdd.data.db.DataBaseMgr;
@@ -131,10 +132,7 @@ public final class CardsFragment extends Fragment implements AnswerListener {
 
         binding.progress.setVisibility(adapter.getItemCount() == 0 ? View.VISIBLE : View.GONE);
 
-        binding.toolbar.setOnClickListener((__) -> {
-            AnalyticMgr.getInstance().statsOpened();
-            startActivity(new Intent(getContext(), StatsActivity.class));
-        });
+        binding.toolbar.setOnClickListener((__) -> ScreenManager.showStatsScreen(getContext()));
 
         binding.cardsContainer.setAdapter(adapter);
 

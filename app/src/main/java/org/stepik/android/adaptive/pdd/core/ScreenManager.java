@@ -4,8 +4,10 @@ package org.stepik.android.adaptive.pdd.core;
 import android.content.Context;
 import android.content.Intent;
 
+import org.stepik.android.adaptive.pdd.data.AnalyticMgr;
 import org.stepik.android.adaptive.pdd.ui.activity.IntroActivity;
 import org.stepik.android.adaptive.pdd.ui.activity.PhotoViewActivity;
+import org.stepik.android.adaptive.pdd.ui.activity.StatsActivity;
 import org.stepik.android.adaptive.pdd.ui.activity.StudyActivity;
 
 public class ScreenManager {
@@ -49,5 +51,10 @@ public class ScreenManager {
         Intent intent = new Intent(context, PhotoViewActivity.class);
         intent.putExtra(PhotoViewActivity.Companion.getPathKey(), path);
         context.startActivity(intent);
+    }
+
+    public static void showStatsScreen(Context context) {
+        AnalyticMgr.getInstance().statsOpened();
+        context.startActivity(new Intent(context, StatsActivity.class));
     }
 }
