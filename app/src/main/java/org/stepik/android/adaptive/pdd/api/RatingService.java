@@ -1,9 +1,5 @@
 package org.stepik.android.adaptive.pdd.api;
 
-import org.stepik.android.adaptive.pdd.data.model.RatingItem;
-
-import java.util.List;
-
 import io.reactivex.Completable;
 import io.reactivex.Observable;
 import retrofit2.http.Body;
