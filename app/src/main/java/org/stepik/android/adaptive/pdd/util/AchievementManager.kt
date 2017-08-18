@@ -1,19 +1,35 @@
 package org.stepik.android.adaptive.pdd.util
 
+import android.animation.Animator
+import android.animation.AnimatorListenerAdapter
+import android.animation.AnimatorSet
+import android.animation.ObjectAnimator
 import android.graphics.drawable.GradientDrawable
 import android.support.v4.content.ContextCompat
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AccelerateDecelerateInterpolator
+import android.view.animation.AnticipateInterpolator
 import android.view.animation.OvershootInterpolator
 import org.stepik.android.adaptive.pdd.R
+import org.stepik.android.adaptive.pdd.core.ScreenManager
 import org.stepik.android.adaptive.pdd.databinding.PopupAchievementBinding
 import org.stepik.android.adaptive.pdd.ui.view.morphing.MorphingAnimation
 import org.stepik.android.adaptive.pdd.ui.view.morphing.MorphingView
 
 object AchievementManager {
+    private const val ANIMATION_IN_DURATION = 400L
+    private const val ANIMATION_OUT_DURATION = 400L
+    private const val ANIMATION_OUT_START_DELAY = 200L
 
+    private const val MORPHING_ANIMATION_DURATION = 400L
+    private const val MORPHING_ANIMATION_START_DELAY = 100L
+
+    private const val TEXT_ANIMATION_DURATION = 200L
+    private const val HIDE_ANIMATION_START_DELAY = 2000L
+
+    @JvmStatic
     fun show(container: ViewGroup) {
         val context = container.context
         val binding = PopupAchievementBinding.inflate(LayoutInflater.from(context), container, false)
@@ -30,69 +46,150 @@ object AchievementManager {
         binding.root.scaleX = 0f
         binding.root.scaleY = 0f
 
+        binding.root.setOnClickListener { ScreenManager.showStatsScreen(context) }
+
         container.addView(binding.root)
 
-        binding.root.animate()
-                .scaleX(1f)
-                .scaleY(1f)
-                .setInterpolator(OvershootInterpolator(3f))
-                .withEndAction {
-                    showText(binding, context.getString(R.string.achievement_unlocked)) {
-                        hideText(binding) {
-                            showText(binding, "Знаток\nДостигнуть 5 уровня") {
-                                hideText(binding) {
-                                    hide(binding)
-                                }
-                            }
-                        }
-                    }
-                }
-                .setDuration(400).start()
-    }
-
-    private fun showText(binding: PopupAchievementBinding, text: String, then: () -> Unit) {
-        binding.title.text = text
-        binding.title.measure(View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED), View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED))
-        val width = binding.title.measuredWidth
-        val height = binding.title.measuredHeight
-
-        MorphingAnimation(binding.morphing, MorphingView.MorphParams(width = width), OvershootInterpolator(2f)).setDuration(400).setStartDelay(200).withEndAction(Runnable {
-            binding.title.alpha = 0f
-            binding.title.translationY = height.div(2).toFloat()
-            binding.title.visibility = View.VISIBLE
-
-            binding.title.animate()
-                    .alpha(1f)
-                    .setStartDelay(200)
-                    .setDuration(200)
-                    .translationY(0f)
-                    .withEndAction(then)
-                    .start()
-        }).start()
-    }
-
-    private fun hideText(binding: PopupAchievementBinding, then: () -> Unit) {
-        binding.title.animate()
-                .alpha(0f)
-                .setStartDelay(400)
-                .setDuration(200)
-                .translationY(-binding.title.height / 2f)
-                .withEndAction {
-                    binding.title.visibility = View.GONE
-                    then()
-                }
+        ChainedAnimator { inAnimation(binding) }
+                .then { showText(binding, context.getString(R.string.achievement_unlocked)) }
+                .then(hideText(binding))
+                .then { showText(binding, "Ясновидящий") }
+                .then(hideText(binding))
+                .then { showText(binding, "Решить 60 заданий подряд с первой попытки") }
+                .then(hideText(binding))
+                .then { showText(binding, "Нажмите, чтобы узнать больше") }
+                .then(hideText(binding))
+                .then(hide(container, binding))
                 .start()
     }
 
-    private fun hide(binding: PopupAchievementBinding) {
-        MorphingAnimation(binding.morphing, MorphingView.MorphParams(width = 0), AccelerateDecelerateInterpolator()).setDuration(200).setStartDelay(200).withEndAction(Runnable {
-            binding.root.animate()
-                    .scaleX(0f)
-                    .scaleY(0f)
-                    .setInterpolator(AccelerateDecelerateInterpolator())
-                    .setStartDelay(400)
-                    .setDuration(400).start()
-        }).start()
+    private fun inAnimation(binding: PopupAchievementBinding) : Animator {
+        val set = AnimatorSet()
+        set.playTogether(
+                ObjectAnimator.ofFloat(binding.root, "scaleX", 1f),
+                ObjectAnimator.ofFloat(binding.root, "scaleY", 1f)
+        )
+        set.duration = ANIMATION_IN_DURATION
+        set.interpolator = OvershootInterpolator(3f)
+
+        return set
     }
 
+
+    private fun showText(binding: PopupAchievementBinding, text: String) : Animator {
+        val set = AnimatorSet()
+
+        binding.title.text = text
+        binding.title.measure(View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED), View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED))
+        val width = Math.min(binding.title.measuredWidth, binding.root.context.resources.displayMetrics.widthPixels - (16 + 16 + 32 + 24) * 2)
+        val height = binding.title.measuredHeight
+
+        val morph = MorphingAnimation(binding.morphing, MorphingView.MorphParams(width = width), OvershootInterpolator(2f))
+                .setDuration(MORPHING_ANIMATION_DURATION)
+                .setStartDelay(MORPHING_ANIMATION_START_DELAY)
+                .getAnimator()
+
+        binding.title.alpha = 0f
+        binding.title.translationY = height.div(2).toFloat()
+
+        set.playSequentially(morph, textInAnimator(binding))
+
+        return set
+    }
+
+    private fun textInAnimator(binding: PopupAchievementBinding): Animator {
+        val set = AnimatorSet()
+
+        set.playTogether(
+                ObjectAnimator.ofFloat(binding.title, "alpha", 1f),
+                ObjectAnimator.ofFloat(binding.title, "translationY", 0f)
+        )
+        set.duration = TEXT_ANIMATION_DURATION
+        set.startDelay = MORPHING_ANIMATION_START_DELAY
+
+        set.addListener(object : AnimatorListenerAdapter() {
+            override fun onAnimationStart(animation: Animator?) {
+                binding.title.visibility = View.VISIBLE
+            }
+        })
+
+        return set
+    }
+
+    @JvmStatic
+    private fun hideText(binding: PopupAchievementBinding) = ChainedAnimator {
+        val set = AnimatorSet()
+        set.playTogether(
+                ObjectAnimator.ofFloat(binding.title, "alpha", 0f),
+                ObjectAnimator.ofFloat(binding.title, "translationY", -binding.title.height / 2f)
+        )
+
+        set.duration = TEXT_ANIMATION_DURATION
+        set.startDelay = HIDE_ANIMATION_START_DELAY
+
+        set
+    }.withEndAction {
+        binding.title.visibility = View.GONE
+    }
+
+    private fun outAnimation(container: ViewGroup, binding: PopupAchievementBinding) = ChainedAnimator {
+        val set = AnimatorSet()
+
+        set.playTogether(
+                ObjectAnimator.ofFloat(binding.root, "scaleX", 0f),
+                ObjectAnimator.ofFloat(binding.root, "scaleY", 0f)
+        )
+
+        set.interpolator = AnticipateInterpolator()
+        set.duration = ANIMATION_OUT_DURATION
+        set.startDelay = ANIMATION_OUT_START_DELAY
+
+        set
+    }.withEndAction { container.removeView(binding.root) }
+
+    private fun hide(container: ViewGroup, binding: PopupAchievementBinding) : ChainedAnimator {
+        val morph = ChainedAnimator {
+            MorphingAnimation(binding.morphing, MorphingView.MorphParams(width = 0), AccelerateDecelerateInterpolator())
+                    .setDuration(MORPHING_ANIMATION_DURATION)
+                    .setStartDelay(MORPHING_ANIMATION_START_DELAY)
+                    .getAnimator()
+        }
+
+        morph.then(outAnimation(container, binding))
+        return morph
+    }
+
+    private class ChainedAnimator(private val c: () -> Animator) {
+        private var prev : ChainedAnimator? = null
+        private var next : ChainedAnimator? = null
+
+        private var block : (() -> Unit)? = null
+
+        fun then(block: () -> Animator) = then(ChainedAnimator(block))
+
+
+        fun then(chainedAnimator: ChainedAnimator) : ChainedAnimator {
+            this.next = chainedAnimator
+            chainedAnimator.prev = this
+            return chainedAnimator
+        }
+
+        fun withEndAction(block: () -> Unit): ChainedAnimator {
+            this.block = block
+            return this
+        }
+
+        fun start() {
+            prev?.start() ?: c.invoke().apply {
+                addListener(object : AnimatorListenerAdapter() {
+                    override fun onAnimationEnd(animation: Animator?) {
+                        block?.invoke()
+                        next?.prev = null
+                        next?.start()
+                    }
+                })
+                start()
+            }
+        }
+    }
 }
