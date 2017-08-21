@@ -140,7 +140,9 @@ class QuizCardViewHolder(val binding: QuizCardViewBinding) : ContainerView.ViewH
     }
 
     override fun onSubmissionError() {
-        Snackbar.make(binding.root.parent as ViewGroup, R.string.network_error, Snackbar.LENGTH_SHORT).show()
+        if (binding.root.parent != null) {
+            Snackbar.make(binding.root.parent as ViewGroup, R.string.network_error, Snackbar.LENGTH_SHORT).show()
+        }
         binding.container.isEnabled = true
         CardHelper.resetSupplementalActions(binding)
     }
