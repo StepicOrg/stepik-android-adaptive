@@ -154,7 +154,9 @@ object AchievementManager : Presenter<AchievementView> {
         onEvent(Event.EXP, exp, false)
         onEvent(Event.STREAK, ExpUtil.getStreak(), false)
         onEvent(Event.LEVEL, ExpUtil.getCurrentLevel(exp), false)
-        onEvent(Event.DAYS, DailyRewardManager.getCurrentRewardDay(), false)
+
+        DailyRewardManager.syncRewardProgress()
+        onEvent(Event.DAYS, DailyRewardManager.totalRewardProgress + 1, false)
 
         if (SharedPreferenceMgr.getInstance().isNotFirstTime) {
             onEvent(Event.ONBOARDING, 1, false)

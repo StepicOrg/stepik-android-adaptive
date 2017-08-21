@@ -10,6 +10,7 @@ object DailyRewardManager {
 
     private val LAST_SESSION_KEY = "last_session"
     private val REWARD_PROGRESS_KEY = "reward_progress"
+    private val TOTAL_REWARD_PROGRESS_KEY = "total_reward_progress"
 
     val rewards = listOf(
             listOf(InventoryUtil.Item.Ticket to 3),
@@ -24,6 +25,17 @@ object DailyRewardManager {
     fun getLastSessionTimestamp() =
             SharedPreferenceMgr.getInstance().getLong(LAST_SESSION_KEY)
 
+    fun getRewardProgress() =
+            SharedPreferenceMgr.getInstance().getLong(REWARD_PROGRESS_KEY)
+
+    var totalRewardProgress: Long
+        get() = SharedPreferenceMgr.getInstance().getLong(TOTAL_REWARD_PROGRESS_KEY)
+        set(value) = SharedPreferenceMgr.getInstance().saveLong(TOTAL_REWARD_PROGRESS_KEY, value)
+
+    fun syncRewardProgress() {
+        totalRewardProgress = Math.max(totalRewardProgress, getRewardProgress())
+    }
+
     fun getCurrentRewardDay() : Long {
         val lastSession = SharedPreferenceMgr.getInstance().getLong(LAST_SESSION_KEY)
 
@@ -33,6 +45,7 @@ object DailyRewardManager {
         val diff = Days.daysBetween(lastSessionDay, now).days
 
         var progress = if (diff == 1) {
+            SharedPreferenceMgr.getInstance().changeLong(TOTAL_REWARD_PROGRESS_KEY, 1)
             SharedPreferenceMgr.getInstance().changeLong(REWARD_PROGRESS_KEY, 1)
         } else {
             SharedPreferenceMgr.getInstance().getLong(REWARD_PROGRESS_KEY)
@@ -57,7 +70,7 @@ object DailyRewardManager {
             rewards[day.toInt()].forEach {
                 InventoryUtil.changeItemCount(it.first, it.second.toLong())
             }
-            AchievementManager.onEvent(AchievementManager.Event.DAYS, day + 1)
+            AchievementManager.onEvent(AchievementManager.Event.DAYS, totalRewardProgress + 1)
         }
 
         return day
