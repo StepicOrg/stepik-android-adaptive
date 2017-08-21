@@ -36,7 +36,7 @@
     <string name="ach_streak_prefix" translatable="false">streak_%d</string>
     <string-array name="ach_streak_titles">
         <item>Combo</item>
-        <item>Was easy</item>
+        <item>That was easy</item>
         <item>Exactly</item>
         <item>Clairvoyant</item>
     </string-array>
@@ -58,7 +58,7 @@
     <string name="ach_days_prefix" translatable="false">days_%d</string>
     <string-array name="ach_days_titles">
         <item>Enthusiast</item>
-        <item>Labor week</item>
+        <item>Workweek</item>
         <item>Addicted</item>
         <item>Workaholic</item>
         <item>Hero of labor</item>
