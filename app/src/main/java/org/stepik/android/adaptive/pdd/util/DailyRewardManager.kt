@@ -54,6 +54,10 @@ object DailyRewardManager {
         if (diff > 1 || diff < 0 || progress >= rewards.size) {
             resetProgress()
             progress = 0
+
+            if (diff > 1 || diff < 0) {
+                totalRewardProgress = 0
+            }
         }
 
         SharedPreferenceMgr.getInstance().saveLong(LAST_SESSION_KEY, now.millis)
