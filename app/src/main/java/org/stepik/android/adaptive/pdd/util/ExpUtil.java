@@ -14,7 +14,7 @@ public class ExpUtil {
     public static long changeExp(long delta) {
         long exp = SharedPreferenceMgr.getInstance().changeLong(EXP_KEY, delta);
         AnalyticMgr.getInstance().onExpReached(exp - delta, delta);
-        AchievementManager.INSTANCE.onEvent(AchievementManager.Event.EXP, exp);
+        AchievementManager.INSTANCE.onEvent(AchievementManager.Event.EXP, exp, true);
         return exp;
     }
 
@@ -25,7 +25,7 @@ public class ExpUtil {
     public static long changeStreak(long delta) {
         final long streak = SharedPreferenceMgr.getInstance().changeLong(STREAK_KEY, delta);
         AnalyticMgr.getInstance().onStreak(streak);
-        AchievementManager.INSTANCE.onEvent(AchievementManager.Event.STREAK, streak);
+        AchievementManager.INSTANCE.onEvent(AchievementManager.Event.STREAK, streak, true);
         return streak;
     }
 
@@ -38,7 +38,7 @@ public class ExpUtil {
 
         final long level = 2 + (long) (Math.log(exp / 5) / Math.log(2));
 
-        AchievementManager.INSTANCE.onEvent(AchievementManager.Event.LEVEL, level);
+        AchievementManager.INSTANCE.onEvent(AchievementManager.Event.LEVEL, level, true);
 
         return level;
     }
