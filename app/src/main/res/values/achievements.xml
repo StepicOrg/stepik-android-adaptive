@@ -24,6 +24,13 @@
         <item>5000</item>
         <item>10000</item>
     </integer-array>
+    <integer-array name="ach_exp_icons">
+        <item>@drawable/ic_ach_exp_1</item>
+        <item>@drawable/ic_ach_exp_2</item>
+        <item>@drawable/ic_ach_exp_3</item>
+        <item>@drawable/ic_ach_exp_4</item>
+        <item>@drawable/ic_ach_exp_5</item>
+    </integer-array>
 
 
     <string name="ach_streak_prefix" translatable="false">streak_%d</string>
@@ -39,6 +46,12 @@
         <item>15</item>
         <item>30</item>
         <item>60</item>
+    </integer-array>
+    <integer-array name="ach_streak_icons">
+        <item>@drawable/ic_ach_streak_1</item>
+        <item>@drawable/ic_ach_streak_2</item>
+        <item>@drawable/ic_ach_streak_3</item>
+        <item>@drawable/ic_ach_streak_4</item>
     </integer-array>
 
 
@@ -58,6 +71,13 @@
         <item>14</item>
         <item>30</item>
     </integer-array>
+    <integer-array name="ach_days_icons">
+        <item>@drawable/ic_ach_days_1</item>
+        <item>@drawable/ic_ach_days_2</item>
+        <item>@drawable/ic_ach_days_3</item>
+        <item>@drawable/ic_ach_days_4</item>
+        <item>@drawable/ic_ach_days_5</item>
+    </integer-array>
 
 
     <string name="ach_level_prefix" translatable="false">level_%d</string>
@@ -69,6 +89,10 @@
     <integer-array name="ach_level_values">
         <item>5</item>
         <item>10</item>
+    </integer-array>
+    <integer-array name="ach_level_icons">
+        <item>@drawable/ic_ach_level_1</item>
+        <item>@drawable/ic_ach_level_2</item>
     </integer-array>
 
 </resources>

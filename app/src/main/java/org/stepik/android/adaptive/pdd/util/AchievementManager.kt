@@ -1,7 +1,6 @@
 package org.stepik.android.adaptive.pdd.util
 
 import android.content.Context
-import android.content.SharedPreferences
 import android.support.annotation.DrawableRes
 import android.support.annotation.IntegerRes
 import android.support.annotation.StringRes
@@ -47,7 +46,7 @@ object AchievementManager : Presenter<AchievementView> {
                 prefix + context.getString(R.string.ach_onboarding_prefix),
                 Event.ONBOARDING,
                 1,
-                -1,
+                R.drawable.ic_ach_onboarding,
                 false
         ))
     }
@@ -59,7 +58,7 @@ object AchievementManager : Presenter<AchievementView> {
                 R.array.ach_exp_titles,
                 R.string.ach_exp_description,
                 R.array.ach_exp_values,
-                -1)
+                R.array.ach_exp_icons)
     }
 
     private fun initStreakAchievements(context: Context) {
@@ -69,7 +68,7 @@ object AchievementManager : Presenter<AchievementView> {
                 R.array.ach_streak_titles,
                 R.string.ach_streak_description,
                 R.array.ach_streak_values,
-                -1)
+                R.array.ach_streak_icons)
     }
 
     private fun initDaysAchievements(context: Context) {
@@ -79,7 +78,7 @@ object AchievementManager : Presenter<AchievementView> {
                 R.array.ach_days_titles,
                 R.string.ach_days_description,
                 R.array.ach_days_values,
-                -1)
+                R.array.ach_days_icons)
     }
 
     private fun initLevelAchievements(context: Context) {
@@ -89,7 +88,7 @@ object AchievementManager : Presenter<AchievementView> {
                 R.array.ach_level_titles,
                 R.string.ach_level_description,
                 R.array.ach_level_values,
-                -1)
+                R.array.ach_level_icons)
     }
 
     private fun initAchievementGroup(context: Context,
@@ -102,7 +101,7 @@ object AchievementManager : Presenter<AchievementView> {
         val titles = context.resources.getStringArray(titlesRes)
         val values = context.resources.getIntArray(valuesRes)
 
-//        val drawables = context.resources.obtainTypedArray(iconsRes)
+        val drawables = context.resources.obtainTypedArray(iconsRes)
 
         achievements.addAll(titles.mapIndexed { index, title ->
             Achievement(
@@ -112,10 +111,10 @@ object AchievementManager : Presenter<AchievementView> {
                     event,
                     values[index].toLong(),
 
-                    -1) //drawables.getResourceId(index, -1))
+                    drawables.getResourceId(index, -1))
         })
 
-//        drawables.recycle()
+        drawables.recycle()
     }
 
     override fun attachView(view: AchievementView) {
