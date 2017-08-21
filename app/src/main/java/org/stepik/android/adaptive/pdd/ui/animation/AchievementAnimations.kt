@@ -39,6 +39,8 @@ object AchievementAnimations {
         bg.setColor(ContextCompat.getColor(context, R.color.colorAccent))
         bg.cornerRadius = 4f
 
+        bg.setStroke(2, ContextCompat.getColor(context, R.color.colorAccentDarker))
+
 
         binding.root.background = bg
 
