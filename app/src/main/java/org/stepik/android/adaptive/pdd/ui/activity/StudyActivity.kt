@@ -11,8 +11,17 @@ import org.stepik.android.adaptive.pdd.ui.animation.AchievementAnimations
 import org.stepik.android.adaptive.pdd.util.AchievementManager
 
 class StudyActivity : FragmentActivity(), AchievementView {
-    override fun showAchievement(achievement: Achievement) =
-        AchievementAnimations.show(findViewById(R.id.fragment_container) as FrameLayout, achievement)
+    private var isPlayingAchievementAnimation = false
+
+    override fun showAchievement(achievement: Achievement) {
+        isPlayingAchievementAnimation = true
+        AchievementAnimations.show(findViewById(R.id.fragment_container) as FrameLayout, achievement).withEndAction {
+            isPlayingAchievementAnimation = false
+            AchievementManager.notifyQueue()
+        }
+    }
+
+    override fun canShowAchievement() = !isPlayingAchievementAnimation
 
     override fun onStart() {
         super.onStart()

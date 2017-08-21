@@ -31,7 +31,7 @@ object AchievementAnimations {
     private const val HIDE_ANIMATION_START_DELAY = 2000L
 
     @JvmStatic
-    fun show(container: ViewGroup, achievement: Achievement) {
+    fun show(container: ViewGroup, achievement: Achievement): ChainedAnimator {
         val context = container.context
         val binding = PopupAchievementBinding.inflate(LayoutInflater.from(context), container, false)
 
@@ -51,7 +51,7 @@ object AchievementAnimations {
 
         container.addView(binding.root)
 
-        ChainedAnimator { inAnimation(binding) }
+        return ChainedAnimator { inAnimation(binding) }
                 .then { showText(binding, context.getString(R.string.achievement_unlocked)) }
                 .then(hideText(binding))
                 .then { showText(binding, achievement.title) }

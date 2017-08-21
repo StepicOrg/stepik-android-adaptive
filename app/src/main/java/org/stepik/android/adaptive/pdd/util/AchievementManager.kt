@@ -126,8 +126,8 @@ object AchievementManager : Presenter<AchievementView> {
         views.remove(view)
     }
 
-    private fun notifyQueue() {
-        if (queue.isNotEmpty() && views.isNotEmpty())
+    fun notifyQueue() {
+        if (queue.isNotEmpty() && views.isNotEmpty() && views.all { it.canShowAchievement() })
             onAchievement(queue.poll())
     }
 
@@ -139,7 +139,7 @@ object AchievementManager : Presenter<AchievementView> {
         achievements.filter { it.eventType == event && !it.isComplete() }.forEach {
             it.currentValue = Math.min(it.targetValue, Math.max(value, it.currentValue))
             if (it.isComplete() && show) {
-                queue.add(it) // todo
+                queue.add(it)
                 notifyQueue()
             }
         }

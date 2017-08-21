@@ -22,7 +22,7 @@ class ChainedAnimator(private val c: () -> Animator) {
         return this
     }
 
-    fun start() {
+    fun start(): ChainedAnimator {
         prev?.start() ?: c.invoke().apply {
             addListener(object : AnimatorListenerAdapter() {
                 override fun onAnimationEnd(animation: Animator?) {
@@ -33,5 +33,6 @@ class ChainedAnimator(private val c: () -> Animator) {
             })
             start()
         }
+        return this
     }
 }
