@@ -132,7 +132,7 @@ public final class CardsFragment extends Fragment implements AnswerListener {
 
         binding.progress.setVisibility(adapter.getItemCount() == 0 ? View.VISIBLE : View.GONE);
 
-        binding.toolbar.setOnClickListener((__) -> ScreenManager.showStatsScreen(getContext()));
+        binding.toolbar.setOnClickListener((__) -> ScreenManager.showStatsScreen(getContext(), 0));
 
         binding.cardsContainer.setAdapter(adapter);
 

@@ -9,6 +9,10 @@ import org.stepik.android.adaptive.pdd.databinding.ActivityStatsBinding
 import org.stepik.android.adaptive.pdd.ui.adapter.StatsViewPagerAdapter
 
 class StatsActivity : AppCompatActivity() {
+    companion object {
+        const val PAGE_KEY = "page"
+    }
+
     private lateinit var binding: ActivityStatsBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -24,6 +28,10 @@ class StatsActivity : AppCompatActivity() {
         binding.pager.adapter = StatsViewPagerAdapter(supportFragmentManager, this)
         binding.pager.offscreenPageLimit = binding.pager.adapter.count
         binding.tabLayout.setupWithViewPager(binding.pager)
+
+        if (savedInstanceState == null) {
+            binding.pager.currentItem = intent.getIntExtra(PAGE_KEY, 0)
+        }
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {

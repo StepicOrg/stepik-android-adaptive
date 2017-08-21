@@ -47,7 +47,7 @@ object AchievementAnimations {
         binding.root.scaleX = 0f
         binding.root.scaleY = 0f
 
-        binding.root.setOnClickListener { ScreenManager.showStatsScreen(context) }
+        binding.root.setOnClickListener { ScreenManager.showStatsScreen(context, 1) }
 
         container.addView(binding.root)
 
