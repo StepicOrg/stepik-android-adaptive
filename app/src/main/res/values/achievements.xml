@@ -3,13 +3,11 @@
 
     <string name="ach_prefix" translatable="false">achievement_</string>
 
-    <string name="ach_onboarding_event" translatable="false">onboarding</string>
     <string name="ach_onboarding_prefix" translatable="false">onboarding</string>
     <string name="ach_onboarding_title" translatable="true">First steps</string>
     <string name="ach_onboarding_description">Complete tutorial</string>
 
 
-    <string name="ach_exp_event" translatable="false">exp</string>
     <string name="ach_exp_prefix" translatable="false">exp_%d</string>
     <string-array name="ach_exp_titles">
         <item>Learner</item>
@@ -28,7 +26,6 @@
     </integer-array>
 
 
-    <string name="ach_streak_event" translatable="false">streak</string>
     <string name="ach_streak_prefix" translatable="false">streak_%d</string>
     <string-array name="ach_streak_titles">
         <item>Combo</item>
@@ -45,7 +42,6 @@
     </integer-array>
 
 
-    <string name="ach_days_event" translatable="false">days</string>
     <string name="ach_days_prefix" translatable="false">days_%d</string>
     <string-array name="ach_days_titles">
         <item>Enthusiast</item>
@@ -64,7 +60,6 @@
     </integer-array>
 
 
-    <string name="ach_level_event" translatable="false">level</string>
     <string name="ach_level_prefix" translatable="false">level_%d</string>
     <string-array name="ach_level_titles">
         <item>Expert</item>
