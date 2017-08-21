@@ -53,10 +53,12 @@ object DailyRewardManager {
 
     fun giveRewardAndGetCurrentRewardDay() : Long {
         val day = getCurrentRewardDay()
-        if (day != DISCARD)
+        if (day != DISCARD) {
             rewards[day.toInt()].forEach {
                 InventoryUtil.changeItemCount(it.first, it.second.toLong())
             }
+            AchievementManager.onEvent(AchievementManager.Event.DAYS, day + 1)
+        }
 
         return day
     }

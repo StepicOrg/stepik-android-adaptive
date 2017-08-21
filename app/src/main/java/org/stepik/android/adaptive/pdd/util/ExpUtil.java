@@ -14,6 +14,7 @@ public class ExpUtil {
     public static long changeExp(long delta) {
         long exp = SharedPreferenceMgr.getInstance().changeLong(EXP_KEY, delta);
         AnalyticMgr.getInstance().onExpReached(exp - delta, delta);
+        AchievementManager.INSTANCE.onEvent(AchievementManager.Event.EXP, exp);
         return exp;
     }
 
@@ -24,6 +25,7 @@ public class ExpUtil {
     public static long changeStreak(long delta) {
         final long streak = SharedPreferenceMgr.getInstance().changeLong(STREAK_KEY, delta);
         AnalyticMgr.getInstance().onStreak(streak);
+        AchievementManager.INSTANCE.onEvent(AchievementManager.Event.STREAK, streak);
         return streak;
     }
 
@@ -34,7 +36,11 @@ public class ExpUtil {
     public static long getCurrentLevel(long exp) {
         if (exp < 5) return 1;
 
-        return 2 + (long) (Math.log(exp / 5) / Math.log(2));
+        final long level = 2 + (long) (Math.log(exp / 5) / Math.log(2));
+
+        AchievementManager.INSTANCE.onEvent(AchievementManager.Event.LEVEL, level);
+
+        return level;
     }
 
     public static long getNextLevelExp(long currentLevel) {
