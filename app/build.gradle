@@ -46,6 +46,26 @@ android {
             versionCode 6
             versionName "1.3"
         }
+        gmat1906 {
+            applicationId 'org.stepik.android.adaptive.gmat1906'
+            signingConfig signingConfigs.release
+        }
+        gmat3067 {
+            applicationId 'org.stepik.android.adaptive.gmat3067'
+            signingConfig signingConfigs.release
+        }
+        toefl3150 {
+            applicationId 'org.stepik.android.adaptive.toefl3150'
+            signingConfig signingConfigs.release
+        }
+        toefl3149 {
+            applicationId 'org.stepik.android.adaptive.toefl3149'
+            signingConfig signingConfigs.release
+        }
+        toefl3124 {
+            applicationId 'org.stepik.android.adaptive.toefl3124'
+            signingConfig signingConfigs.release
+        }
     }
 }
 
