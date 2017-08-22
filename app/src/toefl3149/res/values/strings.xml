@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Common English Adjectives</string>
+    <string name="app_name">English Adjectives</string>
     <string name="onboarding_card_question_1"><![CDATA[
         <div class="center">
             <div class="padding-box">
