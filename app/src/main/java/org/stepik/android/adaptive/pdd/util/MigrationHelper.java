@@ -13,7 +13,7 @@ public final class MigrationHelper {
                 .zipWith(Observable.fromCallable(DataBaseMgr.getInstance()::getStreak), Pair::new)
                 .switchMap(e ->
                     e.first == 0
-                            ? Observable.just(new Object()) // no need in migration if there is no exp
+                            ? Observable.empty() // no need in migration if there is no exp
                             : API.getInstance().migrate(e.first, e.second).toObservable());
     }
 }
