@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Common English Adjectives</string>
+    <string name="onboarding_card_question_1"><![CDATA[
+        <div class="center">
+            <div class="padding-box">
+                <img src="file:///android_asset/web/images/01.svg" />
+            </div>
+            <h3>Common English Adjectives</h3>
+        </div>
+        <p>Добро пожаловать на адаптивный курс по TOEFL. В этом курсе вопросы подбираются автоматически, адаптируясь к вашим ответам и реакциям. Давайте посмотрим как это работает.</p>
+    ]]></string>
+</resources>
