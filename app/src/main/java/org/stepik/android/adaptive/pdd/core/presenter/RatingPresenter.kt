@@ -42,7 +42,7 @@ class RatingPresenter : PresenterBase<RatingView>() {
                     .retryWhen { x -> x.zipWith(retrySubject, BiFunction<Throwable, Int, Throwable> { a, _ -> a }) }
                     .map { it.users }
                     .subscribe({
-                        adapters[pos].add(prepareRatingItems(it))
+                        adapters[pos].set(prepareRatingItems(it))
                         periodsLoaded++
                         onLoadComplete()
                     }, { onError() }))
