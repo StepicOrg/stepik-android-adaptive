@@ -11,12 +11,12 @@ import org.stepik.android.adaptive.pdd.ui.fragment.RatingFragment
 
 class StatsViewPagerAdapter(fm: FragmentManager, context: Context) : FragmentStatePagerAdapter(fm) {
     private val fragments = listOf(
-            ProgressFragment::class.java     to context.getString(R.string.progress)!!,
-            AchievementsFragment::class.java to context.getString(R.string.achievements)!!,
-            RatingFragment::class.java       to context.getString(R.string.rating)!!
+            { ProgressFragment() }     to context.getString(R.string.progress)!!,
+            { AchievementsFragment() } to context.getString(R.string.achievements)!!,
+            { RatingFragment() }       to context.getString(R.string.rating)!!
     )
 
-    override fun getItem(position: Int) = fragments[position].first.newInstance()!!
+    override fun getItem(position: Int) = fragments[position].first()
     override fun getCount(): Int = fragments.size
     override fun getPageTitle(position: Int) = fragments[position].second
 }
