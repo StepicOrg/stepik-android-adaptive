@@ -4,7 +4,7 @@ import android.animation.*
 import android.view.animation.Interpolator
 
 class MorphingAnimation(private val view: MorphingView, private val to: MorphingView.MorphParams, val interpolator: Interpolator? = null) {
-    private val set = AnimatorSet()
+    val set = AnimatorSet()
 
     fun initSet() {
         val from = view.getMorphParams()
@@ -76,10 +76,14 @@ class MorphingAnimation(private val view: MorphingView, private val to: Morphing
         return this
     }
 
-    fun start(): MorphingAnimation {
+    fun getAnimator(): Animator {
         initSet()
         set.startDelay = startDelay
-        set.start()
+        return set
+    }
+
+    fun start(): MorphingAnimation {
+        getAnimator().start()
         return this
     }
 

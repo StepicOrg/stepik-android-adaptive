@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 import org.stepik.android.adaptive.pdd.R;
 import org.stepik.android.adaptive.pdd.Util;
 import org.stepik.android.adaptive.pdd.api.RecommendationsResponse;
+import org.stepik.android.adaptive.pdd.core.ScreenManager;
 import org.stepik.android.adaptive.pdd.data.AnalyticMgr;
 import org.stepik.android.adaptive.pdd.data.model.Card;
 import org.stepik.android.adaptive.pdd.data.model.Recommendation;
@@ -29,6 +30,7 @@ import org.stepik.android.adaptive.pdd.ui.dialog.RateAppDialog;
 import org.stepik.android.adaptive.pdd.ui.dialog.StreakRestoreDialog;
 import org.stepik.android.adaptive.pdd.ui.helper.CardHelper;
 import org.stepik.android.adaptive.pdd.ui.listener.AnswerListener;
+import org.stepik.android.adaptive.pdd.util.AchievementManager;
 import org.stepik.android.adaptive.pdd.util.DailyRewardManager;
 import org.stepik.android.adaptive.pdd.util.ExpUtil;
 import org.stepik.android.adaptive.pdd.util.InventoryUtil;
@@ -110,10 +112,7 @@ public final class CardsFragment extends Fragment implements AnswerListener {
 
         binding.progress.setVisibility(adapter.getItemCount() == 0 ? View.VISIBLE : View.GONE);
 
-        binding.toolbar.setOnClickListener((__) -> {
-            AnalyticMgr.getInstance().statsOpened();
-            startActivity(new Intent(getContext(), StatsActivity.class));
-        });
+        binding.toolbar.setOnClickListener((__) -> ScreenManager.showStatsScreen(getContext(), 0));
 
         binding.cardsContainer.setAdapter(adapter);
 

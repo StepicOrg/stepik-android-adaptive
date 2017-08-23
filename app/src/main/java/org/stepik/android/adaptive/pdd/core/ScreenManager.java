@@ -4,8 +4,10 @@ package org.stepik.android.adaptive.pdd.core;
 import android.content.Context;
 import android.content.Intent;
 
+import org.stepik.android.adaptive.pdd.data.AnalyticMgr;
 import org.stepik.android.adaptive.pdd.ui.activity.IntroActivity;
 import org.stepik.android.adaptive.pdd.ui.activity.PhotoViewActivity;
+import org.stepik.android.adaptive.pdd.ui.activity.StatsActivity;
 import org.stepik.android.adaptive.pdd.ui.activity.StudyActivity;
 
 public class ScreenManager {
@@ -34,20 +36,21 @@ public class ScreenManager {
     }
 
     public void startStudy() {
-        Intent intent = new Intent(context,  StudyActivity.class); // notFirstTime ? StudyActivity.class :
+        Intent intent = new Intent(context,  StudyActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
         context.startActivity(intent);
-//        Observable.fromCallable(SharedPreferenceMgr.getInstance()::isNotFirstTime)
-//                .subscribeOn(Schedulers.io())
-//                .observeOn(AndroidSchedulers.mainThread())
-//                .subscribe((notFirstTime) -> {
-//
-//                });
     }
 
     public static void showImage(Context context, String path) {
         Intent intent = new Intent(context, PhotoViewActivity.class);
         intent.putExtra(PhotoViewActivity.Companion.getPathKey(), path);
+        context.startActivity(intent);
+    }
+
+    public static void showStatsScreen(Context context, int page) {
+        AnalyticMgr.getInstance().statsOpened();
+        final Intent intent = new Intent(context, StatsActivity.class);
+        intent.putExtra(StatsActivity.PAGE_KEY, page);
         context.startActivity(intent);
     }
 }

@@ -23,6 +23,7 @@ import org.stepik.android.adaptive.pdd.data.model.*
 import org.stepik.android.adaptive.pdd.databinding.FragmentRecommendationsBinding
 import org.stepik.android.adaptive.pdd.ui.activity.StudyActivity
 import org.stepik.android.adaptive.pdd.ui.adapter.OnboardingQuizCardsAdapter
+import org.stepik.android.adaptive.pdd.util.AchievementManager
 
 class OnboardingFragment : Fragment(), LoginView {
     companion object {
@@ -35,7 +36,10 @@ class OnboardingFragment : Fragment(), LoginView {
 
     private val adapter = OnboardingQuizCardsAdapter {
         updateToolbar(true)
-        if (it == 0) Completable.fromAction { SharedPreferenceMgr.getInstance().isNotFirstTime = true }
+        if (it == 0) Completable.fromAction {
+                    SharedPreferenceMgr.getInstance().isNotFirstTime = true
+                    AchievementManager.onEvent(AchievementManager.Event.ONBOARDING, 1)
+                }
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(this::onSuccess)
     }
