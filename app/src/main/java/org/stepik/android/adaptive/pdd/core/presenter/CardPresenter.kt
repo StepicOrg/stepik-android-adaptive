@@ -13,6 +13,7 @@ import org.stepik.android.adaptive.pdd.data.model.Submission
 import org.stepik.android.adaptive.pdd.ui.listener.AdaptiveReactionListener
 import org.stepik.android.adaptive.pdd.ui.listener.AnswerListener
 import org.stepik.android.adaptive.pdd.util.HtmlUtil
+import retrofit2.HttpException
 import java.util.concurrent.TimeUnit
 
 
@@ -33,7 +34,7 @@ class CardPresenter(val card: Card, private val listener: AdaptiveReactionListen
 
         if (isLoading) view.onSubmissionLoading()
         submission?.let { view.setSubmission(it, false) }
-        error?.let { view.onSubmissionError() }
+        error?.let { onError(it) }
     }
 
     fun detachView() {
@@ -72,13 +73,14 @@ class CardPresenter(val card: Card, private val listener: AdaptiveReactionListen
             card.adapter.setEnabled(false)
             view?.onSubmissionLoading()
             isLoading = true
+            error = null
 
             val submission = card.adapter.submission
             disposable = API.getInstance().createSubmission(submission)
                     .andThen(API.getInstance().getSubmissions(submission.attempt))
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(this::onSubmissionLoaded, this::onNetworkError)
+                    .subscribe(this::onSubmissionLoaded, this::onError)
 
             AnalyticMgr.getInstance().onSubmissionWasMade()
         }
@@ -97,7 +99,7 @@ class CardPresenter(val card: Card, private val listener: AdaptiveReactionListen
                         .delay(1, TimeUnit.SECONDS)
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(this::onSubmissionLoaded, this::onNetworkError)
+                        .subscribe(this::onSubmissionLoaded, this::onError)
             } else {
                 isLoading = false
                 AnalyticMgr.getInstance().answerResult(card.step, it)
@@ -114,10 +116,14 @@ class CardPresenter(val card: Card, private val listener: AdaptiveReactionListen
         }
     }
 
-    private fun onNetworkError(error: Throwable) {
+    private fun onError(error: Throwable) {
         isLoading = false
         this.error = error
         card.adapter.setEnabled(true)
-        view?.onSubmissionError()
+        if (error is HttpException) {
+            view?.onSubmissionRequestError()
+        } else {
+            view?.onSubmissionConnectivityError()
+        }
     }
 }

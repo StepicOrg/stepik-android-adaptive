@@ -4,7 +4,8 @@ import org.stepik.android.adaptive.pdd.ui.adapter.RatingAdapter
 
 interface RatingView {
     fun onLoading()
-    fun onError()
+    fun onConnectivityError()
+    fun onRequestError()
     fun onComplete()
     fun onRatingAdapter(adapter: RatingAdapter)
 }

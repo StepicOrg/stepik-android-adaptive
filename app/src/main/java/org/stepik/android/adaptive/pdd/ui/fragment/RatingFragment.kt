@@ -50,10 +50,20 @@ class RatingFragment : BasePresenterFragment<RatingPresenter, RatingView>(), Rat
         binding.container.visibility = View.GONE
     }
 
-    override fun onError() {
+    private fun onError() {
         binding.error.visibility = View.VISIBLE
         binding.progress.visibility = View.GONE
         binding.container.visibility = View.GONE
+    }
+
+    override fun onConnectivityError() {
+        binding.errorMessage.setText(R.string.connectivity_error)
+        onError()
+    }
+
+    override fun onRequestError() {
+        binding.errorMessage.setText(R.string.request_error)
+        onError()
     }
 
     override fun onComplete() {

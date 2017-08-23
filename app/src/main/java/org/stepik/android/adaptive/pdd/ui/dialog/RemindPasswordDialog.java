@@ -101,7 +101,7 @@ public final class RemindPasswordDialog extends DialogFragment {
     }
 
     private void onError(final Throwable throwable) {
-        Toast.makeText(getContext(), R.string.network_error, Toast.LENGTH_SHORT).show();
+        Toast.makeText(getContext(), R.string.request_error, Toast.LENGTH_SHORT).show();
         hideProgressDialog();
     }
 
