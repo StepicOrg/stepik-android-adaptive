@@ -15,8 +15,6 @@ import org.stepik.android.adaptive.pdd.R;
 import org.stepik.android.adaptive.pdd.Util;
 import org.stepik.android.adaptive.pdd.api.RecommendationsResponse;
 import org.stepik.android.adaptive.pdd.data.AnalyticMgr;
-import org.stepik.android.adaptive.pdd.data.SharedPreferenceMgr;
-import org.stepik.android.adaptive.pdd.data.db.DataBaseMgr;
 import org.stepik.android.adaptive.pdd.data.model.Card;
 import org.stepik.android.adaptive.pdd.data.model.Recommendation;
 import org.stepik.android.adaptive.pdd.data.model.RecommendationReaction;
@@ -34,14 +32,12 @@ import org.stepik.android.adaptive.pdd.ui.listener.AnswerListener;
 import org.stepik.android.adaptive.pdd.util.DailyRewardManager;
 import org.stepik.android.adaptive.pdd.util.ExpUtil;
 import org.stepik.android.adaptive.pdd.util.InventoryUtil;
-import org.stepik.android.adaptive.pdd.util.MigrationHelper;
 import org.stepik.android.adaptive.pdd.util.RateAppUtil;
 
 import java.util.ArrayDeque;
 import java.util.List;
 import java.util.Queue;
 
-import io.reactivex.Completable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
@@ -88,9 +84,10 @@ public final class CardsFragment extends Fragment implements AnswerListener {
         compositeDisposable.add(retrySubject.observeOn(AndroidSchedulers.mainThread()).subscribe(v -> retry()));
         loadingPlaceholders = getResources().getStringArray(R.array.recommendation_loading_placeholders);
 
+        createReaction(0, RecommendationReaction.Reaction.INTERESTING);
+
         InventoryUtil.starterPack();
 
-        resolveMigration();
         resolveDailyReward();
         LocalReminder.INSTANCE.resolveDailyRemind();
     }
@@ -99,24 +96,6 @@ public final class CardsFragment extends Fragment implements AnswerListener {
         final long progress = DailyRewardManager.INSTANCE.giveRewardAndGetCurrentRewardDay();
         if (progress != DailyRewardManager.getDISCARD())
             DailyRewardDialog.Companion.newInstance(progress).show(getChildFragmentManager(), DAILY_REWARD_DIALOG_TAG);
-    }
-
-    private void resolveMigration() {
-        if (!SharedPreferenceMgr.getInstance().isMigrated()) {
-            onLoading();
-            compositeDisposable.add(MigrationHelper.migrate()
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .doOnError(this::onError)
-                    .doOnComplete(() -> {
-                        SharedPreferenceMgr.getInstance().migrated();
-                        createReaction(0, RecommendationReaction.Reaction.INTERESTING);
-                    })
-                    .retryWhen(x -> x.zipWith(retrySubject, (a, __) -> a))
-                    .subscribe());
-        } else {
-            createReaction(0, RecommendationReaction.Reaction.INTERESTING);
-        }
     }
 
     @Nullable
@@ -212,10 +191,6 @@ public final class CardsFragment extends Fragment implements AnswerListener {
     public void onCorrectAnswer(long submissionId) {
         final long streak = ExpUtil.incStreak();
 
-        compositeDisposable.add(
-                Completable.fromRunnable(() -> DataBaseMgr.getInstance().onExpGained(streak, submissionId))
-                .subscribe(() -> {}, (e) -> {}));
-
         if (binding != null) {
             binding.expInc.setText(getString(R.string.exp_inc, streak));
             binding.streakSuccess.setText(getResources().getQuantityString(R.plurals.streak_success, (int) streak, streak));
@@ -230,7 +205,7 @@ public final class CardsFragment extends Fragment implements AnswerListener {
             new RateAppDialog().show(getChildFragmentManager(), RATE_APP_DIALOG_TAG);
         }
 
-        updateExpProgressBar(ExpUtil.changeExp(streak), streak, true);
+        updateExpProgressBar(ExpUtil.changeExp(streak, submissionId), streak, true);
     }
 
     public void onWrongAnswer() {

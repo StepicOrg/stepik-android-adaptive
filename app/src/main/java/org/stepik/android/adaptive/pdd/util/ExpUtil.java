@@ -1,20 +1,41 @@
 package org.stepik.android.adaptive.pdd.util;
 
+import org.stepik.android.adaptive.pdd.api.API;
 import org.stepik.android.adaptive.pdd.data.AnalyticMgr;
 import org.stepik.android.adaptive.pdd.data.SharedPreferenceMgr;
+import org.stepik.android.adaptive.pdd.data.db.DataBaseMgr;
+
+import io.reactivex.Completable;
+import io.reactivex.Observable;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.schedulers.Schedulers;
 
 public class ExpUtil {
     private static String EXP_KEY = "exp_key";
     private static String STREAK_KEY = "streak_key";
 
+    private static CompositeDisposable compositeDisposable = new CompositeDisposable();
+
     public static long getExp() {
         return SharedPreferenceMgr.getInstance().getLong(EXP_KEY);
     }
 
-    public static long changeExp(long delta) {
+    public static long changeExp(long delta, long submissionId) {
         long exp = SharedPreferenceMgr.getInstance().changeLong(EXP_KEY, delta);
         AnalyticMgr.getInstance().onExpReached(exp - delta, delta);
+
+        compositeDisposable.add(
+                Completable
+                        .fromRunnable(() -> DataBaseMgr.getInstance().onExpGained(delta, submissionId))
+                        .andThen(syncRating())
+                        .subscribeOn(Schedulers.io())
+                        .subscribe((__) -> {}, (e) -> AnalyticMgr.getInstance().onRatingError()));
         return exp;
+    }
+
+    public static Observable<?> syncRating() {
+        return Observable.fromCallable(DataBaseMgr.getInstance()::getExp)
+                .switchMap((e) -> API.getInstance().putRating(e).toObservable());
     }
 
     public static long incStreak() {

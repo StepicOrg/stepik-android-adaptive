@@ -118,25 +118,4 @@ class DataBaseMgr private constructor(context: Context) {
 
         return exp
     }
-
-    fun getStreak(): Long {
-        var exp = ExpUtil.getStreak()
-        if (exp == 0L) return exp
-
-        val cursor = db.query(
-                DataBaseHelper.TABLE_EXP,
-                arrayOf(DataBaseHelper.FIELD_EXP),
-                null, null, null, null,
-                "${DataBaseHelper.FIELD_SOLVED_AT} DESC",
-                "1"
-        )
-
-        cursor.use {
-            if (it.moveToFirst()) {
-                exp = it.getLong(it.getColumnIndex(DataBaseHelper.FIELD_EXP))
-            }
-        }
-
-        return exp
-    }
 }

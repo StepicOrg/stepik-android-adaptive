@@ -9,6 +9,7 @@ import org.stepik.android.adaptive.pdd.api.API
 import org.stepik.android.adaptive.pdd.core.presenter.contracts.RatingView
 import org.stepik.android.adaptive.pdd.data.model.RatingItem
 import org.stepik.android.adaptive.pdd.ui.adapter.RatingAdapter
+import org.stepik.android.adaptive.pdd.util.ExpUtil
 import org.stepik.android.adaptive.pdd.util.RatingNamesGenerator
 
 class RatingPresenter : PresenterBase<RatingView>() {
@@ -34,6 +35,17 @@ class RatingPresenter : PresenterBase<RatingView>() {
     private var periodsLoaded = 0
 
     init {
+        compositeDisposable.add(
+                ExpUtil.syncRating()
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .doOnError { onError() }
+                        .doOnComplete { initRatingPeriods() }
+                        .retryWhen { x -> x.zipWith(retrySubject, BiFunction<Throwable, Int, Throwable> { a, _ -> a }) }
+                        .subscribe())
+    }
+
+    private fun initRatingPeriods() {
         RATING_PERIODS.forEachIndexed { pos, period ->
             compositeDisposable.add(API.getInstance().getRating(ITEMS_PER_PAGE, period)
                     .subscribeOn(Schedulers.io())

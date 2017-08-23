@@ -20,7 +20,6 @@ import org.stepik.android.adaptive.pdd.data.SharedPreferenceMgr;
 import org.stepik.android.adaptive.pdd.data.model.EnrollmentWrapper;
 import org.stepik.android.adaptive.pdd.data.model.AccountCredentials;
 import org.stepik.android.adaptive.pdd.data.model.Profile;
-import org.stepik.android.adaptive.pdd.data.model.RatingItem;
 import org.stepik.android.adaptive.pdd.data.model.RecommendationReaction;
 import org.stepik.android.adaptive.pdd.data.model.RegistrationUser;
 import org.stepik.android.adaptive.pdd.data.model.Submission;
@@ -359,11 +358,11 @@ public final class API {
     }
 
     public Completable createSubmission(final Submission submission) {
-        return ratingService.createSubmission(new SubmissionRequest(submission));
+        return stepikService.createSubmission(new SubmissionRequest(submission));
     }
 
     public Observable<SubmissionResponse> getSubmissions(final long attempt) {
-        return ratingService.getSubmissions(attempt, "desc");
+        return stepikService.getSubmissions(attempt, "desc");
     }
 
     public Observable<ProfileResponse> getProfile() {
@@ -394,8 +393,9 @@ public final class API {
         return ratingService.getRating(Config.getInstance().getCourseId(), count, days, SharedPreferenceMgr.getInstance().getProfileId());
     }
 
-    public Completable migrate(final long exp, final long streak) {
-        return ratingService.migrate(new MigrationRequest(Config.getInstance().getCourseId(), SharedPreferenceMgr.getInstance().getProfileId(), exp, streak));
+    public Completable putRating(final long exp) {
+        return ratingService.putRating(new RatingRequest(
+                exp, Config.getInstance().getCourseId(), SharedPreferenceMgr.getInstance().getOAuthResponse().getAccessToken()));
     }
 
     private void setTimeout(OkHttpClient.Builder builder, int seconds) {
