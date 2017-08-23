@@ -9,6 +9,7 @@ import io.reactivex.Completable;
 import io.reactivex.Observable;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.schedulers.Schedulers;
+import retrofit2.HttpException;
 
 public class ExpUtil {
     private static String EXP_KEY = "exp_key";
@@ -29,7 +30,11 @@ public class ExpUtil {
                         .fromRunnable(() -> DataBaseMgr.getInstance().onExpGained(delta, submissionId))
                         .andThen(syncRating())
                         .subscribeOn(Schedulers.io())
-                        .subscribe((__) -> {}, (e) -> AnalyticMgr.getInstance().onRatingError()));
+                        .subscribe((__) -> {}, (e) -> {
+                            if (e instanceof HttpException) {
+                                AnalyticMgr.getInstance().onRatingError();
+                            }
+                        }));
         return exp;
     }
 
