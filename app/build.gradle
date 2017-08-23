@@ -16,7 +16,7 @@ android {
     compileSdkVersion 26
     buildToolsVersion "26.0.1"
     defaultConfig {
-        applicationId "org.stepik.android.adaptive.pdd"
+        applicationId "org.stepik.android.adaptive"
         minSdkVersion 17
         targetSdkVersion 26
         versionCode 6
@@ -41,22 +41,22 @@ android {
     }
     productFlavors {
         pdd {
-            applicationId 'org.stepik.android.adaptive.pdd'
+            applicationIdSuffix  '.pdd'
         }
         gmat1906 {
-            applicationId 'org.stepik.android.adaptive.gmat1906'
+            applicationIdSuffix  '.gmat1906'
         }
         gmat3067 {
-            applicationId 'org.stepik.android.adaptive.gmat3067'
+            applicationIdSuffix  '.gmat3067'
         }
         toefl3150 {
-            applicationId 'org.stepik.android.adaptive.toefl3150'
+            applicationIdSuffix  '.toefl3150'
         }
         toefl3149 {
-            applicationId 'org.stepik.android.adaptive.toefl3149'
+            applicationIdSuffix  '.toefl3149'
         }
         toefl3124 {
-            applicationId 'org.stepik.android.adaptive.toefl3124'
+            applicationIdSuffix  '.toefl3124'
         }
     }
 }

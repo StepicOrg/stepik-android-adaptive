@@ -1,6 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
 
-    package="org.stepik.android.adaptive.pdd">
+    package="org.stepik.android.adaptive">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
@@ -11,7 +11,7 @@
         android:roundIcon="@mipmap/ic_launcher_circle"
         android:label="@string/app_name"
         android:hardwareAccelerated="true"
-        android:name="org.stepik.android.adaptive.pdd.App"
+        android:name="org.stepik.android.adaptive.App"
 
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
@@ -22,7 +22,7 @@
 
         <activity
             android:theme="@style/AppTheme.NoActionBar"
-            android:name="org.stepik.android.adaptive.pdd.ui.activity.SplashActivity"
+            android:name="org.stepik.android.adaptive.ui.activity.SplashActivity"
             android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -32,45 +32,45 @@
 
         <activity
             android:theme="@style/AppTheme.NoActionBar"
-            android:name="org.stepik.android.adaptive.pdd.ui.activity.LaunchActivity" />
+            android:name="org.stepik.android.adaptive.ui.activity.LaunchActivity" />
 
         <activity
             android:theme="@style/AppTheme.NoActionBar"
-            android:name="org.stepik.android.adaptive.pdd.ui.activity.StudyActivity" />
+            android:name="org.stepik.android.adaptive.ui.activity.StudyActivity" />
 
         <activity
             android:theme="@style/AppTheme.NoActionBar"
-            android:name="org.stepik.android.adaptive.pdd.ui.activity.LoginActivity" />
+            android:name="org.stepik.android.adaptive.ui.activity.LoginActivity" />
 
         <activity
             android:theme="@style/AppTheme.NoActionBar"
-            android:name="org.stepik.android.adaptive.pdd.ui.activity.RegisterActivity" />
+            android:name="org.stepik.android.adaptive.ui.activity.RegisterActivity" />
 
         <activity
             android:theme="@style/AppTheme.NoActionBar"
-            android:name="org.stepik.android.adaptive.pdd.ui.activity.IntroActivity" />
+            android:name="org.stepik.android.adaptive.ui.activity.IntroActivity" />
 
         <activity
             android:theme="@style/AppTheme.NoActionBar.Dark"
-            android:name="org.stepik.android.adaptive.pdd.ui.activity.PhotoViewActivity"/>
+            android:name="org.stepik.android.adaptive.ui.activity.PhotoViewActivity"/>
 
         <activity
             android:theme="@style/AppTheme.NoActionBar"
-            android:name="org.stepik.android.adaptive.pdd.ui.activity.SocialAuthActivity"/>
+            android:name="org.stepik.android.adaptive.ui.activity.SocialAuthActivity"/>
 
         <activity
             android:theme="@style/AppTheme.NoActionBar"
-            android:name="org.stepik.android.adaptive.pdd.ui.activity.StatsActivity"/>
+            android:name="org.stepik.android.adaptive.ui.activity.StatsActivity"/>
 
         <receiver
-            android:name=".receivers.BootCompletedReceiver"
+            android:name="org.stepik.android.adaptive.receivers.BootCompletedReceiver"
             android:enabled="true">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED"/>
             </intent-filter>
         </receiver>
 
-        <receiver android:name=".receivers.NotificationsReceiver"/>
+        <receiver android:name="org.stepik.android.adaptive.receivers.NotificationsReceiver"/>
     </application>
 
 </manifest>

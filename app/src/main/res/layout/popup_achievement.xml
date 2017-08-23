@@ -23,7 +23,7 @@
                 android:layout_height="24dp" />
         </LinearLayout>
 
-        <org.stepik.android.adaptive.pdd.ui.view.morphing.MorphingView
+        <org.stepik.android.adaptive.ui.view.morphing.MorphingView
             android:id="@+id/morphing"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
@@ -38,6 +38,6 @@
                 android:visibility="gone"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
-        </org.stepik.android.adaptive.pdd.ui.view.morphing.MorphingView>
+        </org.stepik.android.adaptive.ui.view.morphing.MorphingView>
     </LinearLayout>
 </layout>

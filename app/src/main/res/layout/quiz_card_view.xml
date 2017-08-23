@@ -2,7 +2,7 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <org.stepik.android.adaptive.pdd.ui.view.SwipeableLayout
+    <org.stepik.android.adaptive.ui.view.SwipeableLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="center"
@@ -146,7 +146,7 @@
                     android:background="@color/colorStroke"
                     android:id="@+id/bottom_divider"/>
 
-                <org.stepik.android.adaptive.pdd.ui.view.CardScrollView
+                <org.stepik.android.adaptive.ui.view.CardScrollView
                     android:background="@android:color/white"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
@@ -157,7 +157,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="vertical">
-                        <org.stepik.android.adaptive.pdd.ui.view.LatexSupportableWebView
+                        <org.stepik.android.adaptive.ui.view.LatexSupportableWebView
                             android:id="@+id/question"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content" />
@@ -168,7 +168,7 @@
                             android:layout_height="1dp"
                             android:background="@color/colorStroke"/>
 
-                        <org.stepik.android.adaptive.pdd.ui.view.ListContainer
+                        <org.stepik.android.adaptive.ui.view.ListContainer
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:id="@+id/answers" />
@@ -195,7 +195,7 @@
                             android:id="@+id/answers_progress" />
 
                     </LinearLayout>
-                </org.stepik.android.adaptive.pdd.ui.view.CardScrollView>
+                </org.stepik.android.adaptive.ui.view.CardScrollView>
             </RelativeLayout>
 
             <TextView
@@ -237,5 +237,5 @@
                     android:layout_gravity="center" />
             </FrameLayout>
         </android.support.v7.widget.CardView>
-    </org.stepik.android.adaptive.pdd.ui.view.SwipeableLayout>
+    </org.stepik.android.adaptive.ui.view.SwipeableLayout>
 </layout>
