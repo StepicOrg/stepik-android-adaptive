@@ -44,17 +44,6 @@ Observable<AttemptResponse> getAttempts(
     @Query("user") final long user
 );
 
-@POST("api/submissions")
-Completable createSubmission(
-     @Body final SubmissionRequest submissionRequest
-);
-
-@GET("api/submissions")
-Observable<SubmissionResponse> getSubmissions(
-        @Query("attempt") final long attempt_id,
-        @Query("order") final String desc
-);
-
 @GET("api/lessons/{lesson}")
 Observable<LessonsResponse> getLessons(
         @Path("lesson") final long lesson
@@ -85,6 +74,18 @@ Completable reportView(
 Completable setProfile(
         @Path("userId") final long userId,
         @Body final ProfileRequest profileRequest
+);
+
+
+@POST("api/submissions")
+Completable createSubmission(
+        @Body final SubmissionRequest submissionRequest
+);
+
+@GET("api/submissions")
+Observable<SubmissionResponse> getSubmissions(
+        @Query("attempt") final long attempt_id,
+        @Query("order") final String desc
 );
 
 }

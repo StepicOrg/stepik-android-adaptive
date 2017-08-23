@@ -53,6 +53,8 @@ public final class AnalyticMgr {
     private final static String EVENT_NOTIFICATION_CANCELED = "notification_canceled";
     private final static String PARAM_NOTIFICATION_DAYS = "days";
 
+    private final static String EVENT_ON_RATING_ERROR = "rating_sync_error";
+
     private static AnalyticMgr instance;
 
     private final FirebaseAnalytics firebaseAnalytics;
@@ -178,5 +180,9 @@ public final class AnalyticMgr {
 
     public void onNotificationCanceled(int days) {
         logEventWithLongParam(EVENT_STREAK, PARAM_NOTIFICATION_DAYS, days);
+    }
+
+    public void onRatingError() {
+        firebaseAnalytics.logEvent(EVENT_ON_RATING_ERROR, null);
     }
 }

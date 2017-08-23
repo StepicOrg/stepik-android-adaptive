@@ -31,6 +31,7 @@ public final class Config {
         private long COURSE_ID = 0;
 
         private String HOST = "HOST";
+        private String RATING_HOST = "RATING_HOST";
 
         private String OAUTH_CLIENT_ID = "OAUTH_CLIENT_ID";
         private String OAUTH_CLIENT_SECRET = "OAUTH_CLIENT_SECRET";
@@ -50,6 +51,10 @@ public final class Config {
 
         public String getHost() {
             return HOST;
+        }
+
+        public String getRatingHost() {
+            return RATING_HOST;
         }
 
         public long getCourseId() {

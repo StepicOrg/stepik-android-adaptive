@@ -6,14 +6,14 @@ import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
-import org.stepik.android.adaptive.pdd.core.presenter.contracts.StatsView
+import org.stepik.android.adaptive.pdd.core.presenter.contracts.ProgressView
 import org.stepik.android.adaptive.pdd.data.db.DataBaseMgr
 import org.stepik.android.adaptive.pdd.ui.adapter.WeeksAdapter
 import org.stepik.android.adaptive.pdd.util.ExpUtil
 
-class StatsPresenter : PresenterBase<StatsView>() {
-    companion object : PresenterFactory<StatsPresenter> {
-        override fun create() = StatsPresenter()
+class ProgressPresenter : PresenterBase<ProgressView>() {
+    companion object : PresenterFactory<ProgressPresenter> {
+        override fun create() = ProgressPresenter()
     }
 
     private val total by lazy { ExpUtil.getExp() }
@@ -46,7 +46,7 @@ class StatsPresenter : PresenterBase<StatsView>() {
         )
     }
 
-    override fun attachView(view: StatsView) {
+    override fun attachView(view: ProgressView) {
         super.attachView(view)
         view.onWeeksAdapter(adapter)
     }

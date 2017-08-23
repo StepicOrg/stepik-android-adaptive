@@ -70,10 +70,12 @@ public final class API {
     private OAuthService authService;
 
     private final StepikService stepikService;
+    private final RatingService ratingService;
     private final EmptyAuthService emptyAuthService;
 
     private API() {
         stepikService = initStepikService();
+        ratingService = initRatingService();
         emptyAuthService = initEmptyAuthService();
     }
 
@@ -109,7 +111,7 @@ public final class API {
 
         setTimeout(okHttpBuilder, TIMEOUT_IN_SECONDS);
 
-        final Retrofit retrofit = buildRetrofit(okHttpBuilder.build());
+        final Retrofit retrofit = buildRetrofit(okHttpBuilder.build(), Config.getInstance().getHost());
 
         return retrofit.create(OAuthService.class);
     }
@@ -200,29 +202,41 @@ public final class API {
         });
         setTimeout(okHttpBuilder, TIMEOUT_IN_SECONDS);
 
-        Retrofit notLogged = buildRetrofit(okHttpBuilder.build());
+        Retrofit notLogged = buildRetrofit(okHttpBuilder.build(), Config.getInstance().getHost());
 
         OAuthService tmpService = notLogged.create(OAuthService.class);
 
         return tmpService.createAccount(new UserRegistrationRequest(new RegistrationUser(firstName, lastName, email, password)));
     }
 
-    private StepikService initStepikService() {
+    private final Interceptor authInterceptor = chain -> {
+        Request request = addUserAgentTo(chain);
+
+        okhttp3.Response response = addAuthHeaderAndProceed(chain, request);
+        if (response.code() == 400) { // was bug when user has incorrect token deadline due to wrong datetime had been set on phone
+            SharedPreferenceMgr.getInstance().resetAuthResponseDeadline();
+            response = addAuthHeaderAndProceed(chain, request);
+        }
+
+        return response;
+    };
+
+    private RatingService initRatingService() {
         final OkHttpClient.Builder okHttpBuilder = new OkHttpClient.Builder();
-        okHttpBuilder.addInterceptor(chain -> {
-            Request request = addUserAgentTo(chain);
-
-            okhttp3.Response response = addAuthHeaderAndProceed(chain, request);
-            if (response.code() == 400) { // was bug when user has incorrect token deadline due to wrong datetime had been set on phone
-                SharedPreferenceMgr.getInstance().resetAuthResponseDeadline();
-                response = addAuthHeaderAndProceed(chain, request);
-            }
-
-            return response;
-        });
+        okHttpBuilder.addInterceptor(authInterceptor);
 
         setTimeout(okHttpBuilder, TIMEOUT_IN_SECONDS);
-        final Retrofit retrofit = buildRetrofit(okHttpBuilder.build());
+        final Retrofit retrofit = buildRetrofit(okHttpBuilder.build(), Config.getInstance().getRatingHost());
+
+        return retrofit.create(RatingService.class);
+    }
+
+    private StepikService initStepikService() {
+        final OkHttpClient.Builder okHttpBuilder = new OkHttpClient.Builder();
+        okHttpBuilder.addInterceptor(authInterceptor);
+
+        setTimeout(okHttpBuilder, TIMEOUT_IN_SECONDS);
+        final Retrofit retrofit = buildRetrofit(okHttpBuilder.build(), Config.getInstance().getHost());
 
         return retrofit.create(StepikService.class);
     }
@@ -267,7 +281,7 @@ public final class API {
         final OkHttpClient.Builder okHttpBuilder = new OkHttpClient.Builder();
         setTimeout(okHttpBuilder, TIMEOUT_IN_SECONDS);
 
-        final Retrofit retrofit = buildRetrofit(okHttpBuilder.build());
+        final Retrofit retrofit = buildRetrofit(okHttpBuilder.build(), Config.getInstance().getHost());
 
         return retrofit.create(EmptyAuthService.class);
     }
@@ -317,7 +331,7 @@ public final class API {
         okHttpBuilder.addNetworkInterceptor(interceptor);
 //        okHttpBuilder.addNetworkInterceptor(this.stethoInterceptor);
         setTimeout(okHttpBuilder, TIMEOUT_IN_SECONDS);
-        Retrofit notLogged = buildRetrofit(okHttpBuilder.build());
+        Retrofit notLogged = buildRetrofit(okHttpBuilder.build(), Config.getInstance().getHost());
 
         EmptyAuthService tempService = notLogged.create(EmptyAuthService.class);
         return tempService.remindPassword(encodedEmail);
@@ -373,6 +387,15 @@ public final class API {
 
     public Completable reportView(final long assignment, final long step) {
         return stepikService.reportView(new ViewRequest(assignment, step));
+    }
+
+    public Observable<RatingResponse> getRating(final int count, final int days) {
+        return ratingService.getRating(Config.getInstance().getCourseId(), count, days, SharedPreferenceMgr.getInstance().getProfileId());
+    }
+
+    public Completable putRating(final long exp) {
+        return ratingService.putRating(new RatingRequest(
+                exp, Config.getInstance().getCourseId(), SharedPreferenceMgr.getInstance().getOAuthResponse().getAccessToken()));
     }
 
     private void setTimeout(OkHttpClient.Builder builder, int seconds) {
@@ -445,9 +468,9 @@ public final class API {
                 .build();
     }
 
-    private Retrofit buildRetrofit(OkHttpClient client) {
+    private Retrofit buildRetrofit(OkHttpClient client, final String baseUrl) {
         return new Retrofit.Builder()
-                .baseUrl(Config.getInstance().getHost())
+                .baseUrl(baseUrl)
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .addConverterFactory(GsonConverterFactory.create())
                 .client(client)

@@ -15,7 +15,6 @@ import org.stepik.android.adaptive.pdd.ui.listener.AnswerListener;
 import org.stepik.android.adaptive.pdd.ui.view.QuizCardsContainer;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 

@@ -1,5 +1,6 @@
 package org.stepik.android.adaptive.pdd.ui.adapter
 
+import android.support.annotation.StringRes
 import android.support.design.widget.Snackbar
 import android.view.View
 import org.stepik.android.adaptive.pdd.core.presenter.CardPresenter
@@ -139,9 +140,17 @@ class QuizCardViewHolder(val binding: QuizCardViewBinding) : ContainerView.ViewH
         }
     }
 
-    override fun onSubmissionError() {
+    override fun onSubmissionConnectivityError() {
+        onSubmissionError(R.string.connectivity_error)
+    }
+
+    override fun onSubmissionRequestError() {
+        onSubmissionError(R.string.request_error)
+    }
+
+    private fun onSubmissionError(@StringRes errorMessage: Int) {
         if (binding.root.parent != null) {
-            Snackbar.make(binding.root.parent as ViewGroup, R.string.network_error, Snackbar.LENGTH_SHORT).show()
+            Snackbar.make(binding.root.parent as ViewGroup, errorMessage, Snackbar.LENGTH_SHORT).show()
         }
         binding.container.isEnabled = true
         CardHelper.resetSupplementalActions(binding)

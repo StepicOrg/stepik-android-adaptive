@@ -15,13 +15,11 @@ import org.stepik.android.adaptive.pdd.R;
 import org.stepik.android.adaptive.pdd.Util;
 import org.stepik.android.adaptive.pdd.api.RecommendationsResponse;
 import org.stepik.android.adaptive.pdd.data.AnalyticMgr;
-import org.stepik.android.adaptive.pdd.data.db.DataBaseMgr;
 import org.stepik.android.adaptive.pdd.data.model.Card;
 import org.stepik.android.adaptive.pdd.data.model.Recommendation;
 import org.stepik.android.adaptive.pdd.data.model.RecommendationReaction;
 import org.stepik.android.adaptive.pdd.databinding.FragmentRecommendationsBinding;
 import org.stepik.android.adaptive.pdd.notifications.LocalReminder;
-import org.stepik.android.adaptive.pdd.notifications.RemindNotificationManager;
 import org.stepik.android.adaptive.pdd.ui.activity.StatsActivity;
 import org.stepik.android.adaptive.pdd.ui.adapter.QuizCardsAdapter;
 import org.stepik.android.adaptive.pdd.ui.animation.CardsFragmentAnimations;
@@ -40,12 +38,12 @@ import java.util.ArrayDeque;
 import java.util.List;
 import java.util.Queue;
 
-import io.reactivex.Completable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 import io.reactivex.subjects.PublishSubject;
+import retrofit2.HttpException;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -135,10 +133,16 @@ public final class CardsFragment extends Fragment implements AnswerListener {
         return binding.getRoot();
     }
 
-    public void createReaction(final long lesson, final RecommendationReaction.Reaction reaction) {
-        if (adapter.isEmptyOrContainsOnlySwipedCard(lesson) && binding != null) {
+    public void onLoading() {
+        if (binding != null) {
             binding.progress.setVisibility(View.VISIBLE);
             binding.loadingPlaceholder.setText(loadingPlaceholders[Util.getRandomNumberBetween(0, 3)]);
+        }
+    }
+
+    public void createReaction(final long lesson, final RecommendationReaction.Reaction reaction) {
+        if (adapter.isEmptyOrContainsOnlySwipedCard(lesson)) {
+            onLoading();
         }
 
         compositeDisposable.add(CardHelper.createReactionObservable(lesson, reaction, cards.size() + adapter.getItemCount())
@@ -188,10 +192,6 @@ public final class CardsFragment extends Fragment implements AnswerListener {
     public void onCorrectAnswer(long submissionId) {
         final long streak = ExpUtil.incStreak();
 
-        compositeDisposable.add(
-                Completable.fromRunnable(() -> DataBaseMgr.getInstance().onExpGained(streak, submissionId))
-                .subscribe(() -> {}, (e) -> {}));
-
         if (binding != null) {
             binding.expInc.setText(getString(R.string.exp_inc, streak));
             binding.streakSuccess.setText(getResources().getQuantityString(R.plurals.streak_success, (int) streak, streak));
@@ -206,7 +206,7 @@ public final class CardsFragment extends Fragment implements AnswerListener {
             new RateAppDialog().show(getChildFragmentManager(), RATE_APP_DIALOG_TAG);
         }
 
-        updateExpProgressBar(ExpUtil.changeExp(streak), streak, true);
+        updateExpProgressBar(ExpUtil.changeExp(streak, submissionId), streak, true);
     }
 
     public void onWrongAnswer() {
@@ -244,6 +244,12 @@ public final class CardsFragment extends Fragment implements AnswerListener {
         isError = true;
         if (error != null) error.printStackTrace();
         if (binding != null) {
+            if (error instanceof HttpException) {
+                binding.errorMessage.setText(R.string.request_error);
+            } else {
+                binding.errorMessage.setText(R.string.connectivity_error);
+            }
+
             binding.cardsContainer.setVisibility(View.GONE);
             binding.error.setVisibility(View.VISIBLE);
             binding.progress.setVisibility(View.GONE);
@@ -256,9 +262,8 @@ public final class CardsFragment extends Fragment implements AnswerListener {
     private void retry() {
         isError = false;
         binding.error.setVisibility(View.GONE);
-        binding.progress.setVisibility(View.VISIBLE);
         binding.cardsContainer.setVisibility(View.VISIBLE);
-        binding.loadingPlaceholder.setText(loadingPlaceholders[Util.getRandomNumberBetween(0, 3)]);
+        onLoading();
         if (!cards.isEmpty()) {
             cards.peek().init();
             resubscribe();
