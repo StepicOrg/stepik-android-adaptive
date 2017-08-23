@@ -27,14 +27,6 @@
     <string name="auth_error_empty_password">Enter the password</string>
     <string name="processing_your_request">Processing your request</string>
     <string name="auth">Authorization</string>
-    <string name="intro_title_1">PDD 2017</string>
-    <string name="intro_description_1">Welcome to adaptive course dedicated to PDD exam.</string>
-    <string name="intro_title_2">Hard</string>
-    <string name="intro_description_2">If you consider current question is hard you can skip it by swiping card to RIGHT.</string>
-    <string name="intro_title_3">Easy</string>
-    <string name="intro_description_3">On the other hand, if you consider current question too easy you can skip it by swiping it LEFT.</string>
-    <string name="intro_title_4">Good luck</string>
-    <string name="intro_description_4">We hope that this course will help you successfully pass your exam.</string>
     <integer name="com_vk_sdk_AppId" translatable="false">6018407</integer>
     <string name="remind_password_success">We sent you a letter</string>
     <string name="open">Open</string>
@@ -56,7 +48,7 @@
             <div class="padding-box">
                 <img src="file:///android_asset/web/images/01.svg" />
             </div>
-            <h3>ПДД 2017</h3>
+            <h3>PDD 2017</h3>
         </div>
         <p>Welcome to adaptive PDD course. During this course you\'ll receive tasks depending on your answers and reactions. Let\'s look how is it work.</p>
     ]]></string>

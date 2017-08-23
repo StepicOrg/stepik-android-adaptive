@@ -1,0 +1,48 @@
+* {
+    margin: 0;
+    -webkit-user-select: none;
+}
+
+body {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    font-size: 14px;
+    line-height: 1.3em;
+}
+
+.main {
+    padding: 16px;
+}
+
+p > img {
+    width: 100%;
+    box-sizing: border-box;
+}
+
+p {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 16px;
+}
+
+@supports(width: calc(100% + 32px)) {
+    p > img {
+        margin: -16px;
+        width: calc(100% + 32px);
+    }
+}
+
+.center {
+    text-align: center;
+}
+
+.padding-box {
+    margin: 24px auto;
+}
+
+.padding-box img {
+    max-width: 100%;
+}
