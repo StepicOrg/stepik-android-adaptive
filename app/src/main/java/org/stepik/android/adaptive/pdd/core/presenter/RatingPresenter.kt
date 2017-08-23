@@ -9,7 +9,9 @@ import org.stepik.android.adaptive.pdd.api.API
 import org.stepik.android.adaptive.pdd.core.presenter.contracts.RatingView
 import org.stepik.android.adaptive.pdd.data.model.RatingItem
 import org.stepik.android.adaptive.pdd.ui.adapter.RatingAdapter
+import org.stepik.android.adaptive.pdd.util.ExpUtil
 import org.stepik.android.adaptive.pdd.util.RatingNamesGenerator
+import retrofit2.HttpException
 
 class RatingPresenter : PresenterBase<RatingView>() {
     companion object : PresenterFactory<RatingPresenter> {
@@ -27,25 +29,36 @@ class RatingPresenter : PresenterBase<RatingView>() {
     private val compositeDisposable = CompositeDisposable()
     private val retrySubject = PublishSubject.create<Int>()
 
-    private var isError = false
+    private var error: Throwable? = null
 
     private var ratingPeriod = 0
 
     private var periodsLoaded = 0
 
     init {
+        compositeDisposable.add(
+                ExpUtil.syncRating()
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .doOnError(this::onError)
+                        .doOnComplete { initRatingPeriods() }
+                        .retryWhen { x -> x.zipWith(retrySubject, BiFunction<Throwable, Int, Throwable> { a, _ -> a }) }
+                        .subscribe())
+    }
+
+    private fun initRatingPeriods() {
         RATING_PERIODS.forEachIndexed { pos, period ->
             compositeDisposable.add(API.getInstance().getRating(ITEMS_PER_PAGE, period)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
-                    .doOnError { onError() }
+                    .doOnError(this::onError)
                     .retryWhen { x -> x.zipWith(retrySubject, BiFunction<Throwable, Int, Throwable> { a, _ -> a }) }
                     .map { it.users }
                     .subscribe({
-                        adapters[pos].add(prepareRatingItems(it))
+                        adapters[pos].set(prepareRatingItems(it))
                         periodsLoaded++
                         onLoadComplete()
-                    }, { onError() }))
+                    }, this::onError))
         }
     }
 
@@ -71,8 +84,8 @@ class RatingPresenter : PresenterBase<RatingView>() {
         view.onRatingAdapter(adapters[ratingPeriod])
         view.onLoading()
 
-        if (isError) {
-            view.onError()
+        if (error != null) {
+            error?.let { onError(it) }
         } else {
             onLoadComplete()
         }
@@ -84,13 +97,17 @@ class RatingPresenter : PresenterBase<RatingView>() {
         }
     }
 
-    private fun onError() {
-        isError = true
-        view?.onError()
+    private fun onError(throwable: Throwable) {
+        error = throwable
+        if (throwable is HttpException) {
+            view?.onRequestError()
+        } else {
+            view?.onConnectivityError()
+        }
     }
 
     fun retry() {
-        isError = false
+        error = null
         retrySubject.onNext(0)
     }
 

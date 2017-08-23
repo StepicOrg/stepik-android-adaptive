@@ -48,20 +48,21 @@ class DataBaseMgr private constructor(context: Context) {
                 FIELD_DAY // ORDER BY
         )
 
-        val now = DateTime.now().withTimeAtStartOfDay()
+        cursor.use {
+            val now = DateTime.now().withTimeAtStartOfDay()
 
-        if (cursor.moveToFirst()) {
-            do {
-                val date = DateTime(cursor.getLong(cursor.getColumnIndex(DataBaseHelper.FIELD_SOLVED_AT)) * 1000).withTimeAtStartOfDay()
-                val day = Days.daysBetween(date, now).days
+            if (it.moveToFirst()) {
+                do {
+                    val date = DateTime(it.getLong(it.getColumnIndex(DataBaseHelper.FIELD_SOLVED_AT)) * 1000).withTimeAtStartOfDay()
+                    val day = Days.daysBetween(date, now).days
 
-                if (day in 0..6) {
-                    res[6 - day] = cursor.getLong(cursor.getColumnIndex(DataBaseHelper.FIELD_EXP))
-                }
-            } while (cursor.moveToNext())
+                    if (day in 0..6) {
+                        res[6 - day] = it.getLong(it.getColumnIndex(DataBaseHelper.FIELD_EXP))
+                    }
+                } while (it.moveToNext())
+            }
         }
 
-        cursor.close()
         return res
     }
 
@@ -84,18 +85,18 @@ class DataBaseMgr private constructor(context: Context) {
                 "$FIELD_WEEK DESC"
         )
 
-        if (cursor.moveToFirst()) {
-            do {
-                val w = cursor.getLong(cursor.getColumnIndex(DataBaseHelper.FIELD_SOLVED_AT))
-                val dt = DateTime(w * 1000)
-                val start = dt.withDayOfWeek(1)
-                val end = dt.withDayOfWeek(7)
+        cursor.use {
+            if (it.moveToFirst()) {
+                do {
+                    val w = it.getLong(it.getColumnIndex(DataBaseHelper.FIELD_SOLVED_AT))
+                    val dt = DateTime(w * 1000)
+                    val start = dt.withDayOfWeek(1)
+                    val end = dt.withDayOfWeek(7)
 
-                res.add(WeekProgress(start, end, cursor.getLong(cursor.getColumnIndex(DataBaseHelper.FIELD_EXP))))
-            } while (cursor.moveToNext())
+                    res.add(WeekProgress(start, end, it.getLong(it.getColumnIndex(DataBaseHelper.FIELD_EXP))))
+                } while (it.moveToNext())
+            }
         }
-
-        cursor.close()
 
         return res
     }
@@ -108,30 +109,12 @@ class DataBaseMgr private constructor(context: Context) {
         )
 
         var exp = -1L
-        if (cursor.moveToFirst()) {
-            exp = cursor.getLong(cursor.getColumnIndex(DataBaseHelper.FIELD_EXP))
+
+        cursor.use {
+            if (it.moveToFirst()) {
+                exp = it.getLong(it.getColumnIndex(DataBaseHelper.FIELD_EXP))
+            }
         }
-        cursor.close()
-
-        return exp
-    }
-
-    fun getStreak(): Long {
-        var exp = ExpUtil.getStreak()
-        if (exp == 0L) return exp
-
-        val cursor = db.query(
-                DataBaseHelper.TABLE_EXP,
-                arrayOf(DataBaseHelper.FIELD_EXP),
-                null, null, null, null,
-                "${DataBaseHelper.FIELD_SOLVED_AT} DESC",
-                "1"
-        )
-
-        if (cursor.moveToFirst()) {
-            exp = cursor.getLong(cursor.getColumnIndex(DataBaseHelper.FIELD_EXP))
-        }
-        cursor.close()
 
         return exp
     }

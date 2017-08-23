@@ -5,7 +5,8 @@ import org.stepik.android.adaptive.pdd.ui.adapter.AttemptAnswersAdapter
 
 interface CardView {
     fun setSubmission(submission: Submission, animate: Boolean)
-    fun onSubmissionError()
+    fun onSubmissionConnectivityError()
+    fun onSubmissionRequestError()
     fun onSubmissionLoading()
 
     fun setTitle(title: String)

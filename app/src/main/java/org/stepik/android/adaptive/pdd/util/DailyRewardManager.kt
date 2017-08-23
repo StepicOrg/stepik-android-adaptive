@@ -51,11 +51,12 @@ object DailyRewardManager {
             SharedPreferenceMgr.getInstance().getLong(REWARD_PROGRESS_KEY)
         }
 
-        if (diff > 1 || diff < 0 || progress >= rewards.size) {
+        val isDayStreakBroken = diff > 1 || diff < 0
+        if (isDayStreakBroken || progress >= rewards.size) {
             resetProgress()
             progress = 0
 
-            if (diff > 1 || diff < 0) {
+            if (isDayStreakBroken) {
                 totalRewardProgress = 0
             }
         }

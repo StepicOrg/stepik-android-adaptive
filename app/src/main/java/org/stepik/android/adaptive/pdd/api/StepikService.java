@@ -76,4 +76,16 @@ Completable setProfile(
         @Body final ProfileRequest profileRequest
 );
 
+
+@POST("api/submissions")
+Completable createSubmission(
+        @Body final SubmissionRequest submissionRequest
+);
+
+@GET("api/submissions")
+Observable<SubmissionResponse> getSubmissions(
+        @Query("attempt") final long attempt_id,
+        @Query("order") final String desc
+);
+
 }
