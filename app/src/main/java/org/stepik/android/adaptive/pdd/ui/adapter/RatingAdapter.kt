@@ -47,7 +47,7 @@ class RatingAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private val items = ArrayList<RatingItem>()
 
     override fun getItemViewType(position: Int) =
-        if (items[position].user != SEPARATOR) {
+        if (isNotSeparatorStub(items[position])) {
             RATING_ITEM_VIEW_TYPE
         } else {
             SEPARATOR_VIEW_TYPE
