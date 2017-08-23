@@ -11,7 +11,7 @@
     <string name="stats">Статистика</string>
     <string name="logout">Выход</string>
     <string name="correct">ВЕРНО</string>
-    <string name="network_error">При обработке запроса произошла ошибка</string>
+    <string name="request_error">При обработке запроса произошла ошибка</string>
     <string name="wrong">НЕВЕРНО</string>
     <string name="logout_dialog">Вы уверены, что хотите выйти из текущего профиля?</string>
     <string name="password">Пароль</string>
@@ -124,4 +124,5 @@
     <string name="progress">Прогресс</string>
     <string name="rating">Рейтинг</string>
     <string name="rating_you_placeholder"><b>Вы</b></string>
+    <string name="connectivity_error">Ошибка подключения к серверу</string>
 </resources>

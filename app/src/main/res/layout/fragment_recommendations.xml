@@ -197,7 +197,7 @@
                         android:layout_marginTop="8dp"
                         android:maxWidth="256dp"
                         android:gravity="center"
-                        android:text="@string/network_error"
+                        android:text="@string/request_error"
                         android:textColor="@color/colorGrayText"/>
 
                     <Button

@@ -14,11 +14,12 @@
             android:id="@+id/error">
 
             <TextView
+                android:id="@+id/error_message"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:maxWidth="256dp"
                 android:gravity="center"
-                android:text="@string/network_error"
+                android:text="@string/request_error"
                 android:textColor="@color/colorGrayText"/>
 
             <Button
