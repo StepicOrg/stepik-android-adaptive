@@ -43,6 +43,7 @@ import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 import io.reactivex.subjects.PublishSubject;
+import retrofit2.HttpException;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -243,6 +244,12 @@ public final class CardsFragment extends Fragment implements AnswerListener {
         isError = true;
         if (error != null) error.printStackTrace();
         if (binding != null) {
+            if (error instanceof HttpException) {
+                binding.errorMessage.setText(R.string.request_error);
+            } else {
+                binding.errorMessage.setText(R.string.connectivity_error);
+            }
+
             binding.cardsContainer.setVisibility(View.GONE);
             binding.error.setVisibility(View.VISIBLE);
             binding.progress.setVisibility(View.GONE);
