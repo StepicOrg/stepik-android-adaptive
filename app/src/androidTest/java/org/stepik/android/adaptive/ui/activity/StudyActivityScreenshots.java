@@ -14,6 +14,7 @@ import android.test.suitebuilder.annotation.LargeTest;
 import android.view.View;
 
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -24,6 +25,7 @@ import org.stepik.android.adaptive.ui.view.SwipeableLayout;
 
 import tools.fastlane.screengrab.Screengrab;
 import tools.fastlane.screengrab.UiAutomatorScreenshotStrategy;
+import tools.fastlane.screengrab.locale.LocaleTestRule;
 
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.matcher.ViewMatchers.*;
@@ -32,6 +34,9 @@ import static org.hamcrest.Matchers.allOf;
 @LargeTest
 @RunWith(AndroidJUnit4.class)
 public class StudyActivityScreenshots {
+
+    @ClassRule
+    public static final LocaleTestRule localeTestRule = new LocaleTestRule();
 
     @BeforeClass
     public static void beforeAll() {
@@ -43,8 +48,10 @@ public class StudyActivityScreenshots {
 
     @Test
     public void plainScreenshot() throws Exception {
-
         Thread.sleep(5000);
+
+        Screengrab.screenshot("01");
+
         onView(withId(R.id.fragment_container)).perform(swipeLeft());
 
         Screengrab.screenshot("02");
