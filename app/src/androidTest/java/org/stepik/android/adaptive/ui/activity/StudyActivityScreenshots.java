@@ -8,6 +8,7 @@ import android.support.test.espresso.action.GeneralLocation;
 import android.support.test.espresso.action.GeneralSwipeAction;
 import android.support.test.espresso.action.MotionEvents;
 import android.support.test.espresso.action.Press;
+import android.support.test.espresso.action.Swipe;
 import android.support.test.espresso.action.Swiper;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
@@ -23,6 +24,7 @@ import org.junit.runner.RunWith;
 
 import org.stepik.android.adaptive.R;
 import org.stepik.android.adaptive.data.SharedPreferenceMgr;
+import org.stepik.android.adaptive.util.DailyRewardManager;
 import org.stepik.android.adaptive.util.ExpUtil;
 
 import io.reactivex.functions.Action;
@@ -43,6 +45,7 @@ public class StudyActivityScreenshots {
     @BeforeClass
     public static void beforeAll() {
         Screengrab.setDefaultScreenshotStrategy(new UiAutomatorScreenshotStrategy());
+        DailyRewardManager.INSTANCE.giveRewardAndGetCurrentRewardDay();
     }
 
     @Rule
@@ -50,7 +53,13 @@ public class StudyActivityScreenshots {
 
     @Test
     public void plainScreenshot() throws Exception {
+        Screengrab.screenshot("04");
+
         Thread.sleep(5000);
+
+        onView(withId(R.id.cards_container))
+                .perform(new GeneralSwipeAction(Swipe.FAST, GeneralLocation.CENTER, GeneralLocation.BOTTOM_CENTER, Press.THUMB));
+        Thread.sleep(500);
 
         Screengrab.screenshot("01");
         final CardSwiper dragLeft = new CardSwiper(() -> {

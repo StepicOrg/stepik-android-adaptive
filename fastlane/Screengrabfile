@@ -1,10 +1,10 @@
 # remove the leading '#' to uncomment lines
 
-app_package_name 'org.stepik.android.adaptive.pdd'
+app_package_name 'org.stepik.android.adaptive.toefl3149'
 # use_tests_in_packages ['your.screenshot.tests.package']
 
-app_apk_path 'app/build/outputs/apk/app-pdd-debug.apk'
-tests_apk_path 'app/build/outputs/apk/app-pdd-debug-androidTest.apk'
+app_apk_path 'app/build/outputs/apk/app-toefl3149-debug.apk'
+tests_apk_path 'app/build/outputs/apk/app-toefl3149-debug-androidTest.apk'
 
 locales ['en-US', 'ru-RU']
 

@@ -9,6 +9,8 @@ import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.stepik.android.adaptive.ui.fragment.OnboardingFragment;
+import org.stepik.android.adaptive.util.DailyRewardManager;
 import org.stepik.android.adaptive.util.ExpUtil;
 
 import tools.fastlane.screengrab.Screengrab;
@@ -19,13 +21,18 @@ import tools.fastlane.screengrab.locale.LocaleTestRule;
 @RunWith(AndroidJUnit4.class)
 public class StatsActivityScreenshots {
 
+    private static final long GOOD_RATING = 128;
+
     @ClassRule
     public static final LocaleTestRule localeTestRule = new LocaleTestRule();
 
     @BeforeClass
     public static void beforeAll() {
         Screengrab.setDefaultScreenshotStrategy(new UiAutomatorScreenshotStrategy());
-        ExpUtil.changeExp(64, -1);
+        if (ExpUtil.getExp() < GOOD_RATING) {
+            ExpUtil.changeExp(GOOD_RATING, -1);
+        }
+        DailyRewardManager.INSTANCE.giveRewardAndGetCurrentRewardDay();
     }
 
     @Rule
