@@ -23,9 +23,8 @@ import org.junit.runner.RunWith;
 
 
 import org.stepik.android.adaptive.R;
-import org.stepik.android.adaptive.data.SharedPreferenceMgr;
+import org.stepik.android.adaptive.util.AchievementManager;
 import org.stepik.android.adaptive.util.DailyRewardManager;
-import org.stepik.android.adaptive.util.ExpUtil;
 
 import io.reactivex.functions.Action;
 import tools.fastlane.screengrab.Screengrab;
@@ -46,6 +45,7 @@ public class StudyActivityScreenshots {
     public static void beforeAll() {
         Screengrab.setDefaultScreenshotStrategy(new UiAutomatorScreenshotStrategy());
         DailyRewardManager.INSTANCE.giveRewardAndGetCurrentRewardDay();
+        AchievementManager.INSTANCE.destroy();
     }
 
     @Rule
@@ -53,10 +53,14 @@ public class StudyActivityScreenshots {
 
     @Test
     public void plainScreenshot() throws Exception {
+        Thread.sleep(50);
         Screengrab.screenshot("04");
 
         Thread.sleep(5000);
 
+        onView(withId(R.id.cards_container))
+                .perform(new GeneralSwipeAction(Swipe.FAST, GeneralLocation.CENTER, GeneralLocation.BOTTOM_CENTER, Press.THUMB));
+        Thread.sleep(500);
         onView(withId(R.id.cards_container))
                 .perform(new GeneralSwipeAction(Swipe.FAST, GeneralLocation.CENTER, GeneralLocation.BOTTOM_CENTER, Press.THUMB));
         Thread.sleep(500);
