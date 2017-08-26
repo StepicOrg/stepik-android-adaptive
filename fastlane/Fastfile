@@ -4,14 +4,38 @@ lane :pre do
 	gradle(task: "assembleAndroidTest")
 end
 
+lane :setPortraitOrientation do
+
+	adb(command: "shell settings put system accelerometer_rotation 0")
+	adb(command: "")
+
+end
+
+lane :disableAnimations do
+	adb(command: "shell settings put global window_animation_scale 0.0")
+	adb(command: "shell settings put global transition_animation_scale 0.0")
+	adb(command: "shell settings put global animator_duration_scale 0.0")	
+end
+
+
+lane :killLauncher do
+	adb(command: "shell ps | grep launcher | awk '{print $9}' | xargs adb shell am force-stop")
+#	adb(command: "shell am force-stop com.google.android.apps.nexuslauncher")
+# 	killing launcher to prevent its crashes
+end
+
+
 
 lane :flavorScreenshots do |options|
+	killLauncher
 	screengrab(output_directory: "fastlane/metadata/android/" + options[:flavor], app_package_name: "org.stepik.android.adaptive." + options[:flavor], app_apk_path: "app/build/outputs/apk/app-" + options[:flavor] + "-debug.apk", tests_apk_path: "app/build/outputs/apk/app-" + options[:flavor] + "-debug-androidTest.apk")
 end
 
 
 lane :screenshots do
 	pre
+	disableAnimations
+
 	flavorScreenshots(flavor: "pdd")
 	flavorScreenshots(flavor: "gmat1906")
 	flavorScreenshots(flavor: "gmat3067")
@@ -19,3 +43,6 @@ lane :screenshots do
 	flavorScreenshots(flavor: "toefl3149")
 	flavorScreenshots(flavor: "toefl3150")	
 end
+
+
+
