@@ -10,7 +10,7 @@
     <string name="stats">Stats</string>
     <string name="logout">Logout</string>
     <string name="correct">CORRECT</string>
-    <string name="network_error">An error occurred while processing your request</string>
+    <string name="request_error">Something went wrong</string>
     <string name="wrong">WRONG</string>
     <string name="logout_dialog">Are you sure to continue?</string>
     <string name="email" translatable="false">E-mail</string>
@@ -27,14 +27,6 @@
     <string name="auth_error_empty_password">Enter the password</string>
     <string name="processing_your_request">Processing your request</string>
     <string name="auth">Authorization</string>
-    <string name="intro_title_1">PDD 2017</string>
-    <string name="intro_description_1">Welcome to adaptive course dedicated to PDD exam.</string>
-    <string name="intro_title_2">Hard</string>
-    <string name="intro_description_2">If you consider current question is hard you can skip it by swiping card to RIGHT.</string>
-    <string name="intro_title_3">Easy</string>
-    <string name="intro_description_3">On the other hand, if you consider current question too easy you can skip it by swiping it LEFT.</string>
-    <string name="intro_title_4">Good luck</string>
-    <string name="intro_description_4">We hope that this course will help you successfully pass your exam.</string>
     <integer name="com_vk_sdk_AppId" translatable="false">6018407</integer>
     <string name="remind_password_success">We sent you a letter</string>
     <string name="open">Open</string>
@@ -54,9 +46,9 @@
     <string name="onboarding_card_question_1"><![CDATA[
         <div class="center">
             <div class="padding-box">
-                <img src="images/01.svg" />
+                <img src="file:///android_asset/web/images/01.svg" />
             </div>
-            <h3>ПДД 2017</h3>
+            <h3>PDD 2017</h3>
         </div>
         <p>Welcome to adaptive PDD course. During this course you\'ll receive tasks depending on your answers and reactions. Let\'s look how is it work.</p>
     ]]></string>
@@ -66,7 +58,7 @@
         <p>Try to swipe this card to <b>right</b>.</p>
         <div class="center">
             <div class="padding-box">
-                <img src="images/arrow_right.svg" />
+                <img src="file:///android_asset/web/images/arrow_right.svg" />
             </div>
         </div>
     ]]></string>
@@ -76,7 +68,7 @@
         <p>Try to swipe this card to <b>left</b>.</p>
         <div class="center">
             <div class="padding-box">
-                <img src="images/arrow_left.svg" />
+                <img src="file:///android_asset/web/images/arrow_left.svg" />
             </div>
         </div>
     ]]></string>
@@ -84,7 +76,7 @@
     <string name="onboarding_card_question_4"><![CDATA[
         <p><b>You\'ll gain exp points for correct answers.</b></p>
         <p>
-            <img src="images/onb4str.png" />
+            <img src="file:///android_asset/web/images/onb4str.png" />
         </p>
         <p>Streaks of correct answers increase exp points gain.</p>
         <p>You can check your stats by clicking on toolbar.</p>
@@ -127,4 +119,14 @@
     <string name="local_push_3days">You haven’t done it for a long time. Go back and keep learning!</string>
     <string name="local_push_streak">You have been learning %s in a row. Go back and keep learning!</string>
     <string name="local_push_title">Time to study</string>
+    <string name="progress">Progress</string>
+    <string name="rating">Rating</string>
+    <string name="rating_you_placeholder"><b>You</b></string>
+
+    <string name="achievement_unlocked">Achievement unlocked</string>
+    <string name="achievement_tap_for_more">Tap for more</string>
+    <string name="ach_progress_values" translatable="false">%d / %d</string>
+
+    <string name="connectivity_error">No connection</string>
+
 </resources>

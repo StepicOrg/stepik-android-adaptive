@@ -79,7 +79,7 @@
                             android:gravity="center" />
                     </FrameLayout>
 
-                    <org.stepik.android.adaptive.pdd.ui.view.morphing.MorphingView
+                    <org.stepik.android.adaptive.ui.view.morphing.MorphingView
                         android:id="@+id/streak_success_container"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
@@ -94,7 +94,7 @@
                             android:textColor="@android:color/white"
                             android:layout_gravity="center"
                             android:gravity="center" />
-                    </org.stepik.android.adaptive.pdd.ui.view.morphing.MorphingView>
+                    </org.stepik.android.adaptive.ui.view.morphing.MorphingView>
 
                     <TextView
                         android:id="@+id/streak_failed"
@@ -145,7 +145,7 @@
                         android:id="@+id/loading_placeholder"/>
                 </LinearLayout>
 
-                <org.stepik.android.adaptive.pdd.ui.view.QuizCardsContainer
+                <org.stepik.android.adaptive.ui.view.QuizCardsContainer
                     android:id="@+id/cards_container"
                     android:layout_gravity="center"
                     android:layout_width="match_parent"
@@ -192,12 +192,13 @@
                         android:src="@drawable/ic_no_wifi" />
 
                     <TextView
+                        android:id="@+id/error_message"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
                         android:maxWidth="256dp"
                         android:gravity="center"
-                        android:text="@string/network_error"
+                        android:text="@string/request_error"
                         android:textColor="@color/colorGrayText"/>
 
                     <Button

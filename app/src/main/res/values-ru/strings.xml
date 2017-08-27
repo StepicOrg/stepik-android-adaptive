@@ -11,7 +11,7 @@
     <string name="stats">Статистика</string>
     <string name="logout">Выход</string>
     <string name="correct">ВЕРНО</string>
-    <string name="network_error">При обработке запроса произошла ошибка</string>
+    <string name="request_error">Что-то пошло не так</string>
     <string name="wrong">НЕВЕРНО</string>
     <string name="logout_dialog">Вы уверены, что хотите выйти из текущего профиля?</string>
     <string name="password">Пароль</string>
@@ -27,14 +27,6 @@
     <string name="auth_error_empty_password">Введите пароль</string>
     <string name="processing_your_request">Обработка запроса</string>
     <string name="auth">Авторизация</string>
-    <string name="intro_title_1">ПДД 2017</string>
-    <string name="intro_description_1">Добро пожаловать на курс по ПДД. Этот курс будет адаптироваться к вашим ответам.</string>
-    <string name="intro_title_2">Сложный вопрос</string>
-    <string name="intro_description_2">Если вопрос кажется вам слишком сложным в данный момент, Вы можете отложить его скинув карточку ВПРАВО.</string>
-    <string name="intro_title_3">Простой вопрос</string>
-    <string name="intro_description_3">С другой стороны, если текущий вопрос кажется вам слишком простым, Вы можете пропустить его скинув карточку ВЛЕВО.</string>
-    <string name="intro_title_4">Успешной подготовки</string>
-    <string name="intro_description_4">Мы надеемся, что этот курс поможет вам успешно подготовится к сдаче теоритеческого экзамена в ГАИ. Удачи!</string>
     <string name="remind_password_success">Мы отправили вам письмо</string>
     <string name="open">Открыть</string>
     <string name="close">Закрыть</string>
@@ -52,7 +44,7 @@
     <string name="onboarding_card_question_1"><![CDATA[
         <div class="center">
             <div class="padding-box">
-                <img src="images/01.svg" />
+                <img src="file:///android_asset/web/images/01.svg" />
             </div>
             <h3>ПДД 2017</h3>
         </div>
@@ -64,7 +56,7 @@
         <p>Попробуйте сделать так с этой карточкой.</p>
         <div class="center">
             <div class="padding-box">
-                <img src="images/arrow_right.svg" />
+                <img src="file:///android_asset/web/images/arrow_right.svg" />
             </div>
         </div>
     ]]></string>
@@ -74,7 +66,7 @@
         <p>Попробуйте смахнуть эту карточку <b>влево</b>.</p>
         <div class="center">
             <div class="padding-box">
-                <img src="images/arrow_left.svg" />
+                <img src="file:///android_asset/web/images/arrow_left.svg" />
             </div>
         </div>
     ]]></string>
@@ -82,7 +74,7 @@
     <string name="onboarding_card_question_4"><![CDATA[
         <p>За правильные ответы вы будете <b>получать опыт</b>.</p>
         <p>
-            <img src="images/onb4str.png" />
+            <img src="file:///android_asset/web/images/onb4str.png" />
         </p>
         <p><b>Больше правильных ответов подряд &mdash; больше опыта за каждый ответ.</b></p>
         <p>Посмотреть свою статистику вы можете, <b>нажав на панель с уровнем</b>.</p>
@@ -121,4 +113,13 @@
     <string name="local_push_3days">Вы давно не занимались. Возвращайтесь и продолжайте учиться!</string>
     <string name="local_push_streak">Вы занимаетесь уже %s подряд. Возвращайтесь и продолжайте учиться!</string>
     <string name="local_push_title">Время заниматься</string>
+    <string name="progress">Прогресс</string>
+    <string name="rating">Рейтинг</string>
+    <string name="rating_you_placeholder"><b>Вы</b></string>
+
+    <string name="achievement_unlocked">Получено достижение</string>
+    <string name="achievement_tap_for_more">Нажмите, чтобы узнать больше</string>
+
+    <string name="connectivity_error">Нет соединения</string>
+
 </resources>

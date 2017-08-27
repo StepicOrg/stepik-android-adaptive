@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:app="http://schemas.android.com/apk/res-auto">
+    <LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_margin="16dp"
+        android:orientation="horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top|center">
+
+        <LinearLayout
+            android:id="@+id/icon_container"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_vertical"
+            android:background="#22FFFFFF"
+            android:padding="16dp">
+            <ImageView
+                android:id="@+id/icon"
+                android:tint="@android:color/white"
+                app:srcCompat="@drawable/ic_achievement"
+                android:layout_width="24dp"
+                android:layout_height="24dp" />
+        </LinearLayout>
+
+        <org.stepik.android.adaptive.ui.view.morphing.MorphingView
+            android:id="@+id/morphing"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_vertical">
+            <TextView
+                android:textColor="@android:color/white"
+                android:id="@+id/title"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
+                android:layout_gravity="center"
+                android:gravity="start"
+                android:visibility="gone"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </org.stepik.android.adaptive.ui.view.morphing.MorphingView>
+    </LinearLayout>
+</layout>

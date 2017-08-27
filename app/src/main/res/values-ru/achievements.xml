@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="ach_onboarding_title">Первые шаги</string>
+    <string name="ach_onboarding_description">Пройти обучение</string>
+
+
+    <string-array name="ach_exp_titles">
+        <item>Ученик</item>
+        <item>Студент</item>
+        <item>Опытный</item>
+        <item>Профессионал</item>
+        <item>Гуру</item>
+    </string-array>
+    <string name="ach_exp_description">Получить %d опыта</string>
+
+
+    <string-array name="ach_streak_titles">
+        <item>Комбо</item>
+        <item>Было просто</item>
+        <item>В точку</item>
+        <item>Ясновидящий</item>
+    </string-array>
+    <string name="ach_streak_description">Сделать %d верных ответов подряд</string>
+
+
+    <string-array name="ach_days_titles">
+        <item>Работяга</item>
+        <item>Трудовая неделя</item>
+        <item>Зависимый</item>
+        <item>Стахановец</item>
+        <item>Герой труда</item>
+    </string-array>
+    <string name="ach_days_description">Заниматься %d дней подряд</string>
+
+
+    <string-array name="ach_level_titles">
+        <item>Знаток</item>
+        <item>Лидер</item>
+    </string-array>
+    <string name="ach_level_description">Достигнуть %d уровня</string>
+
+</resources>
