@@ -58,7 +58,6 @@ class QuizCardViewHolder(val binding: QuizCardViewBinding) : ContainerView.ViewH
             } else {
                 binding.submit.visibility = View.VISIBLE
                 (binding.answers.adapter as AttemptAnswersAdapter).setEnabled(true)
-                CardHelper.scrollDown(binding.scroll)
             }
         }
 
@@ -83,8 +82,6 @@ class QuizCardViewHolder(val binding: QuizCardViewBinding) : ContainerView.ViewH
     private fun onCardLoaded() {
         binding.curtain.visibility = View.GONE
         if (!(presenter?.isLoading ?: false)) binding.answersProgress.visibility = View.GONE
-
-        CardHelper.scrollDown(binding.scroll)
     }
 
     override fun setTitle(title: String) {
