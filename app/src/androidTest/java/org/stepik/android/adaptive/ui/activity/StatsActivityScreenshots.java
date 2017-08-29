@@ -67,6 +67,13 @@ public class StatsActivityScreenshots {
     public void plainScreenshot() throws Exception {
         Thread.sleep(2000);
 
+        try { // another attempt to close launcher crash dialog
+            onView(withText("alert_dialog_text")).perform(pressBack());
+            Thread.sleep(1000);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         onView(withId(R.id.coordinator))
                 .perform(new GeneralClickAction(Tap.SINGLE, GeneralLocation.BOTTOM_LEFT, Press.FINGER));
         Screengrab.screenshot("05");
