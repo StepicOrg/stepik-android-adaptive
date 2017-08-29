@@ -19,7 +19,6 @@ import org.stepik.android.adaptive.util.ExpUtil
 import org.stepik.android.adaptive.util.InventoryUtil
 import org.stepik.android.adaptive.util.RateAppUtil
 import retrofit2.HttpException
-import java.net.ConnectException
 import java.util.*
 
 class RecommendationsPresenter : PresenterBase<RecommendationsView>(), AnswerListener {
@@ -31,14 +30,13 @@ class RecommendationsPresenter : PresenterBase<RecommendationsView>(), AnswerLis
     private val retrySubject = PublishSubject.create<Any>()
 
     private val cards = ArrayDeque<Card>()
+    private val adapter = QuizCardsAdapter(this::createReaction, this)
 
     private var cardDisposable: Disposable? = null
 
     private var error: Throwable? = null
 
     private var isCourseCompleted = false
-
-    private val adapter = QuizCardsAdapter(this::createReaction, this)
 
 
     init {
@@ -56,8 +54,6 @@ class RecommendationsPresenter : PresenterBase<RecommendationsView>(), AnswerLis
     override fun attachView(view: RecommendationsView) {
         super.attachView(view)
         resolveDailyReward()
-        view.onAdapter(adapter)
-
         updateExp()
 
         view.onLoading()
@@ -68,6 +64,8 @@ class RecommendationsPresenter : PresenterBase<RecommendationsView>(), AnswerLis
             resubscribe()
             error?.let(this::onError)
         }
+
+        view.onAdapter(adapter)
     }
 
     private fun updateExp(exp: Long = ExpUtil.getExp(), streak: Long = 0, showLevelDialog: Boolean = false) {
@@ -116,7 +114,7 @@ class RecommendationsPresenter : PresenterBase<RecommendationsView>(), AnswerLis
 
     private fun createReaction(lesson: Long, reaction: RecommendationReaction.Reaction) {
         if (adapter.isEmptyOrContainsOnlySwipedCard(lesson)) {
-            onLoading()
+            view?.onLoading()
         }
 
         compositeDisposable.add(CardHelper.createReactionObservable(lesson, reaction, cards.size + adapter.getItemCount())
@@ -142,15 +140,11 @@ class RecommendationsPresenter : PresenterBase<RecommendationsView>(), AnswerLis
         }
     }
 
-    private fun onLoading() {
-        view?.onLoading()
-    }
-
     private fun onError(throwable: Throwable?) {
         this.error = throwable
         when(throwable) {
             is HttpException -> view?.onRequestError()
-            is ConnectException -> view?.onConnectivityError()
+            else -> view?.onConnectivityError()
         }
     }
 

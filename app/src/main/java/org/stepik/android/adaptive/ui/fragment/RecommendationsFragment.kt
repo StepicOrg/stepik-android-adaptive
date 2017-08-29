@@ -59,6 +59,7 @@ class RecommendationsFragment : BasePresenterFragment<RecommendationsPresenter, 
 
     override fun onLoading() {
         binding.progress.visibility = View.VISIBLE
+        binding.error.visibility = View.GONE
         binding.loadingPlaceholder.text = loadingPlaceholders[Util.getRandomNumberBetween(0, 3)]
     }
 
@@ -141,6 +142,7 @@ class RecommendationsFragment : BasePresenterFragment<RecommendationsPresenter, 
         }
         super.onActivityResult(requestCode, resultCode, data)
     }
+
 
     private var presenter : RecommendationsPresenter? = null
 
