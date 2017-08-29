@@ -1,11 +1,11 @@
 package org.stepik.android.adaptive.ui.activity
 
 import org.stepik.android.adaptive.R
-import org.stepik.android.adaptive.ui.fragment.CardsFragment
 
 import org.stepik.android.adaptive.core.presenter.contracts.AchievementView
 import org.stepik.android.adaptive.data.model.Achievement
 import org.stepik.android.adaptive.ui.animation.AchievementAnimations
+import org.stepik.android.adaptive.ui.fragment.RecommendationsFragment
 import org.stepik.android.adaptive.util.AchievementManager
 
 class StudyActivity : FragmentActivity(), AchievementView {
@@ -31,5 +31,5 @@ class StudyActivity : FragmentActivity(), AchievementView {
         super.onStop()
     }
 
-    override fun createFragment() = CardsFragment()
+    override fun createFragment() = RecommendationsFragment()
 }
