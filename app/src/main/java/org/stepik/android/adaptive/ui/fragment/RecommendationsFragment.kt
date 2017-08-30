@@ -150,12 +150,12 @@ class RecommendationsFragment : BasePresenterFragment<RecommendationsPresenter, 
         this.presenter = presenter
     }
 
-    override fun onStart() {
+    override fun onResume() {
         super.onStart()
         presenter?.attachView(this)
     }
 
-    override fun onStop() {
+    override fun onPause() {
         presenter?.detachView(this)
         super.onStop()
     }
