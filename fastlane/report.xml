@@ -5,12 +5,42 @@
     
     
       
-      <testcase classname="fastlane.lanes" name="0: Verifying required fastlane version" time="0.00235">
+      <testcase classname="fastlane.lanes" name="0: Switch to disableAnimations lane" time="0.002569">
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="1: default_platform" time="0.002462">
+      <testcase classname="fastlane.lanes" name="1: adb" time="0.42377">
+        
+      </testcase>
+    
+      
+      <testcase classname="fastlane.lanes" name="2: adb" time="0.332504">
+        
+      </testcase>
+    
+      
+      <testcase classname="fastlane.lanes" name="3: adb" time="0.342437">
+        
+      </testcase>
+    
+      
+      <testcase classname="fastlane.lanes" name="4: Switch to flavorScreenshots lane" time="0.003349">
+        
+      </testcase>
+    
+      
+      <testcase classname="fastlane.lanes" name="5: Switch to killLauncher lane" time="0.003287">
+        
+      </testcase>
+    
+      
+      <testcase classname="fastlane.lanes" name="6: adb" time="0.505325">
+        
+      </testcase>
+    
+      
+      <testcase classname="fastlane.lanes" name="7: screengrab" time="91.418955">
         
       </testcase>
     

@@ -29,22 +29,41 @@ xcode-select --install
 </table>
 
 # Available Actions
-## Android
-### android test
+### pre
 ```
-fastlane android test
+fastlane pre
 ```
-Runs all the tests
-### android beta
+
+### setPortraitOrientation
 ```
-fastlane android beta
+fastlane setPortraitOrientation
 ```
-Submit a new Beta Build to Crashlytics Beta
-### android deploy
+
+### disableAnimations
 ```
-fastlane android deploy
+fastlane disableAnimations
 ```
-Deploy a new version to the Google Play
+
+### killLauncher
+```
+fastlane killLauncher
+```
+
+### flavorScreenshots
+```
+fastlane flavorScreenshots
+```
+
+### tt1
+```
+fastlane tt1
+```
+
+### screenshots
+```
+fastlane screenshots
+```
+
 
 ----
 
