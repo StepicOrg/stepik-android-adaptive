@@ -13,6 +13,7 @@ import org.stepik.android.adaptive.data.model.RecommendationReaction
 import org.stepik.android.adaptive.notifications.LocalReminder
 import org.stepik.android.adaptive.ui.adapter.QuizCardsAdapter
 import org.stepik.android.adaptive.ui.helper.CardHelper
+import org.stepik.android.adaptive.ui.listener.AdaptiveReactionListener
 import org.stepik.android.adaptive.ui.listener.AnswerListener
 import org.stepik.android.adaptive.util.DailyRewardManager
 import org.stepik.android.adaptive.util.ExpUtil
@@ -30,7 +31,7 @@ class RecommendationsPresenter : PresenterBase<RecommendationsView>(), AnswerLis
     private val retrySubject = PublishSubject.create<Any>()
 
     private val cards = ArrayDeque<Card>()
-    private val adapter = QuizCardsAdapter(this::createReaction, this)
+    private val adapter = QuizCardsAdapter(AdaptiveReactionListener(this::createReaction), this)
 
     private var cardDisposable: Disposable? = null
 
