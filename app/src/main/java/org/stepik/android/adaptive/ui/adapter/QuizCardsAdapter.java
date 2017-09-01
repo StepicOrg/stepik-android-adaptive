@@ -38,6 +38,7 @@ public class QuizCardsAdapter extends QuizCardsContainer.CardsAdapter<QuizCardVi
      * Method that being called onDestroyView to properly detach view from presenters
      */
     public void detach() {
+        setContainer(null); // detach from container
         for (final CardPresenter presenter : presenters) {
             presenter.detachView();
         }
