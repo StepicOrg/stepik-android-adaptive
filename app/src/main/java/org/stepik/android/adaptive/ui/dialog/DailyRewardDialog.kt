@@ -16,7 +16,7 @@ import org.stepik.android.adaptive.util.DailyRewardManager
 
 class DailyRewardDialog : DialogFragment() {
     companion object {
-        private val REWARD_PROGRESS_KEY = "reward_progress"
+        private const val REWARD_PROGRESS_KEY = "reward_progress"
 
         fun newInstance(progress: Long) : DailyRewardDialog {
             val dialog = DailyRewardDialog()

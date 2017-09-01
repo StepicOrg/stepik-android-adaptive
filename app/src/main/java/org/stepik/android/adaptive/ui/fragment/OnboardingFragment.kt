@@ -27,7 +27,7 @@ import org.stepik.android.adaptive.util.AchievementManager
 
 class OnboardingFragment : Fragment(), LoginView {
     companion object {
-        private val ONBOARDING_CARDS_COUNT = 4
+        private const val ONBOARDING_CARDS_COUNT = 4
     }
 
     private lateinit var binding : FragmentRecommendationsBinding

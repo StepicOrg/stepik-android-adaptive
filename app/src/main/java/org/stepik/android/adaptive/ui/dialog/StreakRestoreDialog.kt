@@ -14,7 +14,7 @@ import org.stepik.android.adaptive.util.InventoryUtil
 
 class StreakRestoreDialog : DialogFragment() {
     companion object {
-        private val STREAK_KEY = "streak"
+        private const val STREAK_KEY = "streak"
 
         fun newInstance(streak: Long) : StreakRestoreDialog {
             val dialog = StreakRestoreDialog()

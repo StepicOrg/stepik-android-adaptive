@@ -6,8 +6,8 @@ import org.stepik.android.adaptive.Util
 import org.stepik.android.adaptive.ui.fragment.PhotoViewFragment
 
 class PhotoViewActivity : FragmentActivity() {
-    companion object {
-        val pathKey = "pathKey"
+    private companion object {
+        const val pathKey = "pathKey"
     }
 
     override fun createFragment(): Fragment {

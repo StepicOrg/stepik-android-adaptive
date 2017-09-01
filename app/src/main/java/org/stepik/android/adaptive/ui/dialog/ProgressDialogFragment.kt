@@ -7,8 +7,8 @@ import android.support.v4.app.DialogFragment
 
 class ProgressDialogFragment : DialogFragment() {
     companion object {
-        private val TITLE_ARG = "title"
-        private val MESSAGE_ARG = "message"
+        private const val TITLE_ARG = "title"
+        private const val MESSAGE_ARG = "message"
 
         fun newInstance(title: String = "", message: String = ""): ProgressDialogFragment {
             val dialogFragment = ProgressDialogFragment()

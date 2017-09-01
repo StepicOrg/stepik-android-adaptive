@@ -16,9 +16,9 @@ import org.stepik.android.adaptive.ui.activity.SplashActivity
 
 
 object RemindNotificationManager {
-    private val notificationId = 2138
+    private const val notificationId = 2138
 
-    private val MIN_DAILY_EXP = 10
+    private const val MIN_DAILY_EXP = 10
 
     private lateinit var context: Context
     private lateinit var notificationManager: NotificationManagerCompat

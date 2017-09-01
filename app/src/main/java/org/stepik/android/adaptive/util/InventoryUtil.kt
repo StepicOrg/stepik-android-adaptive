@@ -11,9 +11,9 @@ object InventoryUtil {
 //        Chest("chest", R.drawable.ic_chest)
     }
 
-    private val STARTER_PACK_VERSION_KEY = "starter_pack_version"
+    private const val STARTER_PACK_VERSION_KEY = "starter_pack_version"
 
-    private val START_TICKETS_COUNT = 7L
+    private const val START_TICKETS_COUNT = 7L
 
     @JvmStatic
     fun getItemsCount(item: Item) =

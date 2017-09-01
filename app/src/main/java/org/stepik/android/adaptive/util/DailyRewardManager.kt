@@ -5,12 +5,11 @@ import org.joda.time.Days
 import org.stepik.android.adaptive.data.SharedPreferenceMgr
 
 object DailyRewardManager {
-    @JvmStatic
-    val DISCARD = -1L
+    const val DISCARD = -1L
 
-    private val LAST_SESSION_KEY = "last_session"
-    private val REWARD_PROGRESS_KEY = "reward_progress"
-    private val TOTAL_REWARD_PROGRESS_KEY = "total_reward_progress"
+    private const val LAST_SESSION_KEY = "last_session"
+    private const val REWARD_PROGRESS_KEY = "reward_progress"
+    private const val TOTAL_REWARD_PROGRESS_KEY = "total_reward_progress"
 
     val rewards = listOf(
             listOf(InventoryUtil.Item.Ticket to 3),
