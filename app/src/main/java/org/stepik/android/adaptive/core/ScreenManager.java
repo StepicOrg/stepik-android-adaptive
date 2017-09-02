@@ -43,7 +43,7 @@ public class ScreenManager {
 
     public static void showImage(Context context, String path) {
         Intent intent = new Intent(context, PhotoViewActivity.class);
-        intent.putExtra(PhotoViewActivity.Companion.getPathKey(), path);
+        intent.putExtra(PhotoViewActivity.pathKey, path);
         context.startActivity(intent);
     }
 
