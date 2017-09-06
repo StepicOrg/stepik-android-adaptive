@@ -1,5 +1,5 @@
 
-lane :pre do
+lane :assembleTest do
 	gradle(task: "assembleDebug")
 	gradle(task: "assembleAndroidTest")
 end
@@ -29,11 +29,13 @@ end
 lane :flavorScreenshots do |options|
 	killLauncher
 	screengrab(output_directory: "fastlane/metadata/android/" + options[:flavor], app_package_name: "org.stepik.android.adaptive." + options[:flavor], app_apk_path: "app/build/outputs/apk/app-" + options[:flavor] + "-debug.apk", tests_apk_path: "app/build/outputs/apk/app-" + options[:flavor] + "-debug-androidTest.apk")
+	sh("python fastlane/tools/screengrab_wrapper/mover.py fastlane/metadata/android/" + options[:flavor])
+	sh("python fastlane/tools/screengrab_wrapper/wrapper.py fastlane/metadata/android/" + options[:flavor])		
 end
 
 
 lane :screenshots do
-	pre
+	assembleTest
 	disableAnimations
 
 	flavorScreenshots(flavor: "pdd")

@@ -1,0 +1,17 @@
+locales:
+    - ru-RU
+    - en-US
+
+screenshots_dir: screenshots
+templates_dir: templates
+
+input_dir: 
+    phone: phone
+    tablet: tablet
+    fetured: featured
+
+output_dir:
+    phone: images/phoneScreenshots
+    tablet: images/sevenInchScreenshots
+    featured: images
+
