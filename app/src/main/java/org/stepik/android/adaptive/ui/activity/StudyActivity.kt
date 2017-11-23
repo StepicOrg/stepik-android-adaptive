@@ -1,7 +1,5 @@
 package org.stepik.android.adaptive.ui.activity
 
-import android.widget.FrameLayout
-
 import org.stepik.android.adaptive.R
 import org.stepik.android.adaptive.ui.fragment.CardsFragment
 
@@ -15,7 +13,7 @@ class StudyActivity : FragmentActivity(), AchievementView {
 
     override fun showAchievement(achievement: Achievement) {
         isPlayingAchievementAnimation = true
-        AchievementAnimations.show(findViewById(R.id.fragment_container) as FrameLayout, achievement).withEndAction {
+        AchievementAnimations.show(findViewById(R.id.fragment_container), achievement).withEndAction {
             isPlayingAchievementAnimation = false
             AchievementManager.notifyQueue()
         }

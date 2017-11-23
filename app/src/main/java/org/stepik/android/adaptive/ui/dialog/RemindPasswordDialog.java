@@ -45,7 +45,7 @@ public final class RemindPasswordDialog extends DialogFragment {
         layout = (TextInputLayout) layoutInflater.inflate(R.layout.dialog_remind_password, null);
         alertDialogBuilder.setView(layout);
 
-        editText = (TextInputEditText) layout.findViewById(R.id.dialog_remind_email);
+        editText = layout.findViewById(R.id.dialog_remind_email);
 
         editText.setOnFocusChangeListener((view, b) -> {
             if (b) {

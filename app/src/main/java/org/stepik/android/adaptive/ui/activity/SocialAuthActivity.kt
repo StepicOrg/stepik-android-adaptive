@@ -18,8 +18,8 @@ class SocialAuthActivity : AppCompatActivity() {
 
         val d = intent.data.toString()
 
-        authWebView = (findViewById(R.id.social_auth_web_view) as WebView)
-        authWebView.setWebViewClient(DefaultWebViewClient({ v: WebView?, url: String? ->
+        authWebView = findViewById(R.id.social_auth_web_view)
+        authWebView.webViewClient = DefaultWebViewClient({ _: WebView?, url: String? ->
             if (url != null) {
                 if (url.startsWith(Config.getInstance().redirectUri)) {
                     val uri = Uri.parse(url)
@@ -32,7 +32,7 @@ class SocialAuthActivity : AppCompatActivity() {
                 }
             }
             false
-        }, null))
+        }, null)
         authWebView.settings.javaScriptEnabled = true
 
         if (savedInstanceState == null) {
