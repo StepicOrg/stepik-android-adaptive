@@ -16,7 +16,7 @@ import org.stepik.android.adaptive.ui.activity.SplashActivity
 
 
 object RemindNotificationManager {
-    private const val notificationId = 2138
+    private const val NOTIFICATION_ID = 2138
 
     private const val MIN_DAILY_EXP = 10
 
@@ -78,6 +78,6 @@ object RemindNotificationManager {
 
         notificationBuilder.setDeleteIntent(getDeleteIntent(days))
 
-        notificationManager.notify(notificationId, notificationBuilder.build())
+        notificationManager.notify(NOTIFICATION_ID, notificationBuilder.build())
     }
 }
