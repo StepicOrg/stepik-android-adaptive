@@ -191,6 +191,6 @@ class RecommendationsPresenter : PresenterBase<RecommendationsView>(), AnswerLis
     override fun destroy() {
         compositeDisposable.dispose()
         cards.forEach(Card::recycle)
-        adapter.recycle()
+        adapter.destroy()
     }
 }

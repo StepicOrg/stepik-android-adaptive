@@ -130,7 +130,7 @@ class RecommendationsFragment : BasePresenterFragment<RecommendationsPresenter, 
             ExpLevelDialog.newInstance(level).show(childFragmentManager, LEVEL_DIALOG_TAG)
 
     override fun showRateAppDialog() =
-            RateAppDialog().show(childFragmentManager, RATE_APP_DIALOG_TAG)
+            RateAppDialog.newInstance().show(childFragmentManager, RATE_APP_DIALOG_TAG)
 
     override fun showStreakRestoreDialog(streak: Long) =
             StreakRestoreDialog.newInstance(streak).show(childFragmentManager, STREAK_RESTORE_DIALOG_TAG)

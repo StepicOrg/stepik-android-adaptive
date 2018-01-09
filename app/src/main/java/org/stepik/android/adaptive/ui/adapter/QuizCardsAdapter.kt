@@ -31,7 +31,7 @@ open class QuizCardsAdapter(
 
     private val presenters = ArrayList<CardPresenter>()
 
-    fun recycle() = presenters.forEach(CardPresenter::destroy)
+    fun destroy() = presenters.forEach(CardPresenter::destroy)
 
     /**
      * Method that detaches adapter from container

@@ -7,11 +7,11 @@ import org.stepik.android.adaptive.ui.fragment.PhotoViewFragment
 
 class PhotoViewActivity : FragmentActivity() {
     private companion object {
-        const val pathKey = "pathKey"
+        const val PATH_KEY = "PATH_KEY"
     }
 
     override fun createFragment(): Fragment {
-        val path = intent.getStringExtra(pathKey)
+        val path = intent.getStringExtra(PATH_KEY)
         return PhotoViewFragment.newInstance(path)
     }
 

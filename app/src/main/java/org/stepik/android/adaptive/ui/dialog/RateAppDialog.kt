@@ -16,10 +16,12 @@ import org.stepik.android.adaptive.databinding.RateAppDialogBinding
 import org.stepik.android.adaptive.util.RateAppUtil
 
 class RateAppDialog : DialogFragment() {
-    private companion object {
+    companion object {
         private const val RATING_COUNT_KEY = "rating"
         private const val RATING_ENABLED_KEY = "rating_enabled"
         private const val MIN_POSITIVE = 4
+
+        fun newInstance() = RateAppDialog()
     }
 
     private lateinit var binding: RateAppDialogBinding
