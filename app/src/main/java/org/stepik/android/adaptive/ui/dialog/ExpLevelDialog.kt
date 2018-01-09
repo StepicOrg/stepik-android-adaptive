@@ -16,7 +16,7 @@ import java.util.concurrent.TimeUnit
 
 class ExpLevelDialog : DialogFragment() {
     companion object {
-        private val LEVEL_KEY = "level"
+        private const val LEVEL_KEY = "level"
 
         fun newInstance(level: Long) : ExpLevelDialog {
             val dialog = ExpLevelDialog()

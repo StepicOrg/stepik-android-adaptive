@@ -19,11 +19,11 @@ import java.util.*
 class WeeksAdapter : RecyclerView.Adapter<WeeksAdapter.StatsViewHolder>() {
     data class Header(var total: Long = 0, var level: Long = 0, var last7Days: Long = 0, var chartData: LineDataSet? = null)
 
-    companion object {
-        private val HEADER_VIEW_TYPE = 1
-        private val ITEM_VIEW_TYPE = 2
+    private companion object {
+        private const val HEADER_VIEW_TYPE = 1
+        private const val ITEM_VIEW_TYPE = 2
 
-        private val DATE_FORMAT = "dd MMMM yyyy"
+        private const val DATE_FORMAT = "dd MMMM yyyy"
     }
 
     private val weeks = ArrayList<WeekProgress>()
@@ -41,9 +41,11 @@ class WeeksAdapter : RecyclerView.Adapter<WeeksAdapter.StatsViewHolder>() {
         notifyItemChanged(0)
     }
 
-    override fun getItemViewType(position: Int): Int {
-        return if (position == 0) HEADER_VIEW_TYPE else ITEM_VIEW_TYPE
-    }
+    override fun getItemViewType(position: Int) =
+            if (position == 0)
+                HEADER_VIEW_TYPE
+            else
+                ITEM_VIEW_TYPE
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) : StatsViewHolder {
         val inflater = LayoutInflater.from(parent.context)

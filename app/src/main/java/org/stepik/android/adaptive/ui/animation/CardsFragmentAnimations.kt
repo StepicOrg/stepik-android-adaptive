@@ -13,9 +13,9 @@ import org.stepik.android.adaptive.ui.view.morphing.MorphingHelper
 import org.stepik.android.adaptive.ui.view.morphing.MorphingView
 
 object CardsFragmentAnimations {
-    private val ANIMATION_START_DELAY_FOR_VIEWS_MS = 1500L
-    private val ANIMATION_DURATION_MS = 200L
-    private val FAST_ANIMATION_DURATION_MS = 100L
+    private const val ANIMATION_START_DELAY_FOR_VIEWS_MS = 1500L
+    private const val ANIMATION_DURATION_MS = 200L
+    private const val FAST_ANIMATION_DURATION_MS = 100L
 
     @JvmStatic
     private var confettiColors: IntArray? = null

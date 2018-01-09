@@ -21,7 +21,9 @@ import org.stepik.android.adaptive.databinding.ActivityRegisterBinding
 import org.stepik.android.adaptive.util.ValidateUtil
 
 class RegisterActivity : BasePresenterActivity<LoginPresenter, LoginView>(), LoginView {
-    private val PROGRESS = "register_progress"
+    private companion object {
+        private const val PROGRESS = "register_progress"
+    }
 
     private var presenter: LoginPresenter? = null
 

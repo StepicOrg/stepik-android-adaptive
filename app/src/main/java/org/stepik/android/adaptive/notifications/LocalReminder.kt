@@ -13,14 +13,11 @@ import org.stepik.android.adaptive.receivers.NotificationsReceiver
 import org.stepik.android.adaptive.util.DailyRewardManager
 
 object LocalReminder {
-    @JvmStatic
-    private val NOTIFICATION_TIMESTAMP_KEY = "notification_timestamp"
+    private const val NOTIFICATION_TIMESTAMP_KEY = "notification_timestamp"
 
-    @JvmStatic
-    val DAYS_MULTIPLIER_KEY = "days_multiplier"
+    const val DAYS_MULTIPLIER_KEY = "days_multiplier"
 
-    @JvmStatic
-    private val GOOD_STUDY_HOUR = 20
+    private const val GOOD_STUDY_HOUR = 20
 
     private lateinit var context: Context
     private lateinit var alarmManager: AlarmManager

@@ -17,8 +17,7 @@ class RatingPresenter : PresenterBase<RatingView>() {
     companion object : PresenterFactory<RatingPresenter> {
         override fun create() = RatingPresenter()
 
-        @JvmStatic
-        private val ITEMS_PER_PAGE = 10
+        private const val ITEMS_PER_PAGE = 10
 
         @JvmStatic
         private val RATING_PERIODS = arrayOf(1, 7, 0)

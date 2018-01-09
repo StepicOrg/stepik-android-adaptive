@@ -1,7 +1,6 @@
 package org.stepik.android.adaptive.ui.fragment
 
 import android.content.Intent
-import android.databinding.DataBindingUtil
 import android.os.Bundle
 import android.support.annotation.StringRes
 import android.support.v4.app.Fragment
@@ -27,7 +26,7 @@ import org.stepik.android.adaptive.util.AchievementManager
 
 class OnboardingFragment : Fragment(), LoginView {
     companion object {
-        private val ONBOARDING_CARDS_COUNT = 4
+        private const val ONBOARDING_CARDS_COUNT = 4
     }
 
     private lateinit var binding : FragmentRecommendationsBinding
@@ -61,7 +60,7 @@ class OnboardingFragment : Fragment(), LoginView {
     }
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        binding = DataBindingUtil.inflate<FragmentRecommendationsBinding>(inflater, R.layout.fragment_recommendations, container, false)
+        binding = FragmentRecommendationsBinding.inflate(inflater, container, false)
         (activity as AppCompatActivity).setSupportActionBar(binding.toolbar)
 
         binding.cardsContainer.setAdapter(adapter)

@@ -34,11 +34,11 @@ import org.stepik.android.adaptive.databinding.ActivityLaunchBinding
 
 class LaunchActivity : BasePresenterActivity<LoginPresenter, LoginView>(), LoginView {
     companion object {
-        val REQUEST_CODE_GOOGLE_SIGN_IN = 159
-        val REQUEST_CODE_SOCIAL_AUTH = 231
-    }
+        const val REQUEST_CODE_GOOGLE_SIGN_IN = 159
+        const val REQUEST_CODE_SOCIAL_AUTH = 231
 
-    private val PROGRESS = "launch_progress"
+        private const val PROGRESS = "launch_progress"
+    }
 
     private var presenter: LoginPresenter? = null
 

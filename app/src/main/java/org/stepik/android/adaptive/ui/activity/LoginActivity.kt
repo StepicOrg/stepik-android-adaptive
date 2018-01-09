@@ -18,8 +18,10 @@ import org.stepik.android.adaptive.ui.dialog.RemindPasswordDialog
 import org.stepik.android.adaptive.util.ValidateUtil
 
 class LoginActivity : BasePresenterActivity<LoginPresenter, LoginView>(), LoginView {
-    private val PROGRESS = "login_progress"
-    private val REMIND_PASSWORD_DIALOG = "remind_password_dialog"
+    private companion object {
+        private const val PROGRESS = "login_progress"
+        private const val REMIND_PASSWORD_DIALOG = "remind_password_dialog"
+    }
 
     private var presenter: LoginPresenter? = null
 

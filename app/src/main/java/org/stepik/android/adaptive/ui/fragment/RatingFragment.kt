@@ -76,12 +76,6 @@ class RatingFragment : BasePresenterFragment<RatingPresenter, RatingView>(), Rat
         binding.recycler.adapter = adapter
     }
 
-    private var presenter : RatingPresenter? = null
-
-    override fun onPresenter(presenter: RatingPresenter) {
-        this.presenter = presenter
-    }
-
     override fun onStart() {
         super.onStart()
         presenter?.attachView(this)

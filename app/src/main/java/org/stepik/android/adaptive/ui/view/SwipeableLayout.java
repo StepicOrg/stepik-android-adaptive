@@ -10,7 +10,7 @@ import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.FrameLayout;
 
 import org.stepik.android.adaptive.math.LinearRegression;
-import org.stepik.android.adaptive.ui.helper.AnimationHelper;
+import org.stepik.android.adaptive.ui.animation.CardAnimations;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -176,9 +176,9 @@ public final class SwipeableLayout extends FrameLayout {
             }
             final float targetX = Math.signum(elemX) * screenWidth;
             final float targetY = getTargetY(targetX);
-            AnimationHelper.createTransitionAnimation(this, targetX, targetY)
+            CardAnimations.createTransitionAnimation(this, targetX, targetY)
                     .rotation(0)
-                    .setDuration(AnimationHelper.ANIMATION_DURATION)
+                    .setDuration(CardAnimations.ANIMATION_DURATION)
                     .withEndAction(() -> {
                         for (SwipeListener l : listeners) {
                             l.onSwiped();
@@ -194,7 +194,7 @@ public final class SwipeableLayout extends FrameLayout {
             for (SwipeListener l : listeners) {
                 l.onScroll(0);
             }
-            AnimationHelper.playRollBackAnimation(this);
+            CardAnimations.playRollBackAnimation(this);
         }
     }
 
@@ -203,7 +203,7 @@ public final class SwipeableLayout extends FrameLayout {
             l.onSwipeDown();
         }
 
-        AnimationHelper.createTransitionAnimation(this, 0, screenHeight)
+        CardAnimations.createTransitionAnimation(this, 0, screenHeight)
                 .rotation(0)
                 .setInterpolator(new AccelerateDecelerateInterpolator())
                 .withEndAction(() -> {

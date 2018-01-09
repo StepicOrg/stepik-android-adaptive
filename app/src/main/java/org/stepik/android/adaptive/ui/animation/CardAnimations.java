@@ -1,4 +1,4 @@
-package org.stepik.android.adaptive.ui.helper;
+package org.stepik.android.adaptive.ui.animation;
 
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
@@ -6,7 +6,7 @@ import android.view.View;
 import android.view.ViewPropertyAnimator;
 import android.view.animation.OvershootInterpolator;
 
-public final class AnimationHelper {
+public final class CardAnimations {
     public static final long ANIMATION_DURATION = 200;
 
     private static final OvershootInterpolator OvershootInterpolator2F = new OvershootInterpolator(2f);

@@ -3,22 +3,22 @@ package org.stepik.android.adaptive.ui.view.container
 import android.view.ViewGroup
 
 abstract class ContainerAdapter<VH : ContainerView.ViewHolder> {
-    public var container: ContainerView? = null
+    var container: ContainerView? = null
         set
 
-    protected final fun onDataSetChanged() {
+    protected fun onDataSetChanged() {
         container?.onDataSetChanged()
     }
 
-    protected final fun onDataAdded() {
+    protected fun onDataAdded() {
         container?.onDataAdded()
     }
 
-    protected final fun onRebind() {
+    protected fun onRebind() {
         container?.onRebind()
     }
 
-    protected final fun onRebind(pos: Int) {
+    protected fun onRebind(pos: Int) {
         container?.onRebind(pos)
     }
 
