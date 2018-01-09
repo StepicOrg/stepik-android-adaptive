@@ -6,7 +6,7 @@ import org.stepik.android.adaptive.Util
 import org.stepik.android.adaptive.ui.fragment.PhotoViewFragment
 
 class PhotoViewActivity : FragmentActivity() {
-    private companion object {
+    companion object {
         const val PATH_KEY = "PATH_KEY"
     }
 
