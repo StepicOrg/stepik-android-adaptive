@@ -1,6 +1,7 @@
 package org.stepik.android.adaptive.core.presenter
 
 import android.os.Bundle
+import android.support.annotation.CallSuper
 import android.support.v4.app.DialogFragment
 import android.support.v4.app.LoaderManager
 import android.support.v4.content.Loader
@@ -9,8 +10,10 @@ import org.stepik.android.adaptive.core.loader.PresenterLoader
 import org.stepik.android.adaptive.ui.dialog.ProgressDialogFragment
 
 abstract class BasePresenterActivity<P : Presenter<V>, in V> : AppCompatActivity() {
-    private val LOADER_ID = 127
-    private var presenter: P? = null
+    companion object {
+        private const val LOADER_ID = 127
+    }
+    protected var presenter: P? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -19,15 +22,13 @@ abstract class BasePresenterActivity<P : Presenter<V>, in V> : AppCompatActivity
         if (loader == null) {
             initLoader()
         } else {
-            presenter = (loader as PresenterLoader<P>).presenter
-            onPresenter(presenter!!)
+            onPresenter((loader as PresenterLoader<P>).presenter)
         }
     }
 
     private fun initLoader() {
         supportLoaderManager.initLoader(LOADER_ID, null, object : LoaderManager.LoaderCallbacks<P> {
             override fun onLoadFinished(loader: Loader<P>?, data: P) {
-                presenter = data
                 onPresenter(data)
             }
 
@@ -50,6 +51,10 @@ abstract class BasePresenterActivity<P : Presenter<V>, in V> : AppCompatActivity
         }
     }
 
-    protected abstract fun onPresenter(presenter: P)
+    @CallSuper
+    protected open fun onPresenter(presenter: P?) {
+        this.presenter = presenter
+    }
+
     protected abstract fun getPresenterFactory() : PresenterFactory<P>
 }

@@ -62,6 +62,10 @@
         <activity
             android:theme="@style/AppTheme.NoActionBar"
             android:name="org.stepik.android.adaptive.ui.activity.StatsActivity"/>
+        
+        <activity
+            android:theme="@style/AppTheme.NoActionBar"
+            android:name=".ui.activity.PaidContentListActivity" />
 
         <receiver
             android:name="org.stepik.android.adaptive.receivers.BootCompletedReceiver"
