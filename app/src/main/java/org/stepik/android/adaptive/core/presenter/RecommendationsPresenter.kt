@@ -8,6 +8,7 @@ import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.PublishSubject
 import org.stepik.android.adaptive.api.RecommendationsResponse
 import org.stepik.android.adaptive.core.presenter.contracts.RecommendationsView
+import org.stepik.android.adaptive.data.SharedPreferenceMgr
 import org.stepik.android.adaptive.data.model.Card
 import org.stepik.android.adaptive.data.model.RecommendationReaction
 import org.stepik.android.adaptive.notifications.LocalReminder
@@ -88,6 +89,7 @@ class RecommendationsPresenter : PresenterBase<RecommendationsView>(), AnswerLis
     }
 
     override fun onCorrectAnswer(submissionId: Long) {
+        view?.hideStreakRestoreDialog()
         val streak = ExpUtil.incStreak()
 
         view?.onStreak(streak)
@@ -99,13 +101,17 @@ class RecommendationsPresenter : PresenterBase<RecommendationsView>(), AnswerLis
     }
 
     override fun onWrongAnswer() {
+        view?.hideStreakRestoreDialog()
         val streak = ExpUtil.getStreak()
 
         if (streak > 1) {
             view?.onStreakLost()
 
             if (InventoryUtil.hasTickets()) {
-                view?.showStreakRestoreDialog(streak)
+                view?.let {
+                    it.showStreakRestoreDialog(streak, withTooltip = !SharedPreferenceMgr.getInstance().isStreakRestoreTooltipWasShown)
+                    SharedPreferenceMgr.getInstance().afterStreakRestoreTooltipWasShown()
+                }
             }
         }
 

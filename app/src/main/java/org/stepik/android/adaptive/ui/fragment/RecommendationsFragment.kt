@@ -2,12 +2,14 @@ package org.stepik.android.adaptive.ui.fragment
 
 import android.app.Activity
 import android.content.Intent
+import android.content.res.Resources
 import android.os.Bundle
 import android.support.v4.content.ContextCompat
 import android.text.method.LinkMovementMethod
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.PopupWindow
 import org.stepik.android.adaptive.R
 import org.stepik.android.adaptive.Util
 import org.stepik.android.adaptive.core.ScreenManager
@@ -20,7 +22,8 @@ import org.stepik.android.adaptive.ui.animation.CardsFragmentAnimations
 import org.stepik.android.adaptive.ui.dialog.DailyRewardDialog
 import org.stepik.android.adaptive.ui.dialog.ExpLevelDialog
 import org.stepik.android.adaptive.ui.dialog.RateAppDialog
-import org.stepik.android.adaptive.ui.dialog.StreakRestoreDialog
+import org.stepik.android.adaptive.util.InventoryUtil
+import org.stepik.android.adaptive.util.PopupHelper
 
 class RecommendationsFragment : BasePresenterFragment<RecommendationsPresenter, RecommendationsView>(), RecommendationsView {
     companion object {
@@ -28,7 +31,7 @@ class RecommendationsFragment : BasePresenterFragment<RecommendationsPresenter, 
         const val STREAK_RESTORE_KEY = "streak"
 
         private const val LEVEL_DIALOG_TAG = "level_dialog"
-        private const val STREAK_RESTORE_DIALOG_TAG = "streak_restore_dialog"
+//        private const val STREAK_RESTORE_DIALOG_TAG = "streak_restore_dialog"
         private const val RATE_APP_DIALOG_TAG = "rate_app_dialog"
         private const val DAILY_REWARD_DIALOG_TAG = "daily_reward_dialog"
 
@@ -36,6 +39,9 @@ class RecommendationsFragment : BasePresenterFragment<RecommendationsPresenter, 
     }
 
     private val loadingPlaceholders by lazy { resources.getStringArray(R.array.recommendation_loading_placeholders) }
+    private val streakRestoreViewOffsetX = Resources.getSystem().displayMetrics.widthPixels.toFloat() / 4
+
+    private var streakRestorePopup: PopupWindow? = null
 
     private lateinit var binding: FragmentRecommendationsBinding
 
@@ -132,9 +138,32 @@ class RecommendationsFragment : BasePresenterFragment<RecommendationsPresenter, 
     override fun showRateAppDialog() =
             RateAppDialog.newInstance().show(childFragmentManager, RATE_APP_DIALOG_TAG)
 
-    override fun showStreakRestoreDialog(streak: Long) =
-            StreakRestoreDialog.newInstance(streak).show(childFragmentManager, STREAK_RESTORE_DIALOG_TAG)
+    override fun showStreakRestoreDialog(streak: Long, withTooltip: Boolean) {
+        binding.ticketItem.counter.text = getString(R.string.amount, InventoryUtil.getItemsCount(InventoryUtil.Item.Ticket))
+        CardsFragmentAnimations
+                .createShowStreakRestoreWidgetAnimation(binding.ticketsContainer, streakRestoreViewOffsetX)
+                .apply {
+                    if (withTooltip) {
+                        withEndAction {
+                            streakRestorePopup = PopupHelper.showPopupAnchoredToView(context, binding.ticketsContainer, getString(R.string.streak_restore_text))
+                        }
+                    }
+                }
+                .start()
+        binding.ticketsContainer.setOnClickListener {
+            if (InventoryUtil.useItem(InventoryUtil.Item.Ticket)) {
+                presenter?.restoreStreak(streak)
+            }
+            hideStreakRestoreDialog()
+        }
+    }
 
+    override fun hideStreakRestoreDialog() {
+        if (streakRestorePopup?.isShowing == true) {
+            streakRestorePopup?.dismiss()
+        }
+        CardsFragmentAnimations.playHideStreakRestoreWidgetAnimation(binding.ticketsContainer, streakRestoreViewOffsetX)
+    }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode == STREAK_RESTORE_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
