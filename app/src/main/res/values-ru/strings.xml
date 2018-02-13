@@ -122,4 +122,8 @@
 
     <string name="connectivity_error">Нет соединения</string>
 
+    <string name="purchase_error">При обработке покупки произошла ошибка</string>
+
+    <string name="paid_items">Купить предметы</string>
+    <string name="restore_purchases">Восстановить покупки</string>
 </resources>

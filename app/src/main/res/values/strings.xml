@@ -129,4 +129,10 @@
 
     <string name="connectivity_error">No connection</string>
 
+    <string name="content_description_item_icon" translatable="false">item icon</string>
+
+    <string name="purchase_error">An error was occurred while processing your purchase</string>
+
+    <string name="paid_items">Buy items</string>
+    <string name="restore_purchases">Restore purchases</string>
 </resources>
