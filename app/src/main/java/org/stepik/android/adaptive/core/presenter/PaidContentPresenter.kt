@@ -48,7 +48,9 @@ class PaidContentPresenter : PresenterBase<PaidContentView>() {
 
     fun restorePurchases(continuationToken: String? = null) {
         view?.getBilling()?.newRequestsBuilder()?.create()?.let {
-            view?.onRestoreLoading()
+            if (continuationToken == null) {
+                view?.onRestoreLoading()
+            }
             onRestoreTaskStarted()
             it.getPurchases(ProductTypes.IN_APP, continuationToken, object : RequestListener<Purchases> {
                 override fun onSuccess(purchases: Purchases) {
@@ -93,7 +95,7 @@ class PaidContentPresenter : PresenterBase<PaidContentView>() {
         }
     }
 
-    fun loadInventory() {
+    private fun loadInventory() {
         view?.onInventoryLoading()
         val request = Inventory.Request.create()
         request.loadAllPurchases()

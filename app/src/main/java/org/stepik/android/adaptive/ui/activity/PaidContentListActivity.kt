@@ -17,7 +17,6 @@ import org.stepik.android.adaptive.core.presenter.PaidContentPresenter
 import org.stepik.android.adaptive.core.presenter.contracts.PaidContentView
 import org.stepik.android.adaptive.ui.adapter.PaidContentAdapter
 import org.stepik.android.adaptive.ui.dialog.InventoryDialog
-import org.stepik.android.adaptive.ui.dialog.ProgressDialogFragment
 
 class PaidContentListActivity : BasePresenterActivity<PaidContentPresenter, PaidContentView>(), PaidContentView {
     companion object {
@@ -60,7 +59,6 @@ class PaidContentListActivity : BasePresenterActivity<PaidContentPresenter, Paid
         recycler.visibility = View.GONE
         progress.visibility = View.GONE
         purchasesAreNotSupported.visibility = View.VISIBLE
-//        restorePurchases.visibility = View.GONE
     }
 
     override fun onInventoryLoading() {
@@ -82,7 +80,7 @@ class PaidContentListActivity : BasePresenterActivity<PaidContentPresenter, Paid
     override fun showInventoryDialog() = InventoryDialog().show(supportFragmentManager, INVENTORY_DIALOG_TAG)
 
     override fun onRestoreLoading() =
-            showProgressDialogFragment(RESTORE_DIALOG_TAG, getString(R.string.restore_purchases), getString(R.string.processing_your_request))
+            showProgressDialogFragment(RESTORE_DIALOG_TAG, getString(R.string.restoring_purchases), getString(R.string.processing_your_request))
 
     override fun onRestored() = hideProgressDialogFragment(RESTORE_DIALOG_TAG)
 

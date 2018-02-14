@@ -46,9 +46,7 @@ abstract class BasePresenterActivity<P : Presenter<V>, in V> : AppCompatActivity
     }
     protected fun hideProgressDialogFragment(tag: String) {
         val dialog = supportFragmentManager.findFragmentByTag(tag)
-        if (dialog != null && dialog is DialogFragment) {
-            dialog.dismiss()
-        }
+        (dialog as? DialogFragment)?.dismiss()
     }
 
     @CallSuper

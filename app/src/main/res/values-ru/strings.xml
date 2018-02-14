@@ -126,5 +126,6 @@
 
     <string name="paid_items">Купить предметы</string>
     <string name="restore_purchases">Восстановить покупки</string>
+    <string name="restoring_purchases">Восстановление покупок</string>
     <string name="purchases_are_not_supported">Встроенные покупки не поддерживаются на этой устройстве</string>
 </resources>
