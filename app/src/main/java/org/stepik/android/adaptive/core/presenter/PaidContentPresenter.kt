@@ -5,6 +5,7 @@ import org.solovyev.android.checkout.*
 import org.stepik.android.adaptive.core.presenter.contracts.PaidContentView
 import org.stepik.android.adaptive.ui.adapter.PaidContentAdapter
 import org.stepik.android.adaptive.util.InventoryUtil
+import org.stepik.android.adaptive.util.skipUIFrame
 import java.util.concurrent.atomic.AtomicInteger
 
 class PaidContentPresenter : PresenterBase<PaidContentView>() {
@@ -25,7 +26,7 @@ class PaidContentPresenter : PresenterBase<PaidContentView>() {
 
     private fun onRestoreTaskCompleted(withAnimation: Boolean = false) {
         if (activeRestoreTasks.decrementAndGet() == 0) {
-            view?.onRestored()
+            skipUIFrame({ view?.onRestored() })
             if (withAnimation) {
                 view?.showInventoryDialog()
             }
@@ -64,6 +65,7 @@ class PaidContentPresenter : PresenterBase<PaidContentView>() {
                 }
 
                 override fun onError(response: Int, exception: Exception) {
+                    exception.printStackTrace()
                     view?.onPurchaseError()
                     onRestoreTaskCompleted()
                 }

@@ -59,6 +59,7 @@ class PaidContentListActivity : BasePresenterActivity<PaidContentPresenter, Paid
         recycler.visibility = View.GONE
         progress.visibility = View.GONE
         purchasesAreNotSupported.visibility = View.VISIBLE
+        restorePurchases.visibility = View.GONE
     }
 
     override fun onInventoryLoading() {
