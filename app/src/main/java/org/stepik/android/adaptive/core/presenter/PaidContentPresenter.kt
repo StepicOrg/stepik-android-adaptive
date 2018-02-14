@@ -5,6 +5,7 @@ import org.solovyev.android.checkout.*
 import org.stepik.android.adaptive.core.presenter.contracts.PaidContentView
 import org.stepik.android.adaptive.ui.adapter.PaidContentAdapter
 import org.stepik.android.adaptive.util.InventoryUtil
+import java.util.concurrent.atomic.AtomicInteger
 
 class PaidContentPresenter : PresenterBase<PaidContentView>() {
     companion object : PresenterFactory<PaidContentPresenter> {
@@ -15,6 +16,21 @@ class PaidContentPresenter : PresenterBase<PaidContentView>() {
     private var checkout: ActivityCheckout? = null
 
     private var isInventoryLoaded = false
+
+    private val activeRestoreTasks = AtomicInteger(0)
+
+    private fun onRestoreTaskStarted() {
+        activeRestoreTasks.incrementAndGet()
+    }
+
+    private fun onRestoreTaskCompleted(withAnimation: Boolean = false) {
+        if (activeRestoreTasks.decrementAndGet() == 0) {
+            view?.onRestored()
+            if (withAnimation) {
+                view?.showInventoryDialog()
+            }
+        }
+    }
 
     private fun purchase(sku: Sku, paidContent: InventoryUtil.PaidContent) {
         checkout?.startPurchaseFlow(sku, null, object : RequestListener<Purchase> {
@@ -31,39 +47,50 @@ class PaidContentPresenter : PresenterBase<PaidContentView>() {
     }
 
     fun restorePurchases(continuationToken: String? = null) {
-        view?.getBilling()?.newRequestsBuilder()?.create()?.getPurchases(ProductTypes.IN_APP, continuationToken, object : RequestListener<Purchases> {
-            override fun onSuccess(purchases: Purchases) {
-                purchases.list.forEach {
-                    consume(it, InventoryUtil.PaidContent.getById(it.sku)!!)
+        view?.getBilling()?.newRequestsBuilder()?.create()?.let {
+            view?.onRestoreLoading()
+            onRestoreTaskStarted()
+            it.getPurchases(ProductTypes.IN_APP, continuationToken, object : RequestListener<Purchases> {
+                override fun onSuccess(purchases: Purchases) {
+                    purchases.list.forEach {
+                        consume(it, InventoryUtil.PaidContent.getById(it.sku)!!)
+                    }
+                    purchases.continuationToken?.let {
+                        restorePurchases(it)
+                    }
+                    onRestoreTaskCompleted(false)
                 }
-                purchases.continuationToken?.let {
-                    restorePurchases(it)
-                }
-            }
 
-            override fun onError(response: Int, exception: Exception) {
-                view?.onPurchaseError()
-            }
-        })
+                override fun onError(response: Int, exception: Exception) {
+                    view?.onPurchaseError()
+                    onRestoreTaskCompleted()
+                }
+            })
+        }
     }
 
     private fun consume(purchase: Purchase, paidContent: InventoryUtil.PaidContent, withAnimation: Boolean = false) {
-        checkout?.whenReady(object : Checkout.EmptyListener() {
-            override fun onReady(requests: BillingRequests) {
-                requests.consume(purchase.token, object : RequestListener<Any> {
-                    override fun onSuccess(result: Any) {
-                        InventoryUtil.changeItemCount(paidContent.item, paidContent.count.toLong())
-                        if (withAnimation) {
-                            view?.showInventoryDialog()
+        checkout?.let {
+            onRestoreTaskStarted()
+            it.whenReady(object : Checkout.EmptyListener() {
+                override fun onReady(requests: BillingRequests) {
+                    requests.consume(purchase.token, object : RequestListener<Any> {
+                        override fun onSuccess(result: Any) {
+                            InventoryUtil.changeItemCount(paidContent.item, paidContent.count.toLong())
+                            if (withAnimation) {
+                                view?.showInventoryDialog()
+                            }
+                            onRestoreTaskCompleted(!withAnimation)
                         }
-                    }
 
-                    override fun onError(response: Int, exception: Exception) {
-                        view?.onPurchaseError()
-                    }
-                })
-            }
-        })
+                        override fun onError(response: Int, exception: Exception) {
+                            view?.onPurchaseError()
+                            onRestoreTaskCompleted()
+                        }
+                    })
+                }
+            })
+        }
     }
 
     fun loadInventory() {
@@ -77,9 +104,11 @@ class PaidContentPresenter : PresenterBase<PaidContentView>() {
                 adapter.items = product.skus.map { sku ->
                     sku to InventoryUtil.PaidContent.getById(sku.id.code)!!
                 }
+                view?.onInventoryLoaded()
+                isInventoryLoaded = true
+            } else {
+                view?.onPurchasesNotSupported()
             }
-            view?.onInventoryLoaded()
-            isInventoryLoaded = true
         }
     }
 
@@ -90,6 +119,9 @@ class PaidContentPresenter : PresenterBase<PaidContentView>() {
         super.attachView(view)
         checkout = view.createCheckout()
         checkout?.start()
+
+        activeRestoreTasks.set(0)
+        view.onRestored()
 
         view.onAdapter(adapter)
 

@@ -61,38 +61,16 @@
             android:layout_width="32dp"
             android:layout_height="32dp" />
 
-        <LinearLayout
+        <TextView
+            android:id="@+id/purchasesAreNotSupported"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:visibility="gone"
-            android:orientation="vertical"
+            android:maxWidth="256dp"
             android:layout_gravity="center"
-            android:gravity="center_horizontal"
-            android:id="@+id/error">
-
-            <ImageView
-                android:layout_width="125dp"
-                android:layout_height="125dp"
-                android:src="@drawable/ic_no_wifi" />
-
-            <TextView
-                android:id="@+id/error_message"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:maxWidth="256dp"
-                android:gravity="center"
-                android:text="@string/request_error"
-                android:textColor="@color/colorGrayText"/>
-
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                style="@style/Widget.AppCompat.Button.Borderless"
-                android:textColor="@color/borderless_button_text_color"
-                android:text="@string/try_again"
-                android:id="@+id/tryAgain" />
-        </LinearLayout>
+            android:gravity="center"
+            android:text="@string/purchases_are_not_supported"
+            android:textColor="@color/colorGrayText"
+            android:visibility="gone" />
 
     </FrameLayout>
 

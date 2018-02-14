@@ -11,9 +11,11 @@ interface PaidContentView {
     fun createCheckout(): ActivityCheckout
     fun getBilling(): Billing
 
-    fun onInventoryError()
     fun onInventoryLoading()
     fun onInventoryLoaded()
+    fun onPurchasesNotSupported()
 
+    fun onRestoreLoading()
+    fun onRestored()
     fun onPurchaseError()
 }

@@ -17,10 +17,12 @@ import org.stepik.android.adaptive.core.presenter.PaidContentPresenter
 import org.stepik.android.adaptive.core.presenter.contracts.PaidContentView
 import org.stepik.android.adaptive.ui.adapter.PaidContentAdapter
 import org.stepik.android.adaptive.ui.dialog.InventoryDialog
+import org.stepik.android.adaptive.ui.dialog.ProgressDialogFragment
 
 class PaidContentListActivity : BasePresenterActivity<PaidContentPresenter, PaidContentView>(), PaidContentView {
     companion object {
         const val INVENTORY_DIALOG_TAG = "inventory_dialog"
+        const val RESTORE_DIALOG_TAG = "restore_dialog"
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -32,10 +34,6 @@ class PaidContentListActivity : BasePresenterActivity<PaidContentPresenter, Paid
         val divider = DividerItemDecoration(this, DividerItemDecoration.VERTICAL)
         divider.setDrawable(ContextCompat.getDrawable(this, R.drawable.stroke))
         recycler.addItemDecoration(divider)
-
-        tryAgain.setOnClickListener {
-            presenter?.loadInventory()
-        }
 
         restorePurchases.setOnClickListener {
             presenter?.restorePurchases()
@@ -58,22 +56,23 @@ class PaidContentListActivity : BasePresenterActivity<PaidContentPresenter, Paid
         Snackbar.make(root, R.string.purchase_error, Snackbar.LENGTH_LONG).show()
     }
 
-    override fun onInventoryError() {
+    override fun onPurchasesNotSupported() {
         recycler.visibility = View.GONE
-        error.visibility = View.VISIBLE
         progress.visibility = View.GONE
+        purchasesAreNotSupported.visibility = View.VISIBLE
+//        restorePurchases.visibility = View.GONE
     }
 
     override fun onInventoryLoading() {
         recycler.visibility = View.GONE
-        error.visibility = View.GONE
         progress.visibility = View.VISIBLE
+        purchasesAreNotSupported.visibility = View.GONE
     }
 
     override fun onInventoryLoaded() {
         recycler.visibility = View.VISIBLE
-        error.visibility = View.GONE
         progress.visibility = View.GONE
+        purchasesAreNotSupported.visibility = View.GONE
     }
 
     override fun getBilling() = (application as App).billing
@@ -81,6 +80,11 @@ class PaidContentListActivity : BasePresenterActivity<PaidContentPresenter, Paid
     override fun createCheckout() = Checkout.forActivity(this, getBilling())
 
     override fun showInventoryDialog() = InventoryDialog().show(supportFragmentManager, INVENTORY_DIALOG_TAG)
+
+    override fun onRestoreLoading() =
+            showProgressDialogFragment(RESTORE_DIALOG_TAG, getString(R.string.restore_purchases), getString(R.string.processing_your_request))
+
+    override fun onRestored() = hideProgressDialogFragment(RESTORE_DIALOG_TAG)
 
     override fun onAdapter(adapter: PaidContentAdapter) {
         recycler.adapter = adapter
