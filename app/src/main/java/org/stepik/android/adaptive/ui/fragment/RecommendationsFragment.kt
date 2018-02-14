@@ -16,7 +16,9 @@ import org.stepik.android.adaptive.core.ScreenManager
 import org.stepik.android.adaptive.core.presenter.BasePresenterFragment
 import org.stepik.android.adaptive.core.presenter.RecommendationsPresenter
 import org.stepik.android.adaptive.core.presenter.contracts.RecommendationsView
+import org.stepik.android.adaptive.data.AnalyticMgr
 import org.stepik.android.adaptive.databinding.FragmentRecommendationsBinding
+import org.stepik.android.adaptive.ui.activity.PaidContentListActivity
 import org.stepik.android.adaptive.ui.adapter.QuizCardsAdapter
 import org.stepik.android.adaptive.ui.animation.CardsFragmentAnimations
 import org.stepik.android.adaptive.ui.dialog.DailyRewardDialog
@@ -28,6 +30,7 @@ import org.stepik.android.adaptive.util.PopupHelper
 class RecommendationsFragment : BasePresenterFragment<RecommendationsPresenter, RecommendationsView>(), RecommendationsView {
     companion object {
         const val STREAK_RESTORE_REQUEST_CODE = 3423
+        const val PAID_CONTENT_REQUEST_CODE = 113
         const val STREAK_RESTORE_KEY = "streak"
 
         private const val LEVEL_DIALOG_TAG = "level_dialog"
@@ -156,13 +159,20 @@ class RecommendationsFragment : BasePresenterFragment<RecommendationsPresenter, 
                 }
                 .start()
         binding.ticketsContainer.setOnClickListener {
-            if (offerToBuy) {
-                ScreenManager.showPaidContent(context)
-            } else if (InventoryUtil.useItem(InventoryUtil.Item.Ticket)) {
-                presenter?.restoreStreak(streak)
+            if (offerToBuy && !InventoryUtil.hasTickets()) {
+                AnalyticMgr.getInstance().paidContentOpened()
+                startActivityForResult(Intent(context, PaidContentListActivity::class.java), PAID_CONTENT_REQUEST_CODE)
+            } else {
+                if (InventoryUtil.useItem(InventoryUtil.Item.Ticket)) {
+                    presenter?.restoreStreak(streak)
+                }
+                hideStreakRestoreDialog()
             }
-            hideStreakRestoreDialog()
         }
+    }
+
+    private fun refreshStreakRestoreDialog() {
+        binding.ticketItem.counter.text = getString(R.string.amount, InventoryUtil.getItemsCount(InventoryUtil.Item.Ticket))
     }
 
     override fun hideStreakRestoreDialog() {
@@ -175,6 +185,10 @@ class RecommendationsFragment : BasePresenterFragment<RecommendationsPresenter, 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode == STREAK_RESTORE_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
             presenter?.restoreStreak(data?.getLongExtra(STREAK_RESTORE_KEY, 0) ?: 0)
+        }
+
+        if (requestCode == PAID_CONTENT_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
+            refreshStreakRestoreDialog()
         }
         super.onActivityResult(requestCode, resultCode, data)
     }
