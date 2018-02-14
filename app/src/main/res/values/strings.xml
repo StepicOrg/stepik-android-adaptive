@@ -137,4 +137,5 @@
     <string name="restore_purchases">Restore purchases</string>
     <string name="restoring_purchases">Restoring purchases</string>
     <string name="purchases_are_not_supported">In-app purchases are not supported on this device</string>
+    <string name="paid_content_tooltip">You can buy more coupons</string>
 </resources>

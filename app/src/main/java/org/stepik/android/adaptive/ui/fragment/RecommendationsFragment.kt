@@ -138,20 +138,27 @@ class RecommendationsFragment : BasePresenterFragment<RecommendationsPresenter, 
     override fun showRateAppDialog() =
             RateAppDialog.newInstance().show(childFragmentManager, RATE_APP_DIALOG_TAG)
 
-    override fun showStreakRestoreDialog(streak: Long, withTooltip: Boolean) {
+    override fun showStreakRestoreDialog(streak: Long, offerToBuy: Boolean, withTooltip: Boolean) {
         binding.ticketItem.counter.text = getString(R.string.amount, InventoryUtil.getItemsCount(InventoryUtil.Item.Ticket))
         CardsFragmentAnimations
                 .createShowStreakRestoreWidgetAnimation(binding.ticketsContainer, streakRestoreViewOffsetX)
                 .apply {
                     if (withTooltip) {
+                        val tooltipText = getString(if (offerToBuy) {
+                            R.string.paid_content_tooltip
+                        } else {
+                            R.string.streak_restore_text
+                        })
                         withEndAction {
-                            streakRestorePopup = PopupHelper.showPopupAnchoredToView(context, binding.ticketsContainer, getString(R.string.streak_restore_text))
+                            streakRestorePopup = PopupHelper.showPopupAnchoredToView(context, binding.ticketsContainer, tooltipText)
                         }
                     }
                 }
                 .start()
         binding.ticketsContainer.setOnClickListener {
-            if (InventoryUtil.useItem(InventoryUtil.Item.Ticket)) {
+            if (offerToBuy) {
+                ScreenManager.showPaidContent(context)
+            } else if (InventoryUtil.useItem(InventoryUtil.Item.Ticket)) {
                 presenter?.restoreStreak(streak)
             }
             hideStreakRestoreDialog()

@@ -6,6 +6,7 @@ import android.content.Intent;
 
 import org.stepik.android.adaptive.data.AnalyticMgr;
 import org.stepik.android.adaptive.ui.activity.IntroActivity;
+import org.stepik.android.adaptive.ui.activity.PaidContentListActivity;
 import org.stepik.android.adaptive.ui.activity.PhotoViewActivity;
 import org.stepik.android.adaptive.ui.activity.StatsActivity;
 import org.stepik.android.adaptive.ui.activity.StudyActivity;
@@ -51,6 +52,12 @@ public class ScreenManager {
         AnalyticMgr.getInstance().statsOpened();
         final Intent intent = new Intent(context, StatsActivity.class);
         intent.putExtra(StatsActivity.PAGE_KEY, page);
+        context.startActivity(intent);
+    }
+
+    public static void showPaidContent(Context context) {
+        AnalyticMgr.getInstance().paidContentOpened();
+        final Intent intent = new Intent(context, PaidContentListActivity.class);
         context.startActivity(intent);
     }
 }

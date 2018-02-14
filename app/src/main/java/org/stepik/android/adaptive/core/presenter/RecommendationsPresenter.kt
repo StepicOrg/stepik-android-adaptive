@@ -26,6 +26,8 @@ import java.util.*
 class RecommendationsPresenter : PresenterBase<RecommendationsView>(), AnswerListener {
     companion object : PresenterFactory<RecommendationsPresenter> {
         override fun create() = RecommendationsPresenter()
+
+        private const val MIN_STREAK_TO_OFFER_TO_BUY = 7
     }
 
     private val compositeDisposable = CompositeDisposable()
@@ -107,10 +109,15 @@ class RecommendationsPresenter : PresenterBase<RecommendationsView>(), AnswerLis
         if (streak > 1) {
             view?.onStreakLost()
 
-            if (InventoryUtil.hasTickets()) {
-                view?.let {
+            view?.let {
+                if (InventoryUtil.hasTickets()) {
                     it.showStreakRestoreDialog(streak, withTooltip = !SharedPreferenceMgr.getInstance().isStreakRestoreTooltipWasShown)
                     SharedPreferenceMgr.getInstance().afterStreakRestoreTooltipWasShown()
+                } else {
+                    it.showStreakRestoreDialog(streak, offerToBuy = true, withTooltip = streak > MIN_STREAK_TO_OFFER_TO_BUY && !SharedPreferenceMgr.getInstance().isPaidContentTooltipWasShown)
+                    if (streak > MIN_STREAK_TO_OFFER_TO_BUY) {
+                        SharedPreferenceMgr.getInstance().afterPaidContentTooltipWasShown()
+                    }
                 }
             }
         }
