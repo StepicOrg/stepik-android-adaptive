@@ -23,7 +23,9 @@ class PaidContentPresenter : PresenterBase<PaidContentView>() {
             }
 
             override fun onError(response: Int, exception: Exception) {
-                view?.onPurchaseError()
+                if (response != ResponseCodes.USER_CANCELED) {
+                    view?.onPurchaseError()
+                }
             }
         })
     }
