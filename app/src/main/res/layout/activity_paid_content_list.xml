@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/root"
@@ -19,18 +19,12 @@
             android:layout_height="?attr/actionBarSize"/>
     </android.support.design.widget.AppBarLayout>
 
-    <include
-        android:id="@+id/appBarStroke"
-        android:layout_below="@id/appbar"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        layout="@layout/stroke" />
+    <include layout="@layout/stroke" />
 
     <FrameLayout
-        android:id="@+id/content"
-        android:layout_below="@id/appBarStroke"
+        android:layout_weight="1"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="0dp">
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/recycler"
@@ -57,20 +51,13 @@
 
     </FrameLayout>
 
-    <include
-        layout="@layout/stroke"
-        android:id="@+id/bottomBarStroke"
-        android:layout_below="@id/content"
-        android:layout_width="match_parent"
-        android:layout_height="1dp" />
+    <include layout="@layout/stroke" />
 
     <Button
         android:id="@+id/restorePurchases"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/bottomBarStroke"
-        android:layout_alignParentBottom="true"
         style="@style/Widget.AppCompat.Button.Borderless"
         android:textColor="@color/borderless_button_text_color"
         android:text="@string/restore_purchases"/>
-</RelativeLayout>
+</LinearLayout>
