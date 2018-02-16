@@ -45,6 +45,7 @@ class RecommendationsFragment : BasePresenterFragment<RecommendationsPresenter, 
     private val streakRestoreViewOffsetX = Resources.getSystem().displayMetrics.widthPixels.toFloat() / 4
 
     private var streakRestorePopup: PopupWindow? = null
+    private var streakToRestore: Long? = null
 
     private lateinit var binding: FragmentRecommendationsBinding
 
@@ -58,6 +59,12 @@ class RecommendationsFragment : BasePresenterFragment<RecommendationsPresenter, 
         binding.streakSuccessContainer.setGradientDrawableParams(ContextCompat.getColor(context, R.color.colorAccent), 0f)
 
         binding.toolbar.setOnClickListener { ScreenManager.showStatsScreen(context, 0) }
+
+        savedInstanceState?.getLong(STREAK_RESTORE_KEY, -1)?.let {
+            if (it != -1L) {
+                showStreakRestoreDialog(it)
+            }
+        }
 
         return binding.root
     }
@@ -141,16 +148,17 @@ class RecommendationsFragment : BasePresenterFragment<RecommendationsPresenter, 
     override fun showRateAppDialog() =
             RateAppDialog.newInstance().show(childFragmentManager, RATE_APP_DIALOG_TAG)
 
-    override fun showStreakRestoreDialog(streak: Long, offerToBuy: Boolean, withTooltip: Boolean) {
+    override fun showStreakRestoreDialog(streak: Long, withTooltip: Boolean) {
         binding.ticketItem.counter.text = getString(R.string.amount, InventoryUtil.getItemsCount(InventoryUtil.Item.Ticket))
+        streakToRestore = streak
         CardsFragmentAnimations
                 .createShowStreakRestoreWidgetAnimation(binding.ticketsContainer, streakRestoreViewOffsetX)
                 .apply {
                     if (withTooltip) {
-                        val tooltipText = getString(if (offerToBuy) {
-                            R.string.paid_content_tooltip
-                        } else {
+                        val tooltipText = getString(if (InventoryUtil.hasTickets()) {
                             R.string.streak_restore_text
+                        } else {
+                            R.string.paid_content_tooltip
                         })
                         withEndAction {
                             streakRestorePopup = PopupHelper.showPopupAnchoredToView(context, binding.ticketsContainer, tooltipText)
@@ -159,14 +167,14 @@ class RecommendationsFragment : BasePresenterFragment<RecommendationsPresenter, 
                 }
                 .start()
         binding.ticketsContainer.setOnClickListener {
-            if (offerToBuy && !InventoryUtil.hasTickets()) {
-                AnalyticMgr.getInstance().paidContentOpened()
-                startActivityForResult(Intent(context, PaidContentListActivity::class.java), PAID_CONTENT_REQUEST_CODE)
-            } else {
+            if (InventoryUtil.hasTickets()) {
                 if (InventoryUtil.useItem(InventoryUtil.Item.Ticket)) {
                     presenter?.restoreStreak(streak)
                 }
                 hideStreakRestoreDialog()
+            } else {
+                AnalyticMgr.getInstance().paidContentOpened()
+                startActivityForResult(Intent(context, PaidContentListActivity::class.java), PAID_CONTENT_REQUEST_CODE)
             }
         }
     }
@@ -176,6 +184,7 @@ class RecommendationsFragment : BasePresenterFragment<RecommendationsPresenter, 
     }
 
     override fun hideStreakRestoreDialog() {
+        streakToRestore = null
         if (streakRestorePopup?.isShowing == true) {
             streakRestorePopup?.dismiss()
         }
@@ -193,6 +202,12 @@ class RecommendationsFragment : BasePresenterFragment<RecommendationsPresenter, 
         super.onActivityResult(requestCode, resultCode, data)
     }
 
+    override fun onSaveInstanceState(outState: Bundle?) {
+        streakToRestore?.let {
+            outState?.putLong(STREAK_RESTORE_KEY, it)
+        }
+        super.onSaveInstanceState(outState)
+    }
 
     override fun onStart() {
         super.onStart()

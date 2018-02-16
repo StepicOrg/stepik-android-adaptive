@@ -114,7 +114,7 @@ class RecommendationsPresenter : PresenterBase<RecommendationsView>(), AnswerLis
                     it.showStreakRestoreDialog(streak, withTooltip = !SharedPreferenceMgr.getInstance().isStreakRestoreTooltipWasShown)
                     SharedPreferenceMgr.getInstance().afterStreakRestoreTooltipWasShown()
                 } else {
-                    it.showStreakRestoreDialog(streak, offerToBuy = true, withTooltip = streak > MIN_STREAK_TO_OFFER_TO_BUY && !SharedPreferenceMgr.getInstance().isPaidContentTooltipWasShown)
+                    it.showStreakRestoreDialog(streak, withTooltip = streak > MIN_STREAK_TO_OFFER_TO_BUY && !SharedPreferenceMgr.getInstance().isPaidContentTooltipWasShown)
                     if (streak > MIN_STREAK_TO_OFFER_TO_BUY) {
                         SharedPreferenceMgr.getInstance().afterPaidContentTooltipWasShown()
                     }
