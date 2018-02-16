@@ -137,8 +137,6 @@ class RecommendationsFragment : BasePresenterFragment<RecommendationsPresenter, 
     override fun onStreakRestored() =
             CardsFragmentAnimations.playStreakRestoreAnimation(binding.streakSuccessContainer)
 
-
-
     override fun showDailyRewardDialog(progress: Long) =
             DailyRewardDialog.newInstance(progress).show(childFragmentManager, DAILY_REWARD_DIALOG_TAG)
 
@@ -149,7 +147,7 @@ class RecommendationsFragment : BasePresenterFragment<RecommendationsPresenter, 
             RateAppDialog.newInstance().show(childFragmentManager, RATE_APP_DIALOG_TAG)
 
     override fun showStreakRestoreDialog(streak: Long, withTooltip: Boolean) {
-        binding.ticketItem.counter.text = getString(R.string.amount, InventoryUtil.getItemsCount(InventoryUtil.Item.Ticket))
+        refreshStreakRestoreDialog()
         streakToRestore = streak
         CardsFragmentAnimations
                 .createShowStreakRestoreWidgetAnimation(binding.ticketsContainer, streakRestoreViewOffsetX)
@@ -173,8 +171,7 @@ class RecommendationsFragment : BasePresenterFragment<RecommendationsPresenter, 
                 }
                 hideStreakRestoreDialog()
             } else {
-                AnalyticMgr.getInstance().paidContentOpened()
-                startActivityForResult(Intent(context, PaidContentListActivity::class.java), PAID_CONTENT_REQUEST_CODE)
+                openPaidContentList()
             }
         }
     }
@@ -189,6 +186,11 @@ class RecommendationsFragment : BasePresenterFragment<RecommendationsPresenter, 
             streakRestorePopup?.dismiss()
         }
         CardsFragmentAnimations.playHideStreakRestoreWidgetAnimation(binding.ticketsContainer, streakRestoreViewOffsetX)
+    }
+
+    private fun openPaidContentList() {
+        AnalyticMgr.getInstance().paidContentOpened()
+        startActivityForResult(Intent(context, PaidContentListActivity::class.java), PAID_CONTENT_REQUEST_CODE)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
