@@ -2,18 +2,18 @@ package org.stepik.android.adaptive.core.presenter
 
 import android.content.Intent
 import org.solovyev.android.checkout.*
-import org.stepik.android.adaptive.core.presenter.contracts.PaidContentView
-import org.stepik.android.adaptive.ui.adapter.PaidContentAdapter
+import org.stepik.android.adaptive.core.presenter.contracts.PaidInventoryItemsView
+import org.stepik.android.adaptive.ui.adapter.PaidInventoryAdapter
 import org.stepik.android.adaptive.util.InventoryUtil
 import org.stepik.android.adaptive.util.skipUIFrame
 import java.util.concurrent.atomic.AtomicInteger
 
-class PaidContentPresenter : PresenterBase<PaidContentView>() {
-    companion object : PresenterFactory<PaidContentPresenter> {
-        override fun create() = PaidContentPresenter()
+class PaidInventoryItemsPresenter : PresenterBase<PaidInventoryItemsView>() {
+    companion object : PresenterFactory<PaidInventoryItemsPresenter> {
+        override fun create() = PaidInventoryItemsPresenter()
     }
 
-    private val adapter = PaidContentAdapter(this::purchase)
+    private val adapter = PaidInventoryAdapter(this::purchase)
     private var checkout: ActivityCheckout? = null
 
     private var isInventoryLoaded = false
@@ -98,7 +98,7 @@ class PaidContentPresenter : PresenterBase<PaidContentView>() {
     }
 
     private fun loadInventory() {
-        view?.onInventoryLoading()
+        view?.onContentLoading()
         val request = Inventory.Request.create()
         request.loadAllPurchases()
         request.loadSkus(ProductTypes.IN_APP, InventoryUtil.PaidContent.values().map { it.id })
@@ -108,7 +108,7 @@ class PaidContentPresenter : PresenterBase<PaidContentView>() {
                 adapter.items = product.skus.map { sku ->
                     sku to InventoryUtil.PaidContent.getById(sku.id.code)!!
                 }
-                view?.onInventoryLoaded()
+                view?.onContentLoaded()
                 isInventoryLoaded = true
             } else {
                 view?.onPurchasesNotSupported()
@@ -119,7 +119,7 @@ class PaidContentPresenter : PresenterBase<PaidContentView>() {
     fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) =
         checkout?.onActivityResult(requestCode, resultCode, data)
 
-    override fun attachView(view: PaidContentView) {
+    override fun attachView(view: PaidInventoryItemsView) {
         super.attachView(view)
         checkout = view.createCheckout()
         checkout?.start()
@@ -130,13 +130,13 @@ class PaidContentPresenter : PresenterBase<PaidContentView>() {
         view.onAdapter(adapter)
 
         if (isInventoryLoaded) {
-            view.onInventoryLoaded()
+            view.onContentLoaded()
         } else {
             loadInventory()
         }
     }
 
-    override fun detachView(view: PaidContentView) {
+    override fun detachView(view: PaidInventoryItemsView) {
         checkout?.stop()
         checkout = null
         super.detachView(view)
