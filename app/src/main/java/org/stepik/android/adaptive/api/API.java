@@ -20,6 +20,7 @@ import org.stepik.android.adaptive.data.SharedPreferenceMgr;
 import org.stepik.android.adaptive.data.model.EnrollmentWrapper;
 import org.stepik.android.adaptive.data.model.AccountCredentials;
 import org.stepik.android.adaptive.data.model.Profile;
+import org.stepik.android.adaptive.data.model.QuestionsPack;
 import org.stepik.android.adaptive.data.model.RecommendationReaction;
 import org.stepik.android.adaptive.data.model.RegistrationUser;
 import org.stepik.android.adaptive.data.model.Submission;
@@ -342,7 +343,13 @@ public final class API {
     }
 
     public Observable<RecommendationsResponse> getNextRecommendations(final int count) {
-        return stepikService.getNextRecommendations(Config.getInstance().getCourseId(), count);
+        long courseId;
+        try {
+            courseId = QuestionsPack.values()[SharedPreferenceMgr.getInstance().getQuestionsPackIndex()].getCourseId();
+        } catch (Exception e) {
+            courseId = Config.getInstance().getCourseId();
+        }
+        return stepikService.getNextRecommendations(courseId, count);
     }
 
     public Observable<StepsResponse> getSteps(final long lesson) {
