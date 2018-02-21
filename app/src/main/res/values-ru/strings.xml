@@ -129,4 +129,6 @@
     <string name="restoring_purchases">Восстановление покупок</string>
     <string name="purchases_are_not_supported">Встроенные покупки не поддерживаются на этой устройстве</string>
     <string name="paid_content_tooltip">При необходимости Вы можете приобрести дополнительные купоны</string>
+
+    <string name="questions_packs">Наборы вопросов</string>
 </resources>

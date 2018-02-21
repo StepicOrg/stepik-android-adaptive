@@ -18,7 +18,7 @@ import org.stepik.android.adaptive.core.presenter.RecommendationsPresenter
 import org.stepik.android.adaptive.core.presenter.contracts.RecommendationsView
 import org.stepik.android.adaptive.data.AnalyticMgr
 import org.stepik.android.adaptive.databinding.FragmentRecommendationsBinding
-import org.stepik.android.adaptive.ui.activity.PaidContentListActivity
+import org.stepik.android.adaptive.ui.activity.PaidInventoryItemsActivity
 import org.stepik.android.adaptive.ui.adapter.QuizCardsAdapter
 import org.stepik.android.adaptive.ui.animation.CardsFragmentAnimations
 import org.stepik.android.adaptive.ui.dialog.DailyRewardDialog
@@ -190,7 +190,7 @@ class RecommendationsFragment : BasePresenterFragment<RecommendationsPresenter, 
 
     private fun openPaidContentList() {
         AnalyticMgr.getInstance().paidContentOpened()
-        startActivityForResult(Intent(context, PaidContentListActivity::class.java), PAID_CONTENT_REQUEST_CODE)
+        startActivityForResult(Intent(context, PaidInventoryItemsActivity::class.java), PAID_CONTENT_REQUEST_CODE)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

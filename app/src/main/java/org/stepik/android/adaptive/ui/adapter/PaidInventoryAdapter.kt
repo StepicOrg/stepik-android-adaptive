@@ -11,7 +11,7 @@ import org.solovyev.android.checkout.Sku
 import org.stepik.android.adaptive.R
 import org.stepik.android.adaptive.util.InventoryUtil
 
-class PaidContentAdapter(private val purchase: (Sku, InventoryUtil.PaidContent) -> Unit) : RecyclerView.Adapter<PaidContentAdapter.PaidContentViewHolder>() {
+class PaidInventoryAdapter(private val purchase: (Sku, InventoryUtil.PaidContent) -> Unit) : RecyclerView.Adapter<PaidInventoryAdapter.PaidContentViewHolder>() {
     var items: List<Pair<Sku, InventoryUtil.PaidContent>> = emptyList()
         set(value) {
             field = value.sortedBy { it.first.detailedPrice.amount }
