@@ -37,6 +37,7 @@ public final class AnalyticMgr {
     private final static String EVENT_APP_RATE_NEGATIVE_EMAIL = "app_rate_negative_email";
 
     private final static String EVENT_STATS_OPENED = "stats_opened";
+    private final static String EVENT_PAID_CONTENT_OPENED = "paid_content_opened";
 
     private final static String EVENT_REACHED_EXP_500 = "reached_exp_500";
     private final static String EVENT_REACHED_EXP_1000 = "reached_exp_1000";
@@ -145,6 +146,11 @@ public final class AnalyticMgr {
     public void statsOpened() {
         firebaseAnalytics.logEvent(EVENT_STATS_OPENED, null);
     }
+
+    public void paidContentOpened() {
+        firebaseAnalytics.logEvent(EVENT_PAID_CONTENT_OPENED, null);
+    }
+
 
     public void onExpReached(final long exp, final long delta) {
         String event = null;

@@ -40,8 +40,6 @@ class LaunchActivity : BasePresenterActivity<LoginPresenter, LoginView>(), Login
         private const val PROGRESS = "launch_progress"
     }
 
-    private var presenter: LoginPresenter? = null
-
     private var googleApiClient : GoogleApiClient? = null
     private lateinit var callbackManager : CallbackManager
 
@@ -190,10 +188,6 @@ class LaunchActivity : BasePresenterActivity<LoginPresenter, LoginView>(), Login
 
     override fun onLoading() {
         showProgressDialogFragment(PROGRESS, getString(R.string.sign_in), getString(R.string.processing_your_request))
-    }
-
-    override fun onPresenter(presenter: LoginPresenter) {
-        this.presenter = presenter
     }
 
     override fun getPresenterFactory(): PresenterFactory<LoginPresenter> = LoginPresenter.Companion

@@ -25,8 +25,6 @@ class RegisterActivity : BasePresenterActivity<LoginPresenter, LoginView>(), Log
         private const val PROGRESS = "register_progress"
     }
 
-    private var presenter: LoginPresenter? = null
-
     private lateinit var binding : ActivityRegisterBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -128,10 +126,6 @@ class RegisterActivity : BasePresenterActivity<LoginPresenter, LoginView>(), Log
 
     override fun onLoading() {
         showProgressDialogFragment(PROGRESS, getString(R.string.sign_up), getString(R.string.processing_your_request))
-    }
-
-    override fun onPresenter(presenter: LoginPresenter) {
-        this.presenter = presenter
     }
 
     override fun getPresenterFactory(): PresenterFactory<LoginPresenter> = LoginPresenter.Companion

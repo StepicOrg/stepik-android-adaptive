@@ -106,7 +106,7 @@
     <string name="streak_restored">Streak restored</string>
     <string name="amount" translatable="false">x%d</string>
     <string name="use_coupon">Use coupon</string>
-    <string name="streak_restore_text">You can restore your streak by using error coupon, you have:</string>
+    <string name="streak_restore_text">You can restore your streak by using error coupon</string>
     <string name="cancel">Cancel</string>
     <string name="not_now">Not now</string>
     <string name="streak_restore_question">Use coupon?</string>
@@ -129,4 +129,13 @@
 
     <string name="connectivity_error">No connection</string>
 
+    <string name="content_description_item_icon" translatable="false">item icon</string>
+
+    <string name="purchase_error">An error was occurred while processing your purchase</string>
+
+    <string name="paid_items">Buy items</string>
+    <string name="restore_purchases">Restore purchases</string>
+    <string name="restoring_purchases">Restoring purchases</string>
+    <string name="purchases_are_not_supported">In-app purchases are not supported on this device</string>
+    <string name="paid_content_tooltip">You can buy more coupons</string>
 </resources>

@@ -5,7 +5,9 @@ import android.graphics.Color
 import android.support.design.widget.CoordinatorLayout
 import android.support.v4.content.ContextCompat
 import android.view.View
+import android.view.ViewPropertyAnimator
 import android.view.animation.DecelerateInterpolator
+import android.view.animation.OvershootInterpolator
 import com.github.jinatonic.confetti.CommonConfetti
 import org.stepik.android.adaptive.R
 import org.stepik.android.adaptive.databinding.FragmentRecommendationsBinding
@@ -119,5 +121,27 @@ object CardsFragmentAnimations {
 
                 }.start()
         expProgress.visibility = View.INVISIBLE
+    }
+
+    @JvmStatic
+    fun createShowStreakRestoreWidgetAnimation(ticketsContainer: View, dx: Float): ViewPropertyAnimator {
+        ticketsContainer.translationX = dx
+        ticketsContainer.visibility = View.VISIBLE
+        return ticketsContainer.animate()
+                .translationX(0f)
+                .setDuration(ANIMATION_DURATION_MS)
+                .setInterpolator(OvershootInterpolator(1f))
+    }
+
+    @JvmStatic
+    fun playHideStreakRestoreWidgetAnimation(ticketsContainer: View, dx: Float) {
+        ticketsContainer.setOnClickListener(null)
+        ticketsContainer.animate()
+                .translationX(dx)
+                .setDuration(ANIMATION_DURATION_MS)
+                .withEndAction {
+                    ticketsContainer.visibility = View.GONE
+                }
+                .start()
     }
 }

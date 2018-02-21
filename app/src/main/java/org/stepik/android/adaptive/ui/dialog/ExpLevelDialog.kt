@@ -8,11 +8,9 @@ import android.support.v4.app.DialogFragment
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.AlertDialog
 import com.github.jinatonic.confetti.CommonConfetti
-import io.reactivex.Completable
-import io.reactivex.android.schedulers.AndroidSchedulers
 import org.stepik.android.adaptive.R
 import org.stepik.android.adaptive.databinding.ExpLevelDialogBinding
-import java.util.concurrent.TimeUnit
+import org.stepik.android.adaptive.util.skipUIFrame
 
 class ExpLevelDialog : DialogFragment() {
     companion object {
@@ -42,14 +40,12 @@ class ExpLevelDialog : DialogFragment() {
 
     override fun onResume() {
         super.onResume()
-        Completable
-                .timer(0, TimeUnit.MICROSECONDS) // js like work around
-                .observeOn(AndroidSchedulers.mainThread()).subscribe {
+        skipUIFrame({
             CommonConfetti.rainingConfetti(binding.expLevelDialogConfetti, intArrayOf(
                     Color.BLACK,
                     ContextCompat.getColor(context, R.color.colorAccentDisabled),
                     ContextCompat.getColor(context, R.color.colorAccent)
             )).infinite().setVelocityY(100f, 30f).setVelocityX(0f, 60f).setEmissionRate(15f)
-        }
+        })
     }
 }

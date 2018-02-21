@@ -25,6 +25,9 @@ public final class SharedPreferenceMgr {
 
     private static final String NOT_FIRST_TIME = "not_first_time";
 
+    private static final String IS_STREAK_RESTORE_TOOLTIP_WAS_SHOWN = "is_streak_restore_tooltip_was_shown";
+    private static final String IS_PAID_CONTENT_TOOLTIP_WAS_SHOWN = "is_paid_content_tooltip_was_shown";
+
     private static final String FAKE_USER = "fake_user";
 
     private static SharedPreferenceMgr instance;
@@ -119,6 +122,22 @@ public final class SharedPreferenceMgr {
 
     public void setIsOauthTokenSocial(final boolean isOauthTokenSocial) {
         saveBoolean(IS_OAUTH_TOKEN_SOCIAL, isOauthTokenSocial);
+    }
+
+    public boolean isStreakRestoreTooltipWasShown() {
+        return getBoolean(IS_STREAK_RESTORE_TOOLTIP_WAS_SHOWN);
+    }
+
+    public void afterStreakRestoreTooltipWasShown() {
+        saveBoolean(IS_STREAK_RESTORE_TOOLTIP_WAS_SHOWN, true);
+    }
+
+    public boolean isPaidContentTooltipWasShown() {
+        return getBoolean(IS_PAID_CONTENT_TOOLTIP_WAS_SHOWN);
+    }
+
+    public void afterPaidContentTooltipWasShown() {
+        saveBoolean(IS_PAID_CONTENT_TOOLTIP_WAS_SHOWN, true);
     }
 
     public boolean isAuthTokenSocial() {

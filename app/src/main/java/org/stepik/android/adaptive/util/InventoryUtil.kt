@@ -11,6 +11,20 @@ object InventoryUtil {
 //        Chest("chest", R.drawable.ic_chest)
     }
 
+    enum class PaidContent(
+            val id: String,
+            val item: Item,
+            val count: Int) {
+        SmallCouponsPack("error_tickets_package_small", Item.Ticket, 7),
+        MediumCouponsPack("error_tickets_package_medium", Item.Ticket, 15),
+        BigCouponsPack("error_tickets_package_big", Item.Ticket, 30),
+        MonsterCouponsPack("error_tickets_package_monster", Item.Ticket, 100);
+
+        companion object {
+            fun getById(id: String) = values().find { it.id == id }
+        }
+    }
+
     private const val STARTER_PACK_VERSION_KEY = "starter_pack_version"
 
     private const val START_TICKETS_COUNT = 7L
