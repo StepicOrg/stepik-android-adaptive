@@ -1,11 +1,11 @@
 package org.stepik.android.adaptive.core.presenter
 
 import android.content.Intent
+import io.reactivex.Observable
 import org.solovyev.android.checkout.*
 import org.stepik.android.adaptive.core.presenter.contracts.PaidInventoryItemsView
 import org.stepik.android.adaptive.ui.adapter.PaidInventoryAdapter
-import org.stepik.android.adaptive.util.InventoryUtil
-import org.stepik.android.adaptive.util.skipUIFrame
+import org.stepik.android.adaptive.util.*
 import java.util.concurrent.atomic.AtomicInteger
 
 class PaidInventoryItemsPresenter : PresenterBase<PaidInventoryItemsView>() {
@@ -55,8 +55,10 @@ class PaidInventoryItemsPresenter : PresenterBase<PaidInventoryItemsView>() {
             onRestoreTaskStarted()
             it.getPurchases(ProductTypes.IN_APP, continuationToken, object : RequestListener<Purchases> {
                 override fun onSuccess(purchases: Purchases) {
-                    purchases.list.forEach {
-                        consume(it, InventoryUtil.PaidContent.getById(it.sku)!!)
+                    purchases.list.forEach { purchase ->
+                        InventoryUtil.PaidContent.getById(purchase.sku)?.let {
+                            consume(purchase, it)
+                        }
                     }
                     purchases.continuationToken?.let {
                         restorePurchases(it)
@@ -70,6 +72,23 @@ class PaidInventoryItemsPresenter : PresenterBase<PaidInventoryItemsView>() {
                     onRestoreTaskCompleted()
                 }
             })
+        }
+    }
+
+    private fun getPurchases(continuationToken: String? = null) =
+            view?.getBilling()?.newRequestsBuilder()?.create()?.getPurchasesRx(ProductTypes.IN_APP, continuationToken) ?: Observable.empty<Purchases>()
+
+    private fun getAllPurchases(): Observable<Purchase> = getPurchases().concatMap {
+        Observable.just(it).concatWith(getPurchases(it.continuationToken))
+    }.concatMap {
+        Observable.fromIterable(it.list)
+    }
+
+    private fun restore() {
+        getAllPurchases().flatMap { purchase ->
+            checkout?.onReady()?.flatMap { it.consumeRx(purchase.token).andThen(Observable.just(purchase)) }
+        }.toList().subscribe { _, _ ->
+            onRestoreTaskCompleted()
         }
     }
 

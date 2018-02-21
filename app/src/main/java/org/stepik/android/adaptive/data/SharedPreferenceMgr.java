@@ -158,7 +158,7 @@ public final class SharedPreferenceMgr {
         return getLong(PROFILE_ID);
     }
 
-    public void changeQustionsPackIndex(int index) {
+    public void changeQuestionsPackIndex(int index) {
         saveInt(QUESTIONS_PACK_INDEX, index);
     }
 
