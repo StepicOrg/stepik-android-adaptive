@@ -1,6 +1,5 @@
 package org.stepik.android.adaptive.core.presenter
 
-import android.content.Intent
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
@@ -11,16 +10,14 @@ import org.stepik.android.adaptive.core.presenter.contracts.PaidInventoryItemsVi
 import org.stepik.android.adaptive.ui.adapter.PaidInventoryAdapter
 import org.stepik.android.adaptive.util.*
 
-class PaidInventoryItemsPresenter : PresenterBase<PaidInventoryItemsView>() {
+class PaidInventoryItemsPresenter : PaidContentPresenterBase<PaidInventoryItemsView>() {
     companion object : PresenterFactory<PaidInventoryItemsPresenter> {
         override fun create() = PaidInventoryItemsPresenter()
     }
 
+    private val skus = InventoryUtil.PaidContent.ids.toList()
     private val adapter = PaidInventoryAdapter(this::purchase)
-    private var checkout: ActivityCheckout? = null
-
     private val compositeDisposable = CompositeDisposable()
-
     private var isInventoryLoaded = false
 
     private fun onRestoreTaskCompleted() {
@@ -31,15 +28,6 @@ class PaidInventoryItemsPresenter : PresenterBase<PaidInventoryItemsView>() {
     private fun purchase(sku: Sku) {
         val purchaseObservable = checkout?.startPurchaseFlowRx(sku) ?: Observable.empty<Purchase>()
         compositeDisposable.add(consume(purchaseObservable))
-    }
-
-    private fun createPurchasesObservable(continuationToken: String? = null) =
-            view?.getBilling()?.newRequestsBuilder()?.create()?.getPurchasesRx(ProductTypes.IN_APP, continuationToken) ?: Observable.empty<Purchases>()
-
-    private fun getAllPurchases(): Observable<Purchase> = createPurchasesObservable().concatMap {
-        Observable.just(it).concatWith(createPurchasesObservable(it.continuationToken))
-    }.concatMap {
-        Observable.fromIterable(it.list)
     }
 
     fun restorePurchases() = compositeDisposable.add(consume(getAllPurchases()))
@@ -61,10 +49,7 @@ class PaidInventoryItemsPresenter : PresenterBase<PaidInventoryItemsView>() {
 
     private fun loadInventory() {
         view?.onContentLoading()
-        val request = Inventory.Request.create()
-        request.loadAllPurchases()
-        request.loadSkus(ProductTypes.IN_APP, InventoryUtil.PaidContent.ids.toList())
-        checkout?.loadInventory(request) {
+        getInventory(ProductTypes.IN_APP, skus) {
             val product = it.get(ProductTypes.IN_APP)
             if (product.supported) {
                 adapter.items = product.skus.map { sku ->
@@ -78,14 +63,8 @@ class PaidInventoryItemsPresenter : PresenterBase<PaidInventoryItemsView>() {
         }
     }
 
-    fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) =
-        checkout?.onActivityResult(requestCode, resultCode, data)
-
     override fun attachView(view: PaidInventoryItemsView) {
         super.attachView(view)
-        checkout = view.createCheckout()
-        checkout?.start()
-
         view.onAdapter(adapter)
 
         if (isInventoryLoaded) {
@@ -95,15 +74,7 @@ class PaidInventoryItemsPresenter : PresenterBase<PaidInventoryItemsView>() {
         }
     }
 
-    override fun detachView(view: PaidInventoryItemsView) {
-        checkout?.stop()
-        checkout = null
-        super.detachView(view)
-    }
-
     override fun destroy() {
         compositeDisposable.dispose()
-        checkout?.stop()
-        checkout = null
     }
 }
