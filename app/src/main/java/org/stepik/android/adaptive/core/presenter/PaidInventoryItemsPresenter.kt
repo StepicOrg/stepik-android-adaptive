@@ -36,12 +36,14 @@ class PaidInventoryItemsPresenter : PaidContentPresenterBase<PaidInventoryItemsV
         InventoryUtil.PaidContent.getById(it.sku)?.to(it.token)
     }.flatMap { p ->
         checkout?.onReady()?.flatMap { it.consumeRx(p.second).andThen(Observable.just(p.first)) }
-    }.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe({
+    }.subscribeOn(AndroidSchedulers.mainThread()).observeOn(AndroidSchedulers.mainThread()).subscribe({
         // onNext
         InventoryUtil.changeItemCount(it.item, it.count.toLong())
     }, {
         // onError
-        view?.onPurchaseError()
+        if (it !is BillingException || it.response != ResponseCodes.USER_CANCELED) {
+            view?.onPurchaseError()
+        }
     }, {
         // onComplete
         onRestoreTaskCompleted()
