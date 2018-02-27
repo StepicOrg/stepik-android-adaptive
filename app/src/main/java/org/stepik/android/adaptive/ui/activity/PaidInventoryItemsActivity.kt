@@ -10,6 +10,7 @@ import android.support.v7.widget.LinearLayoutManager
 import android.view.MenuItem
 import android.view.View
 import kotlinx.android.synthetic.main.activity_paid_content_list.*
+import kotlinx.android.synthetic.main.app_bar.*
 import org.solovyev.android.checkout.*
 import org.stepik.android.adaptive.App
 import org.stepik.android.adaptive.R
