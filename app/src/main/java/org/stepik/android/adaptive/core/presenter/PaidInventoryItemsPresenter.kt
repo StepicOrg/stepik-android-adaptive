@@ -4,7 +4,6 @@ import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
-import io.reactivex.schedulers.Schedulers
 import org.solovyev.android.checkout.*
 import org.stepik.android.adaptive.core.presenter.contracts.PaidInventoryItemsView
 import org.stepik.android.adaptive.ui.adapter.PaidInventoryAdapter
@@ -21,7 +20,7 @@ class PaidInventoryItemsPresenter : PaidContentPresenterBase<PaidInventoryItemsV
     private var isInventoryLoaded = false
 
     private fun onRestoreTaskCompleted() {
-        skipUIFrame({ view?.onRestored() })
+        skipUIFrame({ view?.hideProgress() })
         view?.showInventoryDialog()
     }
 
@@ -30,7 +29,10 @@ class PaidInventoryItemsPresenter : PaidContentPresenterBase<PaidInventoryItemsV
         compositeDisposable.add(consume(purchaseObservable))
     }
 
-    fun restorePurchases() = compositeDisposable.add(consume(getAllPurchases()))
+    fun restorePurchases() {
+        view?.showProgress()
+        compositeDisposable.add(consume(getAllPurchases()))
+    }
 
     private fun consume(observable: Observable<Purchase> /* , some additional info */): Disposable = observable.mapNotNull {
         InventoryUtil.PaidContent.getById(it.sku)?.to(it.token)

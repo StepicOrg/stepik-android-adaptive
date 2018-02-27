@@ -11,7 +11,7 @@ interface PaidContentView {
     fun onContentLoaded()
     fun onPurchasesNotSupported()
 
-    fun onRestoreLoading()
-    fun onRestored()
+    fun showProgress()
+    fun hideProgress()
     fun onPurchaseError()
 }

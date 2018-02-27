@@ -82,10 +82,10 @@ class PaidInventoryItemsActivity : BasePresenterActivity<PaidInventoryItemsPrese
 
     override fun showInventoryDialog() = InventoryDialog().show(supportFragmentManager, INVENTORY_DIALOG_TAG)
 
-    override fun onRestoreLoading() =
-            showProgressDialogFragment(RESTORE_DIALOG_TAG, getString(R.string.restoring_purchases), getString(R.string.processing_your_request))
+    override fun showProgress() =
+            showProgressDialogFragment(RESTORE_DIALOG_TAG, getString(R.string.loading_message), getString(R.string.processing_your_request))
 
-    override fun onRestored() = hideProgressDialogFragment(RESTORE_DIALOG_TAG)
+    override fun hideProgress() = hideProgressDialogFragment(RESTORE_DIALOG_TAG)
 
     override fun onAdapter(adapter: PaidInventoryAdapter) {
         recycler.adapter = adapter

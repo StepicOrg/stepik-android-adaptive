@@ -26,6 +26,7 @@
     <string name="auth_error_empty_email">Введите корректный E-mail</string>
     <string name="auth_error_empty_password">Введите пароль</string>
     <string name="processing_your_request">Обработка запроса</string>
+    <string name="loading_message">Пожалуйста, подождите…</string>
     <string name="auth">Авторизация</string>
     <string name="remind_password_success">Мы отправили вам письмо</string>
     <string name="open">Открыть</string>
@@ -131,4 +132,6 @@
     <string name="paid_content_tooltip">При необходимости Вы можете приобрести дополнительные купоны</string>
 
     <string name="questions_packs">Наборы вопросов</string>
+    <string name="buy">Купить</string>
+    <string name="select">Выбрать</string>
 </resources>

@@ -26,6 +26,7 @@
     <string name="auth_error_empty_email">Enter valid email address</string>
     <string name="auth_error_empty_password">Enter the password</string>
     <string name="processing_your_request">Processing your request</string>
+    <string name="loading_message">Please wait…</string>
     <string name="auth">Authorization</string>
     <integer name="com_vk_sdk_AppId" translatable="false">6018407</integer>
     <string name="remind_password_success">We sent you a letter</string>
@@ -140,4 +141,6 @@
     <string name="paid_content_tooltip">You can buy more coupons</string>
 
     <string name="questions_packs">Questions packs</string>
+    <string name="buy">Buy</string>
+    <string name="select">Select</string>
 </resources>
