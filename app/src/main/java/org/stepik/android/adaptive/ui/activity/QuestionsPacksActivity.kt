@@ -23,7 +23,7 @@ class QuestionsPacksActivity : BasePresenterActivity<QuestionsPacksPresenter, Qu
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_paid_content_list)
+        setContentView(R.layout.activity_questions_packs)
         recycler.layoutManager = LinearLayoutManager(this)
 
         setSupportActionBar(toolbar)
