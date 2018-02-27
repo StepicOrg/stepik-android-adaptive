@@ -69,7 +69,7 @@ object InventoryUtil {
     fun getInventory() : List<Pair<Item, Int>> =
         Item.values()
                 .map { it to InventoryUtil.getItemsCount(it).toInt() }
-                .filter { it.second > 0 }
+//                .filter { it.second > 0 }
                 .toList()
 
 }
