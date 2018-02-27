@@ -10,7 +10,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
-import kotlinx.android.synthetic.main.item_word_pack.view.*
+import kotlinx.android.synthetic.main.item_questions_pack.view.*
 import org.solovyev.android.checkout.Sku
 import org.stepik.android.adaptive.R
 import org.stepik.android.adaptive.data.model.QuestionsPack
@@ -47,7 +47,7 @@ class QuestionsPacksAdapter(private val onPackClicked: (Sku, QuestionsPack, Bool
     override fun getItemCount() = items.size
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
-            QuestionsPackViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.item_word_pack, parent, false))
+            QuestionsPackViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.item_questions_pack, parent, false))
 
     override fun onBindViewHolder(holder: QuestionsPackViewHolder, pos: Int) {
         val (sku, pack) = items[pos]
