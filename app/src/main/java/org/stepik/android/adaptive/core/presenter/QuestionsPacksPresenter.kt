@@ -1,6 +1,5 @@
 package org.stepik.android.adaptive.core.presenter
 
-import android.util.Log
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
@@ -30,7 +29,7 @@ class QuestionsPacksPresenter : PaidContentPresenterBase<QuestionsPacksView>() {
 
     private fun loadContent() {
         view?.onContentLoaded()
-        this.getInventory(ProductTypes.IN_APP, skus) {
+        getInventory(ProductTypes.IN_APP, skus) {
             val product = it.get(ProductTypes.IN_APP)
             if (product.supported) {
                 adapter.items = product.skus.map { sku ->
@@ -59,9 +58,10 @@ class QuestionsPacksPresenter : PaidContentPresenterBase<QuestionsPacksView>() {
             adapter.addOwnedContent(it)
             view?.hideProgress()
         }, {
-            if (it !is BillingException || it.response != ResponseCodes.USER_CANCELED) {
+            if (it !is BillingException || it.response != ResponseCodes.USER_CANCELED && it.response != ResponseCodes.BILLING_UNAVAILABLE) {
                 view?.onPurchaseError()
             }
+            view?.hideProgress()
         })
 
 
@@ -88,7 +88,6 @@ class QuestionsPacksPresenter : PaidContentPresenterBase<QuestionsPacksView>() {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe({
-                    Log.d(javaClass.canonicalName, "Course switched")
                     adapter.selection = pack.ordinal
                     view?.hideProgress()
                 }, {
