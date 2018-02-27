@@ -36,8 +36,7 @@ enum class QuestionsPack(
             courseId    = 6312,
             size        = 958,
             difficulty  = R.string.questions_difficulty_high,
-            background  = R.drawable.pack_bg_pro,
-            isFree      = true
+            background  = R.drawable.pack_bg_pro
     ),
 
     Full(
