@@ -9,6 +9,7 @@ import org.stepik.android.adaptive.ui.activity.IntroActivity;
 import org.stepik.android.adaptive.ui.activity.PhotoViewActivity;
 import org.stepik.android.adaptive.ui.activity.StatsActivity;
 import org.stepik.android.adaptive.ui.activity.StudyActivity;
+import org.stepik.android.adaptive.ui.activity.QuestionsPacksActivity;
 
 public class ScreenManager {
     private static ScreenManager instance;
@@ -52,5 +53,10 @@ public class ScreenManager {
         final Intent intent = new Intent(context, StatsActivity.class);
         intent.putExtra(StatsActivity.PAGE_KEY, page);
         context.startActivity(intent);
+    }
+
+    public static void showQuestionsPacksScreen(Context context) {
+        AnalyticMgr.getInstance().onQuestionsPacksOpened();
+        context.startActivity(new Intent(context, QuestionsPacksActivity.class));
     }
 }

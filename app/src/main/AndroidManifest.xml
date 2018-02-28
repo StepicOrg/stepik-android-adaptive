@@ -65,7 +65,11 @@
         
         <activity
             android:theme="@style/AppTheme.NoActionBar"
-            android:name=".ui.activity.PaidContentListActivity" />
+            android:name=".ui.activity.PaidInventoryItemsActivity" />
+
+        <activity
+            android:theme="@style/AppTheme.NoActionBar"
+            android:name=".ui.activity.QuestionsPacksActivity" />
 
         <receiver
             android:name="org.stepik.android.adaptive.receivers.BootCompletedReceiver"

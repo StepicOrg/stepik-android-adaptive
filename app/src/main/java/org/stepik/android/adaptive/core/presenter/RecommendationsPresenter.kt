@@ -28,6 +28,8 @@ class RecommendationsPresenter : PresenterBase<RecommendationsView>(), AnswerLis
         override fun create() = RecommendationsPresenter()
 
         private const val MIN_STREAK_TO_OFFER_TO_BUY = 7
+
+        private const val MIN_EXP_TO_OFFER_PACKS = 50
     }
 
     private val compositeDisposable = CompositeDisposable()
@@ -82,6 +84,13 @@ class RecommendationsPresenter : PresenterBase<RecommendationsView>(), AnswerLis
 
         if (showLevelDialog && level != ExpUtil.getCurrentLevel(exp - streak)) {
             view?.showNewLevelDialog(level)
+        }
+
+        if (exp > MIN_EXP_TO_OFFER_PACKS) {
+            if (!SharedPreferenceMgr.getInstance().isQuestionsPacksTooltipWasShown) {
+                SharedPreferenceMgr.getInstance().afterQuestionsPacksTooltipWasShown()
+                view?.showQuestionsPacksTooltip()
+            }
         }
     }
 

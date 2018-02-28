@@ -4,6 +4,7 @@ import org.stepik.android.adaptive.data.model.EnrollmentWrapper;
 
 import io.reactivex.Completable;
 import io.reactivex.Observable;
+import io.reactivex.Single;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.Headers;
@@ -13,6 +14,12 @@ import retrofit2.http.Path;
 import retrofit2.http.Query;
 
 interface StepikService {
+
+
+@GET("api/courses")
+Single<CoursesResponse> getCourses(
+        @Query("ids[]") long[] ids
+);
 
 @Headers("Content-Type: application/json")
 @POST("api/enrollments")

@@ -26,6 +26,7 @@
     <string name="auth_error_empty_email">Введите корректный E-mail</string>
     <string name="auth_error_empty_password">Введите пароль</string>
     <string name="processing_your_request">Обработка запроса</string>
+    <string name="loading_message">Пожалуйста, подождите…</string>
     <string name="auth">Авторизация</string>
     <string name="remind_password_success">Мы отправили вам письмо</string>
     <string name="open">Открыть</string>
@@ -129,4 +130,19 @@
     <string name="restoring_purchases">Восстановление покупок</string>
     <string name="purchases_are_not_supported">Встроенные покупки не поддерживаются на этой устройстве</string>
     <string name="paid_content_tooltip">При необходимости Вы можете приобрести дополнительные купоны</string>
+
+    <string name="questions_packs">Наборы вопросов</string>
+    <string name="buy">Купить</string>
+    <string name="buy_for">Купить за %s</string>
+    <string name="select">Выбрать</string>
+
+    <string name="questions_count"><![CDATA[<b>Карточек:</b> %d]]></string>
+    <string name="questions_difficulty"><![CDATA[<b>Сложность:</b> %s]]></string>
+
+    <string name="questions_difficulty_low">низкая</string>
+    <string name="questions_difficulty_medium">средняя</string>
+    <string name="questions_difficulty_high">высокая</string>
+    <string name="questions_difficulty_mixed">смешанная</string>
+
+    <string name="questions_tooltip">Попробуйте новые наборы вопросов</string>
 </resources>

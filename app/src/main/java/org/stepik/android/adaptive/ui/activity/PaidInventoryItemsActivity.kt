@@ -10,17 +10,18 @@ import android.support.v7.widget.LinearLayoutManager
 import android.view.MenuItem
 import android.view.View
 import kotlinx.android.synthetic.main.activity_paid_content_list.*
+import kotlinx.android.synthetic.main.app_bar.*
 import org.solovyev.android.checkout.*
 import org.stepik.android.adaptive.App
 import org.stepik.android.adaptive.R
 import org.stepik.android.adaptive.core.presenter.BasePresenterActivity
-import org.stepik.android.adaptive.core.presenter.PaidContentPresenter
-import org.stepik.android.adaptive.core.presenter.contracts.PaidContentView
-import org.stepik.android.adaptive.ui.adapter.PaidContentAdapter
+import org.stepik.android.adaptive.core.presenter.PaidInventoryItemsPresenter
+import org.stepik.android.adaptive.core.presenter.contracts.PaidInventoryItemsView
+import org.stepik.android.adaptive.ui.adapter.PaidInventoryAdapter
 import org.stepik.android.adaptive.ui.dialog.InventoryDialog
 import org.stepik.android.adaptive.util.InventoryUtil
 
-class PaidContentListActivity : BasePresenterActivity<PaidContentPresenter, PaidContentView>(), PaidContentView {
+class PaidInventoryItemsActivity : BasePresenterActivity<PaidInventoryItemsPresenter, PaidInventoryItemsView>(), PaidInventoryItemsView {
     companion object {
         const val INVENTORY_DIALOG_TAG = "inventory_dialog"
         const val RESTORE_DIALOG_TAG = "restore_dialog"
@@ -64,13 +65,13 @@ class PaidContentListActivity : BasePresenterActivity<PaidContentPresenter, Paid
         restorePurchases.visibility = View.GONE
     }
 
-    override fun onInventoryLoading() {
+    override fun showContentProgress() {
         recycler.visibility = View.GONE
         progress.visibility = View.VISIBLE
         purchasesAreNotSupported.visibility = View.GONE
     }
 
-    override fun onInventoryLoaded() {
+    override fun hideContentProgress() {
         recycler.visibility = View.VISIBLE
         progress.visibility = View.GONE
         purchasesAreNotSupported.visibility = View.GONE
@@ -82,12 +83,12 @@ class PaidContentListActivity : BasePresenterActivity<PaidContentPresenter, Paid
 
     override fun showInventoryDialog() = InventoryDialog().show(supportFragmentManager, INVENTORY_DIALOG_TAG)
 
-    override fun onRestoreLoading() =
-            showProgressDialogFragment(RESTORE_DIALOG_TAG, getString(R.string.restoring_purchases), getString(R.string.processing_your_request))
+    override fun showProgress() =
+            showProgressDialogFragment(RESTORE_DIALOG_TAG, getString(R.string.loading_message), getString(R.string.processing_your_request))
 
-    override fun onRestored() = hideProgressDialogFragment(RESTORE_DIALOG_TAG)
+    override fun hideProgress() = hideProgressDialogFragment(RESTORE_DIALOG_TAG)
 
-    override fun onAdapter(adapter: PaidContentAdapter) {
+    override fun onAdapter(adapter: PaidInventoryAdapter) {
         recycler.adapter = adapter
     }
 
@@ -106,7 +107,7 @@ class PaidContentListActivity : BasePresenterActivity<PaidContentPresenter, Paid
         super.onActivityResult(requestCode, resultCode, data)
     }
 
-    override fun getPresenterFactory() = PaidContentPresenter.Companion
+    override fun getPresenterFactory() = PaidInventoryItemsPresenter.Companion
 
     override fun finish() {
         if (InventoryUtil.hasTickets()) {

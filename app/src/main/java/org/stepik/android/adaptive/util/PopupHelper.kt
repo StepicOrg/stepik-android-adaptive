@@ -22,7 +22,7 @@ object PopupHelper {
     }
 
 
-    fun showPopupAnchoredToView(context: Context, anchorView: View?, popupText: String): PopupWindow? {
+    fun showPopupAnchoredToView(context: Context, anchorView: View?, popupText: String, x: Int = 0, y: Int = 0): PopupWindow? {
         if (anchorView == null) {
             return null
         }
@@ -48,7 +48,7 @@ object PopupHelper {
         }
 
         anchorView.post {
-            PopupWindowCompat.showAsDropDown(popupWindow, anchorView, 0, 0, Gravity.CENTER)
+            PopupWindowCompat.showAsDropDown(popupWindow, anchorView, x, y, Gravity.CENTER)
         }
 
         return popupWindow

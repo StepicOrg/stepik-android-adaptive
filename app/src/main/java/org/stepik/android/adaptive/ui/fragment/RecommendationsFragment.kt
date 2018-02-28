@@ -17,15 +17,18 @@ import org.stepik.android.adaptive.core.presenter.BasePresenterFragment
 import org.stepik.android.adaptive.core.presenter.RecommendationsPresenter
 import org.stepik.android.adaptive.core.presenter.contracts.RecommendationsView
 import org.stepik.android.adaptive.data.AnalyticMgr
+import org.stepik.android.adaptive.data.model.QuestionsPack
 import org.stepik.android.adaptive.databinding.FragmentRecommendationsBinding
-import org.stepik.android.adaptive.ui.activity.PaidContentListActivity
+import org.stepik.android.adaptive.ui.activity.PaidInventoryItemsActivity
 import org.stepik.android.adaptive.ui.adapter.QuizCardsAdapter
 import org.stepik.android.adaptive.ui.animation.CardsFragmentAnimations
 import org.stepik.android.adaptive.ui.dialog.DailyRewardDialog
 import org.stepik.android.adaptive.ui.dialog.ExpLevelDialog
 import org.stepik.android.adaptive.ui.dialog.RateAppDialog
+import org.stepik.android.adaptive.ui.helper.dpToPx
 import org.stepik.android.adaptive.util.InventoryUtil
 import org.stepik.android.adaptive.util.PopupHelper
+import org.stepik.android.adaptive.util.changeVisibillity
 
 class RecommendationsFragment : BasePresenterFragment<RecommendationsPresenter, RecommendationsView>(), RecommendationsView {
     companion object {
@@ -39,6 +42,9 @@ class RecommendationsFragment : BasePresenterFragment<RecommendationsPresenter, 
         private const val DAILY_REWARD_DIALOG_TAG = "daily_reward_dialog"
 
         const val INVENTORY_DIALOG_TAG = "inventory_dialog"
+
+        private val TOOLBAR_TOOLTIPS_OFF_Y_PX = dpToPx(6).toInt()
+        private val TOOLBAR_TOOLTIPS_OFF_X_PX = dpToPx(-12).toInt()
     }
 
     private val loadingPlaceholders by lazy { resources.getStringArray(R.array.recommendation_loading_placeholders) }
@@ -46,6 +52,8 @@ class RecommendationsFragment : BasePresenterFragment<RecommendationsPresenter, 
 
     private var streakRestorePopup: PopupWindow? = null
     private var streakToRestore: Long? = null
+
+    private var questionsPacksTooltip: PopupWindow? = null
 
     private lateinit var binding: FragmentRecommendationsBinding
 
@@ -64,6 +72,12 @@ class RecommendationsFragment : BasePresenterFragment<RecommendationsPresenter, 
             if (it != -1L) {
                 showStreakRestoreDialog(it)
             }
+        }
+
+        binding.questionsPacks.changeVisibillity(QuestionsPack.values().size > 1)
+        binding.questionsPacks.setOnClickListener {
+            questionsPacksTooltip?.dismiss()
+            ScreenManager.showQuestionsPacksScreen(context)
         }
 
         return binding.root
@@ -180,6 +194,14 @@ class RecommendationsFragment : BasePresenterFragment<RecommendationsPresenter, 
         binding.ticketItem.counter.text = getString(R.string.amount, InventoryUtil.getItemsCount(InventoryUtil.Item.Ticket))
     }
 
+    override fun showQuestionsPacksTooltip() {
+        if (binding.questionsPacks.visibility == View.VISIBLE) {
+            questionsPacksTooltip = PopupHelper.showPopupAnchoredToView(
+                    context, binding.questionsPacks, getString(R.string.questions_tooltip),
+                    TOOLBAR_TOOLTIPS_OFF_X_PX, TOOLBAR_TOOLTIPS_OFF_Y_PX)
+        }
+    }
+
     override fun hideStreakRestoreDialog() {
         streakToRestore = null
         if (streakRestorePopup?.isShowing == true) {
@@ -190,7 +212,7 @@ class RecommendationsFragment : BasePresenterFragment<RecommendationsPresenter, 
 
     private fun openPaidContentList() {
         AnalyticMgr.getInstance().paidContentOpened()
-        startActivityForResult(Intent(context, PaidContentListActivity::class.java), PAID_CONTENT_REQUEST_CODE)
+        startActivityForResult(Intent(context, PaidInventoryItemsActivity::class.java), PAID_CONTENT_REQUEST_CODE)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

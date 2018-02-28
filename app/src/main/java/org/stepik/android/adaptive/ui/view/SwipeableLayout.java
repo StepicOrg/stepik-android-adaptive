@@ -15,6 +15,8 @@ import org.stepik.android.adaptive.ui.animation.CardAnimations;
 import java.util.HashSet;
 import java.util.Set;
 
+import static org.stepik.android.adaptive.ui.helper.ViewHelperKt.dpToPx;
+
 public final class SwipeableLayout extends FrameLayout {
     private float startX = 0;
     private float startY = 0;
@@ -31,7 +33,7 @@ public final class SwipeableLayout extends FrameLayout {
     private final static float MIN_FLING_VELOCITY = 400;
     private final static float ROTATION_ANGLE = 15.5f;
 
-    private final static float MIN_DELTA = Resources.getSystem().getDisplayMetrics().density * 16;
+    private final static float MIN_DELTA = dpToPx(16);
 
     private final static int TOUCH_ABOVE = 0;
     private final static int TOUCH_BELOW = 1;

@@ -31,28 +31,44 @@
                     android:layout_height="match_parent">
                     <LinearLayout
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="start|center_vertical"
-                        android:layout_marginStart="16dp"
-                        android:orientation="vertical">
-                        <TextView
-                            android:id="@+id/exp_level"
-                            android:layout_gravity="start"
-                            android:text="@string/exp_title"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textColor="@color/colorGrayText"
-                            style="@style/TextAppearance.AppCompat.Widget.ActionBar.Subtitle"/>
-                        <TextView
-                            android:id="@+id/exp_level_next"
-                            android:layout_gravity="start"
-                            android:text="@string/exp_title"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textSize="12sp"
-                            android:textColor="@color/colorGrayText" />
-                    </LinearLayout>
+                        android:layout_height="match_parent"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical">
 
+                        <ImageView
+                            android:id="@+id/questionsPacks"
+                            app:srcCompat="@drawable/ic_packs"
+                            android:layout_width="32dp"
+                            android:layout_height="32dp"
+                            android:padding="4dp"
+                            android:layout_marginStart="12dp"
+                            android:layout_marginEnd="-4dp"
+                            android:visibility="gone"
+                            android:background="?attr/selectableItemBackgroundBorderless" />
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="16dp"
+                            android:orientation="vertical">
+                            <TextView
+                                android:id="@+id/exp_level"
+                                android:layout_gravity="start"
+                                android:text="@string/exp_title"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textColor="@color/colorGrayText"
+                                style="@style/TextAppearance.AppCompat.Widget.ActionBar.Subtitle"/>
+                            <TextView
+                                android:id="@+id/exp_level_next"
+                                android:layout_gravity="start"
+                                android:text="@string/exp_title"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textSize="12sp"
+                                android:textColor="@color/colorGrayText" />
+                        </LinearLayout>
+                    </LinearLayout>
 
                     <FrameLayout
                         android:id="@+id/exp_bubble"

@@ -20,6 +20,7 @@ import org.stepik.android.adaptive.data.SharedPreferenceMgr;
 import org.stepik.android.adaptive.data.model.EnrollmentWrapper;
 import org.stepik.android.adaptive.data.model.AccountCredentials;
 import org.stepik.android.adaptive.data.model.Profile;
+import org.stepik.android.adaptive.data.model.QuestionsPack;
 import org.stepik.android.adaptive.data.model.RecommendationReaction;
 import org.stepik.android.adaptive.data.model.RegistrationUser;
 import org.stepik.android.adaptive.data.model.Submission;
@@ -37,6 +38,7 @@ import java.util.concurrent.locks.ReentrantLock;
 
 import io.reactivex.Completable;
 import io.reactivex.Observable;
+import io.reactivex.Single;
 import okhttp3.Credentials;
 import okhttp3.Headers;
 import okhttp3.HttpUrl;
@@ -337,12 +339,22 @@ public final class API {
         return tempService.remindPassword(encodedEmail);
     }
 
+    public Single<CoursesResponse> getCourses(long[] ids) {
+        return stepikService.getCourses(ids);
+    }
+
     public Completable joinCourse(final long course) {
         return stepikService.joinCourse(new EnrollmentWrapper(course));
     }
 
     public Observable<RecommendationsResponse> getNextRecommendations(final int count) {
-        return stepikService.getNextRecommendations(Config.getInstance().getCourseId(), count);
+        long courseId;
+        try {
+            courseId = QuestionsPack.values()[SharedPreferenceMgr.getInstance().getQuestionsPackIndex()].getCourseId();
+        } catch (Exception e) {
+            courseId = Config.getInstance().getCourseId();
+        }
+        return stepikService.getNextRecommendations(courseId, count);
     }
 
     public Observable<StepsResponse> getSteps(final long lesson) {

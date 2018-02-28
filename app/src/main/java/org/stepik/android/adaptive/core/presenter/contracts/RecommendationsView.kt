@@ -27,4 +27,6 @@ interface RecommendationsView {
     fun showRateAppDialog()
     fun showStreakRestoreDialog(streak: Long, withTooltip: Boolean = false)
     fun hideStreakRestoreDialog()
+
+    fun showQuestionsPacksTooltip()
 }
