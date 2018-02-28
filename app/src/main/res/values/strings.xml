@@ -152,4 +152,6 @@
     <string name="questions_difficulty_medium">medium</string>
     <string name="questions_difficulty_high">high</string>
     <string name="questions_difficulty_mixed">mixed</string>
+
+    <string name="questions_tooltip">Check out new questions packs</string>
 </resources>

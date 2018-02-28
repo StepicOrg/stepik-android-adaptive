@@ -25,6 +25,7 @@ import org.stepik.android.adaptive.ui.animation.CardsFragmentAnimations
 import org.stepik.android.adaptive.ui.dialog.DailyRewardDialog
 import org.stepik.android.adaptive.ui.dialog.ExpLevelDialog
 import org.stepik.android.adaptive.ui.dialog.RateAppDialog
+import org.stepik.android.adaptive.ui.helper.dpToPx
 import org.stepik.android.adaptive.util.InventoryUtil
 import org.stepik.android.adaptive.util.PopupHelper
 import org.stepik.android.adaptive.util.changeVisibillity
@@ -41,6 +42,9 @@ class RecommendationsFragment : BasePresenterFragment<RecommendationsPresenter, 
         private const val DAILY_REWARD_DIALOG_TAG = "daily_reward_dialog"
 
         const val INVENTORY_DIALOG_TAG = "inventory_dialog"
+
+        private val TOOLBAR_TOOLTIPS_OFF_Y_PX = dpToPx(6).toInt()
+        private val TOOLBAR_TOOLTIPS_OFF_X_PX = dpToPx(-12).toInt()
     }
 
     private val loadingPlaceholders by lazy { resources.getStringArray(R.array.recommendation_loading_placeholders) }
@@ -48,6 +52,8 @@ class RecommendationsFragment : BasePresenterFragment<RecommendationsPresenter, 
 
     private var streakRestorePopup: PopupWindow? = null
     private var streakToRestore: Long? = null
+
+    private var questionsPacksTooltip: PopupWindow? = null
 
     private lateinit var binding: FragmentRecommendationsBinding
 
@@ -69,7 +75,10 @@ class RecommendationsFragment : BasePresenterFragment<RecommendationsPresenter, 
         }
 
         binding.questionsPacks.changeVisibillity(QuestionsPack.values().size > 1)
-        binding.questionsPacks.setOnClickListener { ScreenManager.showQuestionsPacksScreen(context) }
+        binding.questionsPacks.setOnClickListener {
+            questionsPacksTooltip?.dismiss()
+            ScreenManager.showQuestionsPacksScreen(context)
+        }
 
         return binding.root
     }
@@ -183,6 +192,14 @@ class RecommendationsFragment : BasePresenterFragment<RecommendationsPresenter, 
 
     private fun refreshStreakRestoreDialog() {
         binding.ticketItem.counter.text = getString(R.string.amount, InventoryUtil.getItemsCount(InventoryUtil.Item.Ticket))
+    }
+
+    override fun showQuestionsPacksTooltip() {
+        if (binding.questionsPacks.visibility == View.VISIBLE) {
+            questionsPacksTooltip = PopupHelper.showPopupAnchoredToView(
+                    context, binding.questionsPacks, getString(R.string.questions_tooltip),
+                    TOOLBAR_TOOLTIPS_OFF_X_PX, TOOLBAR_TOOLTIPS_OFF_Y_PX)
+        }
     }
 
     override fun hideStreakRestoreDialog() {

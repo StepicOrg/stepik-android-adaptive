@@ -143,4 +143,6 @@
     <string name="questions_difficulty_medium">средняя</string>
     <string name="questions_difficulty_high">высокая</string>
     <string name="questions_difficulty_mixed">смешанная</string>
+
+    <string name="questions_tooltip">Попробуйте новые наборы вопросов</string>
 </resources>

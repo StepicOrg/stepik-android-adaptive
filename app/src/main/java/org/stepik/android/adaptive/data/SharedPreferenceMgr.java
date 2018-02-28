@@ -28,6 +28,8 @@ public final class SharedPreferenceMgr {
     private static final String IS_STREAK_RESTORE_TOOLTIP_WAS_SHOWN = "is_streak_restore_tooltip_was_shown";
     private static final String IS_PAID_CONTENT_TOOLTIP_WAS_SHOWN = "is_paid_content_tooltip_was_shown";
 
+    private static final String IS_QUESTIONS_PACKS_TOOLTIP_WAS_SHOWN = "is_questions_packs_tooltip_was_shown";
+
     private static final String QUESTIONS_PACK_INDEX = "questions_pack_index";
 
     private static final String FAKE_USER = "fake_user";
@@ -140,6 +142,14 @@ public final class SharedPreferenceMgr {
 
     public void afterPaidContentTooltipWasShown() {
         saveBoolean(IS_PAID_CONTENT_TOOLTIP_WAS_SHOWN, true);
+    }
+
+    public boolean isQuestionsPacksTooltipWasShown() {
+        return getBoolean(IS_QUESTIONS_PACKS_TOOLTIP_WAS_SHOWN);
+    }
+
+    public void afterQuestionsPacksTooltipWasShown() {
+        saveBoolean(IS_QUESTIONS_PACKS_TOOLTIP_WAS_SHOWN, true);
     }
 
     public boolean isAuthTokenSocial() {
