@@ -22,7 +22,7 @@
             android:value="@string/facebook_app_id"/>
 
         <activity
-            android:theme="@style/AppTheme.NoActionBar"
+            android:theme="@style/AppTheme.NoActionBar.Splash"
             android:name="org.stepik.android.adaptive.ui.activity.SplashActivity"
             android:label="@string/app_name">
             <intent-filter>
