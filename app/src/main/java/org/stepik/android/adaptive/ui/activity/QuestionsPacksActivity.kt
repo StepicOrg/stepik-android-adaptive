@@ -60,14 +60,14 @@ class QuestionsPacksActivity : BasePresenterActivity<QuestionsPacksPresenter, Qu
         errorState.changeVisibillity(false)
     }
 
-    override fun onContentLoading() {
+    override fun showContentProgress() {
         recycler.changeVisibillity(false)
         progress.changeVisibillity(true)
         purchasesAreNotSupported.changeVisibillity(false)
         errorState.changeVisibillity(false)
     }
 
-    override fun onContentLoaded() {
+    override fun hideContentProgress() {
         recycler.changeVisibillity(true)
         progress.changeVisibillity(false)
         purchasesAreNotSupported.changeVisibillity(false)

@@ -52,14 +52,14 @@ class PaidInventoryItemsPresenter : PaidContentPresenterBase<PaidInventoryItemsV
     })
 
     private fun loadInventory() {
-        view?.onContentLoading()
+        view?.showContentProgress()
         getInventory(ProductTypes.IN_APP, skus) {
             val product = it.get(ProductTypes.IN_APP)
             if (product.supported) {
                 adapter.items = product.skus.map { sku ->
                     sku to InventoryUtil.PaidContent.getById(sku.id.code)!!
                 }
-                view?.onContentLoaded()
+                view?.hideContentProgress()
                 isInventoryLoaded = true
             } else {
                 view?.onPurchasesNotSupported()
@@ -72,7 +72,7 @@ class PaidInventoryItemsPresenter : PaidContentPresenterBase<PaidInventoryItemsV
         view.onAdapter(adapter)
 
         if (isInventoryLoaded) {
-            view.onContentLoaded()
+            view.hideContentProgress()
         } else {
             loadInventory()
         }

@@ -65,13 +65,13 @@ class PaidInventoryItemsActivity : BasePresenterActivity<PaidInventoryItemsPrese
         restorePurchases.visibility = View.GONE
     }
 
-    override fun onContentLoading() {
+    override fun showContentProgress() {
         recycler.visibility = View.GONE
         progress.visibility = View.VISIBLE
         purchasesAreNotSupported.visibility = View.GONE
     }
 
-    override fun onContentLoaded() {
+    override fun hideContentProgress() {
         recycler.visibility = View.VISIBLE
         progress.visibility = View.GONE
         purchasesAreNotSupported.visibility = View.GONE

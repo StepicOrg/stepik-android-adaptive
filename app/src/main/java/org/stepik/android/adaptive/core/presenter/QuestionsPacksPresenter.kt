@@ -28,7 +28,7 @@ class QuestionsPacksPresenter : PaidContentPresenterBase<QuestionsPacksView>() {
     }
 
     fun loadContent() {
-        view?.onContentLoading()
+        view?.showContentProgress()
         compositeDisposable.add(getInventoryRx(ProductTypes.IN_APP, skus).subscribeOn(AndroidSchedulers.mainThread()).map {
             it.map {
                 sku -> sku to QuestionsPack.getById(sku.id.code)!!
@@ -44,7 +44,7 @@ class QuestionsPacksPresenter : PaidContentPresenterBase<QuestionsPacksView>() {
             }.subscribeOn(Schedulers.io())
         }.observeOn(AndroidSchedulers.mainThread()).subscribe({
             adapter.items = it
-            view?.onContentLoaded()
+            view?.hideContentProgress()
             isPacksLoaded = true
             restorePurchases()
         }, {
@@ -114,7 +114,7 @@ class QuestionsPacksPresenter : PaidContentPresenterBase<QuestionsPacksView>() {
         view.onAdapter(adapter)
 
         if (isPacksLoaded) {
-            view.onContentLoaded()
+            view.hideContentProgress()
         } else {
             loadContent()
         }

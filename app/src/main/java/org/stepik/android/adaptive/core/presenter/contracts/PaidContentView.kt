@@ -7,8 +7,8 @@ interface PaidContentView {
     fun createCheckout(): ActivityCheckout
     fun getBilling(): Billing
 
-    fun onContentLoading()
-    fun onContentLoaded()
+    fun showContentProgress()
+    fun hideContentProgress()
     fun onPurchasesNotSupported()
 
     fun showProgress()
