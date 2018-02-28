@@ -3,11 +3,14 @@ package org.stepik.android.adaptive.core.presenter
 import android.content.Intent
 import android.support.annotation.CallSuper
 import io.reactivex.Observable
+import io.reactivex.Single
 import org.solovyev.android.checkout.*
 import org.stepik.android.adaptive.core.presenter.contracts.PaidContentView
 import org.stepik.android.adaptive.util.getPurchasesRx
 
 abstract class PaidContentPresenterBase<V: PaidContentView> : PresenterBase<V>() {
+    protected class PurchasesNotSupportedException : Exception()
+
     protected var checkout: ActivityCheckout? = null
         private set
 
@@ -28,6 +31,17 @@ abstract class PaidContentPresenterBase<V: PaidContentView> : PresenterBase<V>()
         request.loadAllPurchases()
         request.loadSkus(productType, skus)
         checkout?.loadInventory(request, callback)
+    }
+
+    protected fun getInventoryRx(productType: String, skus: List<String>): Single<List<Sku>> = Single.create { emitter ->
+        getInventory(productType, skus) { products ->
+            val product = products.get(ProductTypes.IN_APP)
+            if (product.supported) {
+                emitter.onSuccess(product.skus)
+            } else {
+                emitter.onError(PurchasesNotSupportedException())
+            }
+        }
     }
 
 

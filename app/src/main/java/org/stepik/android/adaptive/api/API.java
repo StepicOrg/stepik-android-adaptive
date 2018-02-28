@@ -38,6 +38,7 @@ import java.util.concurrent.locks.ReentrantLock;
 
 import io.reactivex.Completable;
 import io.reactivex.Observable;
+import io.reactivex.Single;
 import okhttp3.Credentials;
 import okhttp3.Headers;
 import okhttp3.HttpUrl;
@@ -336,6 +337,10 @@ public final class API {
 
         EmptyAuthService tempService = notLogged.create(EmptyAuthService.class);
         return tempService.remindPassword(encodedEmail);
+    }
+
+    public Single<CoursesResponse> getCourses(long[] ids) {
+        return stepikService.getCourses(ids);
     }
 
     public Completable joinCourse(final long course) {

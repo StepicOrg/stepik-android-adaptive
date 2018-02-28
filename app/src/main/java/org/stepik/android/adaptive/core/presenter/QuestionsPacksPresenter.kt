@@ -27,21 +27,33 @@ class QuestionsPacksPresenter : PaidContentPresenterBase<QuestionsPacksView>() {
         adapter.selection = SharedPreferenceMgr.getInstance().questionsPackIndex
     }
 
-    private fun loadContent() {
-        view?.onContentLoaded()
-        getInventory(ProductTypes.IN_APP, skus) {
-            val product = it.get(ProductTypes.IN_APP)
-            if (product.supported) {
-                adapter.items = product.skus.map { sku ->
-                    sku to QuestionsPack.getById(sku.id.code)!!
-                }
-                view?.onContentLoaded()
-                isPacksLoaded = true
-            } else {
-                view?.onPurchasesNotSupported()
+    fun loadContent() {
+        view?.onContentLoading()
+        compositeDisposable.add(getInventoryRx(ProductTypes.IN_APP, skus).subscribeOn(AndroidSchedulers.mainThread()).map {
+            it.map {
+                sku -> sku to QuestionsPack.getById(sku.id.code)!!
             }
-        }
-        restorePurchases()
+        }.flatMap { packs ->
+            val ids = packs.map { it.second.courseId }.toLongArray()
+            API.getInstance().getCourses(ids).map { it.courses }.map { courses ->
+                courses.mapNotNull { course ->
+                    val pack = packs?.find { it.second.courseId == course.id }
+                    pack?.second?.size = course.totalUnits
+                    pack
+                }
+            }.subscribeOn(Schedulers.io())
+        }.observeOn(AndroidSchedulers.mainThread()).subscribe({
+            adapter.items = it
+            view?.onContentLoaded()
+            isPacksLoaded = true
+            restorePurchases()
+        }, {
+            if (it is PurchasesNotSupportedException) {
+                view?.onPurchasesNotSupported()
+            } else {
+                view?.onContentError()
+            }
+        }))
     }
 
     fun restorePurchases() {

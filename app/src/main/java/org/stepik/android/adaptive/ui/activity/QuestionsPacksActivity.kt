@@ -5,9 +5,9 @@ import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.support.v7.widget.LinearLayoutManager
 import android.view.MenuItem
-import android.view.View
 import kotlinx.android.synthetic.main.activity_questions_packs.*
 import kotlinx.android.synthetic.main.app_bar.*
+import kotlinx.android.synthetic.main.state_error.*
 import org.solovyev.android.checkout.Checkout
 import org.stepik.android.adaptive.App
 import org.stepik.android.adaptive.R
@@ -15,6 +15,7 @@ import org.stepik.android.adaptive.core.presenter.BasePresenterActivity
 import org.stepik.android.adaptive.core.presenter.QuestionsPacksPresenter
 import org.stepik.android.adaptive.core.presenter.contracts.QuestionsPacksView
 import org.stepik.android.adaptive.ui.adapter.QuestionsPacksAdapter
+import org.stepik.android.adaptive.util.changeVisibillity
 
 class QuestionsPacksActivity : BasePresenterActivity<QuestionsPacksPresenter, QuestionsPacksView>(), QuestionsPacksView {
     companion object {
@@ -33,6 +34,10 @@ class QuestionsPacksActivity : BasePresenterActivity<QuestionsPacksPresenter, Qu
         restorePurchases.setOnClickListener {
             presenter?.restorePurchases()
         }
+
+        tryAgainButton.setOnClickListener {
+            presenter?.loadContent()
+        }
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
@@ -48,22 +53,32 @@ class QuestionsPacksActivity : BasePresenterActivity<QuestionsPacksPresenter, Qu
     }
 
     override fun onPurchasesNotSupported() {
-        recycler.visibility = View.GONE
-        progress.visibility = View.GONE
-        purchasesAreNotSupported.visibility = View.VISIBLE
-        restorePurchases.visibility = View.GONE
+        recycler.changeVisibillity(false)
+        progress.changeVisibillity(false)
+        purchasesAreNotSupported.changeVisibillity(true)
+        restorePurchases.changeVisibillity(false)
+        errorState.changeVisibillity(false)
     }
 
     override fun onContentLoading() {
-        recycler.visibility = View.GONE
-        progress.visibility = View.VISIBLE
-        purchasesAreNotSupported.visibility = View.GONE
+        recycler.changeVisibillity(false)
+        progress.changeVisibillity(true)
+        purchasesAreNotSupported.changeVisibillity(false)
+        errorState.changeVisibillity(false)
     }
 
     override fun onContentLoaded() {
-        recycler.visibility = View.VISIBLE
-        progress.visibility = View.GONE
-        purchasesAreNotSupported.visibility = View.GONE
+        recycler.changeVisibillity(true)
+        progress.changeVisibillity(false)
+        purchasesAreNotSupported.changeVisibillity(false)
+        errorState.changeVisibillity(false)
+    }
+
+    override fun onContentError() {
+        recycler.changeVisibillity(false)
+        progress.changeVisibillity(false)
+        purchasesAreNotSupported.changeVisibillity(false)
+        errorState.changeVisibillity(true)
     }
 
     override fun getBilling() = (application as App).billing

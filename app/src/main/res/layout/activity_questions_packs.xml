@@ -39,6 +39,8 @@
             android:textColor="@color/colorGrayText"
             android:visibility="gone" />
 
+        <include layout="@layout/state_error" />
+
     </FrameLayout>
 
     <include layout="@layout/stroke" />
