@@ -56,6 +56,8 @@ public final class AnalyticMgr {
 
     private final static String EVENT_ON_RATING_ERROR = "rating_sync_error";
 
+    private final static String EVENT_ON_QUESTIONS_PACKS_SCREEN_OPENEDE = "questions_packs_opened";
+
     private static AnalyticMgr instance;
 
     private final FirebaseAnalytics firebaseAnalytics;
@@ -190,5 +192,9 @@ public final class AnalyticMgr {
 
     public void onRatingError() {
         firebaseAnalytics.logEvent(EVENT_ON_RATING_ERROR, null);
+    }
+
+    public void onQuestionsPacksOpened() {
+        firebaseAnalytics.logEvent(EVENT_ON_QUESTIONS_PACKS_SCREEN_OPENEDE, null);
     }
 }

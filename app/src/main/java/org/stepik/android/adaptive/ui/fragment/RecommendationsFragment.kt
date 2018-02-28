@@ -17,6 +17,7 @@ import org.stepik.android.adaptive.core.presenter.BasePresenterFragment
 import org.stepik.android.adaptive.core.presenter.RecommendationsPresenter
 import org.stepik.android.adaptive.core.presenter.contracts.RecommendationsView
 import org.stepik.android.adaptive.data.AnalyticMgr
+import org.stepik.android.adaptive.data.model.QuestionsPack
 import org.stepik.android.adaptive.databinding.FragmentRecommendationsBinding
 import org.stepik.android.adaptive.ui.activity.PaidInventoryItemsActivity
 import org.stepik.android.adaptive.ui.adapter.QuizCardsAdapter
@@ -26,6 +27,7 @@ import org.stepik.android.adaptive.ui.dialog.ExpLevelDialog
 import org.stepik.android.adaptive.ui.dialog.RateAppDialog
 import org.stepik.android.adaptive.util.InventoryUtil
 import org.stepik.android.adaptive.util.PopupHelper
+import org.stepik.android.adaptive.util.changeVisibillity
 
 class RecommendationsFragment : BasePresenterFragment<RecommendationsPresenter, RecommendationsView>(), RecommendationsView {
     companion object {
@@ -65,6 +67,9 @@ class RecommendationsFragment : BasePresenterFragment<RecommendationsPresenter, 
                 showStreakRestoreDialog(it)
             }
         }
+
+        binding.questionsPacks.changeVisibillity(QuestionsPack.values().size > 1)
+        binding.questionsPacks.setOnClickListener { ScreenManager.showQuestionsPacksScreen(context) }
 
         return binding.root
     }
