@@ -136,7 +136,7 @@
     <string name="buy_for">Купить за %s</string>
     <string name="select">Выбрать</string>
 
-    <string name="questions_count"><![CDATA[<b>Cлов:</b> %d]]></string>
+    <string name="questions_count"><![CDATA[<b>Карточек:</b> %d]]></string>
     <string name="questions_difficulty"><![CDATA[<b>Сложность:</b> %s]]></string>
 
     <string name="questions_difficulty_low">низкая</string>

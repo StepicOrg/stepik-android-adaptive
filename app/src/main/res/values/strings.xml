@@ -145,7 +145,7 @@
     <string name="buy_for">Buy for %s</string>
     <string name="select">Select</string>
 
-    <string name="questions_count"><![CDATA[<b>Words:</b> %d]]></string>
+    <string name="questions_count"><![CDATA[<b>Cards:</b> %d]]></string>
     <string name="questions_difficulty"><![CDATA[<b>Difficulty:</b> %s]]></string>
 
     <string name="questions_difficulty_low">low</string>
