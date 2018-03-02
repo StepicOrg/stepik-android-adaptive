@@ -24,7 +24,7 @@ class PaidInventoryAdapter(private val purchase: (Sku) -> Unit) : RecyclerView.A
         holder.title.text = items[pos].first.displayTitle
         holder.description.text = items[pos].first.description
         holder.price.text = items[pos].first.price
-        holder.icon.setImageResource(items[pos].second.item.iconId)
+        holder.icon.setImageResource(items[pos].second.icon)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PaidContentViewHolder {
