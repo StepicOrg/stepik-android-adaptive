@@ -26,8 +26,8 @@ android {
         applicationId "org.stepik.android.adaptive"
         minSdkVersion 17
         targetSdkVersion 26
-        versionCode 12
-        versionName "1.4.1.1"
+        versionCode 13
+        versionName "1.5"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
         multiDexEnabled true
