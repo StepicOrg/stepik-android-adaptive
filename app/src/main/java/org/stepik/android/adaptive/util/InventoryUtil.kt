@@ -7,18 +7,19 @@ import org.stepik.android.adaptive.data.SharedPreferenceMgr
 
 object InventoryUtil {
     enum class Item(val key: String, @DrawableRes val iconId: Int) {
-        Ticket("tickets", R.drawable.ic_tickets)
+        Ticket("tickets", R.drawable.ic_coupon_pack_small)
 //        Chest("chest", R.drawable.ic_chest)
     }
 
     enum class PaidContent(
             val id: String,
             val item: Item,
-            val count: Int) {
-        SmallCouponsPack("error_tickets_package_small", Item.Ticket, 7),
-        MediumCouponsPack("error_tickets_package_medium", Item.Ticket, 15),
-        BigCouponsPack("error_tickets_package_big", Item.Ticket, 30),
-        MonsterCouponsPack("error_tickets_package_monster", Item.Ticket, 100);
+            val count: Int,
+            @DrawableRes val icon: Int) {
+        SmallCouponsPack("error_tickets_package_small", Item.Ticket, 7, R.drawable.ic_coupon_pack_small),
+        MediumCouponsPack("error_tickets_package_medium", Item.Ticket, 15, R.drawable.ic_coupon_pack_medium),
+        BigCouponsPack("error_tickets_package_big", Item.Ticket, 30, R.drawable.ic_coupon_pack_big),
+        MonsterCouponsPack("error_tickets_package_monster", Item.Ticket, 100, R.drawable.ic_coupon_pack_monster);
 
         companion object {
             private val idToContent by lazy { values().associateBy { it.id } }
