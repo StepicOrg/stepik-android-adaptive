@@ -10,4 +10,14 @@
     <dimen name="exp_bubble_margin">16dp</dimen>
 
     <dimen name="spinner_arrow_margin">0dp</dimen>
+
+    <!-- popup windows -->
+    <dimen name="popup_border_radius">7dp</dimen>
+    <dimen name="popup_window_padding">8dp</dimen>
+    <dimen name="popup_text_padding">12dp</dimen>
+    <dimen name="popup_arrow_size">16dp</dimen>
+
+    <dimen name="streak_restore_widget_border_radius">8dp</dimen>
+
+    <dimen name="questions_pack_margin">16dp</dimen>
 </resources>

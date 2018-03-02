@@ -49,6 +49,8 @@ public final class Config {
 
         private String CODE_QUERY_PARAMETER = "CODE_QUERY_PARAMETER";
 
+        private String APP_PUBLIC_LICENSE_KEY = "APP_PUBLIC_LICENSE_KEY";
+
         public String getHost() {
             return HOST;
         }
@@ -99,6 +101,10 @@ public final class Config {
 
         public String getCodeQueryParameter() {
             return CODE_QUERY_PARAMETER;
+        }
+
+        public String getAppPublicLicenseKey() {
+            return APP_PUBLIC_LICENSE_KEY;
         }
     }
 }

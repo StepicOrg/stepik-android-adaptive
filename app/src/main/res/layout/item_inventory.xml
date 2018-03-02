@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
     <LinearLayout
         android:id="@+id/tickets"
         android:orientation="vertical"
@@ -14,18 +13,20 @@
             android:id="@+id/icon"
             android:layout_width="64dp"
             android:layout_height="64dp"
-            android:background="@drawable/circle_stroke"
-            android:tint="@color/colorDarkGrayText"
-            app:srcCompat="@drawable/ic_tickets" />
+            android:src="@drawable/ic_coupon_pack_small" />
 
         <TextView
             android:id="@+id/counter"
             android:textColor="@android:color/white"
-            android:textSize="12sp"
-            android:layout_marginTop="-14dp"
+            android:minWidth="24dp"
+            android:gravity="center"
+            android:textSize="10sp"
+            android:fontFamily="sans-serif-medium"
+            android:layout_marginTop="-10dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/dark_small_circle"/>
+            android:background="@drawable/dark_circle"
+            tools:text="x3"/>
 
     </LinearLayout>
 </layout>

@@ -18,11 +18,11 @@ class RatingAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private lateinit var leaderIconDrawable: Drawable
     private lateinit var leaderIconDrawableSelected: Drawable
 
-    companion object {
-        private val RATING_ITEM_VIEW_TYPE = 1
-        private val SEPARATOR_VIEW_TYPE = 2
+    private companion object {
+        private const val RATING_ITEM_VIEW_TYPE = 1
+        private const val SEPARATOR_VIEW_TYPE = 2
 
-        private val SEPARATOR = -1L
+        private const val SEPARATOR = -1L
 
         @JvmStatic
         private fun isRatingGap(current: RatingItem, next: RatingItem) =

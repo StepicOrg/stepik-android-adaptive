@@ -46,10 +46,7 @@ class LoginPresenter : PresenterBase<LoginView>() {
     fun onLogin(isFake: Boolean = false) {
         disposable.add(API.getInstance()
                 .joinCourse(Config.getInstance().courseId)
-                .subscribeOn(Schedulers.io())
-                .subscribe({}, { this.onError() }))
-
-        disposable.add(API.getInstance().profile
+                .andThen(API.getInstance().profile)
                 .doOnNext({ SharedPreferenceMgr.getInstance().saveProfile(it.profile) })
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())

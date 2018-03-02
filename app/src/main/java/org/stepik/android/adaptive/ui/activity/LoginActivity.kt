@@ -18,10 +18,10 @@ import org.stepik.android.adaptive.ui.dialog.RemindPasswordDialog
 import org.stepik.android.adaptive.util.ValidateUtil
 
 class LoginActivity : BasePresenterActivity<LoginPresenter, LoginView>(), LoginView {
-    private val PROGRESS = "login_progress"
-    private val REMIND_PASSWORD_DIALOG = "remind_password_dialog"
-
-    private var presenter: LoginPresenter? = null
+    private companion object {
+        private const val PROGRESS = "login_progress"
+        private const val REMIND_PASSWORD_DIALOG = "remind_password_dialog"
+    }
 
     private lateinit var binding: ActivityLoginBinding
 
@@ -106,10 +106,6 @@ class LoginActivity : BasePresenterActivity<LoginPresenter, LoginView>(), LoginV
 
     override fun onLoading() {
         showProgressDialogFragment(PROGRESS, getString(R.string.sign_in), getString(R.string.processing_your_request))
-    }
-
-    override fun onPresenter(presenter: LoginPresenter) {
-        this.presenter = presenter
     }
 
     override fun getPresenterFactory(): PresenterFactory<LoginPresenter> = LoginPresenter.Companion

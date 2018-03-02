@@ -18,8 +18,6 @@ import org.stepik.android.adaptive.ui.adapter.WeeksAdapter
 
 
 class ProgressFragment : BasePresenterFragment<ProgressPresenter, ProgressView>(), ProgressView {
-    private var presenter : ProgressPresenter? = null
-
     private lateinit var recycler : RecyclerView
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -35,10 +33,6 @@ class ProgressFragment : BasePresenterFragment<ProgressPresenter, ProgressView>(
 
     override fun onWeeksAdapter(adapter: WeeksAdapter) {
        recycler.adapter = adapter
-    }
-
-    override fun onPresenter(presenter: ProgressPresenter) {
-        this.presenter = presenter
     }
 
     override fun onStart() {

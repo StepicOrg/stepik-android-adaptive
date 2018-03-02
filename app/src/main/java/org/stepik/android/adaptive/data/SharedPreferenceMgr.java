@@ -25,6 +25,13 @@ public final class SharedPreferenceMgr {
 
     private static final String NOT_FIRST_TIME = "not_first_time";
 
+    private static final String IS_STREAK_RESTORE_TOOLTIP_WAS_SHOWN = "is_streak_restore_tooltip_was_shown";
+    private static final String IS_PAID_CONTENT_TOOLTIP_WAS_SHOWN = "is_paid_content_tooltip_was_shown";
+
+    private static final String IS_QUESTIONS_PACKS_TOOLTIP_WAS_SHOWN = "is_questions_packs_tooltip_was_shown";
+
+    private static final String QUESTIONS_PACK_INDEX = "questions_pack_index";
+
     private static final String FAKE_USER = "fake_user";
 
     private static SharedPreferenceMgr instance;
@@ -121,6 +128,30 @@ public final class SharedPreferenceMgr {
         saveBoolean(IS_OAUTH_TOKEN_SOCIAL, isOauthTokenSocial);
     }
 
+    public boolean isStreakRestoreTooltipWasShown() {
+        return getBoolean(IS_STREAK_RESTORE_TOOLTIP_WAS_SHOWN);
+    }
+
+    public void afterStreakRestoreTooltipWasShown() {
+        saveBoolean(IS_STREAK_RESTORE_TOOLTIP_WAS_SHOWN, true);
+    }
+
+    public boolean isPaidContentTooltipWasShown() {
+        return getBoolean(IS_PAID_CONTENT_TOOLTIP_WAS_SHOWN);
+    }
+
+    public void afterPaidContentTooltipWasShown() {
+        saveBoolean(IS_PAID_CONTENT_TOOLTIP_WAS_SHOWN, true);
+    }
+
+    public boolean isQuestionsPacksTooltipWasShown() {
+        return getBoolean(IS_QUESTIONS_PACKS_TOOLTIP_WAS_SHOWN);
+    }
+
+    public void afterQuestionsPacksTooltipWasShown() {
+        saveBoolean(IS_QUESTIONS_PACKS_TOOLTIP_WAS_SHOWN, true);
+    }
+
     public boolean isAuthTokenSocial() {
         return getBoolean(IS_OAUTH_TOKEN_SOCIAL);
     }
@@ -135,6 +166,14 @@ public final class SharedPreferenceMgr {
 
     public long getProfileId() {
         return getLong(PROFILE_ID);
+    }
+
+    public void changeQuestionsPackIndex(int index) {
+        saveInt(QUESTIONS_PACK_INDEX, index);
+    }
+
+    public int getQuestionsPackIndex() {
+        return getInt(QUESTIONS_PACK_INDEX);
     }
 
     public void saveBoolean(String name, Boolean data) {
@@ -155,6 +194,10 @@ public final class SharedPreferenceMgr {
         return value;
     }
 
+    public void saveInt(final String name, final int data) {
+        sharedPreferences.edit().putInt(name, data).apply();
+    }
+
     private String getString(final String name){
         return sharedPreferences.getString(name, null);
     }
@@ -165,6 +208,10 @@ public final class SharedPreferenceMgr {
 
     public boolean getBoolean(final String name) {
         return sharedPreferences.getBoolean(name, false);
+    }
+
+    public int getInt(final String name) {
+        return sharedPreferences.getInt(name, 0);
     }
 
     public void remove(final String name){

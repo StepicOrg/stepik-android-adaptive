@@ -13,6 +13,8 @@
         <item name="windowNoTitle">true</item>
     </style>
 
+    <style name="AppTheme.NoActionBar.Splash" parent="AppTheme.NoActionBar" />
+
     <style name="AppTheme.NoActionBar.Dark" parent="AppTheme.NoActionBar">
         <item name="android:windowBackground">@android:color/black</item>
     </style>
@@ -31,6 +33,10 @@
         <item name="colorControlNormal">@color/colorAccent</item>
         <item name="colorControlActivated">@color/colorAccent</item>
     </style>
+    
+    <style name="AppTheme.WhiteButton" parent="Widget.AppCompat.Button.Colored">
+        <item name="colorButtonNormal">@android:color/white</item>
+    </style>
 
     <style name="AppTheme.ReactionStamp">
         <item name="android:textSize">24sp</item>
@@ -45,5 +51,10 @@
     <style name="ExpLevelDialogTheme.Window" parent="@android:style/Animation.Activity">
         <item name="android:windowEnterAnimation">@anim/anim_exp_dialog_in</item>
         <item name="android:windowExitAnimation">@anim/anim_exp_dialog_out</item>
+    </style>
+
+    <style name="PopupAnimations">
+        <item name="android:windowEnterAnimation">@anim/popup_enter</item>
+        <item name="android:windowExitAnimation">@anim/popup_exit</item>
     </style>
 </resources>

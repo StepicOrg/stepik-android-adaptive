@@ -21,9 +21,9 @@ import org.stepik.android.adaptive.databinding.ActivityRegisterBinding
 import org.stepik.android.adaptive.util.ValidateUtil
 
 class RegisterActivity : BasePresenterActivity<LoginPresenter, LoginView>(), LoginView {
-    private val PROGRESS = "register_progress"
-
-    private var presenter: LoginPresenter? = null
+    private companion object {
+        private const val PROGRESS = "register_progress"
+    }
 
     private lateinit var binding : ActivityRegisterBinding
 
@@ -126,10 +126,6 @@ class RegisterActivity : BasePresenterActivity<LoginPresenter, LoginView>(), Log
 
     override fun onLoading() {
         showProgressDialogFragment(PROGRESS, getString(R.string.sign_up), getString(R.string.processing_your_request))
-    }
-
-    override fun onPresenter(presenter: LoginPresenter) {
-        this.presenter = presenter
     }
 
     override fun getPresenterFactory(): PresenterFactory<LoginPresenter> = LoginPresenter.Companion

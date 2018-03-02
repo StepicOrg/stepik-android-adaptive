@@ -10,10 +10,12 @@ import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.FrameLayout;
 
 import org.stepik.android.adaptive.math.LinearRegression;
-import org.stepik.android.adaptive.ui.helper.AnimationHelper;
+import org.stepik.android.adaptive.ui.animation.CardAnimations;
 
 import java.util.HashSet;
 import java.util.Set;
+
+import static org.stepik.android.adaptive.ui.helper.ViewHelperKt.dpToPx;
 
 public final class SwipeableLayout extends FrameLayout {
     private float startX = 0;
@@ -31,7 +33,7 @@ public final class SwipeableLayout extends FrameLayout {
     private final static float MIN_FLING_VELOCITY = 400;
     private final static float ROTATION_ANGLE = 15.5f;
 
-    private final static float MIN_DELTA = Resources.getSystem().getDisplayMetrics().density * 16;
+    private final static float MIN_DELTA = dpToPx(16);
 
     private final static int TOUCH_ABOVE = 0;
     private final static int TOUCH_BELOW = 1;
@@ -176,9 +178,9 @@ public final class SwipeableLayout extends FrameLayout {
             }
             final float targetX = Math.signum(elemX) * screenWidth;
             final float targetY = getTargetY(targetX);
-            AnimationHelper.createTransitionAnimation(this, targetX, targetY)
+            CardAnimations.createTransitionAnimation(this, targetX, targetY)
                     .rotation(0)
-                    .setDuration(AnimationHelper.ANIMATION_DURATION)
+                    .setDuration(CardAnimations.ANIMATION_DURATION)
                     .withEndAction(() -> {
                         for (SwipeListener l : listeners) {
                             l.onSwiped();
@@ -194,16 +196,17 @@ public final class SwipeableLayout extends FrameLayout {
             for (SwipeListener l : listeners) {
                 l.onScroll(0);
             }
-            AnimationHelper.playRollBackAnimation(this);
+            CardAnimations.playRollBackAnimation(this);
         }
     }
 
     public void swipeDown() {
+        setEnabled(false);
         for (SwipeListener l : listeners) {
             l.onSwipeDown();
         }
 
-        AnimationHelper.createTransitionAnimation(this, 0, screenHeight)
+        CardAnimations.createTransitionAnimation(this, 0, screenHeight)
                 .rotation(0)
                 .setInterpolator(new AccelerateDecelerateInterpolator())
                 .withEndAction(() -> {

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/root"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <include layout="@layout/app_bar" />
+
+    <FrameLayout
+        android:layout_weight="1"
+        android:layout_width="match_parent"
+        android:layout_height="0dp">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recycler"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <ProgressBar
+            android:id="@+id/progress"
+            android:visibility="gone"
+            android:layout_gravity="center"
+            android:layout_width="32dp"
+            android:layout_height="32dp" />
+
+        <TextView
+            android:id="@+id/purchasesAreNotSupported"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:maxWidth="256dp"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:text="@string/purchases_are_not_supported"
+            android:textColor="@color/colorGrayText"
+            android:visibility="gone" />
+
+    </FrameLayout>
+
+    <include layout="@layout/stroke" />
+
+    <Button
+        android:id="@+id/restorePurchases"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        style="@style/Widget.AppCompat.Button.Borderless"
+        android:textColor="@color/borderless_button_text_color"
+        android:text="@string/restore_purchases"/>
+</LinearLayout>

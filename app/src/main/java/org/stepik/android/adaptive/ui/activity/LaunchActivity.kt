@@ -34,13 +34,11 @@ import org.stepik.android.adaptive.databinding.ActivityLaunchBinding
 
 class LaunchActivity : BasePresenterActivity<LoginPresenter, LoginView>(), LoginView {
     companion object {
-        val REQUEST_CODE_GOOGLE_SIGN_IN = 159
-        val REQUEST_CODE_SOCIAL_AUTH = 231
+        const val REQUEST_CODE_GOOGLE_SIGN_IN = 159
+        const val REQUEST_CODE_SOCIAL_AUTH = 231
+
+        private const val PROGRESS = "launch_progress"
     }
-
-    private val PROGRESS = "launch_progress"
-
-    private var presenter: LoginPresenter? = null
 
     private var googleApiClient : GoogleApiClient? = null
     private lateinit var callbackManager : CallbackManager
@@ -190,10 +188,6 @@ class LaunchActivity : BasePresenterActivity<LoginPresenter, LoginView>(), Login
 
     override fun onLoading() {
         showProgressDialogFragment(PROGRESS, getString(R.string.sign_in), getString(R.string.processing_your_request))
-    }
-
-    override fun onPresenter(presenter: LoginPresenter) {
-        this.presenter = presenter
     }
 
     override fun getPresenterFactory(): PresenterFactory<LoginPresenter> = LoginPresenter.Companion

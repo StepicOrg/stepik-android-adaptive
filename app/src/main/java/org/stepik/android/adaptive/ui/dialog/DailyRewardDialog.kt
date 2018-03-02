@@ -11,12 +11,12 @@ import org.stepik.android.adaptive.R
 import org.stepik.android.adaptive.databinding.DialogBodyDailyRewardsBinding
 import org.stepik.android.adaptive.databinding.DialogDefaultBodyBinding
 import org.stepik.android.adaptive.ui.adapter.DailyRewardsAdapter
-import org.stepik.android.adaptive.ui.fragment.CardsFragment
+import org.stepik.android.adaptive.ui.fragment.RecommendationsFragment
 import org.stepik.android.adaptive.util.DailyRewardManager
 
 class DailyRewardDialog : DialogFragment() {
     companion object {
-        private val REWARD_PROGRESS_KEY = "reward_progress"
+        private const val REWARD_PROGRESS_KEY = "reward_progress"
 
         fun newInstance(progress: Long) : DailyRewardDialog {
             val dialog = DailyRewardDialog()
@@ -62,7 +62,7 @@ class DailyRewardDialog : DialogFragment() {
 
     private fun getReward() {
         parentFragment?.childFragmentManager?.let {
-            InventoryDialog().show(it, CardsFragment.INVENTORY_DIALOG_TAG)
+            InventoryDialog().show(it, RecommendationsFragment.INVENTORY_DIALOG_TAG)
         }
         dismiss()
     }

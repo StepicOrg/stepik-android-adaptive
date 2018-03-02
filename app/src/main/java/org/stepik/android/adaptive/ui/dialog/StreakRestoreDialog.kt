@@ -9,12 +9,12 @@ import android.support.v7.app.AlertDialog
 import org.stepik.android.adaptive.R
 import org.stepik.android.adaptive.data.AnalyticMgr
 import org.stepik.android.adaptive.databinding.DialogStreakRestoreBinding
-import org.stepik.android.adaptive.ui.fragment.CardsFragment
+import org.stepik.android.adaptive.ui.fragment.RecommendationsFragment
 import org.stepik.android.adaptive.util.InventoryUtil
 
 class StreakRestoreDialog : DialogFragment() {
     companion object {
-        private val STREAK_KEY = "streak"
+        private const val STREAK_KEY = "streak"
 
         fun newInstance(streak: Long) : StreakRestoreDialog {
             val dialog = StreakRestoreDialog()
@@ -63,7 +63,7 @@ class StreakRestoreDialog : DialogFragment() {
         val streak = arguments?.getLong(STREAK_KEY) ?: 0
         AnalyticMgr.getInstance().onStreakRestored(streak)
         val intent = Intent()
-        intent.putExtra(CardsFragment.STREAK_RESTORE_KEY, streak)
-        parentFragment?.onActivityResult(CardsFragment.STREAK_RESTORE_REQUEST_CODE, Activity.RESULT_OK, intent) // used parentFragment instead of targetFragment due to bug on screen orientation change
+        intent.putExtra(RecommendationsFragment.STREAK_RESTORE_KEY, streak)
+        parentFragment?.onActivityResult(RecommendationsFragment.STREAK_RESTORE_REQUEST_CODE, Activity.RESULT_OK, intent) // used parentFragment instead of targetFragment due to bug on screen orientation change
     }
 }

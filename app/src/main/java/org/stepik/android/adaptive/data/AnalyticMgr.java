@@ -37,6 +37,7 @@ public final class AnalyticMgr {
     private final static String EVENT_APP_RATE_NEGATIVE_EMAIL = "app_rate_negative_email";
 
     private final static String EVENT_STATS_OPENED = "stats_opened";
+    private final static String EVENT_PAID_CONTENT_OPENED = "paid_content_opened";
 
     private final static String EVENT_REACHED_EXP_500 = "reached_exp_500";
     private final static String EVENT_REACHED_EXP_1000 = "reached_exp_1000";
@@ -54,6 +55,8 @@ public final class AnalyticMgr {
     private final static String PARAM_NOTIFICATION_DAYS = "days";
 
     private final static String EVENT_ON_RATING_ERROR = "rating_sync_error";
+
+    private final static String EVENT_ON_QUESTIONS_PACKS_SCREEN_OPENEDE = "questions_packs_opened";
 
     private static AnalyticMgr instance;
 
@@ -146,6 +149,11 @@ public final class AnalyticMgr {
         firebaseAnalytics.logEvent(EVENT_STATS_OPENED, null);
     }
 
+    public void paidContentOpened() {
+        firebaseAnalytics.logEvent(EVENT_PAID_CONTENT_OPENED, null);
+    }
+
+
     public void onExpReached(final long exp, final long delta) {
         String event = null;
         if (exp <= 500 && exp + delta >= 500)
@@ -184,5 +192,9 @@ public final class AnalyticMgr {
 
     public void onRatingError() {
         firebaseAnalytics.logEvent(EVENT_ON_RATING_ERROR, null);
+    }
+
+    public void onQuestionsPacksOpened() {
+        firebaseAnalytics.logEvent(EVENT_ON_QUESTIONS_PACKS_SCREEN_OPENEDE, null);
     }
 }

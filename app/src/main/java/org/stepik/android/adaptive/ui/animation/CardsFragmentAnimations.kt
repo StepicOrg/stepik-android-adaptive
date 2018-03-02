@@ -5,7 +5,9 @@ import android.graphics.Color
 import android.support.design.widget.CoordinatorLayout
 import android.support.v4.content.ContextCompat
 import android.view.View
+import android.view.ViewPropertyAnimator
 import android.view.animation.DecelerateInterpolator
+import android.view.animation.OvershootInterpolator
 import com.github.jinatonic.confetti.CommonConfetti
 import org.stepik.android.adaptive.R
 import org.stepik.android.adaptive.databinding.FragmentRecommendationsBinding
@@ -13,9 +15,9 @@ import org.stepik.android.adaptive.ui.view.morphing.MorphingHelper
 import org.stepik.android.adaptive.ui.view.morphing.MorphingView
 
 object CardsFragmentAnimations {
-    private val ANIMATION_START_DELAY_FOR_VIEWS_MS = 1500L
-    private val ANIMATION_DURATION_MS = 200L
-    private val FAST_ANIMATION_DURATION_MS = 100L
+    private const val ANIMATION_START_DELAY_FOR_VIEWS_MS = 1500L
+    private const val ANIMATION_DURATION_MS = 200L
+    private const val FAST_ANIMATION_DURATION_MS = 100L
 
     @JvmStatic
     private var confettiColors: IntArray? = null
@@ -119,5 +121,27 @@ object CardsFragmentAnimations {
 
                 }.start()
         expProgress.visibility = View.INVISIBLE
+    }
+
+    @JvmStatic
+    fun createShowStreakRestoreWidgetAnimation(ticketsContainer: View, dx: Float): ViewPropertyAnimator {
+        ticketsContainer.translationX = dx
+        ticketsContainer.visibility = View.VISIBLE
+        return ticketsContainer.animate()
+                .translationX(0f)
+                .setDuration(ANIMATION_DURATION_MS)
+                .setInterpolator(OvershootInterpolator(1f))
+    }
+
+    @JvmStatic
+    fun playHideStreakRestoreWidgetAnimation(ticketsContainer: View, dx: Float) {
+        ticketsContainer.setOnClickListener(null)
+        ticketsContainer.animate()
+                .translationX(dx)
+                .setDuration(ANIMATION_DURATION_MS)
+                .withEndAction {
+                    ticketsContainer.visibility = View.GONE
+                }
+                .start()
     }
 }

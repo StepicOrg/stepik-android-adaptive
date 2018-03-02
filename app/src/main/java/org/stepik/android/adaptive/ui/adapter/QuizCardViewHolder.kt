@@ -8,7 +8,7 @@ import org.stepik.android.adaptive.core.presenter.contracts.CardView
 import org.stepik.android.adaptive.data.model.RecommendationReaction
 import org.stepik.android.adaptive.data.model.Submission
 import org.stepik.android.adaptive.databinding.QuizCardViewBinding
-import org.stepik.android.adaptive.ui.helper.AnimationHelper
+import org.stepik.android.adaptive.ui.animation.CardAnimations
 import org.stepik.android.adaptive.ui.helper.CardHelper
 import org.stepik.android.adaptive.ui.view.SwipeableLayout
 import org.stepik.android.adaptive.util.HtmlUtil
@@ -53,7 +53,7 @@ class QuizCardViewHolder(val binding: QuizCardViewBinding) : ContainerView.ViewH
 
     fun onTopCard() {
         if (!hasSubmission) {
-            if (presenter?.isLoading ?: false) {
+            if (presenter?.isLoading == true) {
                 onSubmissionLoading()
             } else {
                 binding.submit.visibility = View.VISIBLE
@@ -81,7 +81,7 @@ class QuizCardViewHolder(val binding: QuizCardViewBinding) : ContainerView.ViewH
 
     private fun onCardLoaded() {
         binding.curtain.visibility = View.GONE
-        if (!(presenter?.isLoading ?: false)) binding.answersProgress.visibility = View.GONE
+        if (presenter?.isLoading != true) binding.answersProgress.visibility = View.GONE
     }
 
     override fun setTitle(title: String) {
@@ -131,19 +131,19 @@ class QuizCardViewHolder(val binding: QuizCardViewBinding) : ContainerView.ViewH
                 binding.container.isEnabled = true
 
                 if (animate) {
-                    AnimationHelper.playWiggleAnimation(binding.container)
+                    CardAnimations.playWiggleAnimation(binding.container)
                 }
             }
         }
     }
 
-    override fun onSubmissionConnectivityError() {
-        onSubmissionError(R.string.connectivity_error)
-    }
+    override fun onSubmissionConnectivityError() =
+            onSubmissionError(R.string.connectivity_error)
 
-    override fun onSubmissionRequestError() {
-        onSubmissionError(R.string.request_error)
-    }
+
+    override fun onSubmissionRequestError() =
+            onSubmissionError(R.string.request_error)
+
 
     private fun onSubmissionError(@StringRes errorMessage: Int) {
         if (binding.root.parent != null) {

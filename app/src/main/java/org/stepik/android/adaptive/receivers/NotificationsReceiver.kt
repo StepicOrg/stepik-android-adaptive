@@ -11,10 +11,10 @@ import org.stepik.android.adaptive.notifications.RemindNotificationManager
 
 class NotificationsReceiver : BroadcastReceiver() {
     companion object {
-        val REQUEST_CODE = 564
+        const val REQUEST_CODE = 564
 
-        val NOTIFICATION_CANCELED = "notification canceled"
-        val SHOW_NOTIFICATION = "show notification"
+        const val NOTIFICATION_CANCELED = "notification canceled"
+        const val SHOW_NOTIFICATION = "show notification"
     }
 
     override fun onReceive(context: Context, intent: Intent?) {

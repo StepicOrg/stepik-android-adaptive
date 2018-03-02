@@ -24,7 +24,7 @@ class CardPresenter(val card: Card, private val listener: AdaptiveReactionListen
     private var disposable: Disposable? = null
 
     var isLoading = false
-        get
+        private set
 
     override fun attachView(view: CardView) {
         super.attachView(view)
@@ -69,7 +69,7 @@ class CardPresenter(val card: Card, private val listener: AdaptiveReactionListen
     }
 
     fun createSubmission() {
-        if (disposable == null || disposable?.isDisposed ?: true) {
+        if (disposable == null || disposable?.isDisposed != false) {
             card.adapter.setEnabled(false)
             view?.onSubmissionLoading()
             isLoading = true

@@ -4,6 +4,7 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+    <uses-permission android:name="com.android.vending.BILLING" />
 
     <application
         android:allowBackup="false"
@@ -21,7 +22,7 @@
             android:value="@string/facebook_app_id"/>
 
         <activity
-            android:theme="@style/AppTheme.NoActionBar"
+            android:theme="@style/AppTheme.NoActionBar.Splash"
             android:name="org.stepik.android.adaptive.ui.activity.SplashActivity"
             android:label="@string/app_name">
             <intent-filter>
@@ -61,6 +62,14 @@
         <activity
             android:theme="@style/AppTheme.NoActionBar"
             android:name="org.stepik.android.adaptive.ui.activity.StatsActivity"/>
+        
+        <activity
+            android:theme="@style/AppTheme.NoActionBar"
+            android:name=".ui.activity.PaidInventoryItemsActivity" />
+
+        <activity
+            android:theme="@style/AppTheme.NoActionBar"
+            android:name=".ui.activity.QuestionsPacksActivity" />
 
         <receiver
             android:name="org.stepik.android.adaptive.receivers.BootCompletedReceiver"
