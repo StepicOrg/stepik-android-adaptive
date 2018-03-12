@@ -2,7 +2,7 @@ package org.stepik.android.adaptive.util;
 
 import android.webkit.WebView;
 
-import org.stepik.android.adaptive.Config;
+import org.stepik.android.adaptive.configuration.Config;
 
 public class HtmlUtil {
 
