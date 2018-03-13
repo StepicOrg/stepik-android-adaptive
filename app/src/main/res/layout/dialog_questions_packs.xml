@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <FrameLayout
+        android:background="@drawable/pack_bg_basic"
+        android:layout_width="match_parent"
+        android:layout_height="80dp">
+        <ImageView
+            app:srcCompat="@drawable/ic_packs"
+            android:layout_gravity="center"
+            android:layout_width="36dp"
+            android:layout_height="36dp" />
+    </FrameLayout>
+
+    <TextView
+        android:layout_margin="16dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/questions_dialog" />
+
+    <include layout="@layout/stroke" />
+
+    <Button
+        android:id="@+id/actionButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        style="@style/Widget.AppCompat.Button.Borderless"
+        android:textColor="@color/borderless_button_text_color"
+        android:text="@string/questions_dialog_action" />
+
+</LinearLayout>
