@@ -57,7 +57,10 @@ public final class AnalyticMgr {
 
     private final static String EVENT_ON_RATING_ERROR = "rating_sync_error";
 
-    private final static String EVENT_ON_QUESTIONS_PACKS_SCREEN_OPENEDE = "questions_packs_opened";
+    private final static String EVENT_ON_QUESTIONS_PACKS_SCREEN_OPENED = "questions_packs_opened";
+
+    public final static String EVENT_ON_QUESTIONS_DIALOG_SHOWN = "questions_dialog_shown";
+    public final static String EVENT_ON_QUESTIONS_DIALOG_ACTION_CLICKED = "questions_dialog_action_clicked";
 
     private static AnalyticMgr instance;
 
@@ -204,6 +207,6 @@ public final class AnalyticMgr {
     }
 
     public void onQuestionsPacksOpened() {
-        logEvent(EVENT_ON_QUESTIONS_PACKS_SCREEN_OPENEDE);
+        logEvent(EVENT_ON_QUESTIONS_PACKS_SCREEN_OPENED);
     }
 }
