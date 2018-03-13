@@ -3,7 +3,7 @@ package org.stepik.android.adaptive.core.presenter
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
-import org.stepik.android.adaptive.Config
+import org.stepik.android.adaptive.configuration.Config
 import org.stepik.android.adaptive.api.API
 import org.stepik.android.adaptive.api.login.SocialManager
 import org.stepik.android.adaptive.core.presenter.contracts.LoginView

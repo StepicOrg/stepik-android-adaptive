@@ -1,5 +1,4 @@
-package org.stepik.android.adaptive;
-
+package org.stepik.android.adaptive.configuration;
 
 import android.content.Context;
 

@@ -13,6 +13,7 @@ import com.vk.sdk.VKSdk;
 
 import org.stepik.android.adaptive.api.API;
 import org.stepik.android.adaptive.api.UserAgentProvider;
+import org.stepik.android.adaptive.configuration.Config;
 import org.stepik.android.adaptive.core.ScreenManager;
 import org.stepik.android.adaptive.data.AnalyticMgr;
 import org.stepik.android.adaptive.data.SharedPreferenceMgr;
