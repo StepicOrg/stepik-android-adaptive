@@ -22,4 +22,5 @@
     <dimen name="questions_pack_margin">16dp</dimen>
 
     <dimen name="action_bar_icon_padding">16dp</dimen>
+    <dimen name="action_bar_icon_padding_small">10dp</dimen>
 </resources>
