@@ -5,22 +5,29 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <FrameLayout
-        android:background="@drawable/pack_bg_basic"
-        android:layout_width="match_parent"
-        android:layout_height="80dp">
-        <ImageView
-            app:srcCompat="@drawable/ic_packs"
-            android:layout_gravity="center"
-            android:layout_width="36dp"
-            android:layout_height="36dp" />
-    </FrameLayout>
-
     <TextView
-        android:layout_margin="16dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/questions_dialog" />
+        android:layout_margin="16dp"
+        android:text="@string/questions_packs"
+        android:textAppearance="@style/TextAppearance.AppCompat.Title"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:text="@string/questions_dialog"
+        android:textColor="@color/colorDarkGrayText" />
+
+
+    <ImageView
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:layout_margin="16dp"
+        android:layout_gravity="center"
+        app:srcCompat="@drawable/ic_packs"
+        android:tint="@color/colorDarkGrayText" />
 
     <include layout="@layout/stroke" />
 
