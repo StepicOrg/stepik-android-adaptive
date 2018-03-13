@@ -12,6 +12,7 @@ import android.view.ViewGroup
 import android.widget.PopupWindow
 import org.stepik.android.adaptive.R
 import org.stepik.android.adaptive.Util
+import org.stepik.android.adaptive.configuration.RemoteConfig
 import org.stepik.android.adaptive.core.ScreenManager
 import org.stepik.android.adaptive.core.presenter.BasePresenterFragment
 import org.stepik.android.adaptive.core.presenter.RecommendationsPresenter
@@ -196,9 +197,13 @@ class RecommendationsFragment : BasePresenterFragment<RecommendationsPresenter, 
 
     override fun showQuestionsPacksTooltip() {
         if (binding.questionsPacks.visibility == View.VISIBLE) {
-            questionsPacksTooltip = PopupHelper.showPopupAnchoredToView(
-                    context, binding.questionsPacks, getString(R.string.questions_tooltip),
-                    TOOLBAR_TOOLTIPS_OFF_X_PX, TOOLBAR_TOOLTIPS_OFF_Y_PX)
+            if (RemoteConfig.getFirebaseConfig().getBoolean(RemoteConfig.QUESTIONS_PACK_DIALOG_EXPERIMENT)) {
+
+            } else {
+                questionsPacksTooltip = PopupHelper.showPopupAnchoredToView(
+                        context, binding.questionsPacks, getString(R.string.questions_tooltip),
+                        TOOLBAR_TOOLTIPS_OFF_X_PX, TOOLBAR_TOOLTIPS_OFF_Y_PX)
+            }
         }
     }
 
