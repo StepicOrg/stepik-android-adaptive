@@ -12,6 +12,7 @@ import android.view.ViewGroup
 import android.widget.PopupWindow
 import org.stepik.android.adaptive.R
 import org.stepik.android.adaptive.Util
+import org.stepik.android.adaptive.configuration.RemoteConfig
 import org.stepik.android.adaptive.core.ScreenManager
 import org.stepik.android.adaptive.core.presenter.BasePresenterFragment
 import org.stepik.android.adaptive.core.presenter.RecommendationsPresenter
@@ -78,6 +79,10 @@ class RecommendationsFragment : BasePresenterFragment<RecommendationsPresenter, 
         binding.questionsPacks.setOnClickListener {
             questionsPacksTooltip?.dismiss()
             ScreenManager.showQuestionsPacksScreen(context)
+        }
+
+        if (RemoteConfig.getFirebaseConfig().getBoolean(RemoteConfig.QUESTION_PACKS_ICON_EXPERIMENT)) {
+//            binding.questionsPacks.setImageResource()
         }
 
         return binding.root
