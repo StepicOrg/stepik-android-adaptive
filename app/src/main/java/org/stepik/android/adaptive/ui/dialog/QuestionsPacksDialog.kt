@@ -19,6 +19,7 @@ class QuestionsPacksDialog : DialogFragment() {
 
         root.actionButton.setOnClickListener {
             ScreenManager.showQuestionsPacksScreen(activity)
+            dismiss()
         }
 
         alertDialogBuilder.setView(root)
