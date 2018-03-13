@@ -7,6 +7,7 @@ import io.reactivex.schedulers.Schedulers
 import org.solovyev.android.checkout.*
 import org.stepik.android.adaptive.api.API
 import org.stepik.android.adaptive.core.presenter.contracts.QuestionsPacksView
+import org.stepik.android.adaptive.data.AnalyticMgr
 import org.stepik.android.adaptive.data.SharedPreferenceMgr
 import org.stepik.android.adaptive.data.model.QuestionsPack
 import org.stepik.android.adaptive.ui.adapter.QuestionsPacksAdapter
@@ -86,6 +87,7 @@ class QuestionsPacksPresenter : PaidContentPresenterBase<QuestionsPacksView>() {
     }
 
     private fun purchase(sku: Sku) {
+        AnalyticMgr.getInstance().logEvent(AnalyticMgr.EVENT_ON_QUESTIONS_PACK_PURCHASE_BUTTON_CLICKED)
         val purchaseObservable = checkout?.startPurchaseFlowRx(sku) ?: Observable.empty<Purchase>()
         compositeDisposable.add(consume(purchaseObservable))
     }
@@ -96,6 +98,7 @@ class QuestionsPacksPresenter : PaidContentPresenterBase<QuestionsPacksView>() {
                 .joinCourse(pack.courseId)
                 .doOnComplete {
                     SharedPreferenceMgr.getInstance().changeQuestionsPackIndex(pack.ordinal)
+                    AnalyticMgr.getInstance().logEventWithLongParam(AnalyticMgr.EVENT_ON_QUESTIONS_PACK_SWITCHED, AnalyticMgr.PARAM_COURSE, pack.courseId)
                 }
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
@@ -103,7 +106,6 @@ class QuestionsPacksPresenter : PaidContentPresenterBase<QuestionsPacksView>() {
                     adapter.selection = pack.ordinal
                     view?.hideProgress()
                 }, {
-                    it.printStackTrace()
                     view?.hideProgress()
                 }))
     }

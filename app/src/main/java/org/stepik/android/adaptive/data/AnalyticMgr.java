@@ -62,6 +62,10 @@ public final class AnalyticMgr {
     public final static String EVENT_ON_QUESTIONS_DIALOG_SHOWN = "questions_dialog_shown";
     public final static String EVENT_ON_QUESTIONS_DIALOG_ACTION_CLICKED = "questions_dialog_action_clicked";
 
+    public final static String EVENT_ON_QUESTIONS_PACK_SWITCHED = "questions_pack_switched";
+    public final static String EVENT_ON_QUESTIONS_PACK_PURCHASE_BUTTON_CLICKED = "questions_pack_purchase_clicked";
+    public final static String PARAM_COURSE = "course";
+
     private static AnalyticMgr instance;
 
     private final FirebaseAnalytics firebaseAnalytics;
@@ -95,7 +99,7 @@ public final class AnalyticMgr {
         logEvent(name, null);
     }
 
-    private void logEventWithLongParam(final String event, final String param, final long value) {
+    public void logEventWithLongParam(final String event, final String param, final long value) {
         final Bundle bundle = new Bundle();
         bundle.putLong(param, value);
         logEvent(event, bundle);
