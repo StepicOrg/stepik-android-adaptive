@@ -44,6 +44,20 @@
                             android:layout_marginEnd="-16dp"
                             android:background="?attr/selectableItemBackgroundBorderless" />
 
+                        <TextView
+                            android:id="@+id/questionsPacksBadge"
+                            android:background="@drawable/badge_counter_bg"
+                            android:layout_gravity="bottom"
+                            android:layout_marginStart="-6dp"
+                            android:layout_marginBottom="2dp"
+                            android:layout_marginEnd="-12dp"
+                            android:visibility="gone"
+                            android:gravity="center"
+                            android:textSize="10sp"
+                            android:textColor="@android:color/white"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" />
+
                         <LinearLayout
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"

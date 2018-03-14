@@ -93,6 +93,10 @@ class RecommendationsFragment : BasePresenterFragment<RecommendationsPresenter, 
         if (RemoteConfig.getFirebaseConfig().getBoolean(RemoteConfig.QUESTION_PACKS_ICON_EXPERIMENT)) {
             iconRes = QuestionsPack.values()[SharedPreferenceMgr.getInstance().questionsPackIndex].icon // small icon of current pack
             paddingRes = R.dimen.action_bar_icon_padding_small
+
+            val badgeCount = getQuestionsPacksBadgesCount()
+            binding.questionsPacksBadge.text = badgeCount.toString()
+            binding.questionsPacksBadge.changeVisibillity(badgeCount > 0 && QuestionsPack.values().size > 1)
         } else {
             iconRes = R.drawable.ic_packs
             paddingRes = R.dimen.action_bar_icon_padding
@@ -101,6 +105,9 @@ class RecommendationsFragment : BasePresenterFragment<RecommendationsPresenter, 
         binding.questionsPacks.setImageResource(iconRes)
         binding.questionsPacks.setPadding(padding, padding, padding, padding)
     }
+
+    private fun getQuestionsPacksBadgesCount() =
+            QuestionsPack.values().count { !SharedPreferenceMgr.getInstance().isQuestionsPackViewed(it) }
 
     override fun onAdapter(cardsAdapter: QuizCardsAdapter) =
         binding.cardsContainer.setAdapter(cardsAdapter)
