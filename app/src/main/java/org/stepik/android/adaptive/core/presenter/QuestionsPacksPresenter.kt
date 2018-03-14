@@ -36,6 +36,10 @@ class QuestionsPacksPresenter : PaidContentPresenterBase<QuestionsPacksView>() {
             }
         }.flatMap { packs ->
             val ids = packs.map { it.second.courseId }.toLongArray()
+            packs.forEach {
+                SharedPreferenceMgr.getInstance().onQuestionsPackViewed(it.second)
+            }
+
             API.getInstance().getCourses(ids).map { it.courses }.map { courses ->
                 courses.mapNotNull { course ->
                     val pack = packs?.find { it.second.courseId == course.id }

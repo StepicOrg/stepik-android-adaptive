@@ -11,6 +11,7 @@ enum class QuestionsPack(
         var size: Int = 0,
         @StringRes   val difficulty: Int,
         @DrawableRes val background: Int,
+        @DrawableRes val icon: Int,
         @ColorInt    val textColor: Int = 0xFFFFFF,
         val isFree: Boolean = false) {
     Basic(
@@ -18,6 +19,7 @@ enum class QuestionsPack(
             courseId    = 3067,
             difficulty  = R.string.questions_difficulty_mixed,
             background  = R.drawable.pack_bg_basic,
+            icon        = R.drawable.ic_questions_pack_basic,
             textColor   = 0x495057,
             isFree      = true
     );

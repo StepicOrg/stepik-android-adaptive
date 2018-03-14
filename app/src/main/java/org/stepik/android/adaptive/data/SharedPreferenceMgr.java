@@ -13,6 +13,7 @@ import org.stepik.android.adaptive.api.API;
 import org.stepik.android.adaptive.api.oauth.OAuthResponse;
 import org.stepik.android.adaptive.data.model.AccountCredentials;
 import org.stepik.android.adaptive.data.model.Profile;
+import org.stepik.android.adaptive.data.model.QuestionsPack;
 import org.stepik.android.adaptive.util.Optional;
 
 public final class SharedPreferenceMgr {
@@ -33,6 +34,8 @@ public final class SharedPreferenceMgr {
     private static final String QUESTIONS_PACK_INDEX = "questions_pack_index";
 
     private static final String FAKE_USER = "fake_user";
+
+    private static final String QUESTIONS_PACK_VIEVED_PREFIX = "viewed_";
 
     private static SharedPreferenceMgr instance;
 
@@ -174,6 +177,14 @@ public final class SharedPreferenceMgr {
 
     public int getQuestionsPackIndex() {
         return getInt(QUESTIONS_PACK_INDEX);
+    }
+
+    public void onQuestionsPackViewed(QuestionsPack pack) {
+        saveBoolean(QUESTIONS_PACK_VIEVED_PREFIX + pack.getId(), true);
+    }
+
+    public boolean isQuestionsPackViewed(QuestionsPack pack) {
+        return getBoolean(QUESTIONS_PACK_VIEVED_PREFIX + pack.getId());
     }
 
     public void saveBoolean(String name, Boolean data) {
