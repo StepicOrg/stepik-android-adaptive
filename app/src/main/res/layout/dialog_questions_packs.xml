@@ -22,12 +22,12 @@
 
 
     <ImageView
+        android:id="@+id/packsIcon"
         android:layout_width="36dp"
         android:layout_height="36dp"
         android:layout_margin="16dp"
         android:layout_gravity="center"
-        app:srcCompat="@drawable/ic_packs"
-        android:tint="@color/colorDarkGrayText" />
+        app:srcCompat="@drawable/ic_packs" />
 
     <include layout="@layout/stroke" />
 
