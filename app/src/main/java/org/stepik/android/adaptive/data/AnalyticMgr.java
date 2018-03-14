@@ -3,6 +3,7 @@ package org.stepik.android.adaptive.data;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import com.google.firebase.analytics.FirebaseAnalytics;
 
@@ -56,7 +57,14 @@ public final class AnalyticMgr {
 
     private final static String EVENT_ON_RATING_ERROR = "rating_sync_error";
 
-    private final static String EVENT_ON_QUESTIONS_PACKS_SCREEN_OPENEDE = "questions_packs_opened";
+    private final static String EVENT_ON_QUESTIONS_PACKS_SCREEN_OPENED = "questions_packs_opened";
+
+    public final static String EVENT_ON_QUESTIONS_DIALOG_SHOWN = "questions_dialog_shown";
+    public final static String EVENT_ON_QUESTIONS_DIALOG_ACTION_CLICKED = "questions_dialog_action_clicked";
+
+    public final static String EVENT_ON_QUESTIONS_PACK_SWITCHED = "questions_pack_switched";
+    public final static String EVENT_ON_QUESTIONS_PACK_PURCHASE_BUTTON_CLICKED = "questions_pack_purchase_clicked";
+    public final static String PARAM_COURSE = "course";
 
     private static AnalyticMgr instance;
 
@@ -76,17 +84,25 @@ public final class AnalyticMgr {
     }
 
     public void successLogin() {
-        firebaseAnalytics.logEvent(EVENT_SUCCESS_LOGIN, null);
+        logEvent(EVENT_SUCCESS_LOGIN);
     }
 
     public void onBoardingFinished() {
-        firebaseAnalytics.logEvent(EVENT_ONBOARDING_FINISHED, null);
+        logEvent(EVENT_ONBOARDING_FINISHED);
     }
 
-    private void logEventWithLongParam(final String event, final String param, final long value) {
+    public void logEvent(@NonNull final String name, @Nullable Bundle bundle) {
+        firebaseAnalytics.logEvent(name, bundle);
+    }
+
+    public void logEvent(@NonNull final String name) {
+        logEvent(name, null);
+    }
+
+    public void logEventWithLongParam(final String event, final String param, final long value) {
         final Bundle bundle = new Bundle();
         bundle.putLong(param, value);
-        firebaseAnalytics.logEvent(event, bundle);
+        logEvent(event, bundle);
     }
 
     public void reactionHard(final long lesson) {
@@ -118,7 +134,7 @@ public final class AnalyticMgr {
     }
 
     public void onSubmissionWasMade() {
-        firebaseAnalytics.logEvent(EVENT_SUBMISSION_WAS_MADE, null);
+        logEvent(EVENT_SUBMISSION_WAS_MADE);
     }
 
     public void rate(int rating) {
@@ -126,31 +142,31 @@ public final class AnalyticMgr {
     }
 
     public void rateCanceled() {
-        firebaseAnalytics.logEvent(EVENT_APP_RATE_CANCELED, null);
+        logEvent(EVENT_APP_RATE_CANCELED);
     }
 
     public void ratePositiveLater() {
-        firebaseAnalytics.logEvent(EVENT_APP_RATE_POSITIVE_LATER, null);
+        logEvent(EVENT_APP_RATE_POSITIVE_LATER);
     }
 
     public void ratePositiveGooglePlay() {
-        firebaseAnalytics.logEvent(EVENT_APP_RATE_POSITIVE_GOOGLE_PLAY, null);
+        logEvent(EVENT_APP_RATE_POSITIVE_GOOGLE_PLAY);
     }
 
     public void rateNegativeLater() {
-        firebaseAnalytics.logEvent(EVENT_APP_RATE_NEGATIVE_LATER, null);
+        logEvent(EVENT_APP_RATE_NEGATIVE_LATER);
     }
 
     public void rateNegativeEmail() {
-        firebaseAnalytics.logEvent(EVENT_APP_RATE_NEGATIVE_EMAIL, null);
+        logEvent(EVENT_APP_RATE_NEGATIVE_EMAIL);
     }
 
     public void statsOpened() {
-        firebaseAnalytics.logEvent(EVENT_STATS_OPENED, null);
+        logEvent(EVENT_STATS_OPENED);
     }
 
     public void paidContentOpened() {
-        firebaseAnalytics.logEvent(EVENT_PAID_CONTENT_OPENED, null);
+        logEvent(EVENT_PAID_CONTENT_OPENED);
     }
 
 
@@ -163,11 +179,11 @@ public final class AnalyticMgr {
         else if (exp <= 5000 && exp + delta >= 5000)
             event = EVENT_REACHED_EXP_5000;
         if (event != null)
-            firebaseAnalytics.logEvent(event, null);
+            logEvent(event);
     }
 
     public void onStreakRestoreDialogShown() {
-        firebaseAnalytics.logEvent(EVENT_STREAK_RESTORE_DIALOG_SHOWN, null);
+        logEvent(EVENT_STREAK_RESTORE_DIALOG_SHOWN);
     }
 
     public void onStreakRestored(long streak) {
@@ -191,10 +207,10 @@ public final class AnalyticMgr {
     }
 
     public void onRatingError() {
-        firebaseAnalytics.logEvent(EVENT_ON_RATING_ERROR, null);
+        logEvent(EVENT_ON_RATING_ERROR);
     }
 
     public void onQuestionsPacksOpened() {
-        firebaseAnalytics.logEvent(EVENT_ON_QUESTIONS_PACKS_SCREEN_OPENEDE, null);
+        logEvent(EVENT_ON_QUESTIONS_PACKS_SCREEN_OPENED);
     }
 }

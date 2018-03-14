@@ -6,7 +6,8 @@ import org.stepik.android.adaptive.BuildConfig
 import org.stepik.android.adaptive.R
 
 object RemoteConfig {
-    const val QUESTION_PACKS_ICON_EXPERIMENT = "question_packs_icon_experiment"
+    const val QUESTIONS_PACKS_DIALOG_EXPERIMENT = "questions_packs_dialog_experiment"
+    const val QUESTIONS_PACKS_ICON_EXPERIMENT = "questions_packs_icon_experiment"
 
     private val firebaseRemoteConfig = FirebaseRemoteConfig.getInstance().apply {
         val configSettings = FirebaseRemoteConfigSettings.Builder()
