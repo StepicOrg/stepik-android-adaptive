@@ -1,4 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <defaultsMap>
-
+    <entry>
+        <key>question_packs_icon_experiment</key>
+        <value>false</value>
+    </entry>
 </defaultsMap>
