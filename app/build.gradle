@@ -109,6 +109,7 @@ dependencies {
     implementation(libraries.crashlytics) {
         transitive = true
     }
+    implementation libraries.appMetrica
 
     implementation libraries.facebookSdk
     implementation libraries.vkSdk
