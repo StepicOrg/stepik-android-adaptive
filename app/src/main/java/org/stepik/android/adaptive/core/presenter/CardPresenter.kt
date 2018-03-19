@@ -1,6 +1,8 @@
 package org.stepik.android.adaptive.core.presenter
 
+import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import org.stepik.android.adaptive.api.API
@@ -22,6 +24,18 @@ class CardPresenter(val card: Card, private val listener: AdaptiveReactionListen
     private var error: Throwable? = null
 
     private var disposable: Disposable? = null
+    private val compositeDisposable = CompositeDisposable()
+
+    private var isBookmarked: Boolean? = null
+
+    init {
+        compositeDisposable.add(Single.fromCallable {
+           DataBaseMgr.instance.isInBookmarks(Bookmark(0, card.step.id, String(), String()))
+        }.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe({
+            isBookmarked = it
+            resolveBookmarkState()
+        }, {}))
+    }
 
     var isLoading = false
         private set
@@ -32,9 +46,11 @@ class CardPresenter(val card: Card, private val listener: AdaptiveReactionListen
         view.setQuestion(HtmlUtil.prepareCardHtml(card.step.block.text))
         view.setAnswerAdapter(card.adapter)
 
+        resolveBookmarkState()
+
         if (isLoading) view.onSubmissionLoading()
         submission?.let { view.setSubmission(it, false) }
-        error?.let { onError(it) }
+        error?.let(::onError)
     }
 
     fun detachView() {
@@ -48,18 +64,31 @@ class CardPresenter(val card: Card, private val listener: AdaptiveReactionListen
         disposable?.dispose()
     }
 
+    private fun resolveBookmarkState() {
+        isBookmarked?.let { isBookmarked ->
+            view?.setBookmarkState(isBookmarked)
+        }
+    }
+
     fun toggleBookmark() {
         val bookmark = Bookmark(
                 QuestionsPack.values()[SharedPreferenceMgr.getInstance().questionsPackIndex].courseId,
                 card.step.id,
                 card.lesson.title,
-                ""
+                String()
         )
-        if (DataBaseMgr.instance.isInBookmarks(bookmark)) { //race condition?
-            DataBaseMgr.instance.removeBookmark(bookmark)
-        } else {
-            DataBaseMgr.instance.addBookmark(bookmark)
+
+        when (isBookmarked) {
+            true -> {
+                DataBaseMgr.instance.removeBookmark(bookmark)
+                isBookmarked = false
+            }
+            false -> {
+                DataBaseMgr.instance.addBookmark(bookmark)
+                isBookmarked = true
+            }
         }
+        resolveBookmarkState()
     }
 
     fun createReaction(reaction: RecommendationReaction.Reaction) {

@@ -33,7 +33,8 @@
                         android:layout_height="@dimen/quiz_card_header_size"
                         android:padding="12dp"
                         android:layout_alignParentEnd="true"
-                        app:srcCompat="@drawable/ic_packs"
+                        app:srcCompat="@drawable/ic_bookmark"
+                        android:visibility="gone"
                         android:background="?attr/selectableItemBackgroundBorderless" />
 
                     <TextView
