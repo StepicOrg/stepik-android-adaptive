@@ -6,9 +6,13 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.google.firebase.analytics.FirebaseAnalytics;
+import com.yandex.metrica.YandexMetrica;
 
 import org.stepik.android.adaptive.data.model.Step;
 import org.stepik.android.adaptive.data.model.Submission;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public final class AnalyticMgr {
     private final static String EVENT_SUCCESS_LOGIN = "success_login";
@@ -93,6 +97,15 @@ public final class AnalyticMgr {
 
     public void logEvent(@NonNull final String name, @Nullable Bundle bundle) {
         firebaseAnalytics.logEvent(name, bundle);
+        if (bundle == null) {
+            YandexMetrica.reportEvent(name);
+        } else {
+            Map<String, Object> map = new HashMap<>();
+            for (String key : bundle.keySet()) {
+                map.put(key, bundle.get(key));
+            }
+            YandexMetrica.reportEvent(name, map);
+        }
     }
 
     public void logEvent(@NonNull final String name) {

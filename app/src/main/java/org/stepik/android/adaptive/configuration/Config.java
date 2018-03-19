@@ -50,6 +50,8 @@ public final class Config {
 
         private String APP_PUBLIC_LICENSE_KEY = "APP_PUBLIC_LICENSE_KEY";
 
+        private String APP_METRICA_KEY = "APP_METRICA_KEY";
+
         public String getHost() {
             return HOST;
         }
@@ -104,6 +106,10 @@ public final class Config {
 
         public String getAppPublicLicenseKey() {
             return APP_PUBLIC_LICENSE_KEY;
+        }
+
+        public String getAppMetricaKey() {
+            return APP_METRICA_KEY;
         }
     }
 }

@@ -3,6 +3,7 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'me.tatarka.retrolambda'
+apply plugin: 'io.fabric'
 
 def globalConf = rootProject.ext
 android {
@@ -20,14 +21,15 @@ android {
             keyPassword globalConf.debugAliasPass
         }
     }
-    compileSdkVersion 26
-    buildToolsVersion "26.0.1"
+    compileSdkVersion versions.compileSdk
+    buildToolsVersion versions.buildTools
     defaultConfig {
         applicationId "org.stepik.android.adaptive"
-        minSdkVersion 17
-        targetSdkVersion 26
-        versionCode 13
-        versionName "1.5"
+        minSdkVersion versions.minSdk
+        targetSdkVersion versions.targetSdk
+        versionCode versions.code
+        versionName versions.name
+
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
         multiDexEnabled true
@@ -46,72 +48,108 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+
+    flavorDimensions "course"
     productFlavors {
         pdd {
             applicationIdSuffix  '.pdd'
+            dimension "course"
         }
         gmat1906 {
             applicationIdSuffix  '.gmat1906'
+            dimension "course"
         }
         gmat3067 {
             applicationIdSuffix  '.gmat3067'
+            dimension "course"
         }
         toefl3150 {
             applicationIdSuffix  '.toefl3150'
+            dimension "course"
         }
         toefl3149 {
             applicationIdSuffix  '.toefl3149'
+            dimension "course"
         }
         toefl3124 {
             applicationIdSuffix  '.toefl3124'
+            dimension "course"
         }
+    }
+
+    packagingOptions {
+        exclude 'META-INF/LICENSE'
+        exclude 'META-INF/NOTICE'
     }
 }
 
 dependencies {
+    implementation libraries.kotlinStd
+
+    implementation libraries.rxAndroid
+    implementation libraries.rxJava2
+
+    implementation libraries.gson
+    implementation libraries.retrofit
+    implementation libraries.retrofitGsonConverter
+    implementation libraries.retrofitRxJavaAdapter
+
+    implementation libraries.okhttp3
+    implementation libraries.loggingInterceptor
+
+    implementation libraries.supportAppCompat
+    implementation libraries.supportDesign
+    implementation libraries.supportCardView
+
+    implementation libraries.googleauth
+    implementation libraries.firebaseCore
+    implementation libraries.firebaseConfig
+    implementation libraries.firebaseMessaging
+
+    implementation(libraries.crashlytics) {
+        transitive = true
+    }
+    implementation libraries.appMetrica
+
+    implementation libraries.facebookSdk
+    implementation libraries.vkSdk
+
+    implementation libraries.glide
+    implementation libraries.checkout
+
+    implementation libraries.jodaTime
+
+    implementation libraries.photoView
+    implementation libraries.confetti
+    implementation libraries.MPAndroidChart
+    implementation libraries.materialProgress
+    implementation libraries.gifDrawable
+    implementation libraries.discreteScrollView
+    implementation libraries.flexBox
+
+    testImplementation libraries.junit
+    testImplementation libraries.robolectric
+    testImplementation libraries.mockitoCore
+    testImplementation libraries.hamcrest
+
+    androidTestImplementation(libraries.supportTestRunner) {
+        exclude group: 'com.android.support'
+    }
+    androidTestImplementation libraries.supportTestRules
+    androidTestImplementation(libraries.espressoCore) {
+        exclude group: 'com.android.support'
+    }
+    androidTestImplementation(libraries.espressoContrib) {
+        exclude group: 'com.android.support'
+    }
+    androidTestImplementation(libraries.espressoIntents) {
+        exclude group: 'com.android.support'
+    }
+
+    implementation libraries.multidex
+    kapt libraries.databinding
+
     compile fileTree(include: ['*.jar'], dir: 'libs')
-    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
-        exclude group: 'com.android.support', module: 'support-annotations'
-        exclude group: 'com.google.code.findbugs'
-    })
-    compile 'com.android.support:appcompat-v7:26.0.1'
-    compile 'com.android.support:cardview-v7:26.0.1'
-    compile 'com.android.support:design:26.0.1'
-
-    compile 'io.reactivex.rxjava2:rxjava:2.0.1'
-    compile 'io.reactivex.rxjava2:rxandroid:2.0.1'
-
-    compile 'com.squareup.retrofit2:retrofit:2.2.0'
-    compile 'com.squareup.retrofit2:converter-gson:2.2.0'
-    compile 'com.squareup.retrofit2:adapter-rxjava2:2.2.0'
-    compile 'com.squareup.okhttp3:okhttp:3.6.0'
-    compile 'com.squareup.okhttp3:logging-interceptor:3.6.0'
-
-    compile 'com.google.code.gson:gson:2.7'
-    compile 'joda-time:joda-time:2.9.9'
-
-    compile 'com.vk:androidsdk:+'
-    compile 'com.facebook.android:facebook-android-sdk:4.17.0'
-    compile 'com.google.android.gms:play-services-auth:11.8.0'
-
-    compile 'com.github.bumptech.glide:glide:3.7.0'
-    compile 'pl.droidsonroids.gif:android-gif-drawable:1.2.7'
-    compile 'com.github.PhilJay:MPAndroidChart:v3.0.2'
-    compile 'com.yarolegovich:discrete-scrollview:1.2.0'
-    compile 'me.zhanghai.android.materialprogressbar:library:1.4.1'
-    compile 'com.github.jinatonic.confetti:confetti:1.1.0'
-    compile 'com.github.chrisbanes:PhotoView:1.3.1'
-    compile 'com.google.android:flexbox:0.3.0'
-
-    compile 'org.solovyev.android:checkout:1.2.1'
-
-    testCompile 'junit:junit:4.12'
-    compile 'com.google.firebase:firebase-core:11.8.0'
-    compile 'com.google.firebase:firebase-config:11.8.0'
-    compile 'com.android.support:multidex:1.0.1'
-    compile "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
-    kapt 'com.android.databinding:compiler:2.3.3'
-
 }
 apply plugin: 'com.google.gms.google-services'
 repositories {

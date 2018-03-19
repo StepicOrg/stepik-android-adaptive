@@ -106,8 +106,9 @@ class LoginPresenter : PresenterBase<LoginView>() {
                         }
                         authWithLoginPassword(credentials.login, credentials.password, isFake)
                     } else {
-                        if (it.errorBody() != null) {
-                            view?.onError(it.errorBody().string())
+                        val errorBody = it.errorBody()
+                        if (errorBody != null) {
+                            view?.onError(errorBody.string())
                         } else {
                             view?.onNetworkError()
                         }
