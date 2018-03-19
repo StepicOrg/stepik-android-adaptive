@@ -70,25 +70,23 @@ class CardPresenter(val card: Card, private val listener: AdaptiveReactionListen
         }
     }
 
-    fun toggleBookmark() {
+    fun toggleBookmark() = isBookmarked?.let { bookmarked ->
         val bookmark = Bookmark(
                 QuestionsPack.values()[SharedPreferenceMgr.getInstance().questionsPackIndex].courseId,
                 card.step.id,
                 card.lesson.title,
                 String()
         )
-
-        when (isBookmarked) {
-            true -> {
+        compositeDisposable.add(Single.fromCallable {
+            if (bookmarked) {
                 DataBaseMgr.instance.removeBookmark(bookmark)
-                isBookmarked = false
-            }
-            false -> {
+            } else {
                 DataBaseMgr.instance.addBookmark(bookmark)
-                isBookmarked = true
             }
-        }
-        resolveBookmarkState()
+        }.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe({
+            isBookmarked = !bookmarked
+            resolveBookmarkState()
+        }, {}))
     }
 
     fun createReaction(reaction: RecommendationReaction.Reaction) {
