@@ -33,7 +33,7 @@ class DataBaseHelper(val context: Context) : SQLiteOpenHelper(context, DB_NAME, 
         db.execSQL("CREATE TABLE ${BookmarksDbStructure.TABLE_NAME} (" +
                 "${BookmarksDbStructure.Columns.STEP_ID} INTEGER, " +
                 "${BookmarksDbStructure.Columns.COURSE_ID} INTEGER, " +
-                "${BookmarksDbStructure.Columns.WORD} TEXT, " +
+                "${BookmarksDbStructure.Columns.TITLE} TEXT, " +
                 "${BookmarksDbStructure.Columns.DEFINITION} TEXT, " +
                 "${BookmarksDbStructure.Columns.DATE_ADDED} DATETIME DEFAULT CURRENT_TIMESTAMP," +
                 "PRIMARY KEY (${BookmarksDbStructure.Columns.STEP_ID}));")

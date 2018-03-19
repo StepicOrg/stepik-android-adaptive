@@ -7,7 +7,7 @@ object BookmarksDbStructure {
     object Columns {
         const val COURSE_ID = "course_id"
         const val STEP_ID = "step_id"
-        const val WORD = "word"
+        const val TITLE = "title"
         const val DEFINITION = "definition"
         const val DATE_ADDED = "date_added"
     }

@@ -1,8 +1,8 @@
 package org.stepik.android.adaptive.data.model
 
-class WordBookmark(
+class Bookmark(
         val courseId: Long,
         val stepId: Long,
-        val word: String,
+        val title: String,
         val definition: String
 )

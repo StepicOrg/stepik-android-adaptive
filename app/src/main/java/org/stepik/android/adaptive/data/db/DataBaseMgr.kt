@@ -8,7 +8,7 @@ import org.stepik.android.adaptive.data.db.dao.BookmarksDao
 import org.stepik.android.adaptive.data.db.operations.DatabaseOperationsImpl
 import org.stepik.android.adaptive.data.db.structure.ExpDbStructure
 import org.stepik.android.adaptive.data.model.WeekProgress
-import org.stepik.android.adaptive.data.model.WordBookmark
+import org.stepik.android.adaptive.data.model.Bookmark
 
 class DataBaseMgr private constructor(context: Context) {
     companion object {
@@ -123,12 +123,15 @@ class DataBaseMgr private constructor(context: Context) {
         return exp
     }
 
-    fun addBookmark(bookmark: WordBookmark) =
+    fun addBookmark(bookmark: Bookmark) =
             bookmarksDao.insertOrReplace(bookmark)
 
-    fun removeBookmark(bookmark: WordBookmark) =
+    fun removeBookmark(bookmark: Bookmark) =
             bookmarksDao.remove(bookmark)
 
     fun getBookmarks() =
             bookmarksDao.getAll()
+
+    fun isInBookmarks(bookmark: Bookmark) =
+            bookmarksDao.isInDb(bookmark)
 }
