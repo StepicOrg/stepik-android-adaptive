@@ -4,8 +4,11 @@ import android.content.ContentValues
 import android.content.Context
 import org.joda.time.DateTime
 import org.joda.time.Days
+import org.stepik.android.adaptive.data.db.dao.BookmarksDao
+import org.stepik.android.adaptive.data.db.operations.DatabaseOperationsImpl
 import org.stepik.android.adaptive.data.db.structure.ExpDbStructure
 import org.stepik.android.adaptive.data.model.WeekProgress
+import org.stepik.android.adaptive.data.model.WordBookmark
 
 class DataBaseMgr private constructor(context: Context) {
     companion object {
@@ -19,6 +22,8 @@ class DataBaseMgr private constructor(context: Context) {
     }
 
     private val db = DataBaseHelper(context).writableDatabase
+    private val databaseOperations = DatabaseOperationsImpl(db)
+    private val bookmarksDao = BookmarksDao(databaseOperations) // todo replace with DI
 
     fun onExpGained(exp: Long, submissionId: Long) {
         val cv = ContentValues()
@@ -117,4 +122,13 @@ class DataBaseMgr private constructor(context: Context) {
 
         return exp
     }
+
+    fun addBookmark(bookmark: WordBookmark) =
+            bookmarksDao.insertOrReplace(bookmark)
+
+    fun removeBookmark(bookmark: WordBookmark) =
+            bookmarksDao.remove(bookmark)
+
+    fun getBookmarks() =
+            bookmarksDao.getAll()
 }
