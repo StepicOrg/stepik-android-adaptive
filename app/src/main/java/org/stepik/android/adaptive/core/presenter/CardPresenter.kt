@@ -7,9 +7,9 @@ import org.stepik.android.adaptive.api.API
 import org.stepik.android.adaptive.api.SubmissionResponse
 import org.stepik.android.adaptive.core.presenter.contracts.CardView
 import org.stepik.android.adaptive.data.AnalyticMgr
-import org.stepik.android.adaptive.data.model.Card
-import org.stepik.android.adaptive.data.model.RecommendationReaction
-import org.stepik.android.adaptive.data.model.Submission
+import org.stepik.android.adaptive.data.SharedPreferenceMgr
+import org.stepik.android.adaptive.data.db.DataBaseMgr
+import org.stepik.android.adaptive.data.model.*
 import org.stepik.android.adaptive.ui.listener.AdaptiveReactionListener
 import org.stepik.android.adaptive.ui.listener.AnswerListener
 import org.stepik.android.adaptive.util.HtmlUtil
@@ -46,6 +46,20 @@ class CardPresenter(val card: Card, private val listener: AdaptiveReactionListen
     override fun destroy() {
         card.recycle()
         disposable?.dispose()
+    }
+
+    fun toggleBookmark() {
+        val bookmark = Bookmark(
+                QuestionsPack.values()[SharedPreferenceMgr.getInstance().questionsPackIndex].courseId,
+                card.step.id,
+                card.lesson.title,
+                ""
+        )
+        if (DataBaseMgr.instance.isInBookmarks(bookmark)) { //race condition?
+            DataBaseMgr.instance.removeBookmark(bookmark)
+        } else {
+            DataBaseMgr.instance.addBookmark(bookmark)
+        }
     }
 
     fun createReaction(reaction: RecommendationReaction.Reaction) {

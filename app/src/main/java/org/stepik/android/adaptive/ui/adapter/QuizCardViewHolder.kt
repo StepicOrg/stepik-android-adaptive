@@ -2,6 +2,7 @@ package org.stepik.android.adaptive.ui.adapter
 
 import android.support.annotation.StringRes
 import android.support.design.widget.Snackbar
+import android.util.Log
 import android.view.View
 import org.stepik.android.adaptive.core.presenter.CardPresenter
 import org.stepik.android.adaptive.core.presenter.contracts.CardView
@@ -39,6 +40,10 @@ class QuizCardViewHolder(val binding: QuizCardViewBinding) : ContainerView.ViewH
                 it.retrySubmission()
                 CardHelper.resetSupplementalActions(binding)
             }
+        }
+
+        binding.bookmark.setOnClickListener {
+            presenter?.toggleBookmark()
         }
         binding.container.setNestedScroll(binding.scroll)
     }
