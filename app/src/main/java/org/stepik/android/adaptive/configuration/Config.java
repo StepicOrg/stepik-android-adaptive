@@ -52,6 +52,8 @@ public final class Config {
 
         private String APP_METRICA_KEY = "APP_METRICA_KEY";
 
+        private boolean IS_BOOKMARKS_SUPPORTED = false;
+
         public String getHost() {
             return HOST;
         }
@@ -110,6 +112,10 @@ public final class Config {
 
         public String getAppMetricaKey() {
             return APP_METRICA_KEY;
+        }
+
+        public boolean isBookmarksSupported() {
+            return IS_BOOKMARKS_SUPPORTED;
         }
     }
 }
