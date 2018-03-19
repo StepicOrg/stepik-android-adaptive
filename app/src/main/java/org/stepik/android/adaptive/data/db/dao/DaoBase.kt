@@ -51,7 +51,7 @@ abstract class DaoBase<T>(private val databaseOperations: DatabaseOperations): I
 
     override fun remove(whereColumn: String, whereValue: String) =
             databaseOperations.executeDelete(getDbName(), "$whereColumn = ?", arrayOf(whereValue))
-    
+
     override fun removeAll() = databaseOperations.executeDelete(getDbName(), null, null)
 
     protected abstract fun getDbName(): String
