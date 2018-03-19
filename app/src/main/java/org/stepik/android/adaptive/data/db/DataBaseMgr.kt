@@ -6,6 +6,7 @@ import org.joda.time.DateTime
 import org.joda.time.Days
 import org.stepik.android.adaptive.data.db.dao.BookmarksDao
 import org.stepik.android.adaptive.data.db.operations.DatabaseOperationsImpl
+import org.stepik.android.adaptive.data.db.structure.BookmarksDbStructure
 import org.stepik.android.adaptive.data.db.structure.ExpDbStructure
 import org.stepik.android.adaptive.data.model.WeekProgress
 import org.stepik.android.adaptive.data.model.Bookmark
@@ -134,4 +135,7 @@ class DataBaseMgr private constructor(context: Context) {
 
     fun isInBookmarks(bookmark: Bookmark) =
             bookmarksDao.isInDb(bookmark)
+
+    fun isInBookmarks(stepId: Long) =
+            bookmarksDao.isInDb(BookmarksDbStructure.Columns.STEP_ID, stepId.toString())
 }

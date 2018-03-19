@@ -30,7 +30,7 @@ class CardPresenter(val card: Card, private val listener: AdaptiveReactionListen
 
     init {
         compositeDisposable.add(Single.fromCallable {
-           DataBaseMgr.instance.isInBookmarks(Bookmark(0, card.step.id, String(), String()))
+           DataBaseMgr.instance.isInBookmarks(card.step.id)
         }.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe({
             isBookmarked = it
             resolveBookmarkState()
