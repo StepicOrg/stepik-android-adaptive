@@ -4,6 +4,8 @@ interface IDao<T> {
     fun insertOrUpdate(persistentObject: T)
     fun insertOrReplace(persistentObject: T)
 
+    fun update(persistentObject: T)
+
     fun isInDb(persistentObject: T): Boolean
     fun isInDb(whereColumn: String, value: String): Boolean
 

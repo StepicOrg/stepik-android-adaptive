@@ -20,6 +20,15 @@ abstract class DaoBase<T>(private val databaseOperations: DatabaseOperations): I
         databaseOperations.executeReplace(getDbName(), getContentValues(persistentObject))
     }
 
+    override fun update(persistentObject: T) =
+        databaseOperations.executeUpdate(
+                getDbName(),
+                getContentValues(persistentObject),
+                "${getDefaultPrimaryColumn()} = ?",
+                arrayOf(getDefaultPrimaryValue(persistentObject))
+        )
+
+
     override fun isInDb(persistentObject: T) = isInDb(getDefaultPrimaryColumn(), getDefaultPrimaryValue(persistentObject))
 
     override fun isInDb(whereColumn: String, value: String) =
