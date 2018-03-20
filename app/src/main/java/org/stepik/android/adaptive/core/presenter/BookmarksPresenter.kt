@@ -6,6 +6,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import org.stepik.android.adaptive.core.presenter.contracts.BookmarksView
+import org.stepik.android.adaptive.data.AnalyticMgr
 import org.stepik.android.adaptive.data.db.DataBaseMgr
 import org.stepik.android.adaptive.data.model.Bookmark
 import org.stepik.android.adaptive.ui.adapter.BookmarksAdapter
@@ -34,6 +35,7 @@ class BookmarksPresenter: PresenterBase<BookmarksView>() {
     }
 
     private fun removeFromBookmarks(bookmark: Bookmark, pos: Int) {
+        AnalyticMgr.getInstance().logEvent(AnalyticMgr.EVENT_ON_BOOKMARK_REMOVED)
         compositeDisposable.add(
                 Completable.fromCallable {
                     DataBaseMgr.instance.removeBookmark(bookmark)

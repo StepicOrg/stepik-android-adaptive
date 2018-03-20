@@ -91,8 +91,10 @@ class CardPresenter(val card: Card, private val listener: AdaptiveReactionListen
 
         compositeDisposable.add(Single.fromCallable {
             if (bookmarked) {
+                AnalyticMgr.getInstance().logEvent(AnalyticMgr.EVENT_ON_BOOKMARK_REMOVED)
                 DataBaseMgr.instance.removeBookmark(bookmark)
             } else {
+                AnalyticMgr.getInstance().logEvent(AnalyticMgr.EVENT_ON_BOOKMARK_ADDED)
                 DataBaseMgr.instance.addBookmark(bookmark)
             }
             !bookmarked

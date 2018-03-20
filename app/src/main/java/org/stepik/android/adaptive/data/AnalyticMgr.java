@@ -70,6 +70,10 @@ public final class AnalyticMgr {
     public final static String EVENT_ON_QUESTIONS_PACK_PURCHASE_BUTTON_CLICKED = "questions_pack_purchase_clicked";
     public final static String PARAM_COURSE = "course";
 
+    public final static String EVENT_ON_BOOKMARK_CLICKED = "bookmark_clicked";
+    public final static String EVENT_ON_BOOKMARK_ADDED = "bookmark_added";
+    public final static String EVENT_ON_BOOKMARK_REMOVED = "bookmark_removed";
+
     private static AnalyticMgr instance;
 
     private final FirebaseAnalytics firebaseAnalytics;
