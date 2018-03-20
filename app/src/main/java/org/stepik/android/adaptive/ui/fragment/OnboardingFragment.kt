@@ -79,6 +79,8 @@ class OnboardingFragment : Fragment(), LoginView {
 
         updateToolbar(false)
 
+        binding.questionsPacks.visibility = View.GONE
+
         return binding.root
     }
 
@@ -146,10 +148,10 @@ class OnboardingFragment : Fragment(), LoginView {
     }
 
     private fun initOnboardingCards() {
-        adapter.add(createMockCard(-1, R.string.onboarding_card_title_1, R.string.onboarding_card_question_1))
-        adapter.add(createMockCard(-2, R.string.onboarding_card_title_2, R.string.onboarding_card_question_2))
-        adapter.add(createMockCard(-3, R.string.onboarding_card_title_3, R.string.onboarding_card_question_3))
-        adapter.add(createMockCard(-4, R.string.onboarding_card_title_4, R.string.onboarding_card_question_4))
+        adapter.add(createMockCard(Card.MOCK_LESSON_ID, R.string.onboarding_card_title_1, R.string.onboarding_card_question_1))
+        adapter.add(createMockCard(Card.MOCK_LESSON_ID, R.string.onboarding_card_title_2, R.string.onboarding_card_question_2))
+        adapter.add(createMockCard(Card.MOCK_LESSON_ID, R.string.onboarding_card_title_3, R.string.onboarding_card_question_3))
+        adapter.add(createMockCard(Card.MOCK_LESSON_ID, R.string.onboarding_card_title_4, R.string.onboarding_card_question_4))
     }
 
     private fun createMockCard(id: Long, @StringRes title_id: Int, @StringRes question_id: Int) : Card =

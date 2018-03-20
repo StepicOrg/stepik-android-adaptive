@@ -65,8 +65,10 @@ class CardPresenter(val card: Card, private val listener: AdaptiveReactionListen
         }, {}))
 
     private fun resolveBookmarkState() {
-        isBookmarked?.let { isBookmarked ->
-            view?.setBookmarkState(isBookmarked)
+        if (card.lessonId != Card.MOCK_LESSON_ID) { // do not show bookmark button for mock cards
+            isBookmarked?.let { isBookmarked ->
+                view?.setBookmarkState(isBookmarked)
+            }
         }
     }
 
