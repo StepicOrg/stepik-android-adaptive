@@ -22,6 +22,7 @@ ext.versions = [
         okhttp3              : '3.8.0',
 
         supportLibs          : '26.1.0',
+        constraintLayout     : '1.0.2',
         firebase             : '11.8.0',
         crashlytics          : '2.9.1@aar',
         appMetrica           : '2.80',
@@ -77,6 +78,7 @@ ext.libraries = [
         supportAppCompat     : "com.android.support:appcompat-v7:$versions.supportLibs",
         supportDesign        : "com.android.support:design:$versions.supportLibs",
         supportCardView      : "com.android.support:cardview-v7:$versions.supportLibs",
+        constraintLayout     : "com.android.support.constraint:constraint-layout:$versions.constraintLayout",
 
         googleauth           : "com.google.android.gms:play-services-auth:$versions.firebase",
         firebaseCore         : "com.google.firebase:firebase-core:$versions.firebase",
