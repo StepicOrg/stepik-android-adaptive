@@ -16,7 +16,7 @@ class BookmarksPresenter: PresenterBase<BookmarksView>() {
     }
 
     private var isLoading = true
-    private val adapter = BookmarksAdapter()
+    private val adapter = BookmarksAdapter(::removeFromBookmarks)
     private val compositeDisposable = CompositeDisposable()
 
     init {
@@ -33,7 +33,7 @@ class BookmarksPresenter: PresenterBase<BookmarksView>() {
         )
     }
 
-    fun removeFromBookmarks(bookmark: Bookmark, pos: Int) {
+    private fun removeFromBookmarks(bookmark: Bookmark, pos: Int) {
         compositeDisposable.add(
                 Completable.fromCallable {
                     DataBaseMgr.instance.removeBookmark(bookmark)
@@ -48,6 +48,7 @@ class BookmarksPresenter: PresenterBase<BookmarksView>() {
         if (isLoading) {
             view.onStartLoading()
         } else {
+            view.onStopLoading()
             resolveBookmarksCount()
         }
     }
