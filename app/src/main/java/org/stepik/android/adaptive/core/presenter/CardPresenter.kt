@@ -29,15 +29,6 @@ class CardPresenter(val card: Card, private val listener: AdaptiveReactionListen
 
     private var isBookmarked: Boolean? = null
 
-    init {
-        compositeDisposable.add(Single.fromCallable {
-           DataBaseMgr.instance.isInBookmarks(card.step.id)
-        }.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe({
-            isBookmarked = it
-            resolveBookmarkState()
-        }, {}))
-    }
-
     var isLoading = false
         private set
 
@@ -47,7 +38,7 @@ class CardPresenter(val card: Card, private val listener: AdaptiveReactionListen
         view.setQuestion(HtmlUtil.prepareCardHtml(card.step.block.text))
         view.setAnswerAdapter(card.adapter)
 
-        resolveBookmarkState()
+        fetchBookmarkState()
 
         if (isLoading) view.onSubmissionLoading()
         submission?.let { view.setSubmission(it, false) }
@@ -64,6 +55,14 @@ class CardPresenter(val card: Card, private val listener: AdaptiveReactionListen
         card.recycle()
         disposable?.dispose()
     }
+
+    private fun fetchBookmarkState() =
+        compositeDisposable.add(Single.fromCallable {
+            DataBaseMgr.instance.isInBookmarks(card.step.id)
+        }.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe({
+            isBookmarked = it
+            resolveBookmarkState()
+        }, {}))
 
     private fun resolveBookmarkState() {
         isBookmarked?.let { isBookmarked ->
