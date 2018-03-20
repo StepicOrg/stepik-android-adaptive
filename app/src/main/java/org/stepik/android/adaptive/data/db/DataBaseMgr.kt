@@ -133,7 +133,7 @@ class DataBaseMgr private constructor(context: Context) {
     fun getBookmarks() =
             bookmarksDao.getAll()
 
-    fun updateBookmarks(bookmark: Bookmark) =
+    fun updateBookmark(bookmark: Bookmark) =
             bookmarksDao.update(bookmark)
 
     fun isInBookmarks(bookmark: Bookmark) =

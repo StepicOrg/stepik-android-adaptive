@@ -1,5 +1,6 @@
 package org.stepik.android.adaptive.core.presenter
 
+import io.reactivex.Completable
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
@@ -70,23 +71,46 @@ class CardPresenter(val card: Card, private val listener: AdaptiveReactionListen
         }
     }
 
-    fun toggleBookmark() = isBookmarked?.let { bookmarked ->
-        val bookmark = Bookmark(
+    private fun createBookmark(): Bookmark {
+        val definition = if (card.isCorrect) {
+            card.adapter.lastSelectedAnswerText ?: String()
+        } else {
+            String()
+        }
+
+        return Bookmark(
                 QuestionsPack.values()[SharedPreferenceMgr.getInstance().questionsPackIndex].courseId,
                 card.step.id,
                 card.lesson.title,
-                String()
+                definition
         )
+    }
+
+    fun toggleBookmark() = isBookmarked?.let { bookmarked ->
+        isBookmarked = null
+        val bookmark = createBookmark()
+
         compositeDisposable.add(Single.fromCallable {
             if (bookmarked) {
                 DataBaseMgr.instance.removeBookmark(bookmark)
             } else {
                 DataBaseMgr.instance.addBookmark(bookmark)
             }
+            !bookmarked
         }.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe({
-            isBookmarked = !bookmarked
+            isBookmarked = it
             resolveBookmarkState()
         }, {}))
+    }
+
+    /**
+     * Add definition to bookmark if it was added before
+     */
+    private fun updateBookmark() {
+        val bookmark = createBookmark()
+        compositeDisposable.add(Completable.fromCallable {
+            DataBaseMgr.instance.updateBookmark(bookmark)
+        }.subscribeOn(Schedulers.io()).observeOn(Schedulers.io()).subscribe())
     }
 
     fun createReaction(reaction: RecommendationReaction.Reaction) {
@@ -148,6 +172,7 @@ class CardPresenter(val card: Card, private val listener: AdaptiveReactionListen
                     listener?.createReaction(card.lessonId, RecommendationReaction.Reaction.SOLVED)
                     answerListener?.onCorrectAnswer(it.id)
                     card.onCorrect()
+                    updateBookmark()
                 }
                 if (it.status == Submission.Status.WRONG) {
                     answerListener?.onWrongAnswer()
