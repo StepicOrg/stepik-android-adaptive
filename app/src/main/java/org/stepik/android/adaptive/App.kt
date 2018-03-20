@@ -1,11 +1,11 @@
 package org.stepik.android.adaptive
 
-import android.support.multidex.MultiDexApplication
+import android.app.Application
 import com.yandex.metrica.YandexMetrica
 import org.solovyev.android.checkout.Billing
 import org.stepik.android.adaptive.configuration.Config
 
-class App : MultiDexApplication() {
+class App : Application() {
     val billing by lazy {
         Billing(this, object : Billing.DefaultConfiguration() {
             override fun getPublicKey() = Config.getInstance().appPublicLicenseKey

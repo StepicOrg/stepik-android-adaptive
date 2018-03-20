@@ -147,7 +147,6 @@ dependencies {
         exclude group: 'com.android.support'
     }
 
-    implementation libraries.multidex
     kapt libraries.databinding
 
     compile fileTree(include: ['*.jar'], dir: 'libs')

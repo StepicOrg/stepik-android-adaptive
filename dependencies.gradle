@@ -42,7 +42,6 @@ ext.versions = [
         discreteScrollView   : '1.2.0',
         flexBox              : '0.3.0',
         databinding          : '2.3.3',
-        multidex             : '1.0.1',
 
         junit                : '4.12',
         robolectric          : '3.1.2',
@@ -104,7 +103,6 @@ ext.libraries = [
         discreteScrollView   : "com.yarolegovich:discrete-scrollview:$versions.discreteScrollView",
         flexBox              : "com.google.android:flexbox:$versions.flexBox",
         databinding          : "com.android.databinding:compiler:$versions.databinding",
-        multidex             : "com.android.support:multidex:$versions.multidex",
 
         // Test dependencies
         junit                : "junit:junit:$versions.junit",
