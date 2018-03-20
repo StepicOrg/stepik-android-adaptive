@@ -131,7 +131,7 @@ class DataBaseMgr private constructor(context: Context) {
             bookmarksDao.remove(bookmark)
 
     fun getBookmarks() =
-            bookmarksDao.getAll()
+            bookmarksDao.getAllOrdered(BookmarksDbStructure.Columns.DATE_ADDED, "DESC")
 
     fun updateBookmark(bookmark: Bookmark) =
             bookmarksDao.update(bookmark)

@@ -55,6 +55,9 @@ abstract class DaoBase<T>(private val databaseOperations: DatabaseOperations): I
                 return@executeQuery data
             }
 
+    override fun getAllOrdered(orderBy: String, orderDirection: String) =
+            getAll("SELECT * FROM ${getDbName()} ORDER BY $orderBy $orderDirection", null)
+
     override fun get(whereColumnName: String, whereValue: String): T? =
             getAll("SELECT * FROM ${getDbName()} WHERE $whereColumnName = ? COUNT 1", arrayOf(whereValue)).firstOrNull()
 
