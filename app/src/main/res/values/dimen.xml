@@ -23,4 +23,6 @@
 
     <dimen name="action_bar_icon_padding">16dp</dimen>
     <dimen name="action_bar_icon_padding_small">10dp</dimen>
+
+    <dimen name="quiz_card_header_size">48dp</dimen>
 </resources>

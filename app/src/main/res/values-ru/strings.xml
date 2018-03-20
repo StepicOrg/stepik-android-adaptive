@@ -147,4 +147,7 @@
     <string name="questions_tooltip">Попробуйте новые наборы вопросов</string>
     <string name="questions_dialog">У вас отлично получается!\nВозможно настало время попробовать что-то посложнее?</string>
     <string name="questions_dialog_action">посмотреть</string>
+
+    <string name="bookmarks_empty">Закладок нет</string>
+    <string name="bookmarks">Закладки</string>
 </resources>

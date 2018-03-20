@@ -18,6 +18,7 @@ import org.stepik.android.adaptive.R
 import org.stepik.android.adaptive.core.ScreenManager
 import org.stepik.android.adaptive.ui.DefaultWebViewClient
 import org.stepik.android.adaptive.ui.view.container.ContainerView
+import org.stepik.android.adaptive.util.changeVisibillity
 
 class QuizCardViewHolder(val binding: QuizCardViewBinding) : ContainerView.ViewHolder(binding.root), CardView {
     init {
@@ -39,6 +40,10 @@ class QuizCardViewHolder(val binding: QuizCardViewBinding) : ContainerView.ViewH
                 it.retrySubmission()
                 CardHelper.resetSupplementalActions(binding)
             }
+        }
+
+        binding.bookmark.setOnClickListener {
+            presenter?.toggleBookmark()
         }
         binding.container.setNestedScroll(binding.scroll)
     }
@@ -82,6 +87,15 @@ class QuizCardViewHolder(val binding: QuizCardViewBinding) : ContainerView.ViewH
     private fun onCardLoaded() {
         binding.curtain.visibility = View.GONE
         if (presenter?.isLoading != true) binding.answersProgress.visibility = View.GONE
+    }
+
+    override fun setBookmarkState(isBookmarked: Boolean) {
+        binding.bookmark.changeVisibillity(true)
+        binding.bookmark.setImageResource(if (isBookmarked) {
+            R.drawable.ic_bookmark_filled
+        } else {
+            R.drawable.ic_bookmark
+        })
     }
 
     override fun setTitle(title: String) {

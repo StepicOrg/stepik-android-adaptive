@@ -1,15 +1,18 @@
 package org.stepik.android.adaptive.core.presenter
 
+import io.reactivex.Completable
+import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import org.stepik.android.adaptive.api.API
 import org.stepik.android.adaptive.api.SubmissionResponse
 import org.stepik.android.adaptive.core.presenter.contracts.CardView
 import org.stepik.android.adaptive.data.AnalyticMgr
-import org.stepik.android.adaptive.data.model.Card
-import org.stepik.android.adaptive.data.model.RecommendationReaction
-import org.stepik.android.adaptive.data.model.Submission
+import org.stepik.android.adaptive.data.SharedPreferenceMgr
+import org.stepik.android.adaptive.data.db.DataBaseMgr
+import org.stepik.android.adaptive.data.model.*
 import org.stepik.android.adaptive.ui.listener.AdaptiveReactionListener
 import org.stepik.android.adaptive.ui.listener.AnswerListener
 import org.stepik.android.adaptive.util.HtmlUtil
@@ -22,6 +25,9 @@ class CardPresenter(val card: Card, private val listener: AdaptiveReactionListen
     private var error: Throwable? = null
 
     private var disposable: Disposable? = null
+    private val compositeDisposable = CompositeDisposable()
+
+    private var isBookmarked: Boolean? = null
 
     var isLoading = false
         private set
@@ -32,9 +38,11 @@ class CardPresenter(val card: Card, private val listener: AdaptiveReactionListen
         view.setQuestion(HtmlUtil.prepareCardHtml(card.step.block.text))
         view.setAnswerAdapter(card.adapter)
 
+        fetchBookmarkState()
+
         if (isLoading) view.onSubmissionLoading()
         submission?.let { view.setSubmission(it, false) }
-        error?.let { onError(it) }
+        error?.let(::onError)
     }
 
     fun detachView() {
@@ -46,6 +54,66 @@ class CardPresenter(val card: Card, private val listener: AdaptiveReactionListen
     override fun destroy() {
         card.recycle()
         disposable?.dispose()
+    }
+
+    private fun fetchBookmarkState() =
+        compositeDisposable.add(Single.fromCallable {
+            DataBaseMgr.instance.isInBookmarks(card.step.id)
+        }.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe({
+            isBookmarked = it
+            resolveBookmarkState()
+        }, {}))
+
+    private fun resolveBookmarkState() {
+        if (card.lessonId != Card.MOCK_LESSON_ID) { // do not show bookmark button for mock cards
+            isBookmarked?.let { isBookmarked ->
+                view?.setBookmarkState(isBookmarked)
+            }
+        }
+    }
+
+    private fun createBookmark(): Bookmark {
+        val definition = if (card.isCorrect) {
+            card.adapter.lastSelectedAnswerText ?: String()
+        } else {
+            String()
+        }
+
+        return Bookmark(
+                QuestionsPack.values()[SharedPreferenceMgr.getInstance().questionsPackIndex].courseId,
+                card.step.id,
+                card.lesson.title,
+                definition
+        )
+    }
+
+    fun toggleBookmark() = isBookmarked?.let { bookmarked ->
+        isBookmarked = null
+        val bookmark = createBookmark()
+
+        compositeDisposable.add(Single.fromCallable {
+            if (bookmarked) {
+                AnalyticMgr.getInstance().logEvent(AnalyticMgr.EVENT_ON_BOOKMARK_REMOVED)
+                DataBaseMgr.instance.removeBookmark(bookmark)
+            } else {
+                AnalyticMgr.getInstance().logEvent(AnalyticMgr.EVENT_ON_BOOKMARK_ADDED)
+                DataBaseMgr.instance.addBookmark(bookmark)
+            }
+            !bookmarked
+        }.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe({
+            isBookmarked = it
+            resolveBookmarkState()
+        }, {}))
+    }
+
+    /**
+     * Add definition to bookmark if it was added before
+     */
+    private fun updateBookmark() {
+        val bookmark = createBookmark()
+        compositeDisposable.add(Completable.fromCallable {
+            DataBaseMgr.instance.updateBookmark(bookmark)
+        }.subscribeOn(Schedulers.io()).observeOn(Schedulers.io()).subscribe())
     }
 
     fun createReaction(reaction: RecommendationReaction.Reaction) {
@@ -107,6 +175,7 @@ class CardPresenter(val card: Card, private val listener: AdaptiveReactionListen
                     listener?.createReaction(card.lessonId, RecommendationReaction.Reaction.SOLVED)
                     answerListener?.onCorrectAnswer(it.id)
                     card.onCorrect()
+                    updateBookmark()
                 }
                 if (it.status == Submission.Status.WRONG) {
                     answerListener?.onWrongAnswer()
