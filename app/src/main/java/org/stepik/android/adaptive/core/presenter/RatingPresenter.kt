@@ -46,12 +46,13 @@ class RatingPresenter : PresenterBase<RatingView>() {
     }
 
     private fun initRatingPeriods() {
+        val first = BiFunction<Throwable, Int, Throwable> { a, _ -> a }
         RATING_PERIODS.forEachIndexed { pos, period ->
             compositeDisposable.add(API.getInstance().getRating(ITEMS_PER_PAGE, period)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .doOnError(this::onError)
-                    .retryWhen { x -> x.zipWith(retrySubject, BiFunction<Throwable, Int, Throwable> { a, _ -> a }) }
+                    .retryWhen { it.zipWith(retrySubject, first) }
                     .map { it.users }
                     .subscribe({
                         adapters[pos].set(prepareRatingItems(it))
