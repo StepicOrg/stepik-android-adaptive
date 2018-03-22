@@ -154,4 +154,9 @@
     <string name="questions_difficulty_mixed">mixed</string>
 
     <string name="questions_tooltip">Check out new questions packs</string>
+    <string name="questions_dialog">You doing great!\nMaybe it\'s time to try something more challenging?</string>
+    <string name="questions_dialog_action">take a look</string>
+
+    <string name="bookmarks_empty">No bookmarks</string>
+    <string name="bookmarks">Bookmarks</string>
 </resources>

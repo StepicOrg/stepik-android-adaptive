@@ -5,7 +5,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.webkit.WebView
-import org.stepik.android.adaptive.Config
+import org.stepik.android.adaptive.configuration.Config
 import org.stepik.android.adaptive.R
 import org.stepik.android.adaptive.ui.DefaultWebViewClient
 

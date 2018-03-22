@@ -3,4 +3,7 @@
     <dimen name="vertical_card_margin">32dp</dimen>
     <dimen name="horizontal_card_margin">32dp</dimen>
     <dimen name="button_position">-56dp</dimen>
+
+    <dimen name="action_bar_icon_padding">12dp</dimen>
+    <dimen name="action_bar_icon_padding_small">8dp</dimen>
 </resources>

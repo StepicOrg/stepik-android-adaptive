@@ -4,6 +4,8 @@ import android.app.Activity
 import android.content.Intent
 import android.content.res.Resources
 import android.os.Bundle
+import android.support.annotation.DimenRes
+import android.support.annotation.DrawableRes
 import android.support.v4.content.ContextCompat
 import android.text.method.LinkMovementMethod
 import android.view.LayoutInflater
@@ -12,11 +14,13 @@ import android.view.ViewGroup
 import android.widget.PopupWindow
 import org.stepik.android.adaptive.R
 import org.stepik.android.adaptive.Util
+import org.stepik.android.adaptive.configuration.RemoteConfig
 import org.stepik.android.adaptive.core.ScreenManager
 import org.stepik.android.adaptive.core.presenter.BasePresenterFragment
 import org.stepik.android.adaptive.core.presenter.RecommendationsPresenter
 import org.stepik.android.adaptive.core.presenter.contracts.RecommendationsView
 import org.stepik.android.adaptive.data.AnalyticMgr
+import org.stepik.android.adaptive.data.SharedPreferenceMgr
 import org.stepik.android.adaptive.data.model.QuestionsPack
 import org.stepik.android.adaptive.databinding.FragmentRecommendationsBinding
 import org.stepik.android.adaptive.ui.activity.PaidInventoryItemsActivity
@@ -24,6 +28,7 @@ import org.stepik.android.adaptive.ui.adapter.QuizCardsAdapter
 import org.stepik.android.adaptive.ui.animation.CardsFragmentAnimations
 import org.stepik.android.adaptive.ui.dialog.DailyRewardDialog
 import org.stepik.android.adaptive.ui.dialog.ExpLevelDialog
+import org.stepik.android.adaptive.ui.dialog.QuestionsPacksDialog
 import org.stepik.android.adaptive.ui.dialog.RateAppDialog
 import org.stepik.android.adaptive.ui.helper.dpToPx
 import org.stepik.android.adaptive.util.InventoryUtil
@@ -40,6 +45,7 @@ class RecommendationsFragment : BasePresenterFragment<RecommendationsPresenter, 
 //        private const val STREAK_RESTORE_DIALOG_TAG = "streak_restore_dialog"
         private const val RATE_APP_DIALOG_TAG = "rate_app_dialog"
         private const val DAILY_REWARD_DIALOG_TAG = "daily_reward_dialog"
+        private const val QUESTIONS_PACKS_DIALOG_TAG = "questions_packs_dialog"
 
         const val INVENTORY_DIALOG_TAG = "inventory_dialog"
 
@@ -54,6 +60,8 @@ class RecommendationsFragment : BasePresenterFragment<RecommendationsPresenter, 
     private var streakToRestore: Long? = null
 
     private var questionsPacksTooltip: PopupWindow? = null
+
+    private val isQuestionsPackSupported = QuestionsPack.values().size > 1
 
     private lateinit var binding: FragmentRecommendationsBinding
 
@@ -74,7 +82,7 @@ class RecommendationsFragment : BasePresenterFragment<RecommendationsPresenter, 
             }
         }
 
-        binding.questionsPacks.changeVisibillity(QuestionsPack.values().size > 1)
+        binding.questionsPacks.changeVisibillity(isQuestionsPackSupported)
         binding.questionsPacks.setOnClickListener {
             questionsPacksTooltip?.dismiss()
             ScreenManager.showQuestionsPacksScreen(context)
@@ -82,6 +90,28 @@ class RecommendationsFragment : BasePresenterFragment<RecommendationsPresenter, 
 
         return binding.root
     }
+
+    private fun resolveQuestionsPackIcon() {
+        @DimenRes val paddingRes: Int
+        @DrawableRes val iconRes: Int
+        if (RemoteConfig.getFirebaseConfig().getBoolean(RemoteConfig.QUESTIONS_PACKS_ICON_EXPERIMENT)) {
+            iconRes = QuestionsPack.values()[SharedPreferenceMgr.getInstance().questionsPackIndex].icon // small icon of current pack
+            paddingRes = R.dimen.action_bar_icon_padding_small
+
+            val badgeCount = getQuestionsPacksBadgesCount()
+            binding.questionsPacksBadge.text = badgeCount.toString()
+            binding.questionsPacksBadge.changeVisibillity(badgeCount > 0 && isQuestionsPackSupported)
+        } else {
+            iconRes = R.drawable.ic_packs
+            paddingRes = R.dimen.action_bar_icon_padding
+        }
+        val padding = resources.getDimensionPixelSize(paddingRes)
+        binding.questionsPacks.setImageResource(iconRes)
+        binding.questionsPacks.setPadding(padding, padding, padding, padding)
+    }
+
+    private fun getQuestionsPacksBadgesCount() =
+            QuestionsPack.values().count { !SharedPreferenceMgr.getInstance().isQuestionsPackViewed(it) }
 
     override fun onAdapter(cardsAdapter: QuizCardsAdapter) =
         binding.cardsContainer.setAdapter(cardsAdapter)
@@ -195,10 +225,14 @@ class RecommendationsFragment : BasePresenterFragment<RecommendationsPresenter, 
     }
 
     override fun showQuestionsPacksTooltip() {
-        if (binding.questionsPacks.visibility == View.VISIBLE) {
-            questionsPacksTooltip = PopupHelper.showPopupAnchoredToView(
-                    context, binding.questionsPacks, getString(R.string.questions_tooltip),
-                    TOOLBAR_TOOLTIPS_OFF_X_PX, TOOLBAR_TOOLTIPS_OFF_Y_PX)
+        if (isQuestionsPackSupported) {
+            if (RemoteConfig.getFirebaseConfig().getBoolean(RemoteConfig.QUESTIONS_PACKS_DIALOG_EXPERIMENT)) {
+                QuestionsPacksDialog.newInstance().show(childFragmentManager, QUESTIONS_PACKS_DIALOG_TAG)
+            } else {
+                questionsPacksTooltip = PopupHelper.showPopupAnchoredToView(
+                        context, binding.questionsPacks, getString(R.string.questions_tooltip),
+                        TOOLBAR_TOOLTIPS_OFF_X_PX, TOOLBAR_TOOLTIPS_OFF_Y_PX)
+            }
         }
     }
 
@@ -231,6 +265,11 @@ class RecommendationsFragment : BasePresenterFragment<RecommendationsPresenter, 
             outState?.putLong(STREAK_RESTORE_KEY, it)
         }
         super.onSaveInstanceState(outState)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        resolveQuestionsPackIcon() // here in order to sync changes
     }
 
     override fun onStart() {

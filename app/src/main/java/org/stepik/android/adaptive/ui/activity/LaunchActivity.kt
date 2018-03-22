@@ -20,7 +20,7 @@ import com.vk.sdk.VKCallback
 import com.vk.sdk.VKSdk
 import com.vk.sdk.api.VKError
 import com.vk.sdk.api.model.VKScopes
-import org.stepik.android.adaptive.Config
+import org.stepik.android.adaptive.configuration.Config
 import org.stepik.android.adaptive.R
 import org.stepik.android.adaptive.Util
 import org.stepik.android.adaptive.api.API

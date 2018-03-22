@@ -8,7 +8,7 @@ import android.webkit.CookieManager;
 import org.jetbrains.annotations.Nullable;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
-import org.stepik.android.adaptive.Config;
+import org.stepik.android.adaptive.configuration.Config;
 import org.stepik.android.adaptive.Util;
 import org.stepik.android.adaptive.api.oauth.EmptyAuthService;
 import org.stepik.android.adaptive.api.oauth.OAuthService;

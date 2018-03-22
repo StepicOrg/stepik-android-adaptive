@@ -21,26 +21,44 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
-                <LinearLayout
+                <RelativeLayout
                     android:id="@+id/title_container"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentTop="true"
-                    android:orientation="vertical">
+                    android:layout_alignParentTop="true">
+
+                    <ImageView
+                        android:id="@+id/bookmark"
+                        android:layout_width="@dimen/quiz_card_header_size"
+                        android:layout_height="@dimen/quiz_card_header_size"
+                        android:padding="12dp"
+                        android:layout_alignParentEnd="true"
+                        app:srcCompat="@drawable/ic_bookmark"
+                        android:visibility="gone"
+                        android:background="?attr/selectableItemBackgroundBorderless" />
+
                     <TextView
                         android:id="@+id/title"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="@dimen/quiz_card_header_size"
                         android:textColor="@color/colorDarkGrayText"
+                        android:gravity="center|start"
                         android:textStyle="bold"
                         android:textSize="18sp"
                         android:paddingTop="12dp"
                         android:paddingBottom="12dp"
                         android:paddingLeft="16dp"
                         android:paddingRight="16dp"
-                        android:gravity="start"/>
-                    <include layout="@layout/stroke" />
-                </LinearLayout>
+                        android:ellipsize="end"
+                        android:maxLines="1"
+                        android:layout_alignParentStart="true"
+                        android:layout_toStartOf="@id/bookmark" />
+
+                    <include layout="@layout/stroke"
+                        android:layout_below="@id/title"
+                        android:layout_height="1dp"
+                        android:layout_width="match_parent" />
+                </RelativeLayout>
 
                 <RelativeLayout
                     android:layout_width="match_parent"

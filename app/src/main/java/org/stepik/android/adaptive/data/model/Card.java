@@ -19,6 +19,8 @@ import io.reactivex.schedulers.Schedulers;
  */
 
 public final class Card extends Observable<Card> {
+    public static final long MOCK_LESSON_ID = -1;
+
     private final long lessonId;
 
     private Lesson lesson;

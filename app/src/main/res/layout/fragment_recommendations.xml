@@ -38,13 +38,25 @@
                         <ImageView
                             android:id="@+id/questionsPacks"
                             app:srcCompat="@drawable/ic_packs"
-                            android:layout_width="32dp"
-                            android:layout_height="32dp"
-                            android:padding="4dp"
-                            android:layout_marginStart="12dp"
-                            android:layout_marginEnd="-4dp"
-                            android:visibility="gone"
+                            android:layout_width="?attr/actionBarSize"
+                            android:layout_height="?attr/actionBarSize"
+                            android:padding="@dimen/action_bar_icon_padding"
+                            android:layout_marginEnd="-16dp"
                             android:background="?attr/selectableItemBackgroundBorderless" />
+
+                        <TextView
+                            android:id="@+id/questionsPacksBadge"
+                            android:background="@drawable/badge_counter_bg"
+                            android:layout_gravity="bottom"
+                            android:layout_marginStart="-6dp"
+                            android:layout_marginBottom="2dp"
+                            android:layout_marginEnd="-12dp"
+                            android:visibility="gone"
+                            android:gravity="center"
+                            android:textSize="10sp"
+                            android:textColor="@android:color/white"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" />
 
                         <LinearLayout
                             android:layout_width="wrap_content"

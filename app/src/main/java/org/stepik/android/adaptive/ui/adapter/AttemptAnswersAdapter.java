@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.stepik.android.adaptive.R;
 import org.stepik.android.adaptive.data.model.Attempt;
 import org.stepik.android.adaptive.data.model.Reply;
@@ -81,6 +82,15 @@ public class AttemptAnswersAdapter extends ContainerAdapter<AttemptAnswersAdapte
 
     public Submission getSubmission() {
         return new Submission(new Reply(selection), attempt.getId());
+    }
+
+    @Nullable
+    public String getLastSelectedAnswerText() {
+        if (lastSelection == -1) {
+            return null;
+        } else {
+            return attempt.getDataset().getOptions().get(lastSelection);
+        }
     }
 
     @NotNull

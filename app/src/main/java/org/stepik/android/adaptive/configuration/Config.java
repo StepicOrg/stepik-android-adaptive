@@ -1,5 +1,4 @@
-package org.stepik.android.adaptive;
-
+package org.stepik.android.adaptive.configuration;
 
 import android.content.Context;
 
@@ -50,6 +49,10 @@ public final class Config {
         private String CODE_QUERY_PARAMETER = "CODE_QUERY_PARAMETER";
 
         private String APP_PUBLIC_LICENSE_KEY = "APP_PUBLIC_LICENSE_KEY";
+
+        private String APP_METRICA_KEY = "APP_METRICA_KEY";
+
+        private boolean IS_BOOKMARKS_SUPPORTED = false;
 
         public String getHost() {
             return HOST;
@@ -105,6 +108,14 @@ public final class Config {
 
         public String getAppPublicLicenseKey() {
             return APP_PUBLIC_LICENSE_KEY;
+        }
+
+        public String getAppMetricaKey() {
+            return APP_METRICA_KEY;
+        }
+
+        public boolean isBookmarksSupported() {
+            return IS_BOOKMARKS_SUPPORTED;
         }
     }
 }

@@ -9,6 +9,7 @@ interface CardView {
     fun onSubmissionRequestError()
     fun onSubmissionLoading()
 
+    fun setBookmarkState(isBookmarked: Boolean)
     fun setTitle(title: String)
     fun setQuestion(html: String)
     fun setAnswerAdapter(adapter: AttemptAnswersAdapter)
