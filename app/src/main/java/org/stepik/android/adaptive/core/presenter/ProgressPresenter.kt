@@ -2,7 +2,6 @@ package org.stepik.android.adaptive.core.presenter
 
 import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineDataSet
-import io.reactivex.Observable
 import io.reactivex.Scheduler
 import io.reactivex.disposables.CompositeDisposable
 import org.stepik.android.adaptive.core.presenter.contracts.ProgressView
@@ -33,14 +32,14 @@ constructor(
         adapter.setHeaderLevelAndTotal(level, total)
 
         composite.add(
-            Observable.fromCallable(DataBaseMgr.instance::getWeeks)
+            DataBaseMgr.instance.getWeeks()
                     .subscribeOn(backgroundScheduler)
                     .observeOn(mainScheduler)
                     .subscribe(adapter::addAll, {})
         )
 
         composite.add(
-                Observable.fromCallable(DataBaseMgr.instance::getExpForLast7Days)
+                DataBaseMgr.instance.getExpForLast7Days()
                         .map {
                             Pair(LineDataSet(it.mapIndexed { index, l -> Entry(index.toFloat(), l.toFloat()) }, ""), it.sum())
                         }

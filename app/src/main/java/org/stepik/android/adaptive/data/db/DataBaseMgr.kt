@@ -2,6 +2,7 @@ package org.stepik.android.adaptive.data.db
 
 import android.content.ContentValues
 import android.content.Context
+import io.reactivex.Single
 import org.joda.time.DateTime
 import org.joda.time.Days
 import org.stepik.android.adaptive.data.db.dao.BookmarksDao
@@ -35,7 +36,7 @@ class DataBaseMgr private constructor(context: Context) {
         db.insert(ExpDbStructure.TABLE_NAME, null, cv)
     }
 
-    fun getExpForLast7Days(): Array<Long> {
+    fun getExpForLast7Days(): Single<Array<Long>> = Single.create { emitter ->
         val res = Array<Long>(7) { 0 }
 
         val FIELD_DAY = "day"
@@ -68,10 +69,10 @@ class DataBaseMgr private constructor(context: Context) {
             }
         }
 
-        return res
+        emitter.onSuccess(res)
     }
 
-    fun getWeeks() : List<WeekProgress> {
+    fun getWeeks(): Single<List<WeekProgress>> = Single.create { emitter ->
         val res = ArrayList<WeekProgress>()
 
         val FIELD_WEEK = "week"
@@ -103,7 +104,7 @@ class DataBaseMgr private constructor(context: Context) {
             }
         }
 
-        return res
+        emitter.onSuccess(res)
     }
 
     fun getExp(): Long {

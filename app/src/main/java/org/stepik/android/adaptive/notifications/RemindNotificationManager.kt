@@ -31,7 +31,7 @@ object RemindNotificationManager {
 
     fun showEveryDayNotification() {
         val title = context.getString(R.string.local_push_title)
-        Observable.fromCallable(DataBaseMgr.instance::getExpForLast7Days)
+        DataBaseMgr.instance.getExpForLast7Days()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({
