@@ -4,8 +4,18 @@ import android.app.Application
 import com.yandex.metrica.YandexMetrica
 import org.solovyev.android.checkout.Billing
 import org.stepik.android.adaptive.configuration.Config
+import org.stepik.android.adaptive.di.AppCoreComponent
+import org.stepik.android.adaptive.di.DaggerAppCoreComponent
 
 class App : Application() {
+    companion object {
+        private lateinit var app: App
+
+        fun component() = app.component
+    }
+
+    private lateinit var component: AppCoreComponent
+
     val billing by lazy {
         Billing(this, object : Billing.DefaultConfiguration() {
             override fun getPublicKey() = Config.getInstance().appPublicLicenseKey
@@ -14,6 +24,13 @@ class App : Application() {
 
     override fun onCreate() {
         super.onCreate()
+        app = this
+
+        component = DaggerAppCoreComponent
+                .builder()
+                .context(applicationContext)
+                .build()
+
         Util.initMgr(applicationContext)
 
         YandexMetrica.activate(applicationContext, Config.getInstance().appMetricaKey)

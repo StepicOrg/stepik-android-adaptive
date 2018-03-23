@@ -12,6 +12,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.PopupWindow
+import com.google.firebase.remoteconfig.FirebaseRemoteConfig
+import org.stepik.android.adaptive.App
 import org.stepik.android.adaptive.R
 import org.stepik.android.adaptive.Util
 import org.stepik.android.adaptive.configuration.RemoteConfig
@@ -34,6 +36,7 @@ import org.stepik.android.adaptive.ui.helper.dpToPx
 import org.stepik.android.adaptive.util.InventoryUtil
 import org.stepik.android.adaptive.util.PopupHelper
 import org.stepik.android.adaptive.util.changeVisibillity
+import javax.inject.Inject
 
 class RecommendationsFragment : BasePresenterFragment<RecommendationsPresenter, RecommendationsView>(), RecommendationsView {
     companion object {
@@ -65,6 +68,14 @@ class RecommendationsFragment : BasePresenterFragment<RecommendationsPresenter, 
 
     private lateinit var binding: FragmentRecommendationsBinding
 
+    @Inject
+    lateinit var remoteConfig: FirebaseRemoteConfig
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        App.component().inject(this)
+    }
+
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         binding = FragmentRecommendationsBinding.inflate(inflater, container, false)
 
@@ -94,7 +105,7 @@ class RecommendationsFragment : BasePresenterFragment<RecommendationsPresenter, 
     private fun resolveQuestionsPackIcon() {
         @DimenRes val paddingRes: Int
         @DrawableRes val iconRes: Int
-        if (RemoteConfig.getFirebaseConfig().getBoolean(RemoteConfig.QUESTIONS_PACKS_ICON_EXPERIMENT)) {
+        if (remoteConfig.getBoolean(RemoteConfig.QUESTIONS_PACKS_ICON_EXPERIMENT)) {
             iconRes = QuestionsPack.values()[SharedPreferenceMgr.getInstance().questionsPackIndex].icon // small icon of current pack
             paddingRes = R.dimen.action_bar_icon_padding_small
 
@@ -226,7 +237,7 @@ class RecommendationsFragment : BasePresenterFragment<RecommendationsPresenter, 
 
     override fun showQuestionsPacksTooltip() {
         if (isQuestionsPackSupported) {
-            if (RemoteConfig.getFirebaseConfig().getBoolean(RemoteConfig.QUESTIONS_PACKS_DIALOG_EXPERIMENT)) {
+            if (remoteConfig.getBoolean(RemoteConfig.QUESTIONS_PACKS_DIALOG_EXPERIMENT)) {
                 QuestionsPacksDialog.newInstance().show(childFragmentManager, QUESTIONS_PACKS_DIALOG_TAG)
             } else {
                 questionsPacksTooltip = PopupHelper.showPopupAnchoredToView(
