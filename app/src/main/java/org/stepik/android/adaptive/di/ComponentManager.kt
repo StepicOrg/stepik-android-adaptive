@@ -8,4 +8,8 @@ class ComponentManager(
         appCoreComponent.statsComponentBuilder().build()
     }
 
+    val studyComponent by lazy {
+        appCoreComponent.studyComponentBuilder().build()
+    }
+
 }
