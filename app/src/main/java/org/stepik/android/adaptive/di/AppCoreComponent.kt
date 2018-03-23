@@ -3,6 +3,7 @@ package org.stepik.android.adaptive.di
 import android.content.Context
 import dagger.BindsInstance
 import dagger.Component
+import org.stepik.android.adaptive.di.stats.StatsComponent
 import org.stepik.android.adaptive.ui.dialog.QuestionsPacksDialog
 import org.stepik.android.adaptive.ui.fragment.RecommendationsFragment
 
@@ -17,6 +18,8 @@ interface AppCoreComponent {
         @BindsInstance
         fun context(context: Context): Builder
     }
+
+    fun statsComponentBuilder(): StatsComponent.Builder
 
     fun inject(fragment: RecommendationsFragment)
 
