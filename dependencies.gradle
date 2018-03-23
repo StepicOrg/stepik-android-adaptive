@@ -13,6 +13,8 @@ ext.versions = [
         fabric               : '1.25.1',
         retrolambda          : '3.7.0',
 
+        dagger               : '2.15',
+
         rxJava2              : '2.1.7',
         rxAndroid            : '2.0.1',
 
@@ -62,6 +64,9 @@ ext.gradlePlugins = [
 
 ext.libraries = [
         kotlinStd            : "org.jetbrains.kotlin:kotlin-stdlib:$versions.kotlin",
+
+        dagger               : "com.google.dagger:dagger:$versions.dagger",
+        daggerCompiler       : "com.google.dagger:dagger-compiler:$versions.dagger",
 
         rxJava2              : "io.reactivex.rxjava2:rxjava:$versions.rxJava2",
         rxAndroid            : "io.reactivex.rxjava2:rxandroid:$versions.rxAndroid",
