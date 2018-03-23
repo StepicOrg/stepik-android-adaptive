@@ -3,18 +3,24 @@ package org.stepik.android.adaptive.core.presenter
 import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineDataSet
 import io.reactivex.Observable
-import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.Scheduler
 import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.schedulers.Schedulers
 import org.stepik.android.adaptive.core.presenter.contracts.ProgressView
 import org.stepik.android.adaptive.data.db.DataBaseMgr
+import org.stepik.android.adaptive.di.qualifiers.BackgroundScheduler
+import org.stepik.android.adaptive.di.qualifiers.MainScheduler
 import org.stepik.android.adaptive.ui.adapter.WeeksAdapter
 import org.stepik.android.adaptive.util.ExpUtil
+import javax.inject.Inject
 
-class ProgressPresenter : PresenterBase<ProgressView>() {
-    companion object : PresenterFactory<ProgressPresenter> {
-        override fun create() = ProgressPresenter()
-    }
+class ProgressPresenter
+@Inject
+constructor(
+        @BackgroundScheduler
+        private val backgroundScheduler: Scheduler,
+        @MainScheduler
+        private val mainScheduler: Scheduler
+) : PresenterBase<ProgressView>() {
 
     private val total by lazy { ExpUtil.getExp() }
     private val level by lazy { ExpUtil.getCurrentLevel(total) }
@@ -28,8 +34,8 @@ class ProgressPresenter : PresenterBase<ProgressView>() {
 
         composite.add(
             Observable.fromCallable(DataBaseMgr.instance::getWeeks)
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribeOn(backgroundScheduler)
+                    .observeOn(mainScheduler)
                     .subscribe(adapter::addAll, {})
         )
 
@@ -38,8 +44,8 @@ class ProgressPresenter : PresenterBase<ProgressView>() {
                         .map {
                             Pair(LineDataSet(it.mapIndexed { index, l -> Entry(index.toFloat(), l.toFloat()) }, ""), it.sum())
                         }
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribeOn(backgroundScheduler)
+                        .observeOn(mainScheduler)
                         .subscribe({
                             adapter.setHeaderChart(it.first, it.second)
                         }, {})
@@ -51,5 +57,7 @@ class ProgressPresenter : PresenterBase<ProgressView>() {
         view.onWeeksAdapter(adapter)
     }
 
-    override fun destroy() {}
+    override fun destroy() {
+        composite.dispose()
+    }
 }

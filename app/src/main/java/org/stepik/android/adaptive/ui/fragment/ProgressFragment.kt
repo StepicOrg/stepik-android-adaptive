@@ -8,17 +8,28 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import org.stepik.android.adaptive.App
 import org.stepik.android.adaptive.R
 import org.stepik.android.adaptive.core.presenter.BasePresenterFragment
-import org.stepik.android.adaptive.core.presenter.PresenterFactory
 import org.stepik.android.adaptive.core.presenter.ProgressPresenter
 import org.stepik.android.adaptive.core.presenter.contracts.ProgressView
 import org.stepik.android.adaptive.databinding.RecyclerViewBinding
 import org.stepik.android.adaptive.ui.adapter.WeeksAdapter
+import javax.inject.Inject
+import javax.inject.Provider
 
 
 class ProgressFragment : BasePresenterFragment<ProgressPresenter, ProgressView>(), ProgressView {
     private lateinit var recycler : RecyclerView
+
+    @Inject
+    lateinit var progressPresenterProvider: Provider<ProgressPresenter>
+
+    override fun injectComponent() {
+        App.componentManager()
+                .statsComponent
+                .inject(this)
+    }
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         recycler = RecyclerViewBinding.inflate(inflater, container, false).recycler
@@ -45,5 +56,5 @@ class ProgressFragment : BasePresenterFragment<ProgressPresenter, ProgressView>(
         super.onStop()
     }
 
-    override fun getPresenterFactory(): PresenterFactory<ProgressPresenter> = ProgressPresenter.Companion
+    override fun getPresenterProvider() = progressPresenterProvider
 }
