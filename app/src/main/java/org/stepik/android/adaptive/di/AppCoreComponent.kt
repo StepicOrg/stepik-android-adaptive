@@ -25,8 +25,6 @@ interface AppCoreComponent {
 
     fun studyComponentBuilder(): StudyComponent.Builder
 
-    fun inject(fragment: RecommendationsFragment)
-
     fun inject(dialog: QuestionsPacksDialog)
 
     fun inject(notificationsReceiver: NotificationsReceiver)

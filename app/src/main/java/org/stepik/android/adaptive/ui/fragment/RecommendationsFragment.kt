@@ -18,7 +18,7 @@ import org.stepik.android.adaptive.R
 import org.stepik.android.adaptive.Util
 import org.stepik.android.adaptive.configuration.RemoteConfig
 import org.stepik.android.adaptive.core.ScreenManager
-import org.stepik.android.adaptive.core.presenter.BasePresenterFragmentOld
+import org.stepik.android.adaptive.core.presenter.BasePresenterFragment
 import org.stepik.android.adaptive.core.presenter.RecommendationsPresenter
 import org.stepik.android.adaptive.core.presenter.contracts.RecommendationsView
 import org.stepik.android.adaptive.data.AnalyticMgr
@@ -37,8 +37,9 @@ import org.stepik.android.adaptive.util.InventoryUtil
 import org.stepik.android.adaptive.util.PopupHelper
 import org.stepik.android.adaptive.util.changeVisibillity
 import javax.inject.Inject
+import javax.inject.Provider
 
-class RecommendationsFragment : BasePresenterFragmentOld<RecommendationsPresenter, RecommendationsView>(), RecommendationsView {
+class RecommendationsFragment : BasePresenterFragment<RecommendationsPresenter, RecommendationsView>(), RecommendationsView {
     companion object {
         const val STREAK_RESTORE_REQUEST_CODE = 3423
         const val PAID_CONTENT_REQUEST_CODE = 113
@@ -71,9 +72,11 @@ class RecommendationsFragment : BasePresenterFragmentOld<RecommendationsPresente
     @Inject
     lateinit var remoteConfig: FirebaseRemoteConfig
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        App.component().inject(this)
+    @Inject
+    lateinit var recommendationsPresenterProvider: Provider<RecommendationsPresenter>
+
+    override fun injectComponent() {
+        App.componentManager().studyComponent.inject(this)
     }
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -293,5 +296,5 @@ class RecommendationsFragment : BasePresenterFragmentOld<RecommendationsPresente
         super.onStop()
     }
 
-    override fun getPresenterFactory() = RecommendationsPresenter.Companion
+    override fun getPresenterProvider() = recommendationsPresenterProvider
 }

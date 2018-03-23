@@ -1,16 +1,17 @@
 package org.stepik.android.adaptive.core.presenter
 
-import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.Scheduler
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 import io.reactivex.functions.BiFunction
-import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.PublishSubject
 import org.stepik.android.adaptive.api.RecommendationsResponse
 import org.stepik.android.adaptive.core.presenter.contracts.RecommendationsView
 import org.stepik.android.adaptive.data.SharedPreferenceMgr
 import org.stepik.android.adaptive.data.model.Card
 import org.stepik.android.adaptive.data.model.RecommendationReaction
+import org.stepik.android.adaptive.di.qualifiers.BackgroundScheduler
+import org.stepik.android.adaptive.di.qualifiers.MainScheduler
 import org.stepik.android.adaptive.notifications.LocalReminder
 import org.stepik.android.adaptive.ui.adapter.QuizCardsAdapter
 import org.stepik.android.adaptive.ui.helper.CardHelper
@@ -22,13 +23,18 @@ import org.stepik.android.adaptive.util.InventoryUtil
 import org.stepik.android.adaptive.util.RateAppUtil
 import retrofit2.HttpException
 import java.util.*
+import javax.inject.Inject
 
-class RecommendationsPresenter : PresenterBase<RecommendationsView>(), AnswerListener {
-    companion object : PresenterFactory<RecommendationsPresenter> {
-        override fun create() = RecommendationsPresenter()
-
+class RecommendationsPresenter
+@Inject
+constructor(
+        @BackgroundScheduler
+        private val backgroundScheduler: Scheduler,
+        @MainScheduler
+        private val mainScheduler: Scheduler
+): PresenterBase<RecommendationsView>(), AnswerListener {
+    companion object {
         private const val MIN_STREAK_TO_OFFER_TO_BUY = 7
-
         private const val MIN_EXP_TO_OFFER_PACKS = 50
     }
 
@@ -141,8 +147,8 @@ class RecommendationsPresenter : PresenterBase<RecommendationsView>(), AnswerLis
         }
 
         compositeDisposable.add(CardHelper.createReactionObservable(lesson, reaction, cards.size + adapter.getItemCount())
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(backgroundScheduler)
+                .observeOn(mainScheduler)
                 .doOnError(this::onError)
                 .retryWhen { it.zipWith(retrySubject, BiFunction<Any, Any, Any> {a, _ -> a}) }
                 .subscribe(this::onRecommendation, this::onError))
