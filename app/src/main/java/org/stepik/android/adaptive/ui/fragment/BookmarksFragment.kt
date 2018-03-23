@@ -9,13 +9,13 @@ import android.view.View
 import android.view.ViewGroup
 import kotlinx.android.synthetic.main.fragment_bookmarks.*
 import org.stepik.android.adaptive.R
-import org.stepik.android.adaptive.core.presenter.BasePresenterFragment
+import org.stepik.android.adaptive.core.presenter.BasePresenterFragmentOld
 import org.stepik.android.adaptive.core.presenter.BookmarksPresenter
 import org.stepik.android.adaptive.core.presenter.contracts.BookmarksView
 import org.stepik.android.adaptive.ui.adapter.BookmarksAdapter
 import org.stepik.android.adaptive.util.changeVisibillity
 
-class BookmarksFragment: BasePresenterFragment<BookmarksPresenter, BookmarksView>(), BookmarksView {
+class BookmarksFragment: BasePresenterFragmentOld<BookmarksPresenter, BookmarksView>(), BookmarksView {
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?) =
             inflater?.inflate(R.layout.fragment_bookmarks, container, false)
 

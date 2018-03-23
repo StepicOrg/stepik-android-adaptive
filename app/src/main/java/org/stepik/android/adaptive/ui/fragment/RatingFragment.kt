@@ -10,14 +10,14 @@ import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import org.stepik.android.adaptive.R
-import org.stepik.android.adaptive.core.presenter.BasePresenterFragment
+import org.stepik.android.adaptive.core.presenter.BasePresenterFragmentOld
 import org.stepik.android.adaptive.core.presenter.PresenterFactory
 import org.stepik.android.adaptive.core.presenter.RatingPresenter
 import org.stepik.android.adaptive.core.presenter.contracts.RatingView
 import org.stepik.android.adaptive.databinding.FragmentRatingBinding
 import org.stepik.android.adaptive.ui.adapter.RatingAdapter
 
-class RatingFragment : BasePresenterFragment<RatingPresenter, RatingView>(), RatingView {
+class RatingFragment : BasePresenterFragmentOld<RatingPresenter, RatingView>(), RatingView {
     private lateinit var binding: FragmentRatingBinding
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {

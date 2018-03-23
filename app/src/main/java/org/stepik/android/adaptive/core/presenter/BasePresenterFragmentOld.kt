@@ -2,23 +2,19 @@ package org.stepik.android.adaptive.core.presenter
 
 import android.os.Bundle
 import android.support.annotation.CallSuper
-import android.support.v4.app.DialogFragment
+import android.support.v4.app.Fragment
 import android.support.v4.app.LoaderManager
 import android.support.v4.content.Loader
-import android.support.v7.app.AppCompatActivity
 import org.stepik.android.adaptive.core.loader.PresenterLoaderOld
-import org.stepik.android.adaptive.ui.dialog.ProgressDialogFragment
 
-abstract class BasePresenterActivity<P : Presenter<V>, in V> : AppCompatActivity() {
-    companion object {
-        private const val LOADER_ID = 127
-    }
+abstract class BasePresenterFragmentOld<P : Presenter<V>, in V> : Fragment() {
+    private val LOADER_ID = 127
     protected var presenter: P? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val loader = supportLoaderManager.getLoader<P>(LOADER_ID)
+        val loader = loaderManager.getLoader<P>(LOADER_ID)
         if (loader == null) {
             initLoader()
         } else {
@@ -27,7 +23,7 @@ abstract class BasePresenterActivity<P : Presenter<V>, in V> : AppCompatActivity
     }
 
     private fun initLoader() {
-        supportLoaderManager.initLoader(LOADER_ID, null, object : LoaderManager.LoaderCallbacks<P> {
+        loaderManager.initLoader(LOADER_ID, null, object : LoaderManager.LoaderCallbacks<P> {
             override fun onLoadFinished(loader: Loader<P>?, data: P) {
                 onPresenter(data)
             }
@@ -37,16 +33,8 @@ abstract class BasePresenterActivity<P : Presenter<V>, in V> : AppCompatActivity
             }
 
             override fun onCreateLoader(id: Int, args: Bundle?): Loader<P> =
-                    PresenterLoaderOld(this@BasePresenterActivity, getPresenterFactory())
+                    PresenterLoaderOld(this@BasePresenterFragmentOld.context, getPresenterFactory())
         })
-    }
-
-    protected fun showProgressDialogFragment(tag: String, title: String, msg: String) {
-        ProgressDialogFragment.newInstance(title, msg).show(supportFragmentManager, tag)
-    }
-    protected fun hideProgressDialogFragment(tag: String) {
-        val dialog = supportFragmentManager.findFragmentByTag(tag)
-        (dialog as? DialogFragment)?.dismiss()
     }
 
     @CallSuper

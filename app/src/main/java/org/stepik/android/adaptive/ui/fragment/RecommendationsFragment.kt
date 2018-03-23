@@ -18,7 +18,7 @@ import org.stepik.android.adaptive.R
 import org.stepik.android.adaptive.Util
 import org.stepik.android.adaptive.configuration.RemoteConfig
 import org.stepik.android.adaptive.core.ScreenManager
-import org.stepik.android.adaptive.core.presenter.BasePresenterFragment
+import org.stepik.android.adaptive.core.presenter.BasePresenterFragmentOld
 import org.stepik.android.adaptive.core.presenter.RecommendationsPresenter
 import org.stepik.android.adaptive.core.presenter.contracts.RecommendationsView
 import org.stepik.android.adaptive.data.AnalyticMgr
@@ -38,7 +38,7 @@ import org.stepik.android.adaptive.util.PopupHelper
 import org.stepik.android.adaptive.util.changeVisibillity
 import javax.inject.Inject
 
-class RecommendationsFragment : BasePresenterFragment<RecommendationsPresenter, RecommendationsView>(), RecommendationsView {
+class RecommendationsFragment : BasePresenterFragmentOld<RecommendationsPresenter, RecommendationsView>(), RecommendationsView {
     companion object {
         const val STREAK_RESTORE_REQUEST_CODE = 3423
         const val PAID_CONTENT_REQUEST_CODE = 113
