@@ -18,8 +18,6 @@ import org.stepik.android.adaptive.core.ScreenManager;
 import org.stepik.android.adaptive.data.AnalyticMgr;
 import org.stepik.android.adaptive.data.SharedPreferenceMgr;
 import org.stepik.android.adaptive.data.db.DataBaseMgr;
-import org.stepik.android.adaptive.notifications.LocalReminder;
-import org.stepik.android.adaptive.notifications.RemindNotificationManager;
 import org.stepik.android.adaptive.util.AchievementManager;
 import org.stepik.android.adaptive.util.RatingNamesGenerator;
 
@@ -36,7 +34,6 @@ public class Util {
         AnalyticMgr.init(context);
         UserAgentProvider.init(context);
         DataBaseMgr.Companion.init(context);
-        LocalReminder.INSTANCE.init(context);
         RatingNamesGenerator.init(context);
         AchievementManager.INSTANCE.init(context);
     }

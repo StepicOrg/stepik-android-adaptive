@@ -22,6 +22,9 @@ class NotificationsReceiver : BroadcastReceiver() {
     @Inject
     lateinit var remindNotificationManager: RemindNotificationManager
 
+    @Inject
+    lateinit var localReminder: LocalReminder
+
     init {
         App.component().inject(this)
     }
@@ -32,7 +35,7 @@ class NotificationsReceiver : BroadcastReceiver() {
         intent?.let {
             val days = it.getIntExtra(LocalReminder.DAYS_MULTIPLIER_KEY, 0)
             if (it.action == NOTIFICATION_CANCELED) {
-                LocalReminder.resolveDailyRemind()
+                localReminder.resolveDailyRemind()
                 AnalyticMgr.getInstance().onNotificationCanceled(days)
             } else if (it.action == SHOW_NOTIFICATION) {
                 when (days) {

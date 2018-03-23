@@ -11,21 +11,25 @@ import org.joda.time.Hours
 import org.stepik.android.adaptive.data.SharedPreferenceMgr
 import org.stepik.android.adaptive.receivers.NotificationsReceiver
 import org.stepik.android.adaptive.util.DailyRewardManager
+import javax.inject.Inject
 
-object LocalReminder {
-    private const val NOTIFICATION_TIMESTAMP_KEY = "notification_timestamp"
+class LocalReminder
+@Inject
+constructor(
+        private val context: Context
+) {
+    companion object {
+        private const val NOTIFICATION_TIMESTAMP_KEY = "notification_timestamp"
+        private const val GOOD_STUDY_HOUR = 20
 
-    const val DAYS_MULTIPLIER_KEY = "days_multiplier"
+        const val DAYS_MULTIPLIER_KEY = "days_multiplier"
 
-    private const val GOOD_STUDY_HOUR = 20
-
-    private lateinit var context: Context
-    private lateinit var alarmManager: AlarmManager
-
-    fun init(context: Context) {
-        LocalReminder.context = context
-        alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        @JvmStatic
+        fun isGoodTime(hour: Int) = hour in 7..23
     }
+
+
+    private val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
 
     fun resolveDailyRemind() {
         val notificationTimestamp = SharedPreferenceMgr.getInstance().getLong(NOTIFICATION_TIMESTAMP_KEY)
@@ -67,9 +71,6 @@ object LocalReminder {
         SharedPreferenceMgr.getInstance().saveLong(NOTIFICATION_TIMESTAMP_KEY, newNotificationTimestamp)
         scheduleCompat(newNotificationTimestamp, AlarmManager.INTERVAL_HALF_HOUR, pendingIntent)
     }
-
-    @JvmStatic
-    fun isGoodTime(hour: Int) = hour in 7..23
 
     private fun scheduleCompat(scheduleMillis: Long, interval: Long, pendingIntent: PendingIntent) {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {

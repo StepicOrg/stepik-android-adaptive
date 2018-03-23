@@ -31,7 +31,8 @@ constructor(
         @BackgroundScheduler
         private val backgroundScheduler: Scheduler,
         @MainScheduler
-        private val mainScheduler: Scheduler
+        private val mainScheduler: Scheduler,
+        localReminder: LocalReminder
 ): PresenterBase<RecommendationsView>(), AnswerListener {
     companion object {
         private const val MIN_STREAK_TO_OFFER_TO_BUY = 7
@@ -54,7 +55,7 @@ constructor(
     init {
         createReaction(0, RecommendationReaction.Reaction.INTERESTING)
         InventoryUtil.starterPack()
-        LocalReminder.resolveDailyRemind()
+        localReminder.resolveDailyRemind()
     }
 
     private fun resolveDailyReward() {
