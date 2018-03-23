@@ -1,6 +1,6 @@
 package org.stepik.android.adaptive.ui.activity
 
-import org.stepik.android.adaptive.R
+import kotlinx.android.synthetic.main.fragment_activity.*
 
 import org.stepik.android.adaptive.core.presenter.contracts.AchievementView
 import org.stepik.android.adaptive.data.model.Achievement
@@ -13,7 +13,7 @@ class StudyActivity : FragmentActivity(), AchievementView {
 
     override fun showAchievement(achievement: Achievement) {
         isPlayingAchievementAnimation = true
-        AchievementAnimations.show(findViewById(R.id.fragment_container), achievement).withEndAction {
+        AchievementAnimations.show(fragment_container, achievement).withEndAction {
             isPlayingAchievementAnimation = false
             AchievementManager.notifyQueue()
         }
