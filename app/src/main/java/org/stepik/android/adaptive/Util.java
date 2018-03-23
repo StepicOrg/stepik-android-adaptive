@@ -37,7 +37,6 @@ public class Util {
         UserAgentProvider.init(context);
         DataBaseMgr.Companion.init(context);
         LocalReminder.INSTANCE.init(context);
-        RemindNotificationManager.INSTANCE.init(context);
         RatingNamesGenerator.init(context);
         AchievementManager.INSTANCE.init(context);
     }

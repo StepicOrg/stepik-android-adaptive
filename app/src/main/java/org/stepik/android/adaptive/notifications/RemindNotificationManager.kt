@@ -6,34 +6,37 @@ import android.content.Intent
 import android.support.v4.app.NotificationCompat
 import android.support.v4.app.NotificationManagerCompat
 import android.support.v4.app.TaskStackBuilder
-import io.reactivex.Observable
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.schedulers.Schedulers
+import io.reactivex.Scheduler
 import org.stepik.android.adaptive.R
 import org.stepik.android.adaptive.data.db.DataBaseMgr
+import org.stepik.android.adaptive.di.qualifiers.BackgroundScheduler
+import org.stepik.android.adaptive.di.qualifiers.MainScheduler
 import org.stepik.android.adaptive.receivers.NotificationsReceiver
 import org.stepik.android.adaptive.ui.activity.SplashActivity
+import javax.inject.Inject
 
 
-object RemindNotificationManager {
-    private const val NOTIFICATION_ID = 2138
-
-    private const val MIN_DAILY_EXP = 10
-
-    private lateinit var context: Context
-    private lateinit var notificationManager: NotificationManagerCompat
-
-    fun init(context: Context) {
-        this.context = context
-        this.notificationManager = NotificationManagerCompat.from(context)
+class RemindNotificationManager
+@Inject
+constructor(
+        private val context: Context,
+        @BackgroundScheduler
+        private val backgroundScheduler: Scheduler,
+        @MainScheduler
+        private val mainScheduler: Scheduler
+) {
+    companion object {
+        private const val NOTIFICATION_ID = 2138
+        private const val MIN_DAILY_EXP = 10
     }
 
+    private val notificationManager = NotificationManagerCompat.from(context)
 
     fun showEveryDayNotification() {
         val title = context.getString(R.string.local_push_title)
         DataBaseMgr.instance.getExpForLast7Days()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(backgroundScheduler)
+                .observeOn(mainScheduler)
                 .subscribe({
                     val description = if (it[5] < MIN_DAILY_EXP) {
                         val length = it.slice(0..5).takeLastWhile { num -> num > 0 }.size

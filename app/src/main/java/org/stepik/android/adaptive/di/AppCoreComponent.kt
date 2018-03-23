@@ -4,6 +4,7 @@ import android.content.Context
 import dagger.BindsInstance
 import dagger.Component
 import org.stepik.android.adaptive.di.stats.StatsComponent
+import org.stepik.android.adaptive.receivers.NotificationsReceiver
 import org.stepik.android.adaptive.ui.dialog.QuestionsPacksDialog
 import org.stepik.android.adaptive.ui.fragment.RecommendationsFragment
 
@@ -24,4 +25,6 @@ interface AppCoreComponent {
     fun inject(fragment: RecommendationsFragment)
 
     fun inject(dialog: QuestionsPacksDialog)
+
+    fun inject(notificationsReceiver: NotificationsReceiver)
 }
