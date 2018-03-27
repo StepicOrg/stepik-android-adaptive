@@ -9,7 +9,7 @@ import org.stepik.android.adaptive.data.db.DataBaseMgr
 import org.stepik.android.adaptive.di.qualifiers.BackgroundScheduler
 import org.stepik.android.adaptive.di.qualifiers.MainScheduler
 import org.stepik.android.adaptive.ui.adapter.WeeksAdapter
-import org.stepik.android.adaptive.util.ExpUtil
+import org.stepik.android.adaptive.gamification.ExpManager
 import javax.inject.Inject
 
 class ProgressPresenter
@@ -18,28 +18,31 @@ constructor(
         @BackgroundScheduler
         private val backgroundScheduler: Scheduler,
         @MainScheduler
-        private val mainScheduler: Scheduler
+        private val mainScheduler: Scheduler,
+        private val expManager: ExpManager
 ) : PresenterBase<ProgressView>() {
 
-    private val total by lazy { ExpUtil.getExp() }
-    private val level by lazy { ExpUtil.getCurrentLevel(total) }
+    private val total by lazy { expManager.exp }
+    private val level by lazy { expManager.getCurrentLevel(total) }
 
     private val adapter = WeeksAdapter()
 
     private val composite = CompositeDisposable()
 
+    private val dataBaseMgr: DataBaseMgr = DataBaseMgr.instance // to inject
+
     init {
         adapter.setHeaderLevelAndTotal(level, total)
 
         composite.add(
-            DataBaseMgr.instance.getWeeks()
+                dataBaseMgr.getWeeks()
                     .subscribeOn(backgroundScheduler)
                     .observeOn(mainScheduler)
                     .subscribe(adapter::addAll, {})
         )
 
         composite.add(
-                DataBaseMgr.instance.getExpForLast7Days()
+                dataBaseMgr.getExpForLast7Days()
                         .map {
                             Pair(LineDataSet(it.mapIndexed { index, l -> Entry(index.toFloat(), l.toFloat()) }, ""), it.sum())
                         }

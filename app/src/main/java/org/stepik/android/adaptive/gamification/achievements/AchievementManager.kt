@@ -1,24 +1,38 @@
-package org.stepik.android.adaptive.util
+package org.stepik.android.adaptive.gamification.achievements
 
 import android.content.Context
-import android.support.annotation.DrawableRes
-import android.support.annotation.IntegerRes
+import android.support.annotation.ArrayRes
 import android.support.annotation.StringRes
 import org.stepik.android.adaptive.R
+import org.stepik.android.adaptive.core.events.Client
 import org.stepik.android.adaptive.core.presenter.Presenter
 import org.stepik.android.adaptive.core.presenter.contracts.AchievementView
 import org.stepik.android.adaptive.data.SharedPreferenceMgr
 import org.stepik.android.adaptive.data.model.Achievement
+import org.stepik.android.adaptive.di.AppSingleton
+import org.stepik.android.adaptive.gamification.DailyRewardManager
+import org.stepik.android.adaptive.gamification.ExpManager
 import java.util.*
+import javax.inject.Inject
 
-object AchievementManager : Presenter<AchievementView> {
+@AppSingleton
+class AchievementManager
+@Inject
+constructor(
+        context: Context,
+        private val expManager: ExpManager,
+        private val dailyRewardManager: DailyRewardManager,
+        eventClient: Client<AchievementEventListener>
+): Presenter<AchievementView>, AchievementEventListener {
     private val views = HashSet<AchievementView>()
 
     val achievements = ArrayList<Achievement>()
 
     private val queue = ArrayDeque<Achievement>()
+    private val prefix = context.getString(R.string.ach_prefix)
 
-    private lateinit var prefix : String
+
+    private val sharedPreferenceMgr = SharedPreferenceMgr.getInstance() // to inject
 
     enum class Event {
         ONBOARDING,
@@ -28,13 +42,14 @@ object AchievementManager : Presenter<AchievementView> {
         LEVEL
     }
 
-    fun init(context: Context) {
-        prefix = context.getString(R.string.ach_prefix)
+    init {
         initOnboardingAchievement(context)
         initExpAchievements(context)
         initStreakAchievements(context)
         initDaysAchievements(context)
         initLevelAchievements(context)
+
+        eventClient.subscribe(this)
 
         sync()
     }
@@ -94,10 +109,10 @@ object AchievementManager : Presenter<AchievementView> {
     private fun initAchievementGroup(context: Context,
                                      @StringRes typePrefixRes: Int,
                                      event: Event,
-                                     @StringRes titlesRes: Int,
+                                     @ArrayRes titlesRes: Int,
                                      @StringRes descriptionRes: Int,
-                                     @IntegerRes valuesRes: Int,
-                                     @DrawableRes iconsRes: Int) {
+                                     @ArrayRes valuesRes: Int,
+                                     @ArrayRes iconsRes: Int) {
         val titles = context.resources.getStringArray(titlesRes)
         val values = context.resources.getIntArray(valuesRes)
 
@@ -135,7 +150,7 @@ object AchievementManager : Presenter<AchievementView> {
         views.forEach { it.showAchievement(achievement) }
     }
 
-    fun onEvent(event: Event, value: Long, show: Boolean = true) {
+    override fun onEvent(event: Event, value: Long, show: Boolean) {
         achievements.filter { it.eventType == event && !it.isComplete() }.forEach {
             it.currentValue = Math.min(it.targetValue, Math.max(value, it.currentValue))
             if (it.isComplete() && show) {
@@ -149,16 +164,16 @@ object AchievementManager : Presenter<AchievementView> {
     /**
      * Method to sync achievements and stats
      */
-    fun sync() {
-        val exp = ExpUtil.getExp()
+    private fun sync() {
+        val exp = expManager.exp
         onEvent(Event.EXP, exp, false)
-        onEvent(Event.STREAK, ExpUtil.getStreak(), false)
-        onEvent(Event.LEVEL, ExpUtil.getCurrentLevel(exp), false)
+        onEvent(Event.STREAK, expManager.streak, false)
+        onEvent(Event.LEVEL, expManager.getCurrentLevel(exp), false)
 
-        DailyRewardManager.syncRewardProgress()
-        onEvent(Event.DAYS, DailyRewardManager.totalRewardProgress + 1, false)
+        dailyRewardManager.syncRewardProgress()
+        onEvent(Event.DAYS, dailyRewardManager.totalRewardProgress + 1, false)
 
-        if (SharedPreferenceMgr.getInstance().isNotFirstTime) {
+        if (sharedPreferenceMgr.isNotFirstTime) {
             onEvent(Event.ONBOARDING, 1, false)
         }
     }

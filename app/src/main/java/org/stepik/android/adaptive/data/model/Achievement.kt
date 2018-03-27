@@ -2,7 +2,7 @@ package org.stepik.android.adaptive.data.model
 
 import android.support.annotation.DrawableRes
 import org.stepik.android.adaptive.data.SharedPreferenceMgr
-import org.stepik.android.adaptive.util.AchievementManager
+import org.stepik.android.adaptive.gamification.achievements.AchievementManager
 
 
 data class Achievement(

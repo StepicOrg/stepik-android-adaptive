@@ -18,7 +18,6 @@ import org.stepik.android.adaptive.core.ScreenManager;
 import org.stepik.android.adaptive.data.AnalyticMgr;
 import org.stepik.android.adaptive.data.SharedPreferenceMgr;
 import org.stepik.android.adaptive.data.db.DataBaseMgr;
-import org.stepik.android.adaptive.util.AchievementManager;
 import org.stepik.android.adaptive.util.RatingNamesGenerator;
 
 import java.util.Random;
@@ -35,7 +34,6 @@ public class Util {
         UserAgentProvider.init(context);
         DataBaseMgr.Companion.init(context);
         RatingNamesGenerator.init(context);
-        AchievementManager.INSTANCE.init(context);
     }
 
     public static void hideSoftKeyboard(final Activity a) {

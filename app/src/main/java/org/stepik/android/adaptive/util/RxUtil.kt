@@ -4,6 +4,8 @@ import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.Observable.just
 import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.disposables.Disposable
 import java.util.concurrent.TimeUnit
 
 inline fun skipUIFrame(crossinline action: () -> Unit, delay: Long = 0) {
@@ -17,3 +19,5 @@ inline fun skipUIFrame(crossinline action: () -> Unit, delay: Long = 0) {
 inline fun <T, R> Observable<T>.mapNotNull(crossinline f: (T) -> R?): Observable<R> = flatMap {
     f(it)?.let { return@let Observable.just(it) } ?: Observable.empty()
 }
+
+infix fun CompositeDisposable.addDisposable(d: Disposable) = this.add(d)

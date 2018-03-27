@@ -2,6 +2,7 @@ package org.stepik.android.adaptive.data.db
 
 import android.content.ContentValues
 import android.content.Context
+import io.reactivex.Completable
 import io.reactivex.Single
 import org.joda.time.DateTime
 import org.joda.time.Days
@@ -27,13 +28,14 @@ class DataBaseMgr private constructor(context: Context) {
     private val databaseOperations = DatabaseOperationsImpl(db)
     private val bookmarksDao = BookmarksDao(databaseOperations) // todo replace with DI
 
-    fun onExpGained(exp: Long, submissionId: Long) {
+    fun onExpGained(exp: Long, submissionId: Long): Completable = Completable.create { emitter ->
         val cv = ContentValues()
 
         cv.put(ExpDbStructure.Columns.EXP, exp)
         cv.put(ExpDbStructure.Columns.SUBMISSION_ID, submissionId)
 
         db.insert(ExpDbStructure.TABLE_NAME, null, cv)
+        emitter.onComplete()
     }
 
     fun getExpForLast7Days(): Single<Array<Long>> = Single.create { emitter ->
@@ -107,7 +109,7 @@ class DataBaseMgr private constructor(context: Context) {
         emitter.onSuccess(res)
     }
 
-    fun getExp(): Long {
+    fun getExp(): Single<Long> = Single.create { emitter ->
         val cursor = db.query(
                 ExpDbStructure.TABLE_NAME,
                 arrayOf("sum(${ExpDbStructure.Columns.EXP}) as ${ExpDbStructure.Columns.EXP}"),
@@ -122,7 +124,7 @@ class DataBaseMgr private constructor(context: Context) {
             }
         }
 
-        return exp
+        emitter.onSuccess(exp)
     }
 
     fun addBookmark(bookmark: Bookmark) =

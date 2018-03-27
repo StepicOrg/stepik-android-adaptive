@@ -17,8 +17,8 @@ import org.stepik.android.adaptive.ui.adapter.QuizCardsAdapter
 import org.stepik.android.adaptive.ui.helper.CardHelper
 import org.stepik.android.adaptive.ui.listener.AdaptiveReactionListener
 import org.stepik.android.adaptive.ui.listener.AnswerListener
-import org.stepik.android.adaptive.util.DailyRewardManager
-import org.stepik.android.adaptive.util.ExpUtil
+import org.stepik.android.adaptive.gamification.DailyRewardManager
+import org.stepik.android.adaptive.gamification.ExpManager
 import org.stepik.android.adaptive.util.InventoryUtil
 import org.stepik.android.adaptive.util.RateAppUtil
 import retrofit2.HttpException
@@ -32,7 +32,9 @@ constructor(
         private val backgroundScheduler: Scheduler,
         @MainScheduler
         private val mainScheduler: Scheduler,
-        localReminder: LocalReminder
+        localReminder: LocalReminder,
+        private val dailyRewardManager: DailyRewardManager,
+        private val expManager: ExpManager
 ): PresenterBase<RecommendationsView>(), AnswerListener {
     companion object {
         private const val MIN_STREAK_TO_OFFER_TO_BUY = 7
@@ -59,7 +61,7 @@ constructor(
     }
 
     private fun resolveDailyReward() {
-        val progress = DailyRewardManager.giveRewardAndGetCurrentRewardDay()
+        val progress = dailyRewardManager.giveRewardAndGetCurrentRewardDay()
         if (progress != DailyRewardManager.DISCARD)
             view?.showDailyRewardDialog(progress)
     }
@@ -81,15 +83,15 @@ constructor(
         view.onAdapter(adapter)
     }
 
-    private fun updateExp(exp: Long = ExpUtil.getExp(), streak: Long = 0, showLevelDialog: Boolean = false) {
-        val level = ExpUtil.getCurrentLevel(exp)
+    private fun updateExp(exp: Long = expManager.exp, streak: Long = 0, showLevelDialog: Boolean = false) {
+        val level = expManager.getCurrentLevel(exp)
 
-        val prev = ExpUtil.getNextLevelExp(level - 1)
-        val next = ExpUtil.getNextLevelExp(level)
+        val prev = expManager.getNextLevelExp(level - 1)
+        val next = expManager.getNextLevelExp(level)
 
         view?.updateExp(exp, prev, next, level)
 
-        if (showLevelDialog && level != ExpUtil.getCurrentLevel(exp - streak)) {
+        if (showLevelDialog && level != expManager.getCurrentLevel(exp - streak)) {
             view?.showNewLevelDialog(level)
         }
 
@@ -102,16 +104,16 @@ constructor(
     }
 
     fun restoreStreak(streak: Long) {
-        ExpUtil.changeStreak(streak)
+        expManager.changeStreak(streak)
         view?.onStreakRestored()
     }
 
     override fun onCorrectAnswer(submissionId: Long) {
         view?.hideStreakRestoreDialog()
-        val streak = ExpUtil.incStreak()
+        val streak = expManager.incStreak()
 
         view?.onStreak(streak)
-        updateExp(ExpUtil.changeExp(streak, submissionId), streak, true)
+        updateExp(expManager.changeExp(streak, submissionId), streak, true)
 
         if (RateAppUtil.onEngagement()) {
             view?.showRateAppDialog()
@@ -120,7 +122,7 @@ constructor(
 
     override fun onWrongAnswer() {
         view?.hideStreakRestoreDialog()
-        val streak = ExpUtil.getStreak()
+        val streak = expManager.streak
 
         if (streak > 1) {
             view?.onStreakLost()
@@ -138,7 +140,7 @@ constructor(
             }
         }
 
-        ExpUtil.resetStreak()
+        expManager.resetStreak()
     }
 
 

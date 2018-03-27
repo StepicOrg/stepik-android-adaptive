@@ -3,6 +3,7 @@ package org.stepik.android.adaptive.di
 import android.content.Context
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings
+import dagger.Binds
 import dagger.Module
 import dagger.Provides
 import io.reactivex.Scheduler
@@ -12,11 +13,24 @@ import org.solovyev.android.checkout.Billing
 import org.stepik.android.adaptive.BuildConfig
 import org.stepik.android.adaptive.R
 import org.stepik.android.adaptive.configuration.Config
+import org.stepik.android.adaptive.core.events.Client
+import org.stepik.android.adaptive.core.events.ClientImpl
+import org.stepik.android.adaptive.core.events.ListenerContainer
+import org.stepik.android.adaptive.core.events.ListenerContainerImpl
 import org.stepik.android.adaptive.di.qualifiers.BackgroundScheduler
 import org.stepik.android.adaptive.di.qualifiers.MainScheduler
+import org.stepik.android.adaptive.gamification.achievements.AchievementEventListener
 
 @Module
 abstract class AppCoreModule {
+
+    @Binds
+    @AppSingleton
+    abstract fun provideAchievementEventClient(container: ClientImpl<AchievementEventListener>): Client<AchievementEventListener>
+
+    @Binds
+    @AppSingleton
+    abstract fun provideAchievementEventListenerContainer(container: ListenerContainerImpl<AchievementEventListener>): ListenerContainer<AchievementEventListener>
 
     @Module
     companion object {

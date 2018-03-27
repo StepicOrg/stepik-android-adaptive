@@ -10,13 +10,14 @@ import org.joda.time.Days
 import org.joda.time.Hours
 import org.stepik.android.adaptive.data.SharedPreferenceMgr
 import org.stepik.android.adaptive.receivers.NotificationsReceiver
-import org.stepik.android.adaptive.util.DailyRewardManager
+import org.stepik.android.adaptive.gamification.DailyRewardManager
 import javax.inject.Inject
 
 class LocalReminder
 @Inject
 constructor(
-        private val context: Context
+        private val context: Context,
+        private val dailyRewardManager: DailyRewardManager
 ) {
     companion object {
         private const val NOTIFICATION_TIMESTAMP_KEY = "notification_timestamp"
@@ -35,7 +36,7 @@ constructor(
         val notificationTimestamp = SharedPreferenceMgr.getInstance().getLong(NOTIFICATION_TIMESTAMP_KEY)
         val now = DateTime.now()
 
-        val lastSession = DateTime(DailyRewardManager.getLastSessionTimestamp())
+        val lastSession = DateTime(dailyRewardManager.getLastSessionTimestamp())
 
         val daysSinceLastSession = Days.daysBetween(lastSession.withTimeAtStartOfDay(), now.withTimeAtStartOfDay()).days
         val dayMultiplier = if (daysSinceLastSession > 2) {
