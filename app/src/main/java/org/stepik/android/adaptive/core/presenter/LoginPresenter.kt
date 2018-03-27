@@ -21,6 +21,7 @@ class LoginPresenter
 constructor(
         private val api: API,
         private val config: Config,
+        private val sharedPreferenceMgr: SharedPreferenceMgr,
 
         @BackgroundScheduler
         private val backgroundScheduler: Scheduler,
@@ -57,7 +58,7 @@ constructor(
         disposable addDisposable api
                 .joinCourse(config.courseId)
                 .andThen(api.profile)
-                .doOnNext { SharedPreferenceMgr.getInstance().saveProfile(it.profile) }
+                .doOnNext { sharedPreferenceMgr.profile = it.profile }
                 .subscribeOn(backgroundScheduler)
                 .observeOn(mainScheduler)
                 .subscribe({
@@ -112,7 +113,7 @@ constructor(
                 .subscribe({
                     if (it.isSuccessful) {
                         if (isFake) { // save only if it's fake account
-                            SharedPreferenceMgr.getInstance().saveFakeUser(credentials)
+                            sharedPreferenceMgr.saveFakeUser(credentials)
                         }
                         authWithLoginPassword(credentials.login, credentials.password, isFake)
                     } else {

@@ -53,7 +53,6 @@ class SocialAuthActivity : AppCompatActivity() {
 
     override fun onSaveInstanceState(outState: Bundle?) {
         authWebView.saveState(outState)
-        super.onSaveInstanceState(outState)
     }
 
     override fun onBackPressed() {

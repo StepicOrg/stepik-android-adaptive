@@ -10,7 +10,8 @@ import javax.inject.Inject
 class RatingNamesGenerator
 @Inject
 constructor(
-        private val context: Context
+        private val context: Context,
+        private val sharedPreferenceMgr: SharedPreferenceMgr
 ) {
     private val animalsMale by lazy { context.resources.getStringArray(R.array.animals_m) }
     private val animalsFemale by lazy { context.resources.getStringArray(R.array.animals_f) }
@@ -20,7 +21,7 @@ constructor(
     private val adjectivesFemale by lazy { context.resources.getStringArray(R.array.adjectives_female) }
 
     fun getName(user: Long) : String =
-            if (user == SharedPreferenceMgr.getInstance().profileId) {
+            if (user == sharedPreferenceMgr.profileId) {
                 context.getString(R.string.rating_you_placeholder)
             } else {
                 val hash = hash(user)

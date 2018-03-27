@@ -42,6 +42,7 @@ import javax.inject.Inject;
 import io.reactivex.Completable;
 import io.reactivex.Observable;
 import io.reactivex.Single;
+import kotlin.Unit;
 import okhttp3.Credentials;
 import okhttp3.Headers;
 import okhttp3.HttpUrl;
@@ -56,8 +57,6 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 @AppSingleton
 public final class API {
-    private final static String TAG = "API";
-
     private final static String FAKE_MAIL_PATTERN = "adaptive_%s_android_%d%s@stepik.org";
 
     private final static int TIMEOUT_IN_SECONDS = 60;
@@ -77,10 +76,28 @@ public final class API {
     private final EmptyAuthService emptyAuthService;
 
     private final Config config;
+    private final SharedPreferenceMgr sharedPreferenceMgr;
+    private final LogoutHelper logoutHelper;
+
+    private final Interceptor authInterceptor;
 
     @Inject
-    public API(Config config) {
+    public API(Config config, SharedPreferenceMgr sharedPreferenceMgr, LogoutHelper logoutHelper) {
+        this.sharedPreferenceMgr = sharedPreferenceMgr;
         this.config = config;
+        this.logoutHelper = logoutHelper;
+
+        this.authInterceptor = chain -> {
+            Request request = addUserAgentTo(chain);
+
+            okhttp3.Response response = addAuthHeaderAndProceed(chain, request);
+            if (response.code() == 400) { // was bug when user has incorrect token deadline due to wrong datetime had been set on phone
+                this.sharedPreferenceMgr.resetAuthResponseDeadline();
+                response = addAuthHeaderAndProceed(chain, request);
+            }
+
+            return response;
+        };
 
         stepikService = initStepikService();
         ratingService = initRatingService();
@@ -127,8 +144,8 @@ public final class API {
                 .authWithLoginPassword(config.getGrantType(), login, password)
                 .doOnNext(response -> {
                     authLock.lock();
-                    SharedPreferenceMgr.getInstance().saveOAuthResponse(response);
-                    SharedPreferenceMgr.getInstance().setIsOauthTokenSocial(false);
+                    sharedPreferenceMgr.setOAuthResponse(response);
+                    sharedPreferenceMgr.setIsOauthTokenSocial(false);
                     authLock.unlock();
                 });
     }
@@ -146,8 +163,8 @@ public final class API {
                 codeType)
                 .doOnNext(response -> {
                     authLock.lock();
-                    SharedPreferenceMgr.getInstance().saveOAuthResponse(response);
-                    SharedPreferenceMgr.getInstance().setIsOauthTokenSocial(true);
+                    sharedPreferenceMgr.setOAuthResponse(response);
+                    sharedPreferenceMgr.setIsOauthTokenSocial(true);
                     authLock.unlock();
                 });
     }
@@ -157,14 +174,14 @@ public final class API {
                 config.getGrantTypeSocial(), code, config.getRedirectUri()
         ).doOnNext(response -> {
             authLock.lock();
-            SharedPreferenceMgr.getInstance().saveOAuthResponse(response);
-            SharedPreferenceMgr.getInstance().setIsOauthTokenSocial(true);
+            sharedPreferenceMgr.setOAuthResponse(response);
+            sharedPreferenceMgr.setIsOauthTokenSocial(true);
             authLock.unlock();
         });
     }
 
     private Call<OAuthResponse> authWithRefreshToken(final String refreshToken) {
-        return getAuthService(SharedPreferenceMgr.getInstance().isAuthTokenSocial() ? TokenType.SOCIAL : TokenType.PASSWORD)
+        return getAuthService(sharedPreferenceMgr.isAuthTokenSocial() ? TokenType.SOCIAL : TokenType.PASSWORD)
                 .refreshAccessToken(config.getRefreshGrantType(), refreshToken);
     }
 
@@ -182,7 +199,7 @@ public final class API {
         OkHttpClient.Builder okHttpBuilder = new OkHttpClient.Builder();
         okHttpBuilder.addNetworkInterceptor(chain -> {
             Request newRequest = addUserAgentTo(chain);
-            LogoutHelper.removeCookiesCompat();
+            logoutHelper.removeCookiesCompat();
             updateCookieForBaseUrl();
             String cookies = CookieManager.getInstance().getCookie(config.getHost());
             if (cookies == null)
@@ -205,18 +222,6 @@ public final class API {
 
         return tmpService.createAccount(new UserRegistrationRequest(new RegistrationUser(firstName, lastName, email, password)));
     }
-
-    private final Interceptor authInterceptor = chain -> {
-        Request request = addUserAgentTo(chain);
-
-        okhttp3.Response response = addAuthHeaderAndProceed(chain, request);
-        if (response.code() == 400) { // was bug when user has incorrect token deadline due to wrong datetime had been set on phone
-            SharedPreferenceMgr.getInstance().resetAuthResponseDeadline();
-            response = addAuthHeaderAndProceed(chain, request);
-        }
-
-        return response;
-    };
 
     private RatingService initRatingService() {
         final OkHttpClient.Builder okHttpBuilder = new OkHttpClient.Builder();
@@ -241,7 +246,7 @@ public final class API {
     private okhttp3.Response addAuthHeaderAndProceed(Interceptor.Chain chain, Request request) throws IOException {
         try {
             authLock.lock();
-            OAuthResponse response = SharedPreferenceMgr.getInstance().getOAuthResponse();
+            OAuthResponse response = sharedPreferenceMgr.getOAuthResponse();
 
             if (response != null) {
                 if (isUpdateNeeded()) {
@@ -256,12 +261,15 @@ public final class API {
 
                     if (response == null || !oAuthResponse.isSuccessful()) {
                         if (oAuthResponse.code() == 401) {
-                            LogoutHelper.logout(ScreenManager.getInstance()::showOnboardingScreen);
+                            logoutHelper.logout(() -> {
+                                ScreenManager.getInstance().showOnboardingScreen();
+                                return Unit.INSTANCE;
+                            });
                         }
                         return chain.proceed(request);
                     }
 
-                    SharedPreferenceMgr.getInstance().saveOAuthResponse(response);
+                    sharedPreferenceMgr.setOAuthResponse(response);
                 }
                 request = request.newBuilder()
                         .addHeader(AppConstants.authorizationHeaderName, response.getTokenType() + " " + response.getAccessToken())
@@ -284,7 +292,7 @@ public final class API {
     }
 
     private boolean isUpdateNeeded() {
-        final long expireAt = SharedPreferenceMgr.getInstance().getAuthResponseDeadline();
+        final long expireAt = sharedPreferenceMgr.getAuthResponseDeadline();
         return DateTime.now(DateTimeZone.UTC).getMillis() > expireAt;
     }
 
@@ -345,7 +353,7 @@ public final class API {
     public Observable<RecommendationsResponse> getNextRecommendations(final int count) {
         long courseId;
         try {
-            courseId = QuestionsPack.values()[SharedPreferenceMgr.getInstance().getQuestionsPackIndex()].getCourseId();
+            courseId = QuestionsPack.values()[sharedPreferenceMgr.getQuestionsPackIndex()].getCourseId();
         } catch (Exception e) {
             courseId = config.getCourseId();
         }
@@ -361,7 +369,7 @@ public final class API {
     }
 
     public Observable<AttemptResponse> getAttempts(final long step) {
-        return stepikService.getAttempts(step, SharedPreferenceMgr.getInstance().getProfileId());
+        return stepikService.getAttempts(step, sharedPreferenceMgr.getProfileId());
     }
 
     public Completable createSubmission(final Submission submission) {
@@ -397,12 +405,12 @@ public final class API {
     }
 
     public Observable<RatingResponse> getRating(final int count, final int days) {
-        return ratingService.getRating(config.getCourseId(), count, days, SharedPreferenceMgr.getInstance().getProfileId());
+        return ratingService.getRating(config.getCourseId(), count, days, sharedPreferenceMgr.getProfileId());
     }
 
     public Completable putRating(final long exp) {
         return ratingService.putRating(new RatingRequest(
-                exp, config.getCourseId(), SharedPreferenceMgr.getInstance().getOAuthResponse().getAccessToken()));
+                exp, config.getCourseId(), sharedPreferenceMgr.getOAuthResponse().getAccessToken()));
     }
 
     private void setTimeout(OkHttpClient.Builder builder, int seconds) {

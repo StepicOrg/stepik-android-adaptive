@@ -6,11 +6,13 @@ import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.DialogFragment
 import android.support.v7.app.AlertDialog
+import org.stepik.android.adaptive.App
 import org.stepik.android.adaptive.R
 import org.stepik.android.adaptive.data.AnalyticMgr
 import org.stepik.android.adaptive.databinding.DialogStreakRestoreBinding
 import org.stepik.android.adaptive.ui.fragment.RecommendationsFragment
-import org.stepik.android.adaptive.util.InventoryUtil
+import org.stepik.android.adaptive.gamification.InventoryManager
+import javax.inject.Inject
 
 class StreakRestoreDialog : DialogFragment() {
     companion object {
@@ -26,8 +28,12 @@ class StreakRestoreDialog : DialogFragment() {
 
     private lateinit var binding : DialogStreakRestoreBinding
 
+    @Inject
+    lateinit var inventoryManager: InventoryManager
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        App.component().inject(this)
         isCancelable = false
     }
 
@@ -39,11 +45,11 @@ class StreakRestoreDialog : DialogFragment() {
         val alertDialogBuilder = AlertDialog.Builder(context, R.style.ExpLevelDialogTheme)
         binding = DialogStreakRestoreBinding.inflate(activity.layoutInflater, null, false)
 
-        binding.ticketItem.counter.text = getString(R.string.amount, InventoryUtil.getItemsCount(InventoryUtil.Item.Ticket))
+        binding.ticketItem.counter.text = getString(R.string.amount, inventoryManager.getItemsCount(InventoryManager.Item.Ticket))
 
         binding.useCouponButton.setOnClickListener {
-            if (InventoryUtil.useItem(InventoryUtil.Item.Ticket)) {
-                binding.ticketItem.counter.text = getString(R.string.amount, InventoryUtil.getItemsCount(InventoryUtil.Item.Ticket))
+            if (inventoryManager.useItem(InventoryManager.Item.Ticket)) {
+                binding.ticketItem.counter.text = getString(R.string.amount, inventoryManager.getItemsCount(InventoryManager.Item.Ticket))
                 onStreakRestore()
             }
             dismiss()

@@ -20,6 +20,7 @@ class QuestionsPacksPresenter
 @Inject
 constructor(
         private val api: API,
+        private val sharedPreferenceMgr: SharedPreferenceMgr,
         @BackgroundScheduler
         private val backgroundScheduler: Scheduler,
         @MainScheduler
@@ -31,8 +32,6 @@ constructor(
     private var isPacksLoaded = false
 
     private val compositeDisposable = CompositeDisposable()
-
-    private val sharedPreferenceMgr = SharedPreferenceMgr.getInstance() // to inject
 
     init {
         adapter.selection = sharedPreferenceMgr.questionsPackIndex

@@ -22,6 +22,7 @@ constructor(
         context: Context,
         private val expManager: ExpManager,
         private val dailyRewardManager: DailyRewardManager,
+        private val sharedPreferenceMgr: SharedPreferenceMgr,
         eventClient: Client<AchievementEventListener>
 ): Presenter<AchievementView>, AchievementEventListener {
     private val views = HashSet<AchievementView>()
@@ -30,9 +31,6 @@ constructor(
 
     private val queue = ArrayDeque<Achievement>()
     private val prefix = context.getString(R.string.ach_prefix)
-
-
-    private val sharedPreferenceMgr = SharedPreferenceMgr.getInstance() // to inject
 
     enum class Event {
         ONBOARDING,
@@ -62,7 +60,8 @@ constructor(
                 Event.ONBOARDING,
                 1,
                 R.drawable.ic_ach_onboarding,
-                false
+                false,
+                sharedPreferenceMgr
         ))
     }
 
@@ -126,7 +125,8 @@ constructor(
                     event,
                     values[index].toLong(),
 
-                    drawables.getResourceId(index, -1))
+                    drawables.getResourceId(index, -1),
+                    sharedPreferenceMgr = sharedPreferenceMgr)
         })
 
         drawables.recycle()

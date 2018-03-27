@@ -8,13 +8,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import org.stepik.android.adaptive.R
-import org.stepik.android.adaptive.data.SharedPreferenceMgr
 import org.stepik.android.adaptive.data.model.RatingItem
 import org.stepik.android.adaptive.databinding.ItemRatingBinding
 
-class RatingAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
-    private val profileId = SharedPreferenceMgr.getInstance().profileId
-
+class RatingAdapter(
+        private val profileId: Long
+): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private lateinit var leaderIconDrawable: Drawable
     private lateinit var leaderIconDrawableSelected: Drawable
 

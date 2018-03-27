@@ -17,7 +17,8 @@ class LocalReminder
 @Inject
 constructor(
         private val context: Context,
-        private val dailyRewardManager: DailyRewardManager
+        private val dailyRewardManager: DailyRewardManager,
+        private val sharedPreferenceMgr: SharedPreferenceMgr
 ) {
     companion object {
         private const val NOTIFICATION_TIMESTAMP_KEY = "notification_timestamp"
@@ -33,7 +34,7 @@ constructor(
     private val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
 
     fun resolveDailyRemind() {
-        val notificationTimestamp = SharedPreferenceMgr.getInstance().getLong(NOTIFICATION_TIMESTAMP_KEY)
+        val notificationTimestamp = sharedPreferenceMgr.getLong(NOTIFICATION_TIMESTAMP_KEY)
         val now = DateTime.now()
 
         val lastSession = DateTime(dailyRewardManager.getLastSessionTimestamp())
@@ -69,7 +70,7 @@ constructor(
         val pendingIntent = PendingIntent.getBroadcast(context, NotificationsReceiver.REQUEST_CODE, intent, PendingIntent.FLAG_UPDATE_CURRENT)
         alarmManager.cancel(pendingIntent)
 
-        SharedPreferenceMgr.getInstance().saveLong(NOTIFICATION_TIMESTAMP_KEY, newNotificationTimestamp)
+        sharedPreferenceMgr.saveLong(NOTIFICATION_TIMESTAMP_KEY, newNotificationTimestamp)
         scheduleCompat(newNotificationTimestamp, AlarmManager.INTERVAL_HALF_HOUR, pendingIntent)
     }
 

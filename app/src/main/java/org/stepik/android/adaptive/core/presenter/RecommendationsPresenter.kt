@@ -20,8 +20,8 @@ import org.stepik.android.adaptive.ui.listener.AdaptiveReactionListener
 import org.stepik.android.adaptive.ui.listener.AnswerListener
 import org.stepik.android.adaptive.gamification.DailyRewardManager
 import org.stepik.android.adaptive.gamification.ExpManager
-import org.stepik.android.adaptive.util.InventoryUtil
-import org.stepik.android.adaptive.util.RateAppUtil
+import org.stepik.android.adaptive.gamification.InventoryManager
+import org.stepik.android.adaptive.util.RateAppManager
 import org.stepik.android.adaptive.util.addDisposable
 import retrofit2.HttpException
 import java.util.*
@@ -31,13 +31,16 @@ class RecommendationsPresenter
 @Inject
 constructor(
         private val api: API,
+        private val sharedPreferenceMgr: SharedPreferenceMgr,
         @BackgroundScheduler
         private val backgroundScheduler: Scheduler,
         @MainScheduler
         private val mainScheduler: Scheduler,
         localReminder: LocalReminder,
         private val dailyRewardManager: DailyRewardManager,
-        private val expManager: ExpManager
+        private val expManager: ExpManager,
+        private val inventoryManager: InventoryManager,
+        private val rateAppManager: RateAppManager
 ): PresenterBase<RecommendationsView>(), AnswerListener {
     companion object {
         private const val MIN_STREAK_TO_OFFER_TO_BUY = 7
@@ -59,7 +62,7 @@ constructor(
 
     init {
         createReaction(0, RecommendationReaction.Reaction.INTERESTING)
-        InventoryUtil.starterPack()
+        inventoryManager.starterPack()
         localReminder.resolveDailyRemind()
     }
 
@@ -99,8 +102,8 @@ constructor(
         }
 
         if (exp > MIN_EXP_TO_OFFER_PACKS) {
-            if (!SharedPreferenceMgr.getInstance().isQuestionsPacksTooltipWasShown) {
-                SharedPreferenceMgr.getInstance().afterQuestionsPacksTooltipWasShown()
+            if (!sharedPreferenceMgr.isQuestionsPacksTooltipWasShown) {
+                sharedPreferenceMgr.afterQuestionsPacksTooltipWasShown()
                 view?.showQuestionsPacksTooltip()
             }
         }
@@ -118,7 +121,7 @@ constructor(
         view?.onStreak(streak)
         updateExp(expManager.changeExp(streak, submissionId), streak, true)
 
-        if (RateAppUtil.onEngagement()) {
+        if (rateAppManager.onEngagement()) {
             view?.showRateAppDialog()
         }
     }
@@ -131,13 +134,13 @@ constructor(
             view?.onStreakLost()
 
             view?.let {
-                if (InventoryUtil.hasTickets()) {
-                    it.showStreakRestoreDialog(streak, withTooltip = !SharedPreferenceMgr.getInstance().isStreakRestoreTooltipWasShown)
-                    SharedPreferenceMgr.getInstance().afterStreakRestoreTooltipWasShown()
+                if (inventoryManager.hasTickets()) {
+                    it.showStreakRestoreDialog(streak, withTooltip = !sharedPreferenceMgr.isStreakRestoreTooltipWasShown)
+                    sharedPreferenceMgr.afterStreakRestoreTooltipWasShown()
                 } else {
-                    it.showStreakRestoreDialog(streak, withTooltip = streak > MIN_STREAK_TO_OFFER_TO_BUY && !SharedPreferenceMgr.getInstance().isPaidContentTooltipWasShown)
+                    it.showStreakRestoreDialog(streak, withTooltip = streak > MIN_STREAK_TO_OFFER_TO_BUY && !sharedPreferenceMgr.isPaidContentTooltipWasShown)
                     if (streak > MIN_STREAK_TO_OFFER_TO_BUY) {
-                        SharedPreferenceMgr.getInstance().afterPaidContentTooltipWasShown()
+                        sharedPreferenceMgr.afterPaidContentTooltipWasShown()
                     }
                 }
             }
@@ -152,7 +155,7 @@ constructor(
             view?.onLoading()
         }
 
-        compositeDisposable addDisposable CardHelper.createReactionObservable(api, lesson, reaction, cards.size + adapter.getItemCount())
+        compositeDisposable addDisposable CardHelper.createReactionObservable(api, sharedPreferenceMgr, lesson, reaction, cards.size + adapter.getItemCount())
                 .subscribeOn(backgroundScheduler)
                 .observeOn(mainScheduler)
                 .doOnError(this::onError)

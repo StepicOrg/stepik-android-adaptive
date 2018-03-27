@@ -24,7 +24,8 @@ constructor(
         private val api: API,
         @BackgroundScheduler
         private val backgroundScheduler: Scheduler,
-        private val achievementEventPoster: AchievementEventPoster
+        private val achievementEventPoster: AchievementEventPoster,
+        private val sharedPreferenceMgr: SharedPreferenceMgr
 ) {
     companion object {
         private const val EXP_KEY = "exp_key"
@@ -34,7 +35,6 @@ constructor(
     }
 
     private val dataBaseMgr = DataBaseMgr.instance // to inject
-    private val sharedPreferenceMgr = SharedPreferenceMgr.getInstance()
     private val analyticMgr = AnalyticMgr.getInstance()
 
     private val compositeDisposable = CompositeDisposable()

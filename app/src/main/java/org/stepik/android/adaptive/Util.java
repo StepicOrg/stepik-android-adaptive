@@ -14,7 +14,6 @@ import com.vk.sdk.VKSdk;
 import org.stepik.android.adaptive.api.UserAgentProvider;
 import org.stepik.android.adaptive.core.ScreenManager;
 import org.stepik.android.adaptive.data.AnalyticMgr;
-import org.stepik.android.adaptive.data.SharedPreferenceMgr;
 import org.stepik.android.adaptive.data.db.DataBaseMgr;
 
 import java.util.Random;
@@ -22,7 +21,6 @@ import java.util.Random;
 public class Util {
     public static void initMgr(final Context context) {
         ScreenManager.init(context);
-        SharedPreferenceMgr.init(context);
         VKSdk.initialize(context);
         FacebookSdk.sdkInitialize(context.getApplicationContext());
         AnalyticMgr.init(context);

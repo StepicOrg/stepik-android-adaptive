@@ -33,7 +33,7 @@ import org.stepik.android.adaptive.ui.dialog.ExpLevelDialog
 import org.stepik.android.adaptive.ui.dialog.QuestionsPacksDialog
 import org.stepik.android.adaptive.ui.dialog.RateAppDialog
 import org.stepik.android.adaptive.ui.helper.dpToPx
-import org.stepik.android.adaptive.util.InventoryUtil
+import org.stepik.android.adaptive.gamification.InventoryManager
 import org.stepik.android.adaptive.util.PopupHelper
 import org.stepik.android.adaptive.util.changeVisibillity
 import javax.inject.Inject
@@ -73,6 +73,12 @@ class RecommendationsFragment : BasePresenterFragment<RecommendationsPresenter, 
     lateinit var remoteConfig: FirebaseRemoteConfig
 
     @Inject
+    lateinit var sharedPreferenceMgr: SharedPreferenceMgr
+
+    @Inject
+    lateinit var inventoryManager: InventoryManager
+
+    @Inject
     lateinit var recommendationsPresenterProvider: Provider<RecommendationsPresenter>
 
     override fun injectComponent() {
@@ -109,7 +115,7 @@ class RecommendationsFragment : BasePresenterFragment<RecommendationsPresenter, 
         @DimenRes val paddingRes: Int
         @DrawableRes val iconRes: Int
         if (remoteConfig.getBoolean(RemoteConfig.QUESTIONS_PACKS_ICON_EXPERIMENT)) {
-            iconRes = QuestionsPack.values()[SharedPreferenceMgr.getInstance().questionsPackIndex].icon // small icon of current pack
+            iconRes = QuestionsPack.values()[sharedPreferenceMgr.questionsPackIndex].icon // small icon of current pack
             paddingRes = R.dimen.action_bar_icon_padding_small
 
             val badgeCount = getQuestionsPacksBadgesCount()
@@ -125,7 +131,7 @@ class RecommendationsFragment : BasePresenterFragment<RecommendationsPresenter, 
     }
 
     private fun getQuestionsPacksBadgesCount() =
-            QuestionsPack.values().count { !SharedPreferenceMgr.getInstance().isQuestionsPackViewed(it) }
+            QuestionsPack.values().count { !sharedPreferenceMgr.isQuestionsPackViewed(it) }
 
     override fun onAdapter(cardsAdapter: QuizCardsAdapter) =
         binding.cardsContainer.setAdapter(cardsAdapter)
@@ -211,7 +217,7 @@ class RecommendationsFragment : BasePresenterFragment<RecommendationsPresenter, 
                 .createShowStreakRestoreWidgetAnimation(binding.ticketsContainer, streakRestoreViewOffsetX)
                 .apply {
                     if (withTooltip) {
-                        val tooltipText = getString(if (InventoryUtil.hasTickets()) {
+                        val tooltipText = getString(if (inventoryManager.hasTickets()) {
                             R.string.streak_restore_text
                         } else {
                             R.string.paid_content_tooltip
@@ -223,8 +229,8 @@ class RecommendationsFragment : BasePresenterFragment<RecommendationsPresenter, 
                 }
                 .start()
         binding.ticketsContainer.setOnClickListener {
-            if (InventoryUtil.hasTickets()) {
-                if (InventoryUtil.useItem(InventoryUtil.Item.Ticket)) {
+            if (inventoryManager.hasTickets()) {
+                if (inventoryManager.useItem(InventoryManager.Item.Ticket)) {
                     presenter?.restoreStreak(streak)
                 }
                 hideStreakRestoreDialog()
@@ -235,7 +241,7 @@ class RecommendationsFragment : BasePresenterFragment<RecommendationsPresenter, 
     }
 
     private fun refreshStreakRestoreDialog() {
-        binding.ticketItem.counter.text = getString(R.string.amount, InventoryUtil.getItemsCount(InventoryUtil.Item.Ticket))
+        binding.ticketItem.counter.text = getString(R.string.amount, inventoryManager.getItemsCount(InventoryManager.Item.Ticket))
     }
 
     override fun showQuestionsPacksTooltip() {

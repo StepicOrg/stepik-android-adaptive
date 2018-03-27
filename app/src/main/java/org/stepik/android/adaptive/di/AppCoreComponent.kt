@@ -11,7 +11,8 @@ import org.stepik.android.adaptive.di.stats.StatsComponent
 import org.stepik.android.adaptive.di.study.StudyComponent
 import org.stepik.android.adaptive.receivers.BootCompletedReceiver
 import org.stepik.android.adaptive.receivers.NotificationsReceiver
-import org.stepik.android.adaptive.ui.dialog.QuestionsPacksDialog
+import org.stepik.android.adaptive.ui.activity.SplashActivity
+import org.stepik.android.adaptive.ui.dialog.*
 import org.stepik.android.adaptive.ui.fragment.RecommendationsFragment
 
 @AppSingleton
@@ -37,6 +38,12 @@ interface AppCoreComponent {
     fun inject(app: App)
 
     fun inject(dialog: QuestionsPacksDialog)
+    fun inject(dialog: StreakRestoreDialog)
+    fun inject(dialog: InventoryDialog)
+    fun inject(dialog: RateAppDialog)
+    fun inject(dialog: LogoutDialog)
+
+    fun inject(activity: SplashActivity)
 
     fun inject(notificationsReceiver: NotificationsReceiver)
 

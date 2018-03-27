@@ -10,10 +10,12 @@ import android.support.v4.app.DialogFragment
 import android.os.Bundle
 import android.support.v7.app.AlertDialog
 import android.view.View
+import org.stepik.android.adaptive.App
 import org.stepik.android.adaptive.R
 import org.stepik.android.adaptive.data.AnalyticMgr
 import org.stepik.android.adaptive.databinding.RateAppDialogBinding
-import org.stepik.android.adaptive.util.RateAppUtil
+import org.stepik.android.adaptive.util.RateAppManager
+import javax.inject.Inject
 
 class RateAppDialog : DialogFragment() {
     companion object {
@@ -25,6 +27,14 @@ class RateAppDialog : DialogFragment() {
     }
 
     private lateinit var binding: RateAppDialogBinding
+
+    @Inject
+    lateinit var rateAppManager: RateAppManager
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        App.component().inject(this)
+    }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val builder = AlertDialog.Builder(context)
@@ -51,7 +61,7 @@ class RateAppDialog : DialogFragment() {
             } else {
                 AnalyticMgr.getInstance().rateNegativeLater()
             }
-            RateAppUtil.onCloseLater()
+            rateAppManager.onCloseLater()
             dismiss()
         }
 
@@ -71,7 +81,7 @@ class RateAppDialog : DialogFragment() {
             } catch (e: ActivityNotFoundException) {}
 
             AnalyticMgr.getInstance().rateNegativeEmail()
-            RateAppUtil.onCloseNegative()
+            rateAppManager.onCloseNegative()
             dismiss()
         }
 
@@ -85,7 +95,7 @@ class RateAppDialog : DialogFragment() {
                 startActivity(intent)
             }
             AnalyticMgr.getInstance().ratePositiveGooglePlay()
-            RateAppUtil.onRated()
+            rateAppManager.onRated()
             dismiss()
         }
 
@@ -105,7 +115,7 @@ class RateAppDialog : DialogFragment() {
 
     override fun onDismiss(dialog: DialogInterface?) {
         AnalyticMgr.getInstance().rateCanceled()
-        RateAppUtil.onCloseLater()
+        rateAppManager.onCloseLater()
         super.onDismiss(dialog)
     }
 

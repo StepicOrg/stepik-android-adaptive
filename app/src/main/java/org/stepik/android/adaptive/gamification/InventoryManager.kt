@@ -1,11 +1,23 @@
-package org.stepik.android.adaptive.util
+package org.stepik.android.adaptive.gamification
 
 import android.support.annotation.DrawableRes
 import org.stepik.android.adaptive.BuildConfig
 import org.stepik.android.adaptive.R
 import org.stepik.android.adaptive.data.SharedPreferenceMgr
+import org.stepik.android.adaptive.di.AppSingleton
+import javax.inject.Inject
 
-object InventoryUtil {
+@AppSingleton
+class InventoryManager
+@Inject
+constructor(
+        private val sharedPreferenceMgr: SharedPreferenceMgr
+) {
+    companion object {
+        private const val STARTER_PACK_VERSION_KEY = "starter_pack_version"
+        private const val START_TICKETS_COUNT = 7L
+    }
+
     enum class Item(val key: String, @DrawableRes val iconId: Int) {
         Ticket("tickets", R.drawable.ic_coupon_pack_small)
 //        Chest("chest", R.drawable.ic_chest)
@@ -30,18 +42,12 @@ object InventoryUtil {
         }
     }
 
-    private const val STARTER_PACK_VERSION_KEY = "starter_pack_version"
-
-    private const val START_TICKETS_COUNT = 7L
-
-    @JvmStatic
     fun getItemsCount(item: Item) =
-        SharedPreferenceMgr.getInstance().getLong(item.key)
+        sharedPreferenceMgr.getLong(item.key)
 
     private fun setItemsCount(item: Item, count: Long) =
-          SharedPreferenceMgr.getInstance().saveLong(item.key, count)
+          sharedPreferenceMgr.saveLong(item.key, count)
 
-    @JvmStatic
     fun useItem(item: Item) : Boolean {
         val count = getItemsCount(item)
         if (count > 0) {
@@ -51,25 +57,21 @@ object InventoryUtil {
         return false
     }
 
-    @JvmStatic
     fun changeItemCount(item: Item, delta: Long) =
-        SharedPreferenceMgr.getInstance().changeLong(item.key, delta)
+        sharedPreferenceMgr.changeLong(item.key, delta)
 
-    @JvmStatic
     fun hasTickets() = getItemsCount(Item.Ticket) > 0
 
-    @JvmStatic
     fun starterPack() {
-        if (SharedPreferenceMgr.getInstance().getLong(STARTER_PACK_VERSION_KEY) == 0L) {
-            SharedPreferenceMgr.getInstance().saveLong(STARTER_PACK_VERSION_KEY, BuildConfig.VERSION_CODE.toLong())
+        if (sharedPreferenceMgr.getLong(STARTER_PACK_VERSION_KEY) == 0L) {
+            sharedPreferenceMgr.saveLong(STARTER_PACK_VERSION_KEY, BuildConfig.VERSION_CODE.toLong())
             setItemsCount(Item.Ticket, START_TICKETS_COUNT)
         }
     }
 
-    @JvmStatic
     fun getInventory() : List<Pair<Item, Int>> =
         Item.values()
-                .map { it to InventoryUtil.getItemsCount(it).toInt() }
+                .map { it to getItemsCount(it).toInt() }
 //                .filter { it.second > 0 }
                 .toList()
 

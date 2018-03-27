@@ -6,34 +6,33 @@ import org.stepik.android.adaptive.data.SharedPreferenceMgr
 import org.stepik.android.adaptive.di.AppSingleton
 import org.stepik.android.adaptive.gamification.achievements.AchievementEventPoster
 import org.stepik.android.adaptive.gamification.achievements.AchievementManager
-import org.stepik.android.adaptive.util.InventoryUtil
 import javax.inject.Inject
 
 @AppSingleton
 class DailyRewardManager
 @Inject
 constructor(
-        private val achievementEventPoster: AchievementEventPoster
+        private val achievementEventPoster: AchievementEventPoster,
+        private val sharedPreferenceMgr: SharedPreferenceMgr,
+        private val inventoryManager: InventoryManager
 ) {
     companion object {
         const val DISCARD = -1L
 
         val rewards = listOf(
-                listOf(InventoryUtil.Item.Ticket to 3),
-                listOf(InventoryUtil.Item.Ticket to 3),
-                listOf(InventoryUtil.Item.Ticket to 5),
-                listOf(InventoryUtil.Item.Ticket to 5),
-                listOf(InventoryUtil.Item.Ticket to 7),
-                listOf(InventoryUtil.Item.Ticket to 7),
-                listOf(InventoryUtil.Item.Ticket to 25)
+                listOf(InventoryManager.Item.Ticket to 3),
+                listOf(InventoryManager.Item.Ticket to 3),
+                listOf(InventoryManager.Item.Ticket to 5),
+                listOf(InventoryManager.Item.Ticket to 5),
+                listOf(InventoryManager.Item.Ticket to 7),
+                listOf(InventoryManager.Item.Ticket to 7),
+                listOf(InventoryManager.Item.Ticket to 25)
         )
 
         private const val LAST_SESSION_KEY = "last_session"
         private const val REWARD_PROGRESS_KEY = "reward_progress"
         private const val TOTAL_REWARD_PROGRESS_KEY = "total_reward_progress"
     }
-
-    private val sharedPreferenceMgr = SharedPreferenceMgr.getInstance() // to inject
 
     fun getLastSessionTimestamp() =
             sharedPreferenceMgr.getLong(LAST_SESSION_KEY)
@@ -86,7 +85,7 @@ constructor(
         val day = getCurrentRewardDay()
         if (day != DISCARD) {
             rewards[day.toInt()].forEach {
-                InventoryUtil.changeItemCount(it.first, it.second.toLong())
+                inventoryManager.changeItemCount(it.first, it.second.toLong())
             }
             achievementEventPoster.onEvent(AchievementManager.Event.DAYS, totalRewardProgress + 1)
         }

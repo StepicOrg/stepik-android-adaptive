@@ -49,10 +49,13 @@ class OnboardingFragment : Fragment(), LoginView {
     @Inject
     lateinit var presenter: LoginPresenter
 
+    @Inject
+    lateinit var sharedPreferenceMgr: SharedPreferenceMgr
+
     private val adapter = OnboardingQuizCardsAdapter {
         updateToolbar(true)
         if (it == 0) Completable.fromAction {
-            SharedPreferenceMgr.getInstance().isNotFirstTime = true
+            sharedPreferenceMgr.isNotFirstTime = true
             achievementManager.onEvent(AchievementManager.Event.ONBOARDING, 1)
         }
                 .observeOn(mainScheduler)
@@ -68,7 +71,7 @@ class OnboardingFragment : Fragment(), LoginView {
         initOnboardingCards()
         presenter.attachView(this)
 
-        Observable.fromCallable(SharedPreferenceMgr.getInstance()::getAuthResponseDeadline)
+        Observable.fromCallable(sharedPreferenceMgr::authResponseDeadline)
                 .observeOn(mainScheduler)
                 .subscribe {
                     if(it == 0L)
@@ -178,11 +181,11 @@ class OnboardingFragment : Fragment(), LoginView {
 
 
     private fun createMockAccount() {
-        Observable.fromCallable(SharedPreferenceMgr.getInstance()::getFakeUser)
+        Observable.fromCallable(sharedPreferenceMgr::fakeUser)
                 .observeOn(mainScheduler)
                 .subscribeOn(backgroundScheduler)
                 .subscribe {
-                    if (it.isNotEmpty) {
+                    if (it.value != null) {
                         // we got here if on some reason server returns us 401, so we try to re-login with existing fake account
                         presenter.authWithLoginPassword(it.value.login, it.value.password, true)
                     } else {

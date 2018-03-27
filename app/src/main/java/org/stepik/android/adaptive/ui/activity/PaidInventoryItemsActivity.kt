@@ -19,7 +19,7 @@ import org.stepik.android.adaptive.core.presenter.PaidInventoryItemsPresenter
 import org.stepik.android.adaptive.core.presenter.contracts.PaidInventoryItemsView
 import org.stepik.android.adaptive.ui.adapter.PaidInventoryAdapter
 import org.stepik.android.adaptive.ui.dialog.InventoryDialog
-import org.stepik.android.adaptive.util.InventoryUtil
+import org.stepik.android.adaptive.gamification.InventoryManager
 import javax.inject.Inject
 import javax.inject.Provider
 
@@ -31,6 +31,9 @@ class PaidInventoryItemsActivity : BasePresenterActivity<PaidInventoryItemsPrese
 
     @Inject
     lateinit var billing: Billing
+
+    @Inject
+    lateinit var inventoryManager: InventoryManager
 
     @Inject
     lateinit var paidInventoryItemsPresenterProvider: Provider<PaidInventoryItemsPresenter>
@@ -118,7 +121,7 @@ class PaidInventoryItemsActivity : BasePresenterActivity<PaidInventoryItemsPrese
     }
 
     override fun finish() {
-        if (InventoryUtil.hasTickets()) {
+        if (inventoryManager.hasTickets()) {
             setResult(Activity.RESULT_OK)
         }
         super.finish()
