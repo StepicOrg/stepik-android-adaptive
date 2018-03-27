@@ -1,6 +1,5 @@
 package org.stepik.android.adaptive.core.presenter
 
-import io.reactivex.Completable
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
@@ -16,6 +15,7 @@ import org.stepik.android.adaptive.data.model.*
 import org.stepik.android.adaptive.ui.listener.AdaptiveReactionListener
 import org.stepik.android.adaptive.ui.listener.AnswerListener
 import org.stepik.android.adaptive.util.HtmlUtil
+import org.stepik.android.adaptive.util.addDisposable
 import retrofit2.HttpException
 import java.util.concurrent.TimeUnit
 
@@ -28,6 +28,10 @@ class CardPresenter(val card: Card, private val listener: AdaptiveReactionListen
     private val compositeDisposable = CompositeDisposable()
 
     private var isBookmarked: Boolean? = null
+
+    private val analyticMgr: AnalyticMgr = AnalyticMgr.getInstance() // to inject
+    private val sharedPreferenceMgr = SharedPreferenceMgr.getInstance()
+    private val dataBaseMgr = DataBaseMgr.instance
 
     var isLoading = false
         private set
@@ -57,12 +61,13 @@ class CardPresenter(val card: Card, private val listener: AdaptiveReactionListen
     }
 
     private fun fetchBookmarkState() =
-        compositeDisposable.add(Single.fromCallable {
-            DataBaseMgr.instance.isInBookmarks(card.step.id)
-        }.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe({
-            isBookmarked = it
-            resolveBookmarkState()
-        }, {}))
+        compositeDisposable addDisposable dataBaseMgr.isInBookmarks(card.step.id)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({
+                    isBookmarked = it
+                    resolveBookmarkState()
+                }, {})
 
     private fun resolveBookmarkState() {
         if (card.lessonId != Card.MOCK_LESSON_ID) { // do not show bookmark button for mock cards
@@ -80,7 +85,7 @@ class CardPresenter(val card: Card, private val listener: AdaptiveReactionListen
         }
 
         return Bookmark(
-                QuestionsPack.values()[SharedPreferenceMgr.getInstance().questionsPackIndex].courseId,
+                QuestionsPack.values()[sharedPreferenceMgr.questionsPackIndex].courseId,
                 card.step.id,
                 card.lesson.title,
                 definition
@@ -91,19 +96,20 @@ class CardPresenter(val card: Card, private val listener: AdaptiveReactionListen
         isBookmarked = null
         val bookmark = createBookmark()
 
-        compositeDisposable.add(Single.fromCallable {
-            if (bookmarked) {
-                AnalyticMgr.getInstance().logEvent(AnalyticMgr.EVENT_ON_BOOKMARK_REMOVED)
-                DataBaseMgr.instance.removeBookmark(bookmark)
-            } else {
-                AnalyticMgr.getInstance().logEvent(AnalyticMgr.EVENT_ON_BOOKMARK_ADDED)
-                DataBaseMgr.instance.addBookmark(bookmark)
-            }
-            !bookmarked
-        }.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe({
-            isBookmarked = it
-            resolveBookmarkState()
-        }, {}))
+        compositeDisposable addDisposable
+                if (bookmarked) {
+                    analyticMgr.logEvent(AnalyticMgr.EVENT_ON_BOOKMARK_REMOVED)
+                    dataBaseMgr.removeBookmark(bookmark)
+                } else {
+                    analyticMgr.logEvent(AnalyticMgr.EVENT_ON_BOOKMARK_ADDED)
+                    dataBaseMgr.addBookmark(bookmark)
+                }.andThen(Single.just(!bookmarked))
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe({
+                            isBookmarked = it
+                            resolveBookmarkState()
+                        }, {})
     }
 
     /**
@@ -111,9 +117,7 @@ class CardPresenter(val card: Card, private val listener: AdaptiveReactionListen
      */
     private fun updateBookmark() {
         val bookmark = createBookmark()
-        compositeDisposable.add(Completable.fromCallable {
-            DataBaseMgr.instance.updateBookmark(bookmark)
-        }.subscribeOn(Schedulers.io()).observeOn(Schedulers.io()).subscribe())
+        compositeDisposable addDisposable dataBaseMgr.updateBookmark(bookmark).subscribeOn(Schedulers.io()).observeOn(Schedulers.io()).subscribe()
     }
 
     fun createReaction(reaction: RecommendationReaction.Reaction) {
@@ -121,16 +125,16 @@ class CardPresenter(val card: Card, private val listener: AdaptiveReactionListen
         when(reaction) {
             RecommendationReaction.Reaction.NEVER_AGAIN -> {
                 if (card.isCorrect) {
-                    AnalyticMgr.getInstance().reactionEasyAfterCorrect(lesson)
+                    analyticMgr.reactionEasyAfterCorrect(lesson)
                 }
-                AnalyticMgr.getInstance().reactionEasy(lesson)
+                analyticMgr.reactionEasy(lesson)
             }
 
             RecommendationReaction.Reaction.MAYBE_LATER -> {
                 if (card.isCorrect) {
-                    AnalyticMgr.getInstance().reactionHardAfterCorrect(lesson)
+                    analyticMgr.reactionHardAfterCorrect(lesson)
                 }
-                AnalyticMgr.getInstance().reactionHard(lesson)
+                analyticMgr.reactionHard(lesson)
             }
         }
         listener?.createReaction(lesson, reaction)
@@ -150,7 +154,7 @@ class CardPresenter(val card: Card, private val listener: AdaptiveReactionListen
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(this::onSubmissionLoaded, this::onError)
 
-            AnalyticMgr.getInstance().onSubmissionWasMade()
+            analyticMgr.onSubmissionWasMade()
         }
     }
 
@@ -170,7 +174,7 @@ class CardPresenter(val card: Card, private val listener: AdaptiveReactionListen
                         .subscribe(this::onSubmissionLoaded, this::onError)
             } else {
                 isLoading = false
-                AnalyticMgr.getInstance().answerResult(card.step, it)
+                analyticMgr.answerResult(card.step, it)
                 if (it.status == Submission.Status.CORRECT) {
                     listener?.createReaction(card.lessonId, RecommendationReaction.Reaction.SOLVED)
                     answerListener?.onCorrectAnswer(it.id)
