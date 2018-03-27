@@ -8,7 +8,7 @@ import android.support.v4.app.DialogFragment
 import android.support.v7.app.AlertDialog
 import org.stepik.android.adaptive.App
 import org.stepik.android.adaptive.R
-import org.stepik.android.adaptive.data.AnalyticMgr
+import org.stepik.android.adaptive.data.Analytics
 import org.stepik.android.adaptive.databinding.DialogStreakRestoreBinding
 import org.stepik.android.adaptive.ui.fragment.RecommendationsFragment
 import org.stepik.android.adaptive.gamification.InventoryManager
@@ -31,6 +31,9 @@ class StreakRestoreDialog : DialogFragment() {
     @Inject
     lateinit var inventoryManager: InventoryManager
 
+    @Inject
+    lateinit var analytics: Analytics
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         App.component().inject(this)
@@ -39,7 +42,7 @@ class StreakRestoreDialog : DialogFragment() {
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         if (savedInstanceState == null) {
-            AnalyticMgr.getInstance().onStreakRestoreDialogShown()
+            analytics.onStreakRestoreDialogShown()
         }
 
         val alertDialogBuilder = AlertDialog.Builder(context, R.style.ExpLevelDialogTheme)
@@ -56,7 +59,7 @@ class StreakRestoreDialog : DialogFragment() {
         }
 
         binding.cancelButton.setOnClickListener {
-            AnalyticMgr.getInstance().onStreakRestoreCanceled(arguments?.getLong(STREAK_KEY) ?: 0)
+            analytics.onStreakRestoreCanceled(arguments?.getLong(STREAK_KEY) ?: 0)
             dismiss()
         }
 
@@ -67,7 +70,7 @@ class StreakRestoreDialog : DialogFragment() {
 
     private fun onStreakRestore() {
         val streak = arguments?.getLong(STREAK_KEY) ?: 0
-        AnalyticMgr.getInstance().onStreakRestored(streak)
+        analytics.onStreakRestored(streak)
         val intent = Intent()
         intent.putExtra(RecommendationsFragment.STREAK_RESTORE_KEY, streak)
         parentFragment?.onActivityResult(RecommendationsFragment.STREAK_RESTORE_REQUEST_CODE, Activity.RESULT_OK, intent) // used parentFragment instead of targetFragment due to bug on screen orientation change

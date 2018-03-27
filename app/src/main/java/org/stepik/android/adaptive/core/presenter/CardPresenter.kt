@@ -9,7 +9,7 @@ import org.stepik.android.adaptive.api.API
 import org.stepik.android.adaptive.api.SubmissionResponse
 import org.stepik.android.adaptive.configuration.Config
 import org.stepik.android.adaptive.core.presenter.contracts.CardView
-import org.stepik.android.adaptive.data.AnalyticMgr
+import org.stepik.android.adaptive.data.Analytics
 import org.stepik.android.adaptive.data.SharedPreferenceMgr
 import org.stepik.android.adaptive.data.db.DataBaseMgr
 import org.stepik.android.adaptive.data.model.*
@@ -33,8 +33,6 @@ class CardPresenter(val card: Card, private val listener: AdaptiveReactionListen
 
     private var isBookmarked: Boolean? = null
 
-    private val analyticMgr: AnalyticMgr = AnalyticMgr.getInstance() // to inject
-
     var isLoading = false
         private set
 
@@ -49,6 +47,9 @@ class CardPresenter(val card: Card, private val listener: AdaptiveReactionListen
 
     @Inject
     lateinit var sharedPreferenceMgr: SharedPreferenceMgr
+
+    @Inject
+    lateinit var analytics: Analytics
 
     @Inject
     @field:MainScheduler
@@ -124,10 +125,10 @@ class CardPresenter(val card: Card, private val listener: AdaptiveReactionListen
 
         compositeDisposable addDisposable
                 if (bookmarked) {
-                    analyticMgr.logEvent(AnalyticMgr.EVENT_ON_BOOKMARK_REMOVED)
+                    analytics.logEvent(Analytics.EVENT_ON_BOOKMARK_REMOVED)
                     dataBaseMgr.removeBookmark(bookmark)
                 } else {
-                    analyticMgr.logEvent(AnalyticMgr.EVENT_ON_BOOKMARK_ADDED)
+                    analytics.logEvent(Analytics.EVENT_ON_BOOKMARK_ADDED)
                     dataBaseMgr.addBookmark(bookmark)
                 }.andThen(Single.just(!bookmarked))
                         .subscribeOn(backgroundScheduler)
@@ -151,16 +152,16 @@ class CardPresenter(val card: Card, private val listener: AdaptiveReactionListen
         when(reaction) {
             RecommendationReaction.Reaction.NEVER_AGAIN -> {
                 if (card.isCorrect) {
-                    analyticMgr.reactionEasyAfterCorrect(lesson)
+                    analytics.reactionEasyAfterCorrect(lesson)
                 }
-                analyticMgr.reactionEasy(lesson)
+                analytics.reactionEasy(lesson)
             }
 
             RecommendationReaction.Reaction.MAYBE_LATER -> {
                 if (card.isCorrect) {
-                    analyticMgr.reactionHardAfterCorrect(lesson)
+                    analytics.reactionHardAfterCorrect(lesson)
                 }
-                analyticMgr.reactionHard(lesson)
+                analytics.reactionHard(lesson)
             }
             else -> {}
         }
@@ -181,7 +182,7 @@ class CardPresenter(val card: Card, private val listener: AdaptiveReactionListen
                     .observeOn(mainScheduler)
                     .subscribe(this::onSubmissionLoaded, this::onError)
 
-            analyticMgr.onSubmissionWasMade()
+            analytics.onSubmissionWasMade()
         }
     }
 
@@ -201,7 +202,7 @@ class CardPresenter(val card: Card, private val listener: AdaptiveReactionListen
                         .subscribe(this::onSubmissionLoaded, this::onError)
             } else {
                 isLoading = false
-                analyticMgr.answerResult(card.step, it)
+                analytics.answerResult(card.step, it)
                 if (it.status == Submission.Status.CORRECT) {
                     listener?.createReaction(card.lessonId, RecommendationReaction.Reaction.SOLVED)
                     answerListener?.onCorrectAnswer(it.id)

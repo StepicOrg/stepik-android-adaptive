@@ -1,7 +1,7 @@
 package org.stepik.android.adaptive.gamification
 
 import org.stepik.android.adaptive.api.API
-import org.stepik.android.adaptive.data.AnalyticMgr
+import org.stepik.android.adaptive.data.Analytics
 import org.stepik.android.adaptive.data.SharedPreferenceMgr
 import org.stepik.android.adaptive.data.db.DataBaseMgr
 
@@ -26,7 +26,8 @@ constructor(
         private val backgroundScheduler: Scheduler,
         private val achievementEventPoster: AchievementEventPoster,
         private val sharedPreferenceMgr: SharedPreferenceMgr,
-        private val dataBaseMgr: DataBaseMgr
+        private val dataBaseMgr: DataBaseMgr,
+        private val analytics: Analytics
 ) {
     companion object {
         private const val EXP_KEY = "exp_key"
@@ -34,8 +35,6 @@ constructor(
 
         fun syncRating(dataBaseMgr: DataBaseMgr, api: API): Completable = dataBaseMgr.getExp().flatMapCompletable { e -> api.putRating(e) }
     }
-
-    private val analyticMgr = AnalyticMgr.getInstance()
 
     private val compositeDisposable = CompositeDisposable()
 
@@ -47,7 +46,7 @@ constructor(
 
     fun changeExp(delta: Long, submissionId: Long): Long {
         val exp = sharedPreferenceMgr.changeLong(EXP_KEY, delta)
-        analyticMgr.onExpReached(exp - delta, delta)
+        analytics.onExpReached(exp - delta, delta)
 
         achievementEventPoster.onEvent(AchievementManager.Event.EXP, exp, true)
 
@@ -57,7 +56,7 @@ constructor(
                         .subscribeOn(backgroundScheduler)
                         .subscribe(Functions.EMPTY_ACTION, Consumer { e ->
                             if (e is HttpException) {
-                                analyticMgr.onRatingError()
+                                analytics.onRatingError()
                             }
                         })
         )
@@ -69,7 +68,7 @@ constructor(
 
     fun changeStreak(delta: Long): Long {
         val streak = sharedPreferenceMgr.changeLong(STREAK_KEY, delta)
-        analyticMgr.onStreak(streak)
+        analytics.onStreak(streak)
         achievementEventPoster.onEvent(AchievementManager.Event.STREAK, streak, true)
         return streak
     }
@@ -88,7 +87,7 @@ constructor(
             if (currentLevel == 1L) 5 else 5 * Math.pow(2.0, (currentLevel - 1).toDouble()).toLong()
 
     fun resetStreak() {
-        analyticMgr.onStreakLost(streak)
+        analytics.onStreakLost(streak)
         sharedPreferenceMgr.saveLong(STREAK_KEY, 0)
     }
 

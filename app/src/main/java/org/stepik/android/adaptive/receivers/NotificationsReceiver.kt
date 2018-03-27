@@ -5,7 +5,7 @@ import android.content.Context
 import android.content.Intent
 import org.stepik.android.adaptive.App
 import org.stepik.android.adaptive.Util
-import org.stepik.android.adaptive.data.AnalyticMgr
+import org.stepik.android.adaptive.data.Analytics
 import org.stepik.android.adaptive.notifications.LocalReminder
 import org.stepik.android.adaptive.notifications.RemindNotificationManager
 import javax.inject.Inject
@@ -25,6 +25,9 @@ class NotificationsReceiver : BroadcastReceiver() {
     @Inject
     lateinit var localReminder: LocalReminder
 
+    @Inject
+    lateinit var analytics: Analytics
+
     init {
         App.component().inject(this)
     }
@@ -36,7 +39,7 @@ class NotificationsReceiver : BroadcastReceiver() {
             val days = it.getIntExtra(LocalReminder.DAYS_MULTIPLIER_KEY, 0)
             if (it.action == NOTIFICATION_CANCELED) {
                 localReminder.resolveDailyRemind()
-                AnalyticMgr.getInstance().onNotificationCanceled(days)
+                analytics.onNotificationCanceled(days)
             } else if (it.action == SHOW_NOTIFICATION) {
                 when (days) {
                     1 -> remindNotificationManager.showEveryDayNotification()

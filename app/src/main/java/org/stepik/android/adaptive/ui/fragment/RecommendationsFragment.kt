@@ -21,7 +21,7 @@ import org.stepik.android.adaptive.core.ScreenManager
 import org.stepik.android.adaptive.core.presenter.BasePresenterFragment
 import org.stepik.android.adaptive.core.presenter.RecommendationsPresenter
 import org.stepik.android.adaptive.core.presenter.contracts.RecommendationsView
-import org.stepik.android.adaptive.data.AnalyticMgr
+import org.stepik.android.adaptive.data.Analytics
 import org.stepik.android.adaptive.data.SharedPreferenceMgr
 import org.stepik.android.adaptive.data.model.QuestionsPack
 import org.stepik.android.adaptive.databinding.FragmentRecommendationsBinding
@@ -70,6 +70,9 @@ class RecommendationsFragment : BasePresenterFragment<RecommendationsPresenter, 
     private lateinit var binding: FragmentRecommendationsBinding
 
     @Inject
+    lateinit var analytics: Analytics
+
+    @Inject
     lateinit var remoteConfig: FirebaseRemoteConfig
 
     @Inject
@@ -94,7 +97,7 @@ class RecommendationsFragment : BasePresenterFragment<RecommendationsPresenter, 
         binding.streakSuccessContainer.nestedTextView = binding.streakSuccess
         binding.streakSuccessContainer.setGradientDrawableParams(ContextCompat.getColor(context, R.color.colorAccent), 0f)
 
-        binding.toolbar.setOnClickListener { ScreenManager.showStatsScreen(context, 0) }
+        binding.toolbar.setOnClickListener { ScreenManager.showStatsScreen(context, analytics, 0) }
 
         savedInstanceState?.getLong(STREAK_RESTORE_KEY, -1)?.let {
             if (it != -1L) {
@@ -105,7 +108,7 @@ class RecommendationsFragment : BasePresenterFragment<RecommendationsPresenter, 
         binding.questionsPacks.changeVisibillity(isQuestionsPackSupported)
         binding.questionsPacks.setOnClickListener {
             questionsPacksTooltip?.dismiss()
-            ScreenManager.showQuestionsPacksScreen(context)
+            ScreenManager.showQuestionsPacksScreen(context, analytics)
         }
 
         return binding.root
@@ -265,7 +268,7 @@ class RecommendationsFragment : BasePresenterFragment<RecommendationsPresenter, 
     }
 
     private fun openPaidContentList() {
-        AnalyticMgr.getInstance().paidContentOpened()
+        analytics.paidContentOpened()
         startActivityForResult(Intent(context, PaidInventoryItemsActivity::class.java), PAID_CONTENT_REQUEST_CODE)
     }
 

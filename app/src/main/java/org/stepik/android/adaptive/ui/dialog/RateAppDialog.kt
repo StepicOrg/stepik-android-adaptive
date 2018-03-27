@@ -12,7 +12,7 @@ import android.support.v7.app.AlertDialog
 import android.view.View
 import org.stepik.android.adaptive.App
 import org.stepik.android.adaptive.R
-import org.stepik.android.adaptive.data.AnalyticMgr
+import org.stepik.android.adaptive.data.Analytics
 import org.stepik.android.adaptive.databinding.RateAppDialogBinding
 import org.stepik.android.adaptive.util.RateAppManager
 import javax.inject.Inject
@@ -30,6 +30,9 @@ class RateAppDialog : DialogFragment() {
 
     @Inject
     lateinit var rateAppManager: RateAppManager
+
+    @Inject
+    lateinit var analytics: Analytics
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,14 +55,14 @@ class RateAppDialog : DialogFragment() {
         binding.ok.setOnClickListener {
             binding.starsContainer.setIsIndicator(true)
             refresh()
-            AnalyticMgr.getInstance().rate(binding.starsContainer.rating.toInt())
+            analytics.rate(binding.starsContainer.rating.toInt())
         }
 
         binding.later.setOnClickListener {
             if (binding.starsContainer.rating >= MIN_POSITIVE) {
-                AnalyticMgr.getInstance().ratePositiveLater()
+                analytics.ratePositiveLater()
             } else {
-                AnalyticMgr.getInstance().rateNegativeLater()
+                analytics.rateNegativeLater()
             }
             rateAppManager.onCloseLater()
             dismiss()
@@ -80,7 +83,7 @@ class RateAppDialog : DialogFragment() {
                 startActivity(mailer)
             } catch (e: ActivityNotFoundException) {}
 
-            AnalyticMgr.getInstance().rateNegativeEmail()
+            analytics.rateNegativeEmail()
             rateAppManager.onCloseNegative()
             dismiss()
         }
@@ -94,7 +97,7 @@ class RateAppDialog : DialogFragment() {
                 intent.data = Uri.parse("http://play.google.com/store/apps/details?id=${context.packageName}")
                 startActivity(intent)
             }
-            AnalyticMgr.getInstance().ratePositiveGooglePlay()
+            analytics.ratePositiveGooglePlay()
             rateAppManager.onRated()
             dismiss()
         }
@@ -114,7 +117,7 @@ class RateAppDialog : DialogFragment() {
     }
 
     override fun onDismiss(dialog: DialogInterface?) {
-        AnalyticMgr.getInstance().rateCanceled()
+        analytics.rateCanceled()
         rateAppManager.onCloseLater()
         super.onDismiss(dialog)
     }

@@ -6,7 +6,7 @@ import org.stepik.android.adaptive.configuration.Config
 import org.stepik.android.adaptive.api.API
 import org.stepik.android.adaptive.api.login.SocialManager
 import org.stepik.android.adaptive.core.presenter.contracts.LoginView
-import org.stepik.android.adaptive.data.AnalyticMgr
+import org.stepik.android.adaptive.data.Analytics
 import org.stepik.android.adaptive.data.SharedPreferenceMgr
 import org.stepik.android.adaptive.data.model.AccountCredentials
 import org.stepik.android.adaptive.data.model.Profile
@@ -22,6 +22,7 @@ constructor(
         private val api: API,
         private val config: Config,
         private val sharedPreferenceMgr: SharedPreferenceMgr,
+        private val analytics: Analytics,
 
         @BackgroundScheduler
         private val backgroundScheduler: Scheduler,
@@ -130,7 +131,7 @@ constructor(
 
     fun onSuccess() {
         isSuccess = true
-        AnalyticMgr.getInstance().successLogin()
+        analytics.successLogin()
         view?.onSuccess()
     }
 

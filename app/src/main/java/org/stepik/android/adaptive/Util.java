@@ -13,7 +13,6 @@ import com.vk.sdk.VKSdk;
 
 import org.stepik.android.adaptive.api.UserAgentProvider;
 import org.stepik.android.adaptive.core.ScreenManager;
-import org.stepik.android.adaptive.data.AnalyticMgr;
 
 import java.util.Random;
 
@@ -22,7 +21,6 @@ public class Util {
         ScreenManager.init(context);
         VKSdk.initialize(context);
         FacebookSdk.sdkInitialize(context.getApplicationContext());
-        AnalyticMgr.init(context);
         UserAgentProvider.init(context);
     }
 

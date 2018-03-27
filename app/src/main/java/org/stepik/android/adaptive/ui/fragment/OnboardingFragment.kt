@@ -16,7 +16,7 @@ import org.stepik.android.adaptive.App
 import org.stepik.android.adaptive.R
 import org.stepik.android.adaptive.core.presenter.LoginPresenter
 import org.stepik.android.adaptive.core.presenter.contracts.LoginView
-import org.stepik.android.adaptive.data.AnalyticMgr
+import org.stepik.android.adaptive.data.Analytics
 import org.stepik.android.adaptive.data.SharedPreferenceMgr
 import org.stepik.android.adaptive.data.model.*
 import org.stepik.android.adaptive.databinding.FragmentRecommendationsBinding
@@ -37,6 +37,9 @@ class OnboardingFragment : Fragment(), LoginView {
 
     @Inject
     lateinit var achievementManager: AchievementManager
+
+    @Inject
+    lateinit var analytics: Analytics
 
     @Inject
     @field:MainScheduler
@@ -163,7 +166,7 @@ class OnboardingFragment : Fragment(), LoginView {
 
     private fun onComplete() {
         if (completed == 2) {
-            AnalyticMgr.getInstance().onBoardingFinished()
+            analytics.onBoardingFinished()
             startActivity(Intent(this@OnboardingFragment.context, StudyActivity::class.java))
             this@OnboardingFragment.activity.finish()
         }

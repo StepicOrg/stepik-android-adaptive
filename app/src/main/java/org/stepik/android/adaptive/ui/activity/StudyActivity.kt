@@ -4,6 +4,7 @@ import kotlinx.android.synthetic.main.fragment_activity.*
 import org.stepik.android.adaptive.App
 
 import org.stepik.android.adaptive.core.presenter.contracts.AchievementView
+import org.stepik.android.adaptive.data.Analytics
 import org.stepik.android.adaptive.data.model.Achievement
 import org.stepik.android.adaptive.ui.animation.AchievementAnimations
 import org.stepik.android.adaptive.ui.fragment.RecommendationsFragment
@@ -16,6 +17,9 @@ class StudyActivity : FragmentActivity(), AchievementView {
     @Inject
     lateinit var achievementManager: AchievementManager
 
+    @Inject
+    lateinit var analytics: Analytics
+
     override fun injectComponent() {
         App.componentManager()
                 .studyComponent
@@ -24,7 +28,7 @@ class StudyActivity : FragmentActivity(), AchievementView {
 
     override fun showAchievement(achievement: Achievement) {
         isPlayingAchievementAnimation = true
-        AchievementAnimations.show(fragment_container, achievement).withEndAction {
+        AchievementAnimations.show(fragment_container, achievement, analytics).withEndAction {
             isPlayingAchievementAnimation = false
             achievementManager.notifyQueue()
         }

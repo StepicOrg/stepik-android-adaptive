@@ -6,7 +6,7 @@ import io.reactivex.disposables.CompositeDisposable
 import org.solovyev.android.checkout.*
 import org.stepik.android.adaptive.api.API
 import org.stepik.android.adaptive.core.presenter.contracts.QuestionsPacksView
-import org.stepik.android.adaptive.data.AnalyticMgr
+import org.stepik.android.adaptive.data.Analytics
 import org.stepik.android.adaptive.data.SharedPreferenceMgr
 import org.stepik.android.adaptive.data.model.QuestionsPack
 import org.stepik.android.adaptive.di.qualifiers.BackgroundScheduler
@@ -21,6 +21,7 @@ class QuestionsPacksPresenter
 constructor(
         private val api: API,
         private val sharedPreferenceMgr: SharedPreferenceMgr,
+        private val analytics: Analytics,
         @BackgroundScheduler
         private val backgroundScheduler: Scheduler,
         @MainScheduler
@@ -100,7 +101,7 @@ constructor(
     }
 
     private fun purchase(sku: Sku) {
-        AnalyticMgr.getInstance().logEvent(AnalyticMgr.EVENT_ON_QUESTIONS_PACK_PURCHASE_BUTTON_CLICKED)
+        analytics.logEvent(Analytics.EVENT_ON_QUESTIONS_PACK_PURCHASE_BUTTON_CLICKED)
         val purchaseObservable = checkout?.startPurchaseFlowRx(sku) ?: Observable.empty<Purchase>()
         compositeDisposable addDisposable consume(purchaseObservable)
     }
@@ -109,7 +110,7 @@ constructor(
         view?.showProgress()
         compositeDisposable addDisposable api.joinCourse(pack.courseId).doOnComplete {
             sharedPreferenceMgr.changeQuestionsPackIndex(pack.ordinal)
-            AnalyticMgr.getInstance().logEventWithLongParam(AnalyticMgr.EVENT_ON_QUESTIONS_PACK_SWITCHED, AnalyticMgr.PARAM_COURSE, pack.courseId)
+            analytics.logEventWithLongParam(Analytics.EVENT_ON_QUESTIONS_PACK_SWITCHED, Analytics.PARAM_COURSE, pack.courseId)
         }
         .observeOn(mainScheduler)
         .subscribeOn(backgroundScheduler)

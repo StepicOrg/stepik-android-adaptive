@@ -11,9 +11,7 @@ import org.stepik.android.adaptive.App
 import org.stepik.android.adaptive.R
 import org.stepik.android.adaptive.configuration.RemoteConfig
 import org.stepik.android.adaptive.core.ScreenManager
-import org.stepik.android.adaptive.data.AnalyticMgr
-import org.stepik.android.adaptive.data.AnalyticMgr.EVENT_ON_QUESTIONS_DIALOG_ACTION_CLICKED
-import org.stepik.android.adaptive.data.AnalyticMgr.EVENT_ON_QUESTIONS_DIALOG_SHOWN
+import org.stepik.android.adaptive.data.Analytics
 import javax.inject.Inject
 
 class QuestionsPacksDialog : DialogFragment() {
@@ -24,21 +22,24 @@ class QuestionsPacksDialog : DialogFragment() {
     @Inject
     lateinit var remoteConfig: FirebaseRemoteConfig
 
+    @Inject
+    lateinit var analytics: Analytics
+
     init {
         App.component().inject(this)
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         if (savedInstanceState == null) {
-            AnalyticMgr.getInstance().logEvent(EVENT_ON_QUESTIONS_DIALOG_SHOWN)
+            analytics.logEvent(Analytics.EVENT_ON_QUESTIONS_DIALOG_SHOWN)
         }
 
         val alertDialogBuilder = AlertDialog.Builder(context, R.style.ExpLevelDialogTheme)
         val root = activity.layoutInflater.inflate(R.layout.dialog_questions_packs, null, false)
 
         root.actionButton.setOnClickListener {
-            AnalyticMgr.getInstance().logEvent(EVENT_ON_QUESTIONS_DIALOG_ACTION_CLICKED)
-            ScreenManager.showQuestionsPacksScreen(activity)
+            analytics.logEvent(Analytics.EVENT_ON_QUESTIONS_DIALOG_ACTION_CLICKED)
+            ScreenManager.showQuestionsPacksScreen(activity, analytics)
             dismiss()
         }
 

@@ -4,7 +4,7 @@ package org.stepik.android.adaptive.core;
 import android.content.Context;
 import android.content.Intent;
 
-import org.stepik.android.adaptive.data.AnalyticMgr;
+import org.stepik.android.adaptive.data.Analytics;
 import org.stepik.android.adaptive.ui.activity.IntroActivity;
 import org.stepik.android.adaptive.ui.activity.PhotoViewActivity;
 import org.stepik.android.adaptive.ui.activity.StatsActivity;
@@ -37,7 +37,7 @@ public class ScreenManager {
     }
 
     public void startStudy() {
-        Intent intent = new Intent(context,  StudyActivity.class);
+        Intent intent = new Intent(context, StudyActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
         context.startActivity(intent);
     }
@@ -48,15 +48,15 @@ public class ScreenManager {
         context.startActivity(intent);
     }
 
-    public static void showStatsScreen(Context context, int page) {
-        AnalyticMgr.getInstance().statsOpened();
+    public static void showStatsScreen(Context context, Analytics analytics, int page) {
+        analytics.statsOpened();
         final Intent intent = new Intent(context, StatsActivity.class);
         intent.putExtra(StatsActivity.PAGE_KEY, page);
         context.startActivity(intent);
     }
 
-    public static void showQuestionsPacksScreen(Context context) {
-        AnalyticMgr.getInstance().onQuestionsPacksOpened();
+    public static void showQuestionsPacksScreen(Context context, Analytics analytics) {
+        analytics.onQuestionsPacksOpened();
         context.startActivity(new Intent(context, QuestionsPacksActivity.class));
     }
 }
