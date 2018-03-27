@@ -8,6 +8,11 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 import java.util.concurrent.TimeUnit
 
+data class RxOptional<out T>(val value: T?) {
+    fun <R> map(f: (T) -> R?) =
+            RxOptional(value?.let(f))
+}
+
 inline fun skipUIFrame(crossinline action: () -> Unit, delay: Long = 0) {
     Completable
             .timer(delay, TimeUnit.MICROSECONDS)

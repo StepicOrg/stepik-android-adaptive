@@ -1,21 +1,25 @@
 package org.stepik.android.adaptive.data.db.dao
 
+import io.reactivex.Completable
+import io.reactivex.Single
+import org.stepik.android.adaptive.util.RxOptional
+
 interface IDao<T> {
-    fun insertOrUpdate(persistentObject: T)
-    fun insertOrReplace(persistentObject: T)
+    fun insertOrUpdate(persistentObject: T): Completable
+    fun insertOrReplace(persistentObject: T): Completable
 
-    fun update(persistentObject: T)
+    fun update(persistentObject: T): Completable
 
-    fun isInDb(persistentObject: T): Boolean
-    fun isInDb(whereColumn: String, value: String): Boolean
+    fun isInDb(persistentObject: T): Single<Boolean>
+    fun isInDb(whereColumn: String, value: String): Single<Boolean>
 
-    fun getAll(): List<T>
-    fun getAll(whereColumnName: String, whereValue: String): List<T>
-    fun getAll(query: String, whereArgs: Array<String>?): List<T>
-    fun getAllOrdered(orderBy: String, orderDirection: String = ""): List<T>
+    fun getAll(): Single<List<T>>
+    fun getAll(whereColumnName: String, whereValue: String): Single<List<T>>
+    fun getAll(query: String, whereArgs: Array<String>?): Single<List<T>>
+    fun getAllOrdered(orderBy: String, orderDirection: String = ""): Single<List<T>>
 
-    fun get(whereColumnName: String, whereValue: String): T?
-    fun remove(whereColumn: String, whereValue: String)
-    fun remove(persistentObject: T)
-    fun removeAll()
+    fun get(whereColumnName: String, whereValue: String): Single<RxOptional<T>>
+    fun remove(whereColumn: String, whereValue: String): Completable
+    fun remove(persistentObject: T): Completable
+    fun removeAll(): Completable
 }
