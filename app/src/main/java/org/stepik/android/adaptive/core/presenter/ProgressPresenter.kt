@@ -20,7 +20,8 @@ constructor(
         private val backgroundScheduler: Scheduler,
         @MainScheduler
         private val mainScheduler: Scheduler,
-        private val expManager: ExpManager
+        private val expManager: ExpManager,
+        private val dataBaseMgr: DataBaseMgr
 ) : PresenterBase<ProgressView>() {
 
     private val total by lazy { expManager.exp }
@@ -29,8 +30,6 @@ constructor(
     private val adapter = WeeksAdapter()
 
     private val composite = CompositeDisposable()
-
-    private val dataBaseMgr: DataBaseMgr = DataBaseMgr.instance // to inject
 
     init {
         adapter.setHeaderLevelAndTotal(level, total)

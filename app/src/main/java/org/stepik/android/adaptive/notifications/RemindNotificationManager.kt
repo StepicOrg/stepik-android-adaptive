@@ -23,7 +23,8 @@ constructor(
         @BackgroundScheduler
         private val backgroundScheduler: Scheduler,
         @MainScheduler
-        private val mainScheduler: Scheduler
+        private val mainScheduler: Scheduler,
+        private val dataBaseMgr: DataBaseMgr
 ) {
     companion object {
         private const val NOTIFICATION_ID = 2138
@@ -34,7 +35,7 @@ constructor(
 
     fun showEveryDayNotification() {
         val title = context.getString(R.string.local_push_title)
-        DataBaseMgr.instance.getExpForLast7Days()
+        dataBaseMgr.getExpForLast7Days()
                 .subscribeOn(backgroundScheduler)
                 .observeOn(mainScheduler)
                 .subscribe({

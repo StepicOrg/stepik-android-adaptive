@@ -4,24 +4,25 @@ import android.content.Context
 import dagger.BindsInstance
 import dagger.Component
 import org.stepik.android.adaptive.App
-import org.stepik.android.adaptive.core.presenter.CardPresenter
 import org.stepik.android.adaptive.di.login.LoginComponent
 import org.stepik.android.adaptive.di.paid_content.PaidContentComponent
 import org.stepik.android.adaptive.di.stats.StatsComponent
+import org.stepik.android.adaptive.di.storage.StorageComponent
 import org.stepik.android.adaptive.di.study.StudyComponent
 import org.stepik.android.adaptive.receivers.BootCompletedReceiver
 import org.stepik.android.adaptive.receivers.NotificationsReceiver
 import org.stepik.android.adaptive.ui.activity.SplashActivity
 import org.stepik.android.adaptive.ui.dialog.*
-import org.stepik.android.adaptive.ui.fragment.RecommendationsFragment
 
 @AppSingleton
-@Component(modules = [AppCoreModule::class])
+@Component(modules = [AppCoreModule::class], dependencies = [StorageComponent::class])
 interface AppCoreComponent {
 
     @Component.Builder
     interface Builder {
         fun build(): AppCoreComponent
+
+        fun setStorageComponent(storageComponent: StorageComponent): Builder
 
         @BindsInstance
         fun context(context: Context): Builder

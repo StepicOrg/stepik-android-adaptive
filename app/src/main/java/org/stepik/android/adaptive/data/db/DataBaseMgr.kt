@@ -1,33 +1,26 @@
 package org.stepik.android.adaptive.data.db
 
 import android.content.ContentValues
-import android.content.Context
+import android.database.sqlite.SQLiteDatabase
 import io.reactivex.Completable
 import io.reactivex.Single
 import org.joda.time.DateTime
 import org.joda.time.Days
-import org.stepik.android.adaptive.data.db.dao.BookmarksDao
-import org.stepik.android.adaptive.data.db.operations.DatabaseOperationsImpl
+import org.stepik.android.adaptive.data.db.dao.IDao
 import org.stepik.android.adaptive.data.db.structure.BookmarksDbStructure
 import org.stepik.android.adaptive.data.db.structure.ExpDbStructure
 import org.stepik.android.adaptive.data.model.WeekProgress
 import org.stepik.android.adaptive.data.model.Bookmark
+import org.stepik.android.adaptive.di.storage.StorageSingleton
+import javax.inject.Inject
 
-class DataBaseMgr private constructor(context: Context) {
-    companion object {
-        @JvmStatic
-        lateinit var instance: DataBaseMgr
-
-        @JvmStatic
-        fun init(context: Context) {
-            instance = DataBaseMgr(context)
-        }
-    }
-
-    private val db = DataBaseHelper(context).writableDatabase
-    private val databaseOperations = DatabaseOperationsImpl(db)
-    private val bookmarksDao = BookmarksDao(databaseOperations) // todo replace with DI
-
+@StorageSingleton
+class DataBaseMgr
+@Inject
+constructor(
+        private val db: SQLiteDatabase,
+        private val bookmarksDao: IDao<Bookmark>
+) {
     fun onExpGained(exp: Long, submissionId: Long): Completable = Completable.create { emitter ->
         val cv = ContentValues()
 

@@ -6,6 +6,7 @@ import org.stepik.android.adaptive.configuration.Config
 import org.stepik.android.adaptive.di.AppCoreComponent
 import org.stepik.android.adaptive.di.ComponentManager
 import org.stepik.android.adaptive.di.DaggerAppCoreComponent
+import org.stepik.android.adaptive.di.storage.DaggerStorageComponent
 import javax.inject.Inject
 
 class App : Application() {
@@ -28,6 +29,11 @@ class App : Application() {
 
         component = DaggerAppCoreComponent
                 .builder()
+                .setStorageComponent(
+                        DaggerStorageComponent.builder()
+                                .context(applicationContext)
+                                .build()
+                )
                 .context(applicationContext)
                 .build()
         componentManager = ComponentManager(component)

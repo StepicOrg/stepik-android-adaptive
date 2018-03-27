@@ -27,7 +27,8 @@ constructor(
         private val backgroundScheduler: Scheduler,
         @MainScheduler
         private val mainScheduler: Scheduler,
-        private val ratingNamesGenerator: RatingNamesGenerator
+        private val ratingNamesGenerator: RatingNamesGenerator,
+        private val dataBaseMgr: DataBaseMgr
 ): PresenterBase<RatingView>() {
     companion object {
         private const val ITEMS_PER_PAGE = 10
@@ -46,8 +47,6 @@ constructor(
     private var ratingPeriod = 0
 
     private var periodsLoaded = 0
-
-    private val dataBaseMgr = DataBaseMgr.instance // to inject
 
     init {
         compositeDisposable.add(

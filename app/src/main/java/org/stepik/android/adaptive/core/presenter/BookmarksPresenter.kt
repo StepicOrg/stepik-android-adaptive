@@ -18,13 +18,12 @@ constructor(
         @BackgroundScheduler
         private val backgroundScheduler: Scheduler,
         @MainScheduler
-        private val mainScheduler: Scheduler
+        private val mainScheduler: Scheduler,
+        private val dataBaseMgr: DataBaseMgr
 ): PresenterBase<BookmarksView>() {
     private var isLoading = true
     private val adapter = BookmarksAdapter(::removeFromBookmarks)
     private val compositeDisposable = CompositeDisposable()
-
-    private val dataBaseMgr = DataBaseMgr.instance
 
     init {
         compositeDisposable addDisposable dataBaseMgr.getBookmarks()

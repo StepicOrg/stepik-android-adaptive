@@ -34,7 +34,6 @@ class CardPresenter(val card: Card, private val listener: AdaptiveReactionListen
     private var isBookmarked: Boolean? = null
 
     private val analyticMgr: AnalyticMgr = AnalyticMgr.getInstance() // to inject
-    private val dataBaseMgr = DataBaseMgr.instance
 
     var isLoading = false
         private set
@@ -44,6 +43,9 @@ class CardPresenter(val card: Card, private val listener: AdaptiveReactionListen
 
     @Inject
     lateinit var api: API
+
+    @Inject
+    lateinit var dataBaseMgr: DataBaseMgr
 
     @Inject
     lateinit var sharedPreferenceMgr: SharedPreferenceMgr

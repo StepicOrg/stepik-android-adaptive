@@ -25,7 +25,8 @@ constructor(
         @BackgroundScheduler
         private val backgroundScheduler: Scheduler,
         private val achievementEventPoster: AchievementEventPoster,
-        private val sharedPreferenceMgr: SharedPreferenceMgr
+        private val sharedPreferenceMgr: SharedPreferenceMgr,
+        private val dataBaseMgr: DataBaseMgr
 ) {
     companion object {
         private const val EXP_KEY = "exp_key"
@@ -34,7 +35,6 @@ constructor(
         fun syncRating(dataBaseMgr: DataBaseMgr, api: API): Completable = dataBaseMgr.getExp().flatMapCompletable { e -> api.putRating(e) }
     }
 
-    private val dataBaseMgr = DataBaseMgr.instance // to inject
     private val analyticMgr = AnalyticMgr.getInstance()
 
     private val compositeDisposable = CompositeDisposable()

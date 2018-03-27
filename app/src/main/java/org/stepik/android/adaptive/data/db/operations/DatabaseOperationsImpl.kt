@@ -5,9 +5,14 @@ import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import io.reactivex.Completable
 import io.reactivex.Single
+import org.stepik.android.adaptive.di.storage.StorageSingleton
 import org.stepik.android.adaptive.util.RWLocks
+import javax.inject.Inject
 
-class DatabaseOperationsImpl(private val database: SQLiteDatabase): DatabaseOperations {
+@StorageSingleton
+class DatabaseOperationsImpl
+@Inject
+constructor(private val database: SQLiteDatabase): DatabaseOperations {
     private fun open() {
         RWLocks.DatabaseLock.writeLock().lock()
     }
