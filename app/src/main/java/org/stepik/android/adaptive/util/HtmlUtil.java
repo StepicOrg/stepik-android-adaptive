@@ -34,9 +34,9 @@ public class HtmlUtil {
         return textString.contains("$") || textString.contains("\\[");
     }
 
-    public static String prepareCardHtml(final String html) {
+    public static String prepareCardHtml(final String html, final Config config) {
         String mathJax = hasLaTeX(html) ? MathJaxScript : "";
-        return String.format(Body, Config.getInstance().getHost(), mathJax, html);
+        return String.format(Body, config.getHost(), mathJax, html);
     }
 
     public static void setCardWebViewHtml(final WebView webView, final String html) {

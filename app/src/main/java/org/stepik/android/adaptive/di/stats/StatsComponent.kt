@@ -1,6 +1,7 @@
 package org.stepik.android.adaptive.di.stats
 
 import dagger.Subcomponent
+import org.stepik.android.adaptive.ui.activity.StatsActivity
 import org.stepik.android.adaptive.ui.fragment.AchievementsFragment
 import org.stepik.android.adaptive.ui.fragment.BookmarksFragment
 import org.stepik.android.adaptive.ui.fragment.ProgressFragment
@@ -18,5 +19,7 @@ interface StatsComponent {
     fun inject(fragment: AchievementsFragment)
     fun inject(fragment: RatingFragment)
     fun inject(fragment: BookmarksFragment)
+
+    fun inject(activity: StatsActivity)
 
 }

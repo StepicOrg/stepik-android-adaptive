@@ -17,11 +17,11 @@ public class CardHelper {
     private final static int CARDS_IN_CACHE = 6;
     private final static int MIN_CARDS_IN_CACHE = 4;
 
-    public static Observable<RecommendationsResponse> createReactionObservable(final long lesson, final RecommendationReaction.Reaction reaction, final int cacheSize) {
-        final Observable<RecommendationsResponse> responseObservable = API.getInstance().getNextRecommendations(CARDS_IN_CACHE);
+    public static Observable<RecommendationsResponse> createReactionObservable(final API api, final long lesson, final RecommendationReaction.Reaction reaction, final int cacheSize) {
+        final Observable<RecommendationsResponse> responseObservable = api.getNextRecommendations(CARDS_IN_CACHE);
 
         if (lesson != 0) {
-            final Completable reactionCompletable = API.getInstance()
+            final Completable reactionCompletable = api
                     .createReaction(new RecommendationReaction(lesson, reaction, SharedPreferenceMgr.getInstance().getProfileId()));
             if (cacheSize <= MIN_CARDS_IN_CACHE) {
                 return reactionCompletable.andThen(responseObservable);

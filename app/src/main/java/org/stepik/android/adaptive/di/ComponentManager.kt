@@ -12,4 +12,12 @@ class ComponentManager(
         appCoreComponent.studyComponentBuilder().build()
     }
 
+    val paidContentComponent by lazy {
+        appCoreComponent.paidContentComponentBuilder().build()
+    }
+
+    val loginComponent by lazy {
+        appCoreComponent.loginComponentBuilder().build()
+    }
+
 }

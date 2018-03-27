@@ -5,7 +5,6 @@ import org.solovyev.android.checkout.Billing
 
 interface PaidContentView {
     fun createCheckout(): ActivityCheckout
-    fun getBilling(): Billing
 
     fun showContentProgress()
     fun hideContentProgress()

@@ -5,6 +5,7 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 import io.reactivex.functions.BiFunction
 import io.reactivex.subjects.PublishSubject
+import org.stepik.android.adaptive.api.API
 import org.stepik.android.adaptive.api.RecommendationsResponse
 import org.stepik.android.adaptive.core.presenter.contracts.RecommendationsView
 import org.stepik.android.adaptive.data.SharedPreferenceMgr
@@ -21,6 +22,7 @@ import org.stepik.android.adaptive.gamification.DailyRewardManager
 import org.stepik.android.adaptive.gamification.ExpManager
 import org.stepik.android.adaptive.util.InventoryUtil
 import org.stepik.android.adaptive.util.RateAppUtil
+import org.stepik.android.adaptive.util.addDisposable
 import retrofit2.HttpException
 import java.util.*
 import javax.inject.Inject
@@ -28,6 +30,7 @@ import javax.inject.Inject
 class RecommendationsPresenter
 @Inject
 constructor(
+        private val api: API,
         @BackgroundScheduler
         private val backgroundScheduler: Scheduler,
         @MainScheduler
@@ -149,12 +152,12 @@ constructor(
             view?.onLoading()
         }
 
-        compositeDisposable.add(CardHelper.createReactionObservable(lesson, reaction, cards.size + adapter.getItemCount())
+        compositeDisposable addDisposable CardHelper.createReactionObservable(api, lesson, reaction, cards.size + adapter.getItemCount())
                 .subscribeOn(backgroundScheduler)
                 .observeOn(mainScheduler)
                 .doOnError(this::onError)
                 .retryWhen { it.zipWith(retrySubject, BiFunction<Any, Any, Any> {a, _ -> a}) }
-                .subscribe(this::onRecommendation, this::onError))
+                .subscribe(this::onRecommendation, this::onError)
     }
 
     private fun onRecommendation(response: RecommendationsResponse) {

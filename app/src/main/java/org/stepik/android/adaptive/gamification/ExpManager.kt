@@ -21,6 +21,7 @@ import javax.inject.Inject
 class ExpManager
 @Inject
 constructor(
+        private val api: API,
         @BackgroundScheduler
         private val backgroundScheduler: Scheduler,
         private val achievementEventPoster: AchievementEventPoster
@@ -33,7 +34,6 @@ constructor(
     }
 
     private val dataBaseMgr = DataBaseMgr.instance // to inject
-    private val api = API.getInstance()
     private val sharedPreferenceMgr = SharedPreferenceMgr.getInstance()
     private val analyticMgr = AnalyticMgr.getInstance()
 

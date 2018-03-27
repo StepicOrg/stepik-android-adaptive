@@ -20,11 +20,23 @@ import org.stepik.android.adaptive.core.presenter.contracts.PaidInventoryItemsVi
 import org.stepik.android.adaptive.ui.adapter.PaidInventoryAdapter
 import org.stepik.android.adaptive.ui.dialog.InventoryDialog
 import org.stepik.android.adaptive.util.InventoryUtil
+import javax.inject.Inject
+import javax.inject.Provider
 
 class PaidInventoryItemsActivity : BasePresenterActivity<PaidInventoryItemsPresenter, PaidInventoryItemsView>(), PaidInventoryItemsView {
     companion object {
         const val INVENTORY_DIALOG_TAG = "inventory_dialog"
         const val RESTORE_DIALOG_TAG = "restore_dialog"
+    }
+
+    @Inject
+    lateinit var billing: Billing
+
+    @Inject
+    lateinit var paidInventoryItemsPresenterProvider: Provider<PaidInventoryItemsPresenter>
+
+    override fun injectComponent() {
+        App.componentManager().paidContentComponent.inject(this)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -77,9 +89,7 @@ class PaidInventoryItemsActivity : BasePresenterActivity<PaidInventoryItemsPrese
         purchasesAreNotSupported.visibility = View.GONE
     }
 
-    override fun getBilling() = (application as App).billing
-
-    override fun createCheckout() = Checkout.forActivity(this, getBilling())
+    override fun createCheckout() = Checkout.forActivity(this, billing)
 
     override fun showInventoryDialog() = InventoryDialog().show(supportFragmentManager, INVENTORY_DIALOG_TAG)
 
@@ -107,12 +117,12 @@ class PaidInventoryItemsActivity : BasePresenterActivity<PaidInventoryItemsPrese
         super.onActivityResult(requestCode, resultCode, data)
     }
 
-    override fun getPresenterFactory() = PaidInventoryItemsPresenter.Companion
-
     override fun finish() {
         if (InventoryUtil.hasTickets()) {
             setResult(Activity.RESULT_OK)
         }
         super.finish()
     }
+
+    override fun getPresenterProvider() = paidInventoryItemsPresenterProvider
 }

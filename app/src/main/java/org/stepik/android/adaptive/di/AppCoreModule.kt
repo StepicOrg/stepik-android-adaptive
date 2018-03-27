@@ -44,10 +44,16 @@ abstract class AppCoreModule {
         @BackgroundScheduler
         internal fun provideBackgroundScheduler(): Scheduler = Schedulers.io()
 
+        @Provides
+        @AppSingleton
+        @JvmStatic
+        internal fun provideConfig(configFactory: Config.ConfigFactory): Config =
+                configFactory.create()
+
         @JvmStatic
         @Provides
         @AppSingleton
-        internal fun provideBilling(context: Context, config: Config.Configuration): Billing =
+        internal fun provideBilling(context: Context, config: Config): Billing =
                 Billing(context, object : Billing.DefaultConfiguration() {
                     override fun getPublicKey() = config.appPublicLicenseKey
                 })

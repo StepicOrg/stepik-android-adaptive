@@ -33,7 +33,6 @@ class OnboardingFragment : Fragment(), LoginView {
     }
 
     private lateinit var binding : FragmentRecommendationsBinding
-    private val presenter = LoginPresenter()
     private var completed = 0
 
     @Inject
@@ -46,6 +45,9 @@ class OnboardingFragment : Fragment(), LoginView {
     @Inject
     @field:BackgroundScheduler
     lateinit var backgroundScheduler: Scheduler
+
+    @Inject
+    lateinit var presenter: LoginPresenter
 
     private val adapter = OnboardingQuizCardsAdapter {
         updateToolbar(true)

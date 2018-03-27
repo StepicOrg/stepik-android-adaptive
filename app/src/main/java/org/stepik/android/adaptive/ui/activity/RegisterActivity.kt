@@ -8,17 +8,19 @@ import android.text.method.LinkMovementMethod
 import android.view.MenuItem
 import android.view.View
 import com.google.gson.Gson
+import org.stepik.android.adaptive.App
 import org.stepik.android.adaptive.R
 import org.stepik.android.adaptive.Util
 import org.stepik.android.adaptive.api.RegistrationResponse
 import org.stepik.android.adaptive.core.ScreenManager
 import org.stepik.android.adaptive.core.presenter.BasePresenterActivity
-import org.stepik.android.adaptive.core.presenter.PresenterFactory
 import org.stepik.android.adaptive.core.presenter.LoginPresenter
 import org.stepik.android.adaptive.core.presenter.contracts.LoginView
 import org.stepik.android.adaptive.data.model.AccountCredentials
 import org.stepik.android.adaptive.databinding.ActivityRegisterBinding
 import org.stepik.android.adaptive.util.ValidateUtil
+import javax.inject.Inject
+import javax.inject.Provider
 
 class RegisterActivity : BasePresenterActivity<LoginPresenter, LoginView>(), LoginView {
     private companion object {
@@ -26,6 +28,13 @@ class RegisterActivity : BasePresenterActivity<LoginPresenter, LoginView>(), Log
     }
 
     private lateinit var binding : ActivityRegisterBinding
+
+    @Inject
+    lateinit var loginPresenterProvider: Provider<LoginPresenter>
+
+    override fun injectComponent() {
+        App.componentManager().loginComponent.inject(this)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -128,5 +137,5 @@ class RegisterActivity : BasePresenterActivity<LoginPresenter, LoginView>(), Log
         showProgressDialogFragment(PROGRESS, getString(R.string.sign_up), getString(R.string.processing_your_request))
     }
 
-    override fun getPresenterFactory(): PresenterFactory<LoginPresenter> = LoginPresenter.Companion
+    override fun getPresenterProvider() = loginPresenterProvider
 }

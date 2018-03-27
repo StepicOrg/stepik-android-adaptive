@@ -24,6 +24,7 @@ import org.stepik.android.adaptive.data.model.QuestionsPack;
 import org.stepik.android.adaptive.data.model.RecommendationReaction;
 import org.stepik.android.adaptive.data.model.RegistrationUser;
 import org.stepik.android.adaptive.data.model.Submission;
+import org.stepik.android.adaptive.di.AppSingleton;
 import org.stepik.android.adaptive.util.AppConstants;
 
 import java.io.IOException;
@@ -35,6 +36,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantLock;
+
+import javax.inject.Inject;
 
 import io.reactivex.Completable;
 import io.reactivex.Observable;
@@ -51,6 +54,7 @@ import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 
+@AppSingleton
 public final class API {
     private final static String TAG = "API";
 
@@ -65,9 +69,6 @@ public final class API {
         PASSWORD
     }
 
-    private static API instance;
-
-
     private TokenType authServiceTokenType;
     private OAuthService authService;
 
@@ -75,22 +76,16 @@ public final class API {
     private final RatingService ratingService;
     private final EmptyAuthService emptyAuthService;
 
-    private API() {
+    private final Config config;
+
+    @Inject
+    public API(Config config) {
+        this.config = config;
+
         stepikService = initStepikService();
         ratingService = initRatingService();
         emptyAuthService = initEmptyAuthService();
     }
-
-    public synchronized static void init() {
-        if (instance == null) {
-            instance = new API();
-        }
-    }
-
-    public synchronized static API getInstance() {
-        return instance;
-    }
-
 
     /**
      * Returns new authService with specified token type
@@ -104,16 +99,16 @@ public final class API {
                 chain.proceed(addUserAgentTo(chain).newBuilder().header(AppConstants.authorizationHeaderName,
                         Credentials.basic(
                             tokenType == TokenType.SOCIAL ?
-                                    Config.getInstance().getOAuthClientIdSocial() :
-                                    Config.getInstance().getOAuthClientId(),
+                                    config.getOAuthClientIdSocial() :
+                                    config.getOAuthClientId(),
                             tokenType == TokenType.SOCIAL ?
-                                    Config.getInstance().getOAuthClientSecretSocial() :
-                                    Config.getInstance().getOAuthClientSecret())
+                                    config.getOAuthClientSecretSocial() :
+                                    config.getOAuthClientSecret())
                 ).build()));
 
         setTimeout(okHttpBuilder, TIMEOUT_IN_SECONDS);
 
-        final Retrofit retrofit = buildRetrofit(okHttpBuilder.build(), Config.getInstance().getHost());
+        final Retrofit retrofit = buildRetrofit(okHttpBuilder.build(), config.getHost());
 
         return retrofit.create(OAuthService.class);
     }
@@ -129,7 +124,7 @@ public final class API {
 
     public Observable<OAuthResponse> authWithLoginPassword(final String login, final String password) {
         return getAuthService(TokenType.PASSWORD)
-                .authWithLoginPassword(Config.getInstance().getGrantType(), login, password)
+                .authWithLoginPassword(config.getGrantType(), login, password)
                 .doOnNext(response -> {
                     authLock.lock();
                     SharedPreferenceMgr.getInstance().saveOAuthResponse(response);
@@ -146,8 +141,8 @@ public final class API {
         return getAuthService(TokenType.SOCIAL).getTokenByNativeCode(
                 type.getIdentifier(),
                 code,
-                Config.getInstance().getGrantTypeSocial(),
-                Config.getInstance().getRedirectUri(),
+                config.getGrantTypeSocial(),
+                config.getRedirectUri(),
                 codeType)
                 .doOnNext(response -> {
                     authLock.lock();
@@ -159,7 +154,7 @@ public final class API {
 
     public Observable<OAuthResponse> authWithCode(final String code) {
         return getAuthService(TokenType.SOCIAL).getTokenByCode(
-                Config.getInstance().getGrantTypeSocial(), code, Config.getInstance().getRedirectUri()
+                config.getGrantTypeSocial(), code, config.getRedirectUri()
         ).doOnNext(response -> {
             authLock.lock();
             SharedPreferenceMgr.getInstance().saveOAuthResponse(response);
@@ -170,12 +165,12 @@ public final class API {
 
     private Call<OAuthResponse> authWithRefreshToken(final String refreshToken) {
         return getAuthService(SharedPreferenceMgr.getInstance().isAuthTokenSocial() ? TokenType.SOCIAL : TokenType.PASSWORD)
-                .refreshAccessToken(Config.getInstance().getRefreshGrantType(), refreshToken);
+                .refreshAccessToken(config.getRefreshGrantType(), refreshToken);
     }
 
     @SuppressLint("DefaultLocale")
-    public static AccountCredentials createFakeAccount() {
-        final String email = String.format(FAKE_MAIL_PATTERN, Config.getInstance().getCourseId(), System.currentTimeMillis(), Util.randomString(5));
+    public AccountCredentials createFakeAccount() {
+        final String email = String.format(FAKE_MAIL_PATTERN, config.getCourseId(), System.currentTimeMillis(), Util.randomString(5));
         final String password = Util.randomString(16);
         final String firstName = Util.randomString(10);
         final String lastName = Util.randomString(10);
@@ -189,14 +184,14 @@ public final class API {
             Request newRequest = addUserAgentTo(chain);
             LogoutHelper.removeCookiesCompat();
             updateCookieForBaseUrl();
-            String cookies = CookieManager.getInstance().getCookie(Config.getInstance().getHost());
+            String cookies = CookieManager.getInstance().getCookie(config.getHost());
             if (cookies == null)
                 return chain.proceed(newRequest);
 
             String csrftoken = getCsrfTokenFromCookies(cookies);
             Request.Builder requestBuilder = newRequest
                     .newBuilder()
-                    .addHeader(AppConstants.refererHeaderName, Config.getInstance().getHost())
+                    .addHeader(AppConstants.refererHeaderName, config.getHost())
                     .addHeader(AppConstants.csrfTokenHeaderName, csrftoken)
                     .addHeader(AppConstants.cookieHeaderName, cookies);
             newRequest = requestBuilder.build();
@@ -204,7 +199,7 @@ public final class API {
         });
         setTimeout(okHttpBuilder, TIMEOUT_IN_SECONDS);
 
-        Retrofit notLogged = buildRetrofit(okHttpBuilder.build(), Config.getInstance().getHost());
+        Retrofit notLogged = buildRetrofit(okHttpBuilder.build(), config.getHost());
 
         OAuthService tmpService = notLogged.create(OAuthService.class);
 
@@ -228,7 +223,7 @@ public final class API {
         okHttpBuilder.addInterceptor(authInterceptor);
 
         setTimeout(okHttpBuilder, TIMEOUT_IN_SECONDS);
-        final Retrofit retrofit = buildRetrofit(okHttpBuilder.build(), Config.getInstance().getRatingHost());
+        final Retrofit retrofit = buildRetrofit(okHttpBuilder.build(), config.getRatingHost());
 
         return retrofit.create(RatingService.class);
     }
@@ -238,7 +233,7 @@ public final class API {
         okHttpBuilder.addInterceptor(authInterceptor);
 
         setTimeout(okHttpBuilder, TIMEOUT_IN_SECONDS);
-        final Retrofit retrofit = buildRetrofit(okHttpBuilder.build(), Config.getInstance().getHost());
+        final Retrofit retrofit = buildRetrofit(okHttpBuilder.build(), config.getHost());
 
         return retrofit.create(StepikService.class);
     }
@@ -283,7 +278,7 @@ public final class API {
         final OkHttpClient.Builder okHttpBuilder = new OkHttpClient.Builder();
         setTimeout(okHttpBuilder, TIMEOUT_IN_SECONDS);
 
-        final Retrofit retrofit = buildRetrofit(okHttpBuilder.build(), Config.getInstance().getHost());
+        final Retrofit retrofit = buildRetrofit(okHttpBuilder.build(), config.getHost());
 
         return retrofit.create(EmptyAuthService.class);
     }
@@ -322,7 +317,7 @@ public final class API {
                     .addQueryParameter("csrfmiddlewaretoken", csrftoken)
                     .build();
             newRequest = newRequest.newBuilder()
-                    .addHeader("referer", Config.getInstance().getHost())
+                    .addHeader("referer", config.getHost())
                     .addHeader("X-CSRFToken", csrftoken)
                     .addHeader("Cookie", cookieResult)
                     .url(url)
@@ -333,7 +328,7 @@ public final class API {
         okHttpBuilder.addNetworkInterceptor(interceptor);
 //        okHttpBuilder.addNetworkInterceptor(this.stethoInterceptor);
         setTimeout(okHttpBuilder, TIMEOUT_IN_SECONDS);
-        Retrofit notLogged = buildRetrofit(okHttpBuilder.build(), Config.getInstance().getHost());
+        Retrofit notLogged = buildRetrofit(okHttpBuilder.build(), config.getHost());
 
         EmptyAuthService tempService = notLogged.create(EmptyAuthService.class);
         return tempService.remindPassword(encodedEmail);
@@ -352,7 +347,7 @@ public final class API {
         try {
             courseId = QuestionsPack.values()[SharedPreferenceMgr.getInstance().getQuestionsPackIndex()].getCourseId();
         } catch (Exception e) {
-            courseId = Config.getInstance().getCourseId();
+            courseId = config.getCourseId();
         }
         return stepikService.getNextRecommendations(courseId, count);
     }
@@ -394,7 +389,7 @@ public final class API {
     }
 
     public Observable<UnitsResponse> getUnits(final long lesson) {
-        return stepikService.getUnits(Config.getInstance().getCourseId(), lesson);
+        return stepikService.getUnits(config.getCourseId(), lesson);
     }
 
     public Completable reportView(final long assignment, final long step) {
@@ -402,12 +397,12 @@ public final class API {
     }
 
     public Observable<RatingResponse> getRating(final int count, final int days) {
-        return ratingService.getRating(Config.getInstance().getCourseId(), count, days, SharedPreferenceMgr.getInstance().getProfileId());
+        return ratingService.getRating(config.getCourseId(), count, days, SharedPreferenceMgr.getInstance().getProfileId());
     }
 
     public Completable putRating(final long exp) {
         return ratingService.putRating(new RatingRequest(
-                exp, Config.getInstance().getCourseId(), SharedPreferenceMgr.getInstance().getOAuthResponse().getAccessToken()));
+                exp, config.getCourseId(), SharedPreferenceMgr.getInstance().getOAuthResponse().getAccessToken()));
     }
 
     private void setTimeout(OkHttpClient.Builder builder, int seconds) {
@@ -423,7 +418,7 @@ public final class API {
         java.net.CookieManager cookieManager = new java.net.CookieManager();
         URI myUri;
         try {
-            myUri = new URI(Config.getInstance().getHost());
+            myUri = new URI(config.getHost());
         } catch (URISyntaxException e) {
             return null;
         }
@@ -439,7 +434,7 @@ public final class API {
         if (!setCookieHeaders.isEmpty()) {
             for (String value : setCookieHeaders) {
                 if (value != null) {
-                    CookieManager.getInstance().setCookie(Config.getInstance().getHost(), value); //set-cookie is not empty
+                    CookieManager.getInstance().setCookie(config.getHost(), value); //set-cookie is not empty
                 }
             }
         }
@@ -491,7 +486,7 @@ public final class API {
 
     public Uri getUriForSocialAuth(SocialManager.SocialType type) {
         String socialIdentifier = type.getIdentifier();
-        String url = Config.getInstance().getHost() + "accounts/" + socialIdentifier + "/login?next=/oauth2/authorize/?" + Uri.encode("client_id=" + Config.getInstance().getOAuthClientIdSocial() + "&response_type=code");
+        String url = config.getHost() + "accounts/" + socialIdentifier + "/login?next=/oauth2/authorize/?" + Uri.encode("client_id=" + config.getOAuthClientIdSocial() + "&response_type=code");
         return Uri.parse(url);
     }
 }

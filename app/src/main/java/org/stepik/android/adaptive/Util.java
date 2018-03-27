@@ -11,9 +11,7 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.vk.sdk.VKSdk;
 
-import org.stepik.android.adaptive.api.API;
 import org.stepik.android.adaptive.api.UserAgentProvider;
-import org.stepik.android.adaptive.configuration.Config;
 import org.stepik.android.adaptive.core.ScreenManager;
 import org.stepik.android.adaptive.data.AnalyticMgr;
 import org.stepik.android.adaptive.data.SharedPreferenceMgr;
@@ -23,9 +21,7 @@ import java.util.Random;
 
 public class Util {
     public static void initMgr(final Context context) {
-        Config.init(context);
         ScreenManager.init(context);
-        API.init();
         SharedPreferenceMgr.init(context);
         VKSdk.initialize(context);
         FacebookSdk.sdkInitialize(context.getApplicationContext());

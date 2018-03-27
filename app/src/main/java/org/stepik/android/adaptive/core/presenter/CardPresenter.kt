@@ -1,23 +1,27 @@
 package org.stepik.android.adaptive.core.presenter
 
+import io.reactivex.Scheduler
 import io.reactivex.Single
-import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
-import io.reactivex.schedulers.Schedulers
+import org.stepik.android.adaptive.App
 import org.stepik.android.adaptive.api.API
 import org.stepik.android.adaptive.api.SubmissionResponse
+import org.stepik.android.adaptive.configuration.Config
 import org.stepik.android.adaptive.core.presenter.contracts.CardView
 import org.stepik.android.adaptive.data.AnalyticMgr
 import org.stepik.android.adaptive.data.SharedPreferenceMgr
 import org.stepik.android.adaptive.data.db.DataBaseMgr
 import org.stepik.android.adaptive.data.model.*
+import org.stepik.android.adaptive.di.qualifiers.BackgroundScheduler
+import org.stepik.android.adaptive.di.qualifiers.MainScheduler
 import org.stepik.android.adaptive.ui.listener.AdaptiveReactionListener
 import org.stepik.android.adaptive.ui.listener.AnswerListener
 import org.stepik.android.adaptive.util.HtmlUtil
 import org.stepik.android.adaptive.util.addDisposable
 import retrofit2.HttpException
 import java.util.concurrent.TimeUnit
+import javax.inject.Inject
 
 
 class CardPresenter(val card: Card, private val listener: AdaptiveReactionListener?, private val answerListener: AnswerListener?) : PresenterBase<CardView>() {
@@ -36,10 +40,28 @@ class CardPresenter(val card: Card, private val listener: AdaptiveReactionListen
     var isLoading = false
         private set
 
+    @Inject
+    lateinit var config: Config
+
+    @Inject
+    lateinit var api: API
+
+    @Inject
+    @field:MainScheduler
+    lateinit var mainScheduler: Scheduler
+
+    @Inject
+    @field:BackgroundScheduler
+    lateinit var backgroundScheduler: Scheduler
+
+    init {
+        App.componentManager().studyComponent.inject(this)
+    }
+
     override fun attachView(view: CardView) {
         super.attachView(view)
         view.setTitle(card.lesson.title)
-        view.setQuestion(HtmlUtil.prepareCardHtml(card.step.block.text))
+        view.setQuestion(HtmlUtil.prepareCardHtml(card.step.block.text, config))
         view.setAnswerAdapter(card.adapter)
 
         fetchBookmarkState()
@@ -62,8 +84,8 @@ class CardPresenter(val card: Card, private val listener: AdaptiveReactionListen
 
     private fun fetchBookmarkState() =
         compositeDisposable addDisposable dataBaseMgr.isInBookmarks(card.step.id)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(backgroundScheduler)
+                .observeOn(mainScheduler)
                 .subscribe({
                     isBookmarked = it
                     resolveBookmarkState()
@@ -104,8 +126,8 @@ class CardPresenter(val card: Card, private val listener: AdaptiveReactionListen
                     analyticMgr.logEvent(AnalyticMgr.EVENT_ON_BOOKMARK_ADDED)
                     dataBaseMgr.addBookmark(bookmark)
                 }.andThen(Single.just(!bookmarked))
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribeOn(backgroundScheduler)
+                        .observeOn(mainScheduler)
                         .subscribe({
                             isBookmarked = it
                             resolveBookmarkState()
@@ -117,7 +139,7 @@ class CardPresenter(val card: Card, private val listener: AdaptiveReactionListen
      */
     private fun updateBookmark() {
         val bookmark = createBookmark()
-        compositeDisposable addDisposable dataBaseMgr.updateBookmark(bookmark).subscribeOn(Schedulers.io()).observeOn(Schedulers.io()).subscribe()
+        compositeDisposable addDisposable dataBaseMgr.updateBookmark(bookmark).subscribeOn(backgroundScheduler).observeOn(backgroundScheduler).subscribe()
     }
 
     fun createReaction(reaction: RecommendationReaction.Reaction) {
@@ -136,6 +158,7 @@ class CardPresenter(val card: Card, private val listener: AdaptiveReactionListen
                 }
                 analyticMgr.reactionHard(lesson)
             }
+            else -> {}
         }
         listener?.createReaction(lesson, reaction)
     }
@@ -148,10 +171,10 @@ class CardPresenter(val card: Card, private val listener: AdaptiveReactionListen
             error = null
 
             val submission = card.adapter.submission
-            disposable = API.getInstance().createSubmission(submission)
-                    .andThen(API.getInstance().getSubmissions(submission.attempt))
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
+            disposable = api.createSubmission(submission)
+                    .andThen(api.getSubmissions(submission.attempt))
+                    .subscribeOn(backgroundScheduler)
+                    .observeOn(mainScheduler)
                     .subscribe(this::onSubmissionLoaded, this::onError)
 
             analyticMgr.onSubmissionWasMade()
@@ -167,10 +190,10 @@ class CardPresenter(val card: Card, private val listener: AdaptiveReactionListen
         submission = submissionResponse.firstSubmission
         submission?.let {
             if (it.status == Submission.Status.EVALUATION) {
-                disposable =  API.getInstance().getSubmissions(it.attempt)
+                disposable = api.getSubmissions(it.attempt)
                         .delay(1, TimeUnit.SECONDS)
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribeOn(backgroundScheduler)
+                        .observeOn(mainScheduler)
                         .subscribe(this::onSubmissionLoaded, this::onError)
             } else {
                 isLoading = false

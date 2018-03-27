@@ -20,6 +20,7 @@ import javax.inject.Inject
 class RatingPresenter
 @Inject
 constructor(
+        private val api: API,
         @BackgroundScheduler
         private val backgroundScheduler: Scheduler,
         @MainScheduler
@@ -45,7 +46,6 @@ constructor(
     private var periodsLoaded = 0
 
     private val dataBaseMgr = DataBaseMgr.instance // to inject
-    private val api = API.getInstance()
 
     init {
         compositeDisposable.add(
