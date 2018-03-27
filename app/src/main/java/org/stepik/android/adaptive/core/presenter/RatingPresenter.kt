@@ -23,7 +23,8 @@ constructor(
         @BackgroundScheduler
         private val backgroundScheduler: Scheduler,
         @MainScheduler
-        private val mainScheduler: Scheduler
+        private val mainScheduler: Scheduler,
+        private val ratingNamesGenerator: RatingNamesGenerator
 ): PresenterBase<RatingView>() {
     companion object {
         private const val ITEMS_PER_PAGE = 10
@@ -78,7 +79,7 @@ constructor(
             data.mapIndexed { index, (rank, _, exp, user) ->
                 RatingItem(
                         if (rank == 0) index + 1 else rank,
-                        RatingNamesGenerator.getName(user),
+                        ratingNamesGenerator.getName(user),
                         exp,
                         user
                 )

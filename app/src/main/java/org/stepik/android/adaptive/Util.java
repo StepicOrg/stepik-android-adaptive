@@ -18,7 +18,6 @@ import org.stepik.android.adaptive.core.ScreenManager;
 import org.stepik.android.adaptive.data.AnalyticMgr;
 import org.stepik.android.adaptive.data.SharedPreferenceMgr;
 import org.stepik.android.adaptive.data.db.DataBaseMgr;
-import org.stepik.android.adaptive.util.RatingNamesGenerator;
 
 import java.util.Random;
 
@@ -33,7 +32,6 @@ public class Util {
         AnalyticMgr.init(context);
         UserAgentProvider.init(context);
         DataBaseMgr.Companion.init(context);
-        RatingNamesGenerator.init(context);
     }
 
     public static void hideSoftKeyboard(final Activity a) {
@@ -54,7 +52,7 @@ public class Util {
         return (int) (Math.random() * (upper - lower)) + lower;
     }
 
-    private static String ALLOWED_SYMBOLS = "ABCDEFGHIJKLMNOPQRESTUVWXYZabcdefgghiklmnopqrstuvwxyz1234567890_";
+    private static final String ALLOWED_SYMBOLS = "ABCDEFGHIJKLMNOPQRESTUVWXYZabcdefgghiklmnopqrstuvwxyz1234567890_";
 
     public static String randomString(final int length) {
         Random random = new Random();
