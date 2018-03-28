@@ -1,6 +1,7 @@
 package org.stepik.android.adaptive.di
 
 import android.content.Context
+import android.content.pm.PackageManager
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings
 import dagger.Binds
@@ -20,6 +21,8 @@ import org.stepik.android.adaptive.core.events.ListenerContainerImpl
 import org.stepik.android.adaptive.di.qualifiers.BackgroundScheduler
 import org.stepik.android.adaptive.di.qualifiers.MainScheduler
 import org.stepik.android.adaptive.gamification.achievements.AchievementEventListener
+import org.stepik.android.adaptive.util.AppConstants
+import javax.inject.Named
 
 @Module
 abstract class AppCoreModule {
@@ -69,5 +72,20 @@ abstract class AppCoreModule {
                     setConfigSettings(configSettings)
                     setDefaults(R.xml.remote_config_defaults)
                 }
+
+        @JvmStatic
+        @Provides
+        @AppSingleton
+        @Named(AppConstants.userAgentName)
+        internal fun provideUserAgent(context: Context): String =
+                try {
+                    val packageInfo = context.packageManager.getPackageInfo(context.packageName, 0)
+                    val apiLevel = android.os.Build.VERSION.SDK_INT
+                    ("StepikDroid/" + packageInfo.versionName + " (Android " + apiLevel
+                            + ") build/" + packageInfo.versionCode + " package/" + packageInfo.packageName)
+                } catch (e: PackageManager.NameNotFoundException) {
+                    ""
+                }
+    
     }
 }

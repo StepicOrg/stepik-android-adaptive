@@ -46,6 +46,7 @@ import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
+import javax.inject.Named
 
 @AppSingleton
 class Api
@@ -53,7 +54,10 @@ class Api
 constructor(
         private val config: Config,
         private val sharedPreferenceMgr: SharedPreferenceMgr,
-        private val logoutHelper: LogoutHelper
+        private val logoutHelper: LogoutHelper,
+
+        @Named(AppConstants.userAgentName)
+        private val userAgent: String
 ) {
     companion object {
         private const val FAKE_MAIL_PATTERN = "adaptive_%s_android_%d%s@stepik.org"
@@ -452,7 +456,7 @@ constructor(
         return chain
                 .request()
                 .newBuilder()
-                .header(AppConstants.userAgentName, UserAgentProvider.provideUserAgent())
+                .header(AppConstants.userAgentName, userAgent)
                 .build()
     }
 
