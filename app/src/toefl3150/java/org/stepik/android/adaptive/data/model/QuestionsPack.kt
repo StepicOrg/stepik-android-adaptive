@@ -46,6 +46,22 @@ enum class QuestionsPack(
             difficulty  = R.string.questions_difficulty_mixed,
             background  = R.drawable.pack_bg_full,
             icon        = R.drawable.ic_questions_pack_full
+    ),
+
+    Adjectives(
+            id          = "questions_pack_adjectives",
+            courseId    = 3149,
+            difficulty  = R.string.questions_difficulty_mixed,
+            background  = R.drawable.pack_bg_adjectives,
+            icon        = R.drawable.ic_questions_pack_adjectives
+    ),
+
+    Verbs(
+            id          = "questions_pack_verbs",
+            courseId    = 3124,
+            difficulty  = R.string.questions_difficulty_mixed,
+            background  = R.drawable.pack_bg_verbs,
+            icon        = R.drawable.ic_questions_pack_verbs
     );
 
     companion object {
