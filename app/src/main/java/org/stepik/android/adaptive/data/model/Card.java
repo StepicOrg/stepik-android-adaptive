@@ -1,15 +1,19 @@
 package org.stepik.android.adaptive.data.model;
 
-import org.stepik.android.adaptive.api.API;
+import org.stepik.android.adaptive.App;
+import org.stepik.android.adaptive.api.Api;
 import org.stepik.android.adaptive.api.AttemptResponse;
+import org.stepik.android.adaptive.di.qualifiers.BackgroundScheduler;
+import org.stepik.android.adaptive.di.qualifiers.MainScheduler;
 import org.stepik.android.adaptive.ui.adapter.AttemptAnswersAdapter;
+
+import javax.inject.Inject;
 
 import io.reactivex.Observable;
 import io.reactivex.Observer;
+import io.reactivex.Scheduler;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.schedulers.Schedulers;
 
 
 /**
@@ -42,7 +46,19 @@ public final class Card extends Observable<Card> {
 
     private boolean correct = false;
 
+    @Inject
+    public Api api;
+
+    @Inject
+    @MainScheduler
+    public Scheduler mainScheduler;
+
+    @Inject
+    @BackgroundScheduler
+    public Scheduler backgroundScheduler;
+
     public Card(long lessonId, Lesson lesson, Step step, Attempt attempt) {
+        injectComponent();
         this.lessonId = lessonId;
         this.lesson = lesson;
         this.step = step;
@@ -51,24 +67,29 @@ public final class Card extends Observable<Card> {
     }
 
     public Card(final long lessonId) {
+        injectComponent();
         this.lessonId = lessonId;
+    }
+
+    private void injectComponent() {
+        App.Companion.componentManager().getStudyComponent().inject(this);
     }
 
     public void init() {
         this.error = null;
         if (stepSubscription == null || (stepSubscription.isDisposed() && step == null)) {
-            stepSubscription = API.getInstance().getSteps(lessonId)
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
+            stepSubscription = api.getSteps(lessonId)
+                    .subscribeOn(backgroundScheduler)
+                    .observeOn(mainScheduler)
                     .subscribe(res -> setStep(res.getFirstStep()), this::onError);
         } else {
             setStep(step);
         }
 
         if (lessonDisposable == null || (lessonDisposable.isDisposed() && lesson == null)) {
-            lessonDisposable = API.getInstance().getLessons(lessonId)
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
+            lessonDisposable = api.getLessons(lessonId)
+                    .subscribeOn(backgroundScheduler)
+                    .observeOn(mainScheduler)
                     .subscribe(res -> setLesson(res.getFirstLesson()), this::onError);
         }
     }
@@ -82,20 +103,20 @@ public final class Card extends Observable<Card> {
             this.step = step;
             if (attemptDisposable == null || (attemptDisposable.isDisposed() && attempt == null)) {
                 attemptDisposable = Observable.concat(
-                        API.getInstance().getAttempts(step.getId()),
-                        API.getInstance().createAttempt(step.getId())
+                        api.getAttempts(step.getId()),
+                        api.createAttempt(step.getId())
                 )
                         .filter((r) -> r.getFirstAttempt() != null)
                         .take(1)
                         .map(AttemptResponse::getFirstAttempt)
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribeOn(backgroundScheduler)
+                        .observeOn(mainScheduler)
                         .subscribe(this::setAttempt, this::onError);
             }
 
-            compositeDisposable.add(API.getInstance().getUnits(lessonId)
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(Schedulers.io())
+            compositeDisposable.add(api.getUnits(lessonId)
+                    .subscribeOn(backgroundScheduler)
+                    .observeOn(backgroundScheduler)
                     .subscribe((res) -> reportView(res.getTopUnit(), step.getId()), (__) -> {}));
             notifyDataChanged();
         }
@@ -106,9 +127,9 @@ public final class Card extends Observable<Card> {
         final long assignment = unit.getTopAssignment();
         if (assignment == 0) return;
 
-        compositeDisposable.add(API.getInstance().reportView(assignment, stepId)
-                .subscribeOn(Schedulers.io())
-                .observeOn(Schedulers.io())
+        compositeDisposable.add(api.reportView(assignment, stepId)
+                .subscribeOn(backgroundScheduler)
+                .observeOn(backgroundScheduler)
                 .subscribe(() -> {}, (__) -> {}));
     }
 

@@ -8,15 +8,25 @@ import android.view.View
 import com.google.android.flexbox.FlexDirection
 import com.google.android.flexbox.FlexboxLayoutManager
 import com.google.android.flexbox.JustifyContent
+import org.stepik.android.adaptive.App
 import org.stepik.android.adaptive.R
 import org.stepik.android.adaptive.databinding.DialogDefaultBodyBinding
 import org.stepik.android.adaptive.databinding.InventoryRecyclerViewBinding
 import org.stepik.android.adaptive.ui.adapter.InventoryAdapter
-import org.stepik.android.adaptive.util.InventoryUtil
+import org.stepik.android.adaptive.gamification.InventoryManager
+import javax.inject.Inject
 
 class InventoryDialog : DialogFragment() {
     private lateinit var binding: DialogDefaultBodyBinding
     private lateinit var adapter: InventoryAdapter
+
+    @Inject
+    lateinit var inventoryManager: InventoryManager
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        App.component().inject(this)
+    }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val alertDialogBuilder = AlertDialog.Builder(context, R.style.ExpLevelDialogTheme)
@@ -27,7 +37,7 @@ class InventoryDialog : DialogFragment() {
 
         binding.continueButton.setOnClickListener { dismiss() }
 
-        adapter = InventoryAdapter(InventoryUtil.getInventory())
+        adapter = InventoryAdapter(inventoryManager.getInventory())
 
         val recycler = InventoryRecyclerViewBinding.inflate(activity.layoutInflater, binding.container, false).recycler
 

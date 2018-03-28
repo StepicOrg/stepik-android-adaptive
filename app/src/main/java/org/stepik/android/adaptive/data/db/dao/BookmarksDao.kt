@@ -5,8 +5,13 @@ import android.database.Cursor
 import org.stepik.android.adaptive.data.db.operations.DatabaseOperations
 import org.stepik.android.adaptive.data.db.structure.BookmarksDbStructure
 import org.stepik.android.adaptive.data.model.Bookmark
+import org.stepik.android.adaptive.di.storage.StorageSingleton
+import javax.inject.Inject
 
-class BookmarksDao(databaseOperations: DatabaseOperations): DaoBase<Bookmark>(databaseOperations) {
+@StorageSingleton
+class BookmarksDao
+@Inject
+constructor(databaseOperations: DatabaseOperations): DaoBase<Bookmark>(databaseOperations) {
     override fun getDbName() = BookmarksDbStructure.TABLE_NAME
 
     override fun getDefaultPrimaryColumn() = BookmarksDbStructure.Columns.STEP_ID

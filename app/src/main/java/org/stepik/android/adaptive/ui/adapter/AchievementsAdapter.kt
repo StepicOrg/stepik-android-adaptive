@@ -8,11 +8,16 @@ import android.view.View
 import android.view.ViewGroup
 import org.stepik.android.adaptive.R
 import org.stepik.android.adaptive.databinding.ItemAchievementBinding
-import org.stepik.android.adaptive.util.AchievementManager
+import org.stepik.android.adaptive.gamification.achievements.AchievementManager
+import javax.inject.Inject
 
 
-class AchievementsAdapter : RecyclerView.Adapter<AchievementsAdapter.AchievementViewHolder>() {
-    private val achievements = AchievementManager.achievements
+class AchievementsAdapter
+@Inject
+constructor(
+        achievementManager: AchievementManager
+): RecyclerView.Adapter<AchievementsAdapter.AchievementViewHolder>() {
+    private val achievements = achievementManager.achievements
 
     override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int) =
             AchievementViewHolder(ItemAchievementBinding.inflate(LayoutInflater.from(parent?.context), parent, false))

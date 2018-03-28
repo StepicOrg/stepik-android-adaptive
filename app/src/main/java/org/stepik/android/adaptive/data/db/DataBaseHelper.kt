@@ -5,8 +5,13 @@ import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import org.stepik.android.adaptive.data.db.structure.BookmarksDbStructure
 import org.stepik.android.adaptive.data.db.structure.ExpDbStructure
+import org.stepik.android.adaptive.di.storage.StorageSingleton
+import javax.inject.Inject
 
-class DataBaseHelper(val context: Context) : SQLiteOpenHelper(context, DB_NAME, null, DB_VERSION) {
+@StorageSingleton
+class DataBaseHelper
+@Inject
+constructor(context: Context) : SQLiteOpenHelper(context, DB_NAME, null, DB_VERSION) {
     companion object {
         private const val DB_NAME = "stepik_adaptive_pdd"
         private const val DB_VERSION = 2

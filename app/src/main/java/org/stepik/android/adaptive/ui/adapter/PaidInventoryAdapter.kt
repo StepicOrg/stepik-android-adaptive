@@ -9,10 +9,10 @@ import android.widget.TextView
 import kotlinx.android.synthetic.main.item_paid_content.view.*
 import org.solovyev.android.checkout.Sku
 import org.stepik.android.adaptive.R
-import org.stepik.android.adaptive.util.InventoryUtil
+import org.stepik.android.adaptive.gamification.InventoryManager
 
 class PaidInventoryAdapter(private val purchase: (Sku) -> Unit) : RecyclerView.Adapter<PaidInventoryAdapter.PaidContentViewHolder>() {
-    var items: List<Pair<Sku, InventoryUtil.PaidContent>> = emptyList()
+    var items: List<Pair<Sku, InventoryManager.PaidContent>> = emptyList()
         set(value) {
             field = value.sortedBy { it.first.detailedPrice.amount }
             notifyDataSetChanged()

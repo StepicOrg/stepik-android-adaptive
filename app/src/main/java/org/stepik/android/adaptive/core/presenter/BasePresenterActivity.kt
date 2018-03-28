@@ -8,6 +8,7 @@ import android.support.v4.content.Loader
 import android.support.v7.app.AppCompatActivity
 import org.stepik.android.adaptive.core.loader.PresenterLoader
 import org.stepik.android.adaptive.ui.dialog.ProgressDialogFragment
+import javax.inject.Provider
 
 abstract class BasePresenterActivity<P : Presenter<V>, in V> : AppCompatActivity() {
     companion object {
@@ -17,6 +18,7 @@ abstract class BasePresenterActivity<P : Presenter<V>, in V> : AppCompatActivity
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        injectComponent()
 
         val loader = supportLoaderManager.getLoader<P>(LOADER_ID)
         if (loader == null) {
@@ -37,7 +39,7 @@ abstract class BasePresenterActivity<P : Presenter<V>, in V> : AppCompatActivity
             }
 
             override fun onCreateLoader(id: Int, args: Bundle?): Loader<P> =
-                    PresenterLoader(this@BasePresenterActivity, getPresenterFactory())
+                    PresenterLoader(this@BasePresenterActivity, getPresenterProvider())
         })
     }
 
@@ -54,5 +56,6 @@ abstract class BasePresenterActivity<P : Presenter<V>, in V> : AppCompatActivity
         this.presenter = presenter
     }
 
-    protected abstract fun getPresenterFactory() : PresenterFactory<P>
+    protected abstract fun injectComponent()
+    protected abstract fun getPresenterProvider(): Provider<P>
 }

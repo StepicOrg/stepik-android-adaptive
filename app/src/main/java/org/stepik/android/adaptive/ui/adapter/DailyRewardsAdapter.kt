@@ -6,10 +6,10 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import org.stepik.android.adaptive.R
 import org.stepik.android.adaptive.databinding.ItemDailyRewardBinding
-import org.stepik.android.adaptive.util.InventoryUtil
+import org.stepik.android.adaptive.gamification.InventoryManager
 
 
-class DailyRewardsAdapter(private val rewards: List<List<Pair<InventoryUtil.Item, Int>>>) : RecyclerView.Adapter<DailyRewardsAdapter.DailyRewardViewHolder>() {
+class DailyRewardsAdapter(private val rewards: List<List<Pair<InventoryManager.Item, Int>>>) : RecyclerView.Adapter<DailyRewardsAdapter.DailyRewardViewHolder>() {
     var currentProgress: Int = 0
         set(value) {
             field = value

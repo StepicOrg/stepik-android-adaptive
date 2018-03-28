@@ -2,8 +2,6 @@ package org.stepik.android.adaptive.util;
 
 import android.webkit.WebView;
 
-import org.stepik.android.adaptive.configuration.Config;
-
 public class HtmlUtil {
 
     private static final String MathJaxScript =
@@ -34,9 +32,9 @@ public class HtmlUtil {
         return textString.contains("$") || textString.contains("\\[");
     }
 
-    public static String prepareCardHtml(final String html) {
+    public static String prepareCardHtml(final String html, final String host) {
         String mathJax = hasLaTeX(html) ? MathJaxScript : "";
-        return String.format(Body, Config.getInstance().getHost(), mathJax, html);
+        return String.format(Body, host, mathJax, html);
     }
 
     public static void setCardWebViewHtml(final WebView webView, final String html) {

@@ -4,9 +4,12 @@ import android.databinding.DataBindingUtil
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.view.MenuItem
+import org.stepik.android.adaptive.App
 import org.stepik.android.adaptive.R
+import org.stepik.android.adaptive.configuration.Config
 import org.stepik.android.adaptive.databinding.ActivityStatsBinding
 import org.stepik.android.adaptive.ui.adapter.StatsViewPagerAdapter
+import javax.inject.Inject
 
 class StatsActivity : AppCompatActivity() {
     companion object {
@@ -15,8 +18,13 @@ class StatsActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityStatsBinding
 
+    @Inject
+    lateinit var config: Config
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        App.componentManager().statsComponent.inject(this)
+
         overridePendingTransition(R.anim.slide_down, R.anim.fade_in)
 
         binding = DataBindingUtil.setContentView(this, R.layout.activity_stats)
@@ -25,7 +33,7 @@ class StatsActivity : AppCompatActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.title = getString(R.string.stats)
 
-        binding.pager.adapter = StatsViewPagerAdapter(supportFragmentManager, this)
+        binding.pager.adapter = StatsViewPagerAdapter(supportFragmentManager, this, config)
         binding.pager.offscreenPageLimit = binding.pager.adapter.count
         binding.tabLayout.setupWithViewPager(binding.pager)
 

@@ -1,22 +1,34 @@
 package org.stepik.android.adaptive.core.presenter
 
-import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.Scheduler
 import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.schedulers.Schedulers
 import org.stepik.android.adaptive.configuration.Config
-import org.stepik.android.adaptive.api.API
+import org.stepik.android.adaptive.api.Api
 import org.stepik.android.adaptive.api.login.SocialManager
 import org.stepik.android.adaptive.core.presenter.contracts.LoginView
-import org.stepik.android.adaptive.data.AnalyticMgr
+import org.stepik.android.adaptive.data.Analytics
 import org.stepik.android.adaptive.data.SharedPreferenceMgr
 import org.stepik.android.adaptive.data.model.AccountCredentials
 import org.stepik.android.adaptive.data.model.Profile
+import org.stepik.android.adaptive.di.qualifiers.BackgroundScheduler
+import org.stepik.android.adaptive.di.qualifiers.MainScheduler
+import org.stepik.android.adaptive.util.addDisposable
 import retrofit2.HttpException
+import javax.inject.Inject
 
-class LoginPresenter : PresenterBase<LoginView>() {
-    companion object : PresenterFactory<LoginPresenter> {
-        override fun create(): LoginPresenter = LoginPresenter()
-    }
+class LoginPresenter
+@Inject
+constructor(
+        private val api: Api,
+        private val config: Config,
+        private val sharedPreferenceMgr: SharedPreferenceMgr,
+        private val analytics: Analytics,
+
+        @BackgroundScheduler
+        private val backgroundScheduler: Scheduler,
+        @MainScheduler
+        private val mainScheduler: Scheduler
+): PresenterBase<LoginView>() {
 
     private val disposable = CompositeDisposable()
 
@@ -29,10 +41,10 @@ class LoginPresenter : PresenterBase<LoginView>() {
     fun authWithLoginPassword(login: String, password: String, isFake: Boolean = false) {
         view?.onLoading()
 
-        disposable.add(API.getInstance()
+        disposable.add(api
                 .authWithLoginPassword(login, password)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(backgroundScheduler)
+                .observeOn(mainScheduler)
                 .subscribe({ this.onLogin(isFake) }, {
                     if (isFake && it is HttpException && it.code() == 401) {
                         // on some reason we can't login for fake user, so recreate fake user
@@ -44,65 +56,65 @@ class LoginPresenter : PresenterBase<LoginView>() {
     }
 
     fun onLogin(isFake: Boolean = false) {
-        disposable.add(API.getInstance()
-                .joinCourse(Config.getInstance().courseId)
-                .andThen(API.getInstance().profile)
-                .doOnNext({ SharedPreferenceMgr.getInstance().saveProfile(it.profile) })
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+        disposable addDisposable api
+                .joinCourse(config.courseId)
+                .andThen(api.profile)
+                .doOnNext { sharedPreferenceMgr.profile = it.profile }
+                .subscribeOn(backgroundScheduler)
+                .observeOn(mainScheduler)
                 .subscribe({
                     if (isFake)
                         unsubscribeFake(it.profile)
                     else
                         onSuccess()
-                }, { this.onError() }))
+                }, { this.onError() })
     }
 
     private fun unsubscribeFake(profile: Profile) {
         profile.setSubscribed_for_mail(false)
-        disposable.add(API.getInstance().setProfile(profile)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(this::onSuccess, { this.onError() }))
+        disposable addDisposable api.setProfile(profile)
+                .subscribeOn(backgroundScheduler)
+                .observeOn(mainScheduler)
+                .subscribe(this::onSuccess, { this.onError() })
     }
 
     fun onSocialLogin(token: String, type: SocialManager.SocialType) {
         view?.onLoading()
 
-        disposable.add(API.getInstance()
+        disposable addDisposable api
                 .authWithNativeCode(token, type)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({ this.onLogin() }, { this.onError() }))
+                .subscribeOn(backgroundScheduler)
+                .observeOn(mainScheduler)
+                .subscribe({ this.onLogin() }, { this.onError() })
     }
 
     fun authWithCode(code: String) {
         view?.onLoading()
 
-        disposable.add(API.getInstance()
+        disposable addDisposable api
                 .authWithCode(code)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({ this.onLogin() }, { this.onError() }))
+                .subscribeOn(backgroundScheduler)
+                .observeOn(mainScheduler)
+                .subscribe({ this.onLogin() }, { this.onError() })
     }
 
     fun onError() {
         view?.onNetworkError()
     }
 
-    fun createFakeUser() = createAccount(API.createFakeAccount(), true)
+    fun createFakeUser() = createAccount(api.createFakeAccount(), true)
 
     fun createAccount(credentials: AccountCredentials, isFake: Boolean = false) {
         view?.onLoading()
 
-        disposable.add(API.getInstance()
+        disposable addDisposable api
                 .createAccount(credentials.firstName, credentials.lastName, credentials.login, credentials.password)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribeOn(Schedulers.io())
+                .observeOn(mainScheduler)
+                .subscribeOn(backgroundScheduler)
                 .subscribe({
                     if (it.isSuccessful) {
                         if (isFake) { // save only if it's fake account
-                            SharedPreferenceMgr.getInstance().saveFakeUser(credentials)
+                            sharedPreferenceMgr.saveFakeUser(credentials)
                         }
                         authWithLoginPassword(credentials.login, credentials.password, isFake)
                     } else {
@@ -113,13 +125,13 @@ class LoginPresenter : PresenterBase<LoginView>() {
                             view?.onNetworkError()
                         }
                     }
-                }, { this.onError() }))
+                }, { this.onError() })
     }
 
 
     fun onSuccess() {
         isSuccess = true
-        AnalyticMgr.getInstance().successLogin()
+        analytics.successLogin()
         view?.onSuccess()
     }
 

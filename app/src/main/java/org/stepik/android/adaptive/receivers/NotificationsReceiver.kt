@@ -3,10 +3,12 @@ package org.stepik.android.adaptive.receivers
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import org.stepik.android.adaptive.App
 import org.stepik.android.adaptive.Util
-import org.stepik.android.adaptive.data.AnalyticMgr
+import org.stepik.android.adaptive.data.Analytics
 import org.stepik.android.adaptive.notifications.LocalReminder
 import org.stepik.android.adaptive.notifications.RemindNotificationManager
+import javax.inject.Inject
 
 
 class NotificationsReceiver : BroadcastReceiver() {
@@ -17,22 +19,32 @@ class NotificationsReceiver : BroadcastReceiver() {
         const val SHOW_NOTIFICATION = "show notification"
     }
 
-    override fun onReceive(context: Context, intent: Intent?) {
-        Util.initMgr(context)
+    @Inject
+    lateinit var remindNotificationManager: RemindNotificationManager
 
+    @Inject
+    lateinit var localReminder: LocalReminder
+
+    @Inject
+    lateinit var analytics: Analytics
+
+    init {
+        App.component().inject(this)
+    }
+
+    override fun onReceive(context: Context, intent: Intent?) {
         intent?.let {
             val days = it.getIntExtra(LocalReminder.DAYS_MULTIPLIER_KEY, 0)
             if (it.action == NOTIFICATION_CANCELED) {
-                LocalReminder.resolveDailyRemind()
-                AnalyticMgr.getInstance().onNotificationCanceled(days)
+                localReminder.resolveDailyRemind()
+                analytics.onNotificationCanceled(days)
             } else if (it.action == SHOW_NOTIFICATION) {
                 when (days) {
-                    1 -> RemindNotificationManager.showEveryDayNotification()
-                    3 -> RemindNotificationManager.show3DaysNotification()
+                    1 -> remindNotificationManager.showEveryDayNotification()
+                    3 -> remindNotificationManager.show3DaysNotification()
                 }
             }
         }
-
     }
 
 }

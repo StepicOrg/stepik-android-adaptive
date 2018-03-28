@@ -8,14 +8,24 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import kotlinx.android.synthetic.main.fragment_bookmarks.*
+import org.stepik.android.adaptive.App
 import org.stepik.android.adaptive.R
 import org.stepik.android.adaptive.core.presenter.BasePresenterFragment
 import org.stepik.android.adaptive.core.presenter.BookmarksPresenter
 import org.stepik.android.adaptive.core.presenter.contracts.BookmarksView
 import org.stepik.android.adaptive.ui.adapter.BookmarksAdapter
 import org.stepik.android.adaptive.util.changeVisibillity
+import javax.inject.Inject
+import javax.inject.Provider
 
 class BookmarksFragment: BasePresenterFragment<BookmarksPresenter, BookmarksView>(), BookmarksView {
+    @Inject
+    lateinit var bookmarksPresenterProvider: Provider<BookmarksPresenter>
+
+    override fun injectComponent() {
+        App.componentManager().statsComponent.inject(this)
+    }
+
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?) =
             inflater?.inflate(R.layout.fragment_bookmarks, container, false)
 
@@ -61,5 +71,5 @@ class BookmarksFragment: BasePresenterFragment<BookmarksPresenter, BookmarksView
         super.onStop()
     }
 
-    override fun getPresenterFactory() = BookmarksPresenter.Companion
+    override fun getPresenterProvider() = bookmarksPresenterProvider
 }

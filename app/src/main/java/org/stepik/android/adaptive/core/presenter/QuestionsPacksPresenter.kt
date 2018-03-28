@@ -1,23 +1,33 @@
 package org.stepik.android.adaptive.core.presenter
 
 import io.reactivex.Observable
-import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.Scheduler
 import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.schedulers.Schedulers
 import org.solovyev.android.checkout.*
-import org.stepik.android.adaptive.api.API
+import org.stepik.android.adaptive.api.Api
 import org.stepik.android.adaptive.core.presenter.contracts.QuestionsPacksView
-import org.stepik.android.adaptive.data.AnalyticMgr
+import org.stepik.android.adaptive.data.Analytics
 import org.stepik.android.adaptive.data.SharedPreferenceMgr
 import org.stepik.android.adaptive.data.model.QuestionsPack
+import org.stepik.android.adaptive.di.qualifiers.BackgroundScheduler
+import org.stepik.android.adaptive.di.qualifiers.MainScheduler
 import org.stepik.android.adaptive.ui.adapter.QuestionsPacksAdapter
+import org.stepik.android.adaptive.util.addDisposable
 import org.stepik.android.adaptive.util.startPurchaseFlowRx
+import javax.inject.Inject
 
-class QuestionsPacksPresenter : PaidContentPresenterBase<QuestionsPacksView>() {
-    companion object : PresenterFactory<QuestionsPacksPresenter> {
-        override fun create() = QuestionsPacksPresenter()
-    }
-
+class QuestionsPacksPresenter
+@Inject
+constructor(
+        private val api: Api,
+        private val sharedPreferenceMgr: SharedPreferenceMgr,
+        private val analytics: Analytics,
+        @BackgroundScheduler
+        private val backgroundScheduler: Scheduler,
+        @MainScheduler
+        private val mainScheduler: Scheduler,
+        billing: Billing
+): PaidContentPresenterBase<QuestionsPacksView>(billing) {
     private val adapter = QuestionsPacksAdapter(this::onPackPressed)
     private val skus = QuestionsPack.values().map { it.id }
     private var isPacksLoaded = false
@@ -25,29 +35,29 @@ class QuestionsPacksPresenter : PaidContentPresenterBase<QuestionsPacksView>() {
     private val compositeDisposable = CompositeDisposable()
 
     init {
-        adapter.selection = SharedPreferenceMgr.getInstance().questionsPackIndex
+        adapter.selection = sharedPreferenceMgr.questionsPackIndex
     }
 
     fun loadContent() {
         view?.showContentProgress()
-        compositeDisposable.add(getInventoryRx(ProductTypes.IN_APP, skus).subscribeOn(AndroidSchedulers.mainThread()).map {
+        compositeDisposable addDisposable getInventoryRx(ProductTypes.IN_APP, skus).subscribeOn(mainScheduler).map {
             it.map {
                 sku -> sku to QuestionsPack.getById(sku.id.code)!!
             }
         }.flatMap { packs ->
             val ids = packs.map { it.second.courseId }.toLongArray()
             packs.forEach {
-                SharedPreferenceMgr.getInstance().onQuestionsPackViewed(it.second)
+                sharedPreferenceMgr.onQuestionsPackViewed(it.second)
             }
 
-            API.getInstance().getCourses(ids).map { it.courses }.map { courses ->
+            api.getCourses(ids).map { it.courses }.map { courses ->
                 courses.mapNotNull { course ->
-                    val pack = packs?.find { it.second.courseId == course.id }
+                    val pack = packs.find { it.second.courseId == course.id }
                     pack?.second?.size = course.totalUnits
                     pack
                 }
-            }.subscribeOn(Schedulers.io())
-        }.observeOn(AndroidSchedulers.mainThread()).subscribe({
+            }.subscribeOn(backgroundScheduler)
+        }.observeOn(mainScheduler).subscribe({
             adapter.items = it
             view?.hideContentProgress()
             isPacksLoaded = true
@@ -58,12 +68,12 @@ class QuestionsPacksPresenter : PaidContentPresenterBase<QuestionsPacksView>() {
             } else {
                 view?.onContentError()
             }
-        }))
+        })
     }
 
     fun restorePurchases() {
         view?.showProgress()
-        compositeDisposable.add(consume(getAllPurchases()))
+        compositeDisposable addDisposable consume(getAllPurchases())
     }
 
 
@@ -71,7 +81,7 @@ class QuestionsPacksPresenter : PaidContentPresenterBase<QuestionsPacksView>() {
             it.sku
         }.filter {
             skus.contains(it)
-        }.subscribeOn(AndroidSchedulers.mainThread()).observeOn(AndroidSchedulers.mainThread()).toList().subscribe({
+        }.subscribeOn(mainScheduler).observeOn(mainScheduler).toList().subscribe({
             adapter.addOwnedContent(it)
             view?.hideProgress()
         }, {
@@ -91,27 +101,25 @@ class QuestionsPacksPresenter : PaidContentPresenterBase<QuestionsPacksView>() {
     }
 
     private fun purchase(sku: Sku) {
-        AnalyticMgr.getInstance().logEvent(AnalyticMgr.EVENT_ON_QUESTIONS_PACK_PURCHASE_BUTTON_CLICKED)
+        analytics.logEvent(Analytics.EVENT_ON_QUESTIONS_PACK_PURCHASE_BUTTON_CLICKED)
         val purchaseObservable = checkout?.startPurchaseFlowRx(sku) ?: Observable.empty<Purchase>()
-        compositeDisposable.add(consume(purchaseObservable))
+        compositeDisposable addDisposable consume(purchaseObservable)
     }
 
     private fun changeCourse(pack: QuestionsPack) {
         view?.showProgress()
-        compositeDisposable.add(API.getInstance()
-                .joinCourse(pack.courseId)
-                .doOnComplete {
-                    SharedPreferenceMgr.getInstance().changeQuestionsPackIndex(pack.ordinal)
-                    AnalyticMgr.getInstance().logEventWithLongParam(AnalyticMgr.EVENT_ON_QUESTIONS_PACK_SWITCHED, AnalyticMgr.PARAM_COURSE, pack.courseId)
-                }
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribeOn(Schedulers.io())
-                .subscribe({
-                    adapter.selection = pack.ordinal
-                    view?.hideProgress()
-                }, {
-                    view?.hideProgress()
-                }))
+        compositeDisposable addDisposable api.joinCourse(pack.courseId).doOnComplete {
+            sharedPreferenceMgr.changeQuestionsPackIndex(pack.ordinal)
+            analytics.logEventWithLongParam(Analytics.EVENT_ON_QUESTIONS_PACK_SWITCHED, Analytics.PARAM_COURSE, pack.courseId)
+        }
+        .observeOn(mainScheduler)
+        .subscribeOn(backgroundScheduler)
+        .subscribe({
+            adapter.selection = pack.ordinal
+            view?.hideProgress()
+        }, {
+            view?.hideProgress()
+        })
     }
 
     override fun attachView(view: QuestionsPacksView) {

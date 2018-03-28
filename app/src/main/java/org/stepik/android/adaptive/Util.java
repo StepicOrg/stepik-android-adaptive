@@ -6,42 +6,12 @@ import android.os.Build;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 
-import com.facebook.FacebookSdk;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
-import com.vk.sdk.VKSdk;
-
-import org.stepik.android.adaptive.api.API;
-import org.stepik.android.adaptive.api.UserAgentProvider;
-import org.stepik.android.adaptive.configuration.Config;
-import org.stepik.android.adaptive.core.ScreenManager;
-import org.stepik.android.adaptive.data.AnalyticMgr;
-import org.stepik.android.adaptive.data.SharedPreferenceMgr;
-import org.stepik.android.adaptive.data.db.DataBaseMgr;
-import org.stepik.android.adaptive.notifications.LocalReminder;
-import org.stepik.android.adaptive.notifications.RemindNotificationManager;
-import org.stepik.android.adaptive.util.AchievementManager;
-import org.stepik.android.adaptive.util.RatingNamesGenerator;
 
 import java.util.Random;
 
 public class Util {
-    public static void initMgr(final Context context) {
-        Config.init(context);
-        ScreenManager.init(context);
-        API.init();
-        SharedPreferenceMgr.init(context);
-        VKSdk.initialize(context);
-        FacebookSdk.sdkInitialize(context.getApplicationContext());
-        AnalyticMgr.init(context);
-        UserAgentProvider.init(context);
-        DataBaseMgr.Companion.init(context);
-        LocalReminder.INSTANCE.init(context);
-        RemindNotificationManager.INSTANCE.init(context);
-        RatingNamesGenerator.init(context);
-        AchievementManager.INSTANCE.init(context);
-    }
-
     public static void hideSoftKeyboard(final Activity a) {
         final View view = a.getCurrentFocus();
         if (view != null) {
@@ -60,7 +30,7 @@ public class Util {
         return (int) (Math.random() * (upper - lower)) + lower;
     }
 
-    private static String ALLOWED_SYMBOLS = "ABCDEFGHIJKLMNOPQRESTUVWXYZabcdefgghiklmnopqrstuvwxyz1234567890_";
+    private static final String ALLOWED_SYMBOLS = "ABCDEFGHIJKLMNOPQRESTUVWXYZabcdefgghiklmnopqrstuvwxyz1234567890_";
 
     public static String randomString(final int length) {
         Random random = new Random();

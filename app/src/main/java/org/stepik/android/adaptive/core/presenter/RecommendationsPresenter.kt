@@ -1,34 +1,49 @@
 package org.stepik.android.adaptive.core.presenter
 
-import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.Scheduler
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 import io.reactivex.functions.BiFunction
-import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.PublishSubject
+import org.stepik.android.adaptive.api.Api
 import org.stepik.android.adaptive.api.RecommendationsResponse
 import org.stepik.android.adaptive.core.presenter.contracts.RecommendationsView
 import org.stepik.android.adaptive.data.SharedPreferenceMgr
 import org.stepik.android.adaptive.data.model.Card
 import org.stepik.android.adaptive.data.model.RecommendationReaction
+import org.stepik.android.adaptive.di.qualifiers.BackgroundScheduler
+import org.stepik.android.adaptive.di.qualifiers.MainScheduler
 import org.stepik.android.adaptive.notifications.LocalReminder
 import org.stepik.android.adaptive.ui.adapter.QuizCardsAdapter
 import org.stepik.android.adaptive.ui.helper.CardHelper
 import org.stepik.android.adaptive.ui.listener.AdaptiveReactionListener
 import org.stepik.android.adaptive.ui.listener.AnswerListener
-import org.stepik.android.adaptive.util.DailyRewardManager
-import org.stepik.android.adaptive.util.ExpUtil
-import org.stepik.android.adaptive.util.InventoryUtil
-import org.stepik.android.adaptive.util.RateAppUtil
+import org.stepik.android.adaptive.gamification.DailyRewardManager
+import org.stepik.android.adaptive.gamification.ExpManager
+import org.stepik.android.adaptive.gamification.InventoryManager
+import org.stepik.android.adaptive.util.RateAppManager
+import org.stepik.android.adaptive.util.addDisposable
 import retrofit2.HttpException
 import java.util.*
+import javax.inject.Inject
 
-class RecommendationsPresenter : PresenterBase<RecommendationsView>(), AnswerListener {
-    companion object : PresenterFactory<RecommendationsPresenter> {
-        override fun create() = RecommendationsPresenter()
-
+class RecommendationsPresenter
+@Inject
+constructor(
+        private val api: Api,
+        private val sharedPreferenceMgr: SharedPreferenceMgr,
+        @BackgroundScheduler
+        private val backgroundScheduler: Scheduler,
+        @MainScheduler
+        private val mainScheduler: Scheduler,
+        localReminder: LocalReminder,
+        private val dailyRewardManager: DailyRewardManager,
+        private val expManager: ExpManager,
+        private val inventoryManager: InventoryManager,
+        private val rateAppManager: RateAppManager
+): PresenterBase<RecommendationsView>(), AnswerListener {
+    companion object {
         private const val MIN_STREAK_TO_OFFER_TO_BUY = 7
-
         private const val MIN_EXP_TO_OFFER_PACKS = 50
     }
 
@@ -47,12 +62,12 @@ class RecommendationsPresenter : PresenterBase<RecommendationsView>(), AnswerLis
 
     init {
         createReaction(0, RecommendationReaction.Reaction.INTERESTING)
-        InventoryUtil.starterPack()
-        LocalReminder.resolveDailyRemind()
+        inventoryManager.starterPack()
+        localReminder.resolveDailyRemind()
     }
 
     private fun resolveDailyReward() {
-        val progress = DailyRewardManager.giveRewardAndGetCurrentRewardDay()
+        val progress = dailyRewardManager.giveRewardAndGetCurrentRewardDay()
         if (progress != DailyRewardManager.DISCARD)
             view?.showDailyRewardDialog(progress)
     }
@@ -74,64 +89,64 @@ class RecommendationsPresenter : PresenterBase<RecommendationsView>(), AnswerLis
         view.onAdapter(adapter)
     }
 
-    private fun updateExp(exp: Long = ExpUtil.getExp(), streak: Long = 0, showLevelDialog: Boolean = false) {
-        val level = ExpUtil.getCurrentLevel(exp)
+    private fun updateExp(exp: Long = expManager.exp, streak: Long = 0, showLevelDialog: Boolean = false) {
+        val level = expManager.getCurrentLevel(exp)
 
-        val prev = ExpUtil.getNextLevelExp(level - 1)
-        val next = ExpUtil.getNextLevelExp(level)
+        val prev = expManager.getNextLevelExp(level - 1)
+        val next = expManager.getNextLevelExp(level)
 
         view?.updateExp(exp, prev, next, level)
 
-        if (showLevelDialog && level != ExpUtil.getCurrentLevel(exp - streak)) {
+        if (showLevelDialog && level != expManager.getCurrentLevel(exp - streak)) {
             view?.showNewLevelDialog(level)
         }
 
         if (exp > MIN_EXP_TO_OFFER_PACKS) {
-            if (!SharedPreferenceMgr.getInstance().isQuestionsPacksTooltipWasShown) {
-                SharedPreferenceMgr.getInstance().afterQuestionsPacksTooltipWasShown()
+            if (!sharedPreferenceMgr.isQuestionsPacksTooltipWasShown) {
+                sharedPreferenceMgr.afterQuestionsPacksTooltipWasShown()
                 view?.showQuestionsPacksTooltip()
             }
         }
     }
 
     fun restoreStreak(streak: Long) {
-        ExpUtil.changeStreak(streak)
+        expManager.changeStreak(streak)
         view?.onStreakRestored()
     }
 
     override fun onCorrectAnswer(submissionId: Long) {
         view?.hideStreakRestoreDialog()
-        val streak = ExpUtil.incStreak()
+        val streak = expManager.incStreak()
 
         view?.onStreak(streak)
-        updateExp(ExpUtil.changeExp(streak, submissionId), streak, true)
+        updateExp(expManager.changeExp(streak, submissionId), streak, true)
 
-        if (RateAppUtil.onEngagement()) {
+        if (rateAppManager.onEngagement()) {
             view?.showRateAppDialog()
         }
     }
 
     override fun onWrongAnswer() {
         view?.hideStreakRestoreDialog()
-        val streak = ExpUtil.getStreak()
+        val streak = expManager.streak
 
         if (streak > 1) {
             view?.onStreakLost()
 
             view?.let {
-                if (InventoryUtil.hasTickets()) {
-                    it.showStreakRestoreDialog(streak, withTooltip = !SharedPreferenceMgr.getInstance().isStreakRestoreTooltipWasShown)
-                    SharedPreferenceMgr.getInstance().afterStreakRestoreTooltipWasShown()
+                if (inventoryManager.hasTickets()) {
+                    it.showStreakRestoreDialog(streak, withTooltip = !sharedPreferenceMgr.isStreakRestoreTooltipWasShown)
+                    sharedPreferenceMgr.afterStreakRestoreTooltipWasShown()
                 } else {
-                    it.showStreakRestoreDialog(streak, withTooltip = streak > MIN_STREAK_TO_OFFER_TO_BUY && !SharedPreferenceMgr.getInstance().isPaidContentTooltipWasShown)
+                    it.showStreakRestoreDialog(streak, withTooltip = streak > MIN_STREAK_TO_OFFER_TO_BUY && !sharedPreferenceMgr.isPaidContentTooltipWasShown)
                     if (streak > MIN_STREAK_TO_OFFER_TO_BUY) {
-                        SharedPreferenceMgr.getInstance().afterPaidContentTooltipWasShown()
+                        sharedPreferenceMgr.afterPaidContentTooltipWasShown()
                     }
                 }
             }
         }
 
-        ExpUtil.resetStreak()
+        expManager.resetStreak()
     }
 
 
@@ -140,12 +155,12 @@ class RecommendationsPresenter : PresenterBase<RecommendationsView>(), AnswerLis
             view?.onLoading()
         }
 
-        compositeDisposable.add(CardHelper.createReactionObservable(lesson, reaction, cards.size + adapter.getItemCount())
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+        compositeDisposable addDisposable CardHelper.createReactionObservable(api, sharedPreferenceMgr, lesson, reaction, cards.size + adapter.getItemCount())
+                .subscribeOn(backgroundScheduler)
+                .observeOn(mainScheduler)
                 .doOnError(this::onError)
                 .retryWhen { it.zipWith(retrySubject, BiFunction<Any, Any, Any> {a, _ -> a}) }
-                .subscribe(this::onRecommendation, this::onError))
+                .subscribe(this::onRecommendation, this::onError)
     }
 
     private fun onRecommendation(response: RecommendationsResponse) {

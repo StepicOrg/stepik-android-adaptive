@@ -20,6 +20,7 @@ public abstract class FragmentActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        injectComponent();
 
         setContentView(R.layout.fragment_activity);
 
@@ -29,6 +30,8 @@ public abstract class FragmentActivity extends AppCompatActivity {
     }
 
     protected abstract Fragment createFragment();
+
+    protected void injectComponent() {}
 
     @Override
     public boolean onOptionsItemSelected(final MenuItem item) {

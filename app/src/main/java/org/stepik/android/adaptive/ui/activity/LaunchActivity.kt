@@ -20,19 +20,21 @@ import com.vk.sdk.VKCallback
 import com.vk.sdk.VKSdk
 import com.vk.sdk.api.VKError
 import com.vk.sdk.api.model.VKScopes
+import org.stepik.android.adaptive.App
 import org.stepik.android.adaptive.configuration.Config
 import org.stepik.android.adaptive.R
 import org.stepik.android.adaptive.Util
-import org.stepik.android.adaptive.api.API
+import org.stepik.android.adaptive.api.Api
 import org.stepik.android.adaptive.api.login.SocialManager
 import org.stepik.android.adaptive.core.ScreenManager
 import org.stepik.android.adaptive.core.presenter.BasePresenterActivity
 import org.stepik.android.adaptive.core.presenter.LoginPresenter
-import org.stepik.android.adaptive.core.presenter.PresenterFactory
 import org.stepik.android.adaptive.core.presenter.contracts.LoginView
 import org.stepik.android.adaptive.databinding.ActivityLaunchBinding
+import javax.inject.Inject
+import javax.inject.Provider
 
-class LaunchActivity : BasePresenterActivity<LoginPresenter, LoginView>(), LoginView {
+class LaunchActivity: BasePresenterActivity<LoginPresenter, LoginView>(), LoginView {
     companion object {
         const val REQUEST_CODE_GOOGLE_SIGN_IN = 159
         const val REQUEST_CODE_SOCIAL_AUTH = 231
@@ -44,6 +46,19 @@ class LaunchActivity : BasePresenterActivity<LoginPresenter, LoginView>(), Login
     private lateinit var callbackManager : CallbackManager
 
     private lateinit var binding : ActivityLaunchBinding
+
+    @Inject
+    lateinit var config: Config
+
+    @Inject
+    lateinit var api: Api
+
+    @Inject
+    lateinit var loginPresenterProvider: Provider<LoginPresenter>
+
+    override fun injectComponent() {
+        App.componentManager().loginComponent.inject(this)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -57,7 +72,7 @@ class LaunchActivity : BasePresenterActivity<LoginPresenter, LoginView>(), Login
         if (Util.checkPlayServices(this)) {
             val googleSignInOptions =  GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                     .requestScopes(Scope(Scopes.EMAIL), Scope(Scopes.PROFILE))
-                    .requestServerAuthCode(Config.getInstance().googleServerClientId)
+                    .requestServerAuthCode(config.googleServerClientId)
                     .build()
 
             googleApiClient = GoogleApiClient.Builder(this)
@@ -161,7 +176,7 @@ class LaunchActivity : BasePresenterActivity<LoginPresenter, LoginView>(), Login
         if (requestCode == REQUEST_CODE_SOCIAL_AUTH) {
             if (resultCode == Activity.RESULT_OK) {
                 data?.let {
-                    presenter?.authWithCode(it.data.getQueryParameter(Config.getInstance().codeQueryParameter))
+                    presenter?.authWithCode(it.data.getQueryParameter(config.codeQueryParameter))
                 }
             } else {
                 presenter?.onError()
@@ -171,7 +186,7 @@ class LaunchActivity : BasePresenterActivity<LoginPresenter, LoginView>(), Login
 
     private fun onSocialAuth(type: SocialManager.SocialType) {
         val intent = Intent(this, SocialAuthActivity::class.java)
-        intent.data = API.getInstance().getUriForSocialAuth(type)
+        intent.data = api.getUriForSocialAuth(type)
         startActivityForResult(intent, REQUEST_CODE_SOCIAL_AUTH)
     }
 
@@ -190,5 +205,5 @@ class LaunchActivity : BasePresenterActivity<LoginPresenter, LoginView>(), Login
         showProgressDialogFragment(PROGRESS, getString(R.string.sign_in), getString(R.string.processing_your_request))
     }
 
-    override fun getPresenterFactory(): PresenterFactory<LoginPresenter> = LoginPresenter.Companion
+    override fun getPresenterProvider() = loginPresenterProvider
 }
