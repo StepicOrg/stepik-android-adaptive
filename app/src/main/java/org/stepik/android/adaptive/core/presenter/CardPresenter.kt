@@ -66,7 +66,7 @@ class CardPresenter(val card: Card, private val listener: AdaptiveReactionListen
     override fun attachView(view: CardView) {
         super.attachView(view)
         view.setTitle(card.lesson.title)
-        view.setQuestion(HtmlUtil.prepareCardHtml(card.step.block.text, config))
+        view.setQuestion(HtmlUtil.prepareCardHtml(card.step.block.text, config.host))
         view.setAnswerAdapter(card.adapter)
 
         fetchBookmarkState()
