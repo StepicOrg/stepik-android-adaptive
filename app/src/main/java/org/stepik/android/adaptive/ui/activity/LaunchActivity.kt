@@ -24,7 +24,7 @@ import org.stepik.android.adaptive.App
 import org.stepik.android.adaptive.configuration.Config
 import org.stepik.android.adaptive.R
 import org.stepik.android.adaptive.Util
-import org.stepik.android.adaptive.api.API
+import org.stepik.android.adaptive.api.Api
 import org.stepik.android.adaptive.api.login.SocialManager
 import org.stepik.android.adaptive.core.ScreenManager
 import org.stepik.android.adaptive.core.presenter.BasePresenterActivity
@@ -51,7 +51,7 @@ class LaunchActivity: BasePresenterActivity<LoginPresenter, LoginView>(), LoginV
     lateinit var config: Config
 
     @Inject
-    lateinit var api: API
+    lateinit var api: Api
 
     @Inject
     lateinit var loginPresenterProvider: Provider<LoginPresenter>

@@ -4,7 +4,7 @@ import io.reactivex.Observable
 import io.reactivex.Scheduler
 import io.reactivex.disposables.CompositeDisposable
 import org.solovyev.android.checkout.*
-import org.stepik.android.adaptive.api.API
+import org.stepik.android.adaptive.api.Api
 import org.stepik.android.adaptive.core.presenter.contracts.QuestionsPacksView
 import org.stepik.android.adaptive.data.Analytics
 import org.stepik.android.adaptive.data.SharedPreferenceMgr
@@ -19,7 +19,7 @@ import javax.inject.Inject
 class QuestionsPacksPresenter
 @Inject
 constructor(
-        private val api: API,
+        private val api: Api,
         private val sharedPreferenceMgr: SharedPreferenceMgr,
         private val analytics: Analytics,
         @BackgroundScheduler

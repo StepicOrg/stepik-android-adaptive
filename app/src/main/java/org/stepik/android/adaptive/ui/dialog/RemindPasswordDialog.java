@@ -15,7 +15,7 @@ import android.widget.Toast;
 
 import org.stepik.android.adaptive.App;
 import org.stepik.android.adaptive.R;
-import org.stepik.android.adaptive.api.API;
+import org.stepik.android.adaptive.api.Api;
 import org.stepik.android.adaptive.di.qualifiers.BackgroundScheduler;
 import org.stepik.android.adaptive.di.qualifiers.MainScheduler;
 import org.stepik.android.adaptive.util.ValidateUtil;
@@ -31,7 +31,7 @@ public final class RemindPasswordDialog extends DialogFragment {
     private static final String PROGRESS = "progress";
 
     @Inject
-    public API api;
+    public Api api;
 
     @Inject
     @MainScheduler

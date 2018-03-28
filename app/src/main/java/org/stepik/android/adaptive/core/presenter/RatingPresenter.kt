@@ -5,7 +5,7 @@ import io.reactivex.Scheduler
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.functions.BiFunction
 import io.reactivex.subjects.PublishSubject
-import org.stepik.android.adaptive.api.API
+import org.stepik.android.adaptive.api.Api
 import org.stepik.android.adaptive.core.presenter.contracts.RatingView
 import org.stepik.android.adaptive.data.SharedPreferenceMgr
 import org.stepik.android.adaptive.data.db.DataBaseMgr
@@ -21,7 +21,7 @@ import javax.inject.Inject
 class RatingPresenter
 @Inject
 constructor(
-        private val api: API,
+        private val api: Api,
         private val sharedPreferenceMgr: SharedPreferenceMgr,
         @BackgroundScheduler
         private val backgroundScheduler: Scheduler,

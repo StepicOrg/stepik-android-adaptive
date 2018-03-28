@@ -5,7 +5,7 @@ import io.reactivex.Single
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 import org.stepik.android.adaptive.App
-import org.stepik.android.adaptive.api.API
+import org.stepik.android.adaptive.api.Api
 import org.stepik.android.adaptive.api.SubmissionResponse
 import org.stepik.android.adaptive.configuration.Config
 import org.stepik.android.adaptive.core.presenter.contracts.CardView
@@ -40,7 +40,7 @@ class CardPresenter(val card: Card, private val listener: AdaptiveReactionListen
     lateinit var config: Config
 
     @Inject
-    lateinit var api: API
+    lateinit var api: Api
 
     @Inject
     lateinit var dataBaseMgr: DataBaseMgr

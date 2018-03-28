@@ -5,7 +5,7 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 import io.reactivex.functions.BiFunction
 import io.reactivex.subjects.PublishSubject
-import org.stepik.android.adaptive.api.API
+import org.stepik.android.adaptive.api.Api
 import org.stepik.android.adaptive.api.RecommendationsResponse
 import org.stepik.android.adaptive.core.presenter.contracts.RecommendationsView
 import org.stepik.android.adaptive.data.SharedPreferenceMgr
@@ -30,7 +30,7 @@ import javax.inject.Inject
 class RecommendationsPresenter
 @Inject
 constructor(
-        private val api: API,
+        private val api: Api,
         private val sharedPreferenceMgr: SharedPreferenceMgr,
         @BackgroundScheduler
         private val backgroundScheduler: Scheduler,

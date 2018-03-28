@@ -6,7 +6,7 @@ import android.preference.PreferenceManager
 import com.google.gson.Gson
 import org.joda.time.DateTime
 import org.joda.time.DateTimeZone
-import org.stepik.android.adaptive.api.API
+import org.stepik.android.adaptive.api.Api
 import org.stepik.android.adaptive.api.oauth.OAuthResponse
 import org.stepik.android.adaptive.data.model.AccountCredentials
 import org.stepik.android.adaptive.data.model.Profile
@@ -85,13 +85,13 @@ constructor(context: Context) {
         get() = getInt(QUESTIONS_PACK_INDEX)
 
     fun removeProfile() {
-        API.authLock.lock()
+        Api.authLock.lock()
         remove(PROFILE)
         remove(PROFILE_ID)
         remove(OAUTH_RESPONSE)
         remove(IS_OAUTH_TOKEN_SOCIAL)
         remove(OAUTH_RESPONSE_DEADLINE)
-        API.authLock.unlock()
+        Api.authLock.unlock()
     }
 
     fun removeFakeUser() {

@@ -1,7 +1,7 @@
 package org.stepik.android.adaptive.data.model;
 
 import org.stepik.android.adaptive.App;
-import org.stepik.android.adaptive.api.API;
+import org.stepik.android.adaptive.api.Api;
 import org.stepik.android.adaptive.api.AttemptResponse;
 import org.stepik.android.adaptive.di.qualifiers.BackgroundScheduler;
 import org.stepik.android.adaptive.di.qualifiers.MainScheduler;
@@ -47,7 +47,7 @@ public final class Card extends Observable<Card> {
     private boolean correct = false;
 
     @Inject
-    public API api;
+    public Api api;
 
     @Inject
     @MainScheduler

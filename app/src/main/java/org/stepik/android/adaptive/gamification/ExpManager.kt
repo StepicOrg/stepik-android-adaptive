@@ -1,6 +1,6 @@
 package org.stepik.android.adaptive.gamification
 
-import org.stepik.android.adaptive.api.API
+import org.stepik.android.adaptive.api.Api
 import org.stepik.android.adaptive.data.Analytics
 import org.stepik.android.adaptive.data.SharedPreferenceMgr
 import org.stepik.android.adaptive.data.db.DataBaseMgr
@@ -21,7 +21,7 @@ import javax.inject.Inject
 class ExpManager
 @Inject
 constructor(
-        private val api: API,
+        private val api: Api,
         @BackgroundScheduler
         private val backgroundScheduler: Scheduler,
         private val achievementEventPoster: AchievementEventPoster,
@@ -33,7 +33,7 @@ constructor(
         private const val EXP_KEY = "exp_key"
         private const val STREAK_KEY = "streak_key"
 
-        fun syncRating(dataBaseMgr: DataBaseMgr, api: API): Completable = dataBaseMgr.getExp().flatMapCompletable { e -> api.putRating(e) }
+        fun syncRating(dataBaseMgr: DataBaseMgr, api: Api): Completable = dataBaseMgr.getExp().flatMapCompletable { e -> api.putRating(e) }
     }
 
     private val compositeDisposable = CompositeDisposable()

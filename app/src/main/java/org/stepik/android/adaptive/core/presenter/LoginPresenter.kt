@@ -3,7 +3,7 @@ package org.stepik.android.adaptive.core.presenter
 import io.reactivex.Scheduler
 import io.reactivex.disposables.CompositeDisposable
 import org.stepik.android.adaptive.configuration.Config
-import org.stepik.android.adaptive.api.API
+import org.stepik.android.adaptive.api.Api
 import org.stepik.android.adaptive.api.login.SocialManager
 import org.stepik.android.adaptive.core.presenter.contracts.LoginView
 import org.stepik.android.adaptive.data.Analytics
@@ -19,7 +19,7 @@ import javax.inject.Inject
 class LoginPresenter
 @Inject
 constructor(
-        private val api: API,
+        private val api: Api,
         private val config: Config,
         private val sharedPreferenceMgr: SharedPreferenceMgr,
         private val analytics: Analytics,

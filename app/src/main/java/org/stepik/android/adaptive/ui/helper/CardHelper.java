@@ -3,7 +3,7 @@ package org.stepik.android.adaptive.ui.helper;
 import android.view.View;
 import android.widget.ScrollView;
 
-import org.stepik.android.adaptive.api.API;
+import org.stepik.android.adaptive.api.Api;
 import org.stepik.android.adaptive.api.RecommendationsResponse;
 import org.stepik.android.adaptive.data.SharedPreferenceMgr;
 import org.stepik.android.adaptive.data.model.RecommendationReaction;
@@ -18,7 +18,7 @@ public class CardHelper {
     private final static int MIN_CARDS_IN_CACHE = 4;
 
     public static Observable<RecommendationsResponse> createReactionObservable(
-            final API api,
+            final Api api,
             final SharedPreferenceMgr sharedPreferenceMgr,
             final long lesson,
             final RecommendationReaction.Reaction reaction,
