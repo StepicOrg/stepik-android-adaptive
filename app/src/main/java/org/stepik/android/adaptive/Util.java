@@ -6,22 +6,12 @@ import android.os.Build;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 
-import com.facebook.FacebookSdk;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
-import com.vk.sdk.VKSdk;
-
-import org.stepik.android.adaptive.core.ScreenManager;
 
 import java.util.Random;
 
 public class Util {
-    public static void initMgr(final Context context) {
-        ScreenManager.init(context);
-        VKSdk.initialize(context);
-        FacebookSdk.sdkInitialize(context.getApplicationContext());
-    }
-
     public static void hideSoftKeyboard(final Activity a) {
         final View view = a.getCurrentFocus();
         if (view != null) {

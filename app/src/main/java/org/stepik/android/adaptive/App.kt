@@ -1,8 +1,11 @@
 package org.stepik.android.adaptive
 
 import android.app.Application
+import com.facebook.FacebookSdk
+import com.vk.sdk.VKSdk
 import com.yandex.metrica.YandexMetrica
 import org.stepik.android.adaptive.configuration.Config
+import org.stepik.android.adaptive.core.ScreenManager
 import org.stepik.android.adaptive.di.AppCoreComponent
 import org.stepik.android.adaptive.di.ComponentManager
 import org.stepik.android.adaptive.di.DaggerAppCoreComponent
@@ -39,7 +42,13 @@ class App : Application() {
         componentManager = ComponentManager(component)
         component.inject(this)
 
-        Util.initMgr(applicationContext)
+        initServices()
+    }
+
+    private fun initServices() {
+        ScreenManager.init(applicationContext)
+        VKSdk.initialize(applicationContext)
+        FacebookSdk.sdkInitialize(applicationContext)
 
         YandexMetrica.activate(applicationContext, config.appMetricaKey)
         YandexMetrica.enableActivityAutoTracking(this)

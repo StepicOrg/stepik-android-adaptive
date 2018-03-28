@@ -33,8 +33,6 @@ class NotificationsReceiver : BroadcastReceiver() {
     }
 
     override fun onReceive(context: Context, intent: Intent?) {
-        Util.initMgr(context)
-
         intent?.let {
             val days = it.getIntExtra(LocalReminder.DAYS_MULTIPLIER_KEY, 0)
             if (it.action == NOTIFICATION_CANCELED) {
@@ -47,7 +45,6 @@ class NotificationsReceiver : BroadcastReceiver() {
                 }
             }
         }
-
     }
 
 }
