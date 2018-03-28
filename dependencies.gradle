@@ -11,7 +11,6 @@ ext.versions = [
         kotlin               : '1.2.30',
         googleServicesVersion: '3.1.0',
         fabric               : '1.25.1',
-        retrolambda          : '3.7.0',
 
         dagger               : '2.15',
 
@@ -58,8 +57,7 @@ ext.gradlePlugins = [
         googleServices: "com.google.gms:google-services:$versions.googleServicesVersion",
         kotlin        : "org.jetbrains.kotlin:kotlin-gradle-plugin:$versions.kotlin",
         android       : "com.android.tools.build:gradle:$versions.androidGradlePlugin",
-        fabric        : "io.fabric.tools:gradle:$versions.fabric",
-        retrolambda   : "me.tatarka:gradle-retrolambda:$versions.retrolambda"
+        fabric        : "io.fabric.tools:gradle:$versions.fabric"
 ]
 
 ext.libraries = [
