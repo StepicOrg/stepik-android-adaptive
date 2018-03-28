@@ -8,9 +8,9 @@ import org.joda.time.DateTime
 import org.joda.time.DateTimeZone
 import org.stepik.android.adaptive.api.Api
 import org.stepik.android.adaptive.api.oauth.OAuthResponse
+import org.stepik.android.adaptive.content.questions.packs.QuestionsPack
 import org.stepik.android.adaptive.data.model.AccountCredentials
 import org.stepik.android.adaptive.data.model.Profile
-import org.stepik.android.adaptive.data.model.QuestionsPack
 import org.stepik.android.adaptive.di.AppSingleton
 import org.stepik.android.adaptive.util.RxOptional
 import javax.inject.Inject
@@ -75,14 +75,16 @@ constructor(context: Context) {
     val isQuestionsPacksTooltipWasShown: Boolean
         get() = getBoolean(IS_QUESTIONS_PACKS_TOOLTIP_WAS_SHOWN)
 
-    val isAuthTokenSocial: Boolean
+    var isAuthTokenSocial: Boolean
         get() = getBoolean(IS_OAUTH_TOKEN_SOCIAL)
+        set(value) = saveBoolean(IS_OAUTH_TOKEN_SOCIAL, value)
 
     val authResponseDeadline: Long
         get() = getLong(OAUTH_RESPONSE_DEADLINE)
 
-    val questionsPackIndex: Int
+    var questionsPackIndex: Int
         get() = getInt(QUESTIONS_PACK_INDEX)
+        set(value) = saveInt(QUESTIONS_PACK_INDEX, value)
 
     fun removeProfile() {
         Api.authLock.lock()
@@ -103,10 +105,6 @@ constructor(context: Context) {
         saveString(FAKE_USER, json)
     }
 
-    fun setIsOauthTokenSocial(isOauthTokenSocial: Boolean) {
-        saveBoolean(IS_OAUTH_TOKEN_SOCIAL, isOauthTokenSocial)
-    }
-
     fun afterStreakRestoreTooltipWasShown() {
         saveBoolean(IS_STREAK_RESTORE_TOOLTIP_WAS_SHOWN, true)
     }
@@ -121,10 +119,6 @@ constructor(context: Context) {
 
     fun resetAuthResponseDeadline() {
         remove(OAUTH_RESPONSE_DEADLINE)
-    }
-
-    fun changeQuestionsPackIndex(index: Int) {
-        saveInt(QUESTIONS_PACK_INDEX, index)
     }
 
     fun onQuestionsPackViewed(pack: QuestionsPack) {

@@ -16,7 +16,6 @@ import org.stepik.android.adaptive.data.SharedPreferenceMgr
 import org.stepik.android.adaptive.data.model.EnrollmentWrapper
 import org.stepik.android.adaptive.data.model.AccountCredentials
 import org.stepik.android.adaptive.data.model.Profile
-import org.stepik.android.adaptive.data.model.QuestionsPack
 import org.stepik.android.adaptive.data.model.RecommendationReaction
 import org.stepik.android.adaptive.data.model.RegistrationUser
 import org.stepik.android.adaptive.data.model.Submission
@@ -41,6 +40,7 @@ import okhttp3.Credentials
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.Request
+import org.stepik.android.adaptive.content.questions.QuestionsPacksManager
 import retrofit2.Call
 import retrofit2.Response
 import retrofit2.Retrofit
@@ -55,6 +55,7 @@ constructor(
         private val config: Config,
         private val sharedPreferenceMgr: SharedPreferenceMgr,
         private val logoutHelper: LogoutHelper,
+        private val questionsPacksManager: QuestionsPacksManager,
 
         @Named(AppConstants.userAgentName)
         private val userAgent: String
@@ -167,7 +168,7 @@ constructor(
                 .doOnNext { response ->
                     authLock.lock()
                     sharedPreferenceMgr.oAuthResponse = response
-                    sharedPreferenceMgr.setIsOauthTokenSocial(false)
+                    sharedPreferenceMgr.isAuthTokenSocial = false
                     authLock.unlock()
                 }
     }
@@ -186,7 +187,7 @@ constructor(
                 .doOnNext { response ->
                     authLock.lock()
                     sharedPreferenceMgr.oAuthResponse = response
-                    sharedPreferenceMgr.setIsOauthTokenSocial(true)
+                    sharedPreferenceMgr.isAuthTokenSocial = true
                     authLock.unlock()
                 }
     }
@@ -197,7 +198,7 @@ constructor(
         ).doOnNext { response ->
             authLock.lock()
             sharedPreferenceMgr.oAuthResponse = response
-            sharedPreferenceMgr.setIsOauthTokenSocial(true)
+            sharedPreferenceMgr.isAuthTokenSocial = true
             authLock.unlock()
         }
     }
@@ -362,15 +363,8 @@ constructor(
     fun joinCourse(course: Long): Completable =
             stepikService.joinCourse(EnrollmentWrapper(course))
 
-    fun getNextRecommendations(count: Int): Observable<RecommendationsResponse> {
-        val courseId: Long = try {
-            QuestionsPack.values()[sharedPreferenceMgr.questionsPackIndex].courseId
-        } catch (e: Exception) {
-            config.courseId
-        }
-
-        return stepikService.getNextRecommendations(courseId, count)
-    }
+    fun getNextRecommendations(count: Int): Observable<RecommendationsResponse> =
+            stepikService.getNextRecommendations(questionsPacksManager.currentCourseId, count)
 
     fun getSteps(lesson: Long): Observable<StepsResponse> =
             stepikService.getSteps(lesson)

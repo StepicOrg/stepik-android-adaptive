@@ -4,6 +4,7 @@ import android.content.Context
 import dagger.BindsInstance
 import dagger.Component
 import org.stepik.android.adaptive.App
+import org.stepik.android.adaptive.di.content.questions.QuestionsModule
 import org.stepik.android.adaptive.di.login.LoginComponent
 import org.stepik.android.adaptive.di.paid_content.PaidContentComponent
 import org.stepik.android.adaptive.di.stats.StatsComponent
@@ -15,7 +16,7 @@ import org.stepik.android.adaptive.ui.activity.SplashActivity
 import org.stepik.android.adaptive.ui.dialog.*
 
 @AppSingleton
-@Component(modules = [AppCoreModule::class], dependencies = [StorageComponent::class])
+@Component(modules = [AppCoreModule::class, QuestionsModule::class], dependencies = [StorageComponent::class])
 interface AppCoreComponent {
 
     @Component.Builder

@@ -17,13 +17,13 @@ import org.stepik.android.adaptive.App
 import org.stepik.android.adaptive.R
 import org.stepik.android.adaptive.Util
 import org.stepik.android.adaptive.configuration.RemoteConfig
+import org.stepik.android.adaptive.content.questions.QuestionsPacksManager
 import org.stepik.android.adaptive.core.ScreenManager
 import org.stepik.android.adaptive.core.presenter.BasePresenterFragment
 import org.stepik.android.adaptive.core.presenter.RecommendationsPresenter
 import org.stepik.android.adaptive.core.presenter.contracts.RecommendationsView
 import org.stepik.android.adaptive.data.Analytics
 import org.stepik.android.adaptive.data.SharedPreferenceMgr
-import org.stepik.android.adaptive.data.model.QuestionsPack
 import org.stepik.android.adaptive.databinding.FragmentRecommendationsBinding
 import org.stepik.android.adaptive.ui.activity.PaidInventoryItemsActivity
 import org.stepik.android.adaptive.ui.adapter.QuizCardsAdapter
@@ -65,7 +65,7 @@ class RecommendationsFragment : BasePresenterFragment<RecommendationsPresenter, 
 
     private var questionsPacksTooltip: PopupWindow? = null
 
-    private val isQuestionsPackSupported = QuestionsPack.values().size > 1
+    private val isQuestionsPackSupported by lazy { questionsPacksManager.isQuestionsPacksSupported }
 
     private lateinit var binding: FragmentRecommendationsBinding
 
@@ -83,6 +83,9 @@ class RecommendationsFragment : BasePresenterFragment<RecommendationsPresenter, 
 
     @Inject
     lateinit var recommendationsPresenterProvider: Provider<RecommendationsPresenter>
+
+    @Inject
+    lateinit var questionsPacksManager: QuestionsPacksManager
 
     override fun injectComponent() {
         App.componentManager().studyComponent.inject(this)
@@ -118,10 +121,10 @@ class RecommendationsFragment : BasePresenterFragment<RecommendationsPresenter, 
         @DimenRes val paddingRes: Int
         @DrawableRes val iconRes: Int
         if (remoteConfig.getBoolean(RemoteConfig.QUESTIONS_PACKS_ICON_EXPERIMENT)) {
-            iconRes = QuestionsPack.values()[sharedPreferenceMgr.questionsPackIndex].icon // small icon of current pack
+            iconRes = questionsPacksManager.currentPack.icon // small icon of current pack
             paddingRes = R.dimen.action_bar_icon_padding_small
 
-            val badgeCount = getQuestionsPacksBadgesCount()
+            val badgeCount = questionsPacksManager.unviewedPacksCount
             binding.questionsPacksBadge.text = badgeCount.toString()
             binding.questionsPacksBadge.changeVisibillity(badgeCount > 0 && isQuestionsPackSupported)
         } else {
@@ -132,9 +135,6 @@ class RecommendationsFragment : BasePresenterFragment<RecommendationsPresenter, 
         binding.questionsPacks.setImageResource(iconRes)
         binding.questionsPacks.setPadding(padding, padding, padding, padding)
     }
-
-    private fun getQuestionsPacksBadgesCount() =
-            QuestionsPack.values().count { !sharedPreferenceMgr.isQuestionsPackViewed(it) }
 
     override fun onAdapter(cardsAdapter: QuizCardsAdapter) =
         binding.cardsContainer.setAdapter(cardsAdapter)

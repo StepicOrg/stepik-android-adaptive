@@ -5,10 +5,11 @@ import io.reactivex.Scheduler
 import io.reactivex.disposables.CompositeDisposable
 import org.solovyev.android.checkout.*
 import org.stepik.android.adaptive.api.Api
+import org.stepik.android.adaptive.content.questions.QuestionsPacksManager
+import org.stepik.android.adaptive.content.questions.packs.QuestionsPack
 import org.stepik.android.adaptive.core.presenter.contracts.QuestionsPacksView
 import org.stepik.android.adaptive.data.Analytics
 import org.stepik.android.adaptive.data.SharedPreferenceMgr
-import org.stepik.android.adaptive.data.model.QuestionsPack
 import org.stepik.android.adaptive.di.qualifiers.BackgroundScheduler
 import org.stepik.android.adaptive.di.qualifiers.MainScheduler
 import org.stepik.android.adaptive.ui.adapter.QuestionsPacksAdapter
@@ -20,34 +21,35 @@ class QuestionsPacksPresenter
 @Inject
 constructor(
         private val api: Api,
-        private val sharedPreferenceMgr: SharedPreferenceMgr,
         private val analytics: Analytics,
         @BackgroundScheduler
         private val backgroundScheduler: Scheduler,
         @MainScheduler
         private val mainScheduler: Scheduler,
+
+        private val questionsPacksManager: QuestionsPacksManager,
         billing: Billing
 ): PaidContentPresenterBase<QuestionsPacksView>(billing) {
     private val adapter = QuestionsPacksAdapter(this::onPackPressed)
-    private val skus = QuestionsPack.values().map { it.id }
+    private val skus = questionsPacksManager.ids
     private var isPacksLoaded = false
 
     private val compositeDisposable = CompositeDisposable()
 
     init {
-        adapter.selection = sharedPreferenceMgr.questionsPackIndex
+        adapter.selection = questionsPacksManager.currentPackIndex
     }
 
     fun loadContent() {
         view?.showContentProgress()
         compositeDisposable addDisposable getInventoryRx(ProductTypes.IN_APP, skus).subscribeOn(mainScheduler).map {
             it.map {
-                sku -> sku to QuestionsPack.getById(sku.id.code)!!
+                sku -> sku to questionsPacksManager.getPackById(sku.id.code)!!
             }
         }.flatMap { packs ->
             val ids = packs.map { it.second.courseId }.toLongArray()
             packs.forEach {
-                sharedPreferenceMgr.onQuestionsPackViewed(it.second)
+                questionsPacksManager.onQuestionsPackViewed(it.second)
             }
 
             api.getCourses(ids).map { it.courses }.map { courses ->
@@ -93,7 +95,7 @@ constructor(
 
 
     private fun onPackPressed(sku: Sku, pack: QuestionsPack, isOwned: Boolean) {
-        if (isOwned || pack.isFree) {
+        if (isOwned || pack.isAvailable) {
             changeCourse(pack)
         } else {
             purchase(sku)
@@ -109,8 +111,7 @@ constructor(
     private fun changeCourse(pack: QuestionsPack) {
         view?.showProgress()
         compositeDisposable addDisposable api.joinCourse(pack.courseId).doOnComplete {
-            sharedPreferenceMgr.changeQuestionsPackIndex(pack.ordinal)
-            analytics.logEventWithLongParam(Analytics.EVENT_ON_QUESTIONS_PACK_SWITCHED, Analytics.PARAM_COURSE, pack.courseId)
+            questionsPacksManager.switchPack(pack)
         }
         .observeOn(mainScheduler)
         .subscribeOn(backgroundScheduler)

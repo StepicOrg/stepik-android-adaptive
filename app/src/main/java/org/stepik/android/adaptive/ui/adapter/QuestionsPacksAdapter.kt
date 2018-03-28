@@ -13,7 +13,7 @@ import android.widget.TextView
 import kotlinx.android.synthetic.main.item_questions_pack.view.*
 import org.solovyev.android.checkout.Sku
 import org.stepik.android.adaptive.R
-import org.stepik.android.adaptive.data.model.QuestionsPack
+import org.stepik.android.adaptive.content.questions.packs.QuestionsPack
 import org.stepik.android.adaptive.ui.helper.setAlpha
 import org.stepik.android.adaptive.util.changeVisibillity
 
@@ -75,7 +75,7 @@ class QuestionsPacksAdapter(private val onPackClicked: (Sku, QuestionsPack, Bool
         holder.actionButton.setOnClickListener {
             onPackClicked(sku, pack, isOwned)
         }
-        holder.actionButton.text = (if (pack.isFree || isOwned) {
+        holder.actionButton.text = (if (pack.isAvailable || isOwned) {
             context.getString(R.string.select)
         } else {
             sku.price
