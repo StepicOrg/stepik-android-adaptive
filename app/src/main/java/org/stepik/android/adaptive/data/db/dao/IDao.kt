@@ -1,8 +1,8 @@
 package org.stepik.android.adaptive.data.db.dao
 
 import io.reactivex.Completable
+import io.reactivex.Maybe
 import io.reactivex.Single
-import org.stepik.android.adaptive.util.RxOptional
 
 interface IDao<T> {
     fun insertOrUpdate(persistentObject: T): Completable
@@ -18,7 +18,7 @@ interface IDao<T> {
     fun getAll(query: String, whereArgs: Array<String>?): Single<List<T>>
     fun getAllOrdered(orderBy: String, orderDirection: String = ""): Single<List<T>>
 
-    fun get(whereColumnName: String, whereValue: String): Single<RxOptional<T>>
+    fun get(whereColumnName: String, whereValue: String): Maybe<T>
     fun remove(whereColumn: String, whereValue: String): Completable
     fun remove(persistentObject: T): Completable
     fun removeAll(): Completable
