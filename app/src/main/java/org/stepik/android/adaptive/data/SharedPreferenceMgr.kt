@@ -8,9 +8,9 @@ import org.joda.time.DateTime
 import org.joda.time.DateTimeZone
 import org.stepik.android.adaptive.api.Api
 import org.stepik.android.adaptive.api.oauth.OAuthResponse
-import org.stepik.android.adaptive.content.questions.packs.QuestionsPack
 import org.stepik.android.adaptive.data.model.AccountCredentials
 import org.stepik.android.adaptive.data.model.Profile
+import org.stepik.android.adaptive.content.questions.QuestionsPack
 import org.stepik.android.adaptive.di.AppSingleton
 import org.stepik.android.adaptive.util.RxOptional
 import javax.inject.Inject

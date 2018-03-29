@@ -1,7 +1,5 @@
 package org.stepik.android.adaptive.content.questions
 
-import org.stepik.android.adaptive.content.questions.packs.QuestionsPack
-import org.stepik.android.adaptive.content.questions.packs.QuestionsPacksList
 import org.stepik.android.adaptive.data.Analytics
 import org.stepik.android.adaptive.data.SharedPreferenceMgr
 import org.stepik.android.adaptive.di.AppSingleton
@@ -14,10 +12,8 @@ constructor(
         private val analytics: Analytics,
         private val sharedPreferenceMgr: SharedPreferenceMgr,
 
-        questionsPacksList: QuestionsPacksList
+        val questionsPacks: Array<QuestionsPack>
 ) {
-    val questionsPacks = questionsPacksList.questionsPacks
-
     private val idToPack = questionsPacks.associateBy { it.id }
 
     val ids = idToPack.keys.toList()

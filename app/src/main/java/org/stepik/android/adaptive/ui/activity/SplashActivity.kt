@@ -2,9 +2,12 @@ package org.stepik.android.adaptive.ui.activity
 
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import com.google.firebase.remoteconfig.FirebaseRemoteConfig
+import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.Scheduler
 import io.reactivex.disposables.Disposable
+import io.reactivex.functions.BiFunction
 import org.stepik.android.adaptive.App
 import org.stepik.android.adaptive.R
 import org.stepik.android.adaptive.core.ScreenManager
@@ -22,6 +25,9 @@ class SplashActivity : AppCompatActivity() {
     lateinit var sharedPreferenceMgr: SharedPreferenceMgr
 
     @Inject
+    lateinit var firebaseRemoteConfig: FirebaseRemoteConfig
+
+    @Inject
     @field:MainScheduler
     lateinit var mainScheduler: Scheduler
 
@@ -37,7 +43,7 @@ class SplashActivity : AppCompatActivity() {
         val authObservable = Observable.fromCallable(sharedPreferenceMgr::authResponseDeadline)
         val onboardingObservable = Observable.fromCallable(sharedPreferenceMgr::isNotFirstTime)
 
-        disposable = Observable.zip<Long, Boolean, Pair<Long, Boolean>>(authObservable, onboardingObservable, io.reactivex.functions.BiFunction { t1, t2 -> Pair(t1, t2) })
+        disposable = fetchRemoteConfig().andThen(Observable.zip<Long, Boolean, Pair<Long, Boolean>>(authObservable, onboardingObservable, BiFunction { t1, t2 -> Pair(t1, t2) }))
                 .delay(1L, TimeUnit.SECONDS)
                 .subscribeOn(backgroundScheduler)
                 .observeOn(mainScheduler)
@@ -48,6 +54,15 @@ class SplashActivity : AppCompatActivity() {
                         ScreenManager.getInstance().showOnboardingScreen()
                     }
                 })
+    }
+
+    private fun fetchRemoteConfig() = Completable.create { emitter ->
+        firebaseRemoteConfig.fetch().addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                firebaseRemoteConfig.activateFetched()
+            }
+            emitter.onComplete()
+        }
     }
 
     override fun onDestroy() {

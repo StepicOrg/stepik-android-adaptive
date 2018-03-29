@@ -6,10 +6,10 @@ import io.reactivex.disposables.CompositeDisposable
 import org.solovyev.android.checkout.*
 import org.stepik.android.adaptive.api.Api
 import org.stepik.android.adaptive.content.questions.QuestionsPacksManager
-import org.stepik.android.adaptive.content.questions.packs.QuestionsPack
+import org.stepik.android.adaptive.content.questions.QuestionsPacksResolver
 import org.stepik.android.adaptive.core.presenter.contracts.QuestionsPacksView
 import org.stepik.android.adaptive.data.Analytics
-import org.stepik.android.adaptive.data.SharedPreferenceMgr
+import org.stepik.android.adaptive.content.questions.QuestionsPack
 import org.stepik.android.adaptive.di.qualifiers.BackgroundScheduler
 import org.stepik.android.adaptive.di.qualifiers.MainScheduler
 import org.stepik.android.adaptive.ui.adapter.QuestionsPacksAdapter
@@ -28,9 +28,10 @@ constructor(
         private val mainScheduler: Scheduler,
 
         private val questionsPacksManager: QuestionsPacksManager,
+        private val questionsPacksResolver: QuestionsPacksResolver,
         billing: Billing
 ): PaidContentPresenterBase<QuestionsPacksView>(billing) {
-    private val adapter = QuestionsPacksAdapter(this::onPackPressed)
+    private val adapter = QuestionsPacksAdapter(this::onPackPressed, questionsPacksResolver)
     private val skus = questionsPacksManager.ids
     private var isPacksLoaded = false
 
@@ -95,7 +96,7 @@ constructor(
 
 
     private fun onPackPressed(sku: Sku, pack: QuestionsPack, isOwned: Boolean) {
-        if (isOwned || pack.isAvailable) {
+        if (isOwned || questionsPacksResolver.isAvailableForFree(pack)) {
             changeCourse(pack)
         } else {
             purchase(sku)

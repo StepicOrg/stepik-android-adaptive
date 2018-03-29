@@ -13,11 +13,15 @@ import android.widget.TextView
 import kotlinx.android.synthetic.main.item_questions_pack.view.*
 import org.solovyev.android.checkout.Sku
 import org.stepik.android.adaptive.R
-import org.stepik.android.adaptive.content.questions.packs.QuestionsPack
+import org.stepik.android.adaptive.content.questions.QuestionsPacksResolver
+import org.stepik.android.adaptive.content.questions.QuestionsPack
 import org.stepik.android.adaptive.ui.helper.setAlpha
 import org.stepik.android.adaptive.util.changeVisibillity
 
-class QuestionsPacksAdapter(private val onPackClicked: (Sku, QuestionsPack, Boolean) -> Unit) : RecyclerView.Adapter<QuestionsPacksAdapter.QuestionsPackViewHolder>() {
+class QuestionsPacksAdapter(
+        private val onPackClicked: (Sku, QuestionsPack, Boolean) -> Unit,
+        private val questionsPacksResolver: QuestionsPacksResolver
+) : RecyclerView.Adapter<QuestionsPacksAdapter.QuestionsPackViewHolder>() {
     companion object {
         private const val TITLE_ALPHA = 0xDD
         private const val TEXT_ALPHA = 0xCC
@@ -75,7 +79,7 @@ class QuestionsPacksAdapter(private val onPackClicked: (Sku, QuestionsPack, Bool
         holder.actionButton.setOnClickListener {
             onPackClicked(sku, pack, isOwned)
         }
-        holder.actionButton.text = (if (pack.isAvailable || isOwned) {
+        holder.actionButton.text = (if (questionsPacksResolver.isAvailableForFree(pack) || isOwned) {
             context.getString(R.string.select)
         } else {
             sku.price
