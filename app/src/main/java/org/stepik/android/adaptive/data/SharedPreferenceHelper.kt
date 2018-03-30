@@ -63,6 +63,8 @@ constructor(context: Context) {
     val isPaidContentTooltipWasShown    by sharedBoolean(IS_PAID_CONTENT_TOOLTIP_WAS_SHOWN)
     val isQuestionsPacksTooltipWasShown by sharedBoolean(IS_QUESTIONS_PACKS_TOOLTIP_WAS_SHOWN)
 
+    var isPacksForLevelsWindowWasShown  by sharedBoolean(IS_PACKS_FOR_LEVELS_WINDOW_WAS_SHOWN)
+
     var isAuthTokenSocial               by sharedBoolean(IS_OAUTH_TOKEN_SOCIAL)
     var isNotFirstTime                  by sharedBoolean(NOT_FIRST_TIME)
 
@@ -162,6 +164,8 @@ constructor(context: Context) {
         private const val IS_PAID_CONTENT_TOOLTIP_WAS_SHOWN = "is_paid_content_tooltip_was_shown"
 
         private const val IS_QUESTIONS_PACKS_TOOLTIP_WAS_SHOWN = "is_questions_packs_tooltip_was_shown"
+
+        private const val IS_PACKS_FOR_LEVELS_WINDOW_WAS_SHOWN = "is_packs_for_levels_window_was_shown"
 
         private const val QUESTIONS_PACK_INDEX = "questions_pack_index"
 
