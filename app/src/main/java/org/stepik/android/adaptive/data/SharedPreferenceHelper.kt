@@ -16,10 +16,9 @@ import org.stepik.android.adaptive.util.RxOptional
 import javax.inject.Inject
 
 @AppSingleton
-class SharedPreferenceMgr
+class SharedPreferenceHelper
 @Inject
 constructor(context: Context) {
-
     private val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
     private val gson = Gson()
 
@@ -35,7 +34,7 @@ constructor(context: Context) {
                 val currentTime = DateTime.now(DateTimeZone.UTC).millis
 
                 saveString(OAUTH_RESPONSE, json)
-                saveLong(OAUTH_RESPONSE_DEADLINE, currentTime + (response.expiresIn - 50) * 1000)
+                authResponseDeadline = currentTime + (response.expiresIn - 50) * 1000
             }
         }
 
@@ -55,36 +54,23 @@ constructor(context: Context) {
 
     var profileId: Long
         get() = getLong(PROFILE_ID)
-        private set(value) {
-            saveLong(PROFILE_ID, value)
-        }
+        private set(value) = saveLong(PROFILE_ID, value)
 
     val fakeUser: RxOptional<AccountCredentials>
         get() = RxOptional(getString(FAKE_USER)).map { gson.fromJson(it, AccountCredentials::class.java) }
 
-    var isNotFirstTime: Boolean
-        get() = getBoolean(NOT_FIRST_TIME)
-        set(notFirstTime) = saveBoolean(NOT_FIRST_TIME, notFirstTime)
+    val isStreakRestoreTooltipWasShown  by sharedBoolean(IS_STREAK_RESTORE_TOOLTIP_WAS_SHOWN)
+    val isPaidContentTooltipWasShown    by sharedBoolean(IS_PAID_CONTENT_TOOLTIP_WAS_SHOWN)
+    val isQuestionsPacksTooltipWasShown by sharedBoolean(IS_QUESTIONS_PACKS_TOOLTIP_WAS_SHOWN)
 
-    val isStreakRestoreTooltipWasShown: Boolean
-        get() = getBoolean(IS_STREAK_RESTORE_TOOLTIP_WAS_SHOWN)
+    var isAuthTokenSocial               by sharedBoolean(IS_OAUTH_TOKEN_SOCIAL)
+    var isNotFirstTime                  by sharedBoolean(NOT_FIRST_TIME)
 
-    val isPaidContentTooltipWasShown: Boolean
-        get() = getBoolean(IS_PAID_CONTENT_TOOLTIP_WAS_SHOWN)
-
-    val isQuestionsPacksTooltipWasShown: Boolean
-        get() = getBoolean(IS_QUESTIONS_PACKS_TOOLTIP_WAS_SHOWN)
-
-    var isAuthTokenSocial: Boolean
-        get() = getBoolean(IS_OAUTH_TOKEN_SOCIAL)
-        set(value) = saveBoolean(IS_OAUTH_TOKEN_SOCIAL, value)
-
-    val authResponseDeadline: Long
+    var authResponseDeadline: Long
         get() = getLong(OAUTH_RESPONSE_DEADLINE)
+        private set(value) = saveLong(OAUTH_RESPONSE_DEADLINE, value)
 
-    var questionsPackIndex: Int
-        get() = getInt(QUESTIONS_PACK_INDEX)
-        set(value) = saveInt(QUESTIONS_PACK_INDEX, value)
+    var questionsPackIndex by sharedInt(QUESTIONS_PACK_INDEX)
 
     fun removeProfile() {
         Api.authLock.lock()

@@ -17,7 +17,7 @@ import org.stepik.android.adaptive.R
 import org.stepik.android.adaptive.core.presenter.LoginPresenter
 import org.stepik.android.adaptive.core.presenter.contracts.LoginView
 import org.stepik.android.adaptive.data.Analytics
-import org.stepik.android.adaptive.data.SharedPreferenceMgr
+import org.stepik.android.adaptive.data.SharedPreferenceHelper
 import org.stepik.android.adaptive.data.model.*
 import org.stepik.android.adaptive.databinding.FragmentRecommendationsBinding
 import org.stepik.android.adaptive.di.qualifiers.BackgroundScheduler
@@ -53,12 +53,12 @@ class OnboardingFragment : Fragment(), LoginView {
     lateinit var presenter: LoginPresenter
 
     @Inject
-    lateinit var sharedPreferenceMgr: SharedPreferenceMgr
+    lateinit var sharedPreferenceHelper: SharedPreferenceHelper
 
     private val adapter = OnboardingQuizCardsAdapter {
         updateToolbar(true)
         if (it == 0) Completable.fromAction {
-            sharedPreferenceMgr.isNotFirstTime = true
+            sharedPreferenceHelper.isNotFirstTime = true
             achievementManager.onEvent(AchievementManager.Event.ONBOARDING, 1)
         }
                 .observeOn(mainScheduler)
@@ -74,7 +74,7 @@ class OnboardingFragment : Fragment(), LoginView {
         initOnboardingCards()
         presenter.attachView(this)
 
-        Observable.fromCallable(sharedPreferenceMgr::authResponseDeadline)
+        Observable.fromCallable(sharedPreferenceHelper::authResponseDeadline)
                 .observeOn(mainScheduler)
                 .subscribe {
                     if(it == 0L)
@@ -184,7 +184,7 @@ class OnboardingFragment : Fragment(), LoginView {
 
 
     private fun createMockAccount() {
-        Observable.fromCallable(sharedPreferenceMgr::fakeUser)
+        Observable.fromCallable(sharedPreferenceHelper::fakeUser)
                 .observeOn(mainScheduler)
                 .subscribeOn(backgroundScheduler)
                 .subscribe {

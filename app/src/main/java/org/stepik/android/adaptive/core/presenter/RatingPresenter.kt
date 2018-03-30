@@ -7,7 +7,7 @@ import io.reactivex.functions.BiFunction
 import io.reactivex.subjects.PublishSubject
 import org.stepik.android.adaptive.api.Api
 import org.stepik.android.adaptive.core.presenter.contracts.RatingView
-import org.stepik.android.adaptive.data.SharedPreferenceMgr
+import org.stepik.android.adaptive.data.SharedPreferenceHelper
 import org.stepik.android.adaptive.data.db.DataBaseMgr
 import org.stepik.android.adaptive.data.model.RatingItem
 import org.stepik.android.adaptive.di.qualifiers.BackgroundScheduler
@@ -22,7 +22,7 @@ class RatingPresenter
 @Inject
 constructor(
         private val api: Api,
-        private val sharedPreferenceMgr: SharedPreferenceMgr,
+        private val sharedPreferenceHelper: SharedPreferenceHelper,
         @BackgroundScheduler
         private val backgroundScheduler: Scheduler,
         @MainScheduler
@@ -37,7 +37,7 @@ constructor(
         private val RATING_PERIODS = arrayOf(1, 7, 0)
     }
 
-    private val adapters = RATING_PERIODS.map { RatingAdapter(sharedPreferenceMgr.profileId) }
+    private val adapters = RATING_PERIODS.map { RatingAdapter(sharedPreferenceHelper.profileId) }
 
     private val compositeDisposable = CompositeDisposable()
     private val retrySubject = PublishSubject.create<Int>()

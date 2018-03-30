@@ -3,7 +3,7 @@ package org.stepik.android.adaptive.gamification
 import android.support.annotation.DrawableRes
 import org.stepik.android.adaptive.BuildConfig
 import org.stepik.android.adaptive.R
-import org.stepik.android.adaptive.data.SharedPreferenceMgr
+import org.stepik.android.adaptive.data.SharedPreferenceHelper
 import org.stepik.android.adaptive.di.AppSingleton
 import javax.inject.Inject
 
@@ -11,7 +11,7 @@ import javax.inject.Inject
 class InventoryManager
 @Inject
 constructor(
-        private val sharedPreferenceMgr: SharedPreferenceMgr
+        private val sharedPreferenceHelper: SharedPreferenceHelper
 ) {
     companion object {
         private const val STARTER_PACK_VERSION_KEY = "starter_pack_version"
@@ -43,10 +43,10 @@ constructor(
     }
 
     fun getItemsCount(item: Item) =
-        sharedPreferenceMgr.getLong(item.key)
+        sharedPreferenceHelper.getLong(item.key)
 
     private fun setItemsCount(item: Item, count: Long) =
-          sharedPreferenceMgr.saveLong(item.key, count)
+          sharedPreferenceHelper.saveLong(item.key, count)
 
     fun useItem(item: Item) : Boolean {
         val count = getItemsCount(item)
@@ -58,13 +58,13 @@ constructor(
     }
 
     fun changeItemCount(item: Item, delta: Long) =
-        sharedPreferenceMgr.changeLong(item.key, delta)
+        sharedPreferenceHelper.changeLong(item.key, delta)
 
     fun hasTickets() = getItemsCount(Item.Ticket) > 0
 
     fun starterPack() {
-        if (sharedPreferenceMgr.getLong(STARTER_PACK_VERSION_KEY) == 0L) {
-            sharedPreferenceMgr.saveLong(STARTER_PACK_VERSION_KEY, BuildConfig.VERSION_CODE.toLong())
+        if (sharedPreferenceHelper.getLong(STARTER_PACK_VERSION_KEY) == 0L) {
+            sharedPreferenceHelper.saveLong(STARTER_PACK_VERSION_KEY, BuildConfig.VERSION_CODE.toLong())
             setItemsCount(Item.Ticket, START_TICKETS_COUNT)
         }
     }

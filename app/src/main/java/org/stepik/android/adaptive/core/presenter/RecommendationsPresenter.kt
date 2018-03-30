@@ -8,7 +8,7 @@ import io.reactivex.subjects.PublishSubject
 import org.stepik.android.adaptive.api.Api
 import org.stepik.android.adaptive.api.RecommendationsResponse
 import org.stepik.android.adaptive.core.presenter.contracts.RecommendationsView
-import org.stepik.android.adaptive.data.SharedPreferenceMgr
+import org.stepik.android.adaptive.data.SharedPreferenceHelper
 import org.stepik.android.adaptive.data.model.Card
 import org.stepik.android.adaptive.data.model.RecommendationReaction
 import org.stepik.android.adaptive.di.qualifiers.BackgroundScheduler
@@ -31,7 +31,7 @@ class RecommendationsPresenter
 @Inject
 constructor(
         private val api: Api,
-        private val sharedPreferenceMgr: SharedPreferenceMgr,
+        private val sharedPreferenceHelper: SharedPreferenceHelper,
         @BackgroundScheduler
         private val backgroundScheduler: Scheduler,
         @MainScheduler
@@ -102,8 +102,8 @@ constructor(
         }
 
         if (exp > MIN_EXP_TO_OFFER_PACKS) {
-            if (!sharedPreferenceMgr.isQuestionsPacksTooltipWasShown) {
-                sharedPreferenceMgr.afterQuestionsPacksTooltipWasShown()
+            if (!sharedPreferenceHelper.isQuestionsPacksTooltipWasShown) {
+                sharedPreferenceHelper.afterQuestionsPacksTooltipWasShown()
                 view?.showQuestionsPacksTooltip()
             }
         }
@@ -135,12 +135,12 @@ constructor(
 
             view?.let {
                 if (inventoryManager.hasTickets()) {
-                    it.showStreakRestoreDialog(streak, withTooltip = !sharedPreferenceMgr.isStreakRestoreTooltipWasShown)
-                    sharedPreferenceMgr.afterStreakRestoreTooltipWasShown()
+                    it.showStreakRestoreDialog(streak, withTooltip = !sharedPreferenceHelper.isStreakRestoreTooltipWasShown)
+                    sharedPreferenceHelper.afterStreakRestoreTooltipWasShown()
                 } else {
-                    it.showStreakRestoreDialog(streak, withTooltip = streak > MIN_STREAK_TO_OFFER_TO_BUY && !sharedPreferenceMgr.isPaidContentTooltipWasShown)
+                    it.showStreakRestoreDialog(streak, withTooltip = streak > MIN_STREAK_TO_OFFER_TO_BUY && !sharedPreferenceHelper.isPaidContentTooltipWasShown)
                     if (streak > MIN_STREAK_TO_OFFER_TO_BUY) {
-                        sharedPreferenceMgr.afterPaidContentTooltipWasShown()
+                        sharedPreferenceHelper.afterPaidContentTooltipWasShown()
                     }
                 }
             }
@@ -155,7 +155,7 @@ constructor(
             view?.onLoading()
         }
 
-        compositeDisposable addDisposable CardHelper.createReactionObservable(api, sharedPreferenceMgr, lesson, reaction, cards.size + adapter.getItemCount())
+        compositeDisposable addDisposable CardHelper.createReactionObservable(api, sharedPreferenceHelper, lesson, reaction, cards.size + adapter.getItemCount())
                 .subscribeOn(backgroundScheduler)
                 .observeOn(mainScheduler)
                 .doOnError(this::onError)

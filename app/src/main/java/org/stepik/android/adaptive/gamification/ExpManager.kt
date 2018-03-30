@@ -2,7 +2,7 @@ package org.stepik.android.adaptive.gamification
 
 import org.stepik.android.adaptive.api.Api
 import org.stepik.android.adaptive.data.Analytics
-import org.stepik.android.adaptive.data.SharedPreferenceMgr
+import org.stepik.android.adaptive.data.SharedPreferenceHelper
 import org.stepik.android.adaptive.data.db.DataBaseMgr
 
 import io.reactivex.Completable
@@ -25,7 +25,7 @@ constructor(
         @BackgroundScheduler
         private val backgroundScheduler: Scheduler,
         private val achievementEventPoster: AchievementEventPoster,
-        private val sharedPreferenceMgr: SharedPreferenceMgr,
+        private val sharedPreferenceHelper: SharedPreferenceHelper,
         private val dataBaseMgr: DataBaseMgr,
         private val analytics: Analytics
 ) {
@@ -39,13 +39,13 @@ constructor(
     private val compositeDisposable = CompositeDisposable()
 
     val exp: Long
-        get() = sharedPreferenceMgr.getLong(EXP_KEY)
+        get() = sharedPreferenceHelper.getLong(EXP_KEY)
 
     val streak: Long
-        get() = sharedPreferenceMgr.getLong(STREAK_KEY)
+        get() = sharedPreferenceHelper.getLong(STREAK_KEY)
 
     fun changeExp(delta: Long, submissionId: Long): Long {
-        val exp = sharedPreferenceMgr.changeLong(EXP_KEY, delta)
+        val exp = sharedPreferenceHelper.changeLong(EXP_KEY, delta)
         analytics.onExpReached(exp - delta, delta)
 
         achievementEventPoster.onEvent(AchievementManager.Event.EXP, exp, true)
@@ -67,7 +67,7 @@ constructor(
     fun incStreak() = changeStreak(1)
 
     fun changeStreak(delta: Long): Long {
-        val streak = sharedPreferenceMgr.changeLong(STREAK_KEY, delta)
+        val streak = sharedPreferenceHelper.changeLong(STREAK_KEY, delta)
         analytics.onStreak(streak)
         achievementEventPoster.onEvent(AchievementManager.Event.STREAK, streak, true)
         return streak
@@ -88,11 +88,11 @@ constructor(
 
     fun resetStreak() {
         analytics.onStreakLost(streak)
-        sharedPreferenceMgr.saveLong(STREAK_KEY, 0)
+        sharedPreferenceHelper.saveLong(STREAK_KEY, 0)
     }
 
     fun reset() {
-        sharedPreferenceMgr.remove(EXP_KEY)
-        sharedPreferenceMgr.remove(STREAK_KEY)
+        sharedPreferenceHelper.remove(EXP_KEY)
+        sharedPreferenceHelper.remove(STREAK_KEY)
     }
 }

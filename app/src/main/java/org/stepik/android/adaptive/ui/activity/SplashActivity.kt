@@ -11,7 +11,7 @@ import io.reactivex.functions.BiFunction
 import org.stepik.android.adaptive.App
 import org.stepik.android.adaptive.R
 import org.stepik.android.adaptive.core.ScreenManager
-import org.stepik.android.adaptive.data.SharedPreferenceMgr
+import org.stepik.android.adaptive.data.SharedPreferenceHelper
 import org.stepik.android.adaptive.di.qualifiers.BackgroundScheduler
 import org.stepik.android.adaptive.di.qualifiers.MainScheduler
 import java.util.concurrent.TimeUnit
@@ -22,7 +22,7 @@ class SplashActivity : AppCompatActivity() {
     private lateinit var disposable : Disposable
 
     @Inject
-    lateinit var sharedPreferenceMgr: SharedPreferenceMgr
+    lateinit var sharedPreferenceHelper: SharedPreferenceHelper
 
     @Inject
     lateinit var firebaseRemoteConfig: FirebaseRemoteConfig
@@ -40,8 +40,8 @@ class SplashActivity : AppCompatActivity() {
         App.component().inject(this)
         setContentView(R.layout.activity_splash)
 
-        val authObservable = Observable.fromCallable(sharedPreferenceMgr::authResponseDeadline)
-        val onboardingObservable = Observable.fromCallable(sharedPreferenceMgr::isNotFirstTime)
+        val authObservable = Observable.fromCallable(sharedPreferenceHelper::authResponseDeadline)
+        val onboardingObservable = Observable.fromCallable(sharedPreferenceHelper::isNotFirstTime)
 
         disposable = fetchRemoteConfig().andThen(Observable.zip<Long, Boolean, Pair<Long, Boolean>>(authObservable, onboardingObservable, BiFunction { t1, t2 -> Pair(t1, t2) }))
                 .delay(1L, TimeUnit.SECONDS)

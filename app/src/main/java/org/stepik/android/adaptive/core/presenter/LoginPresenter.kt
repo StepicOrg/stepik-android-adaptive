@@ -7,7 +7,7 @@ import org.stepik.android.adaptive.api.Api
 import org.stepik.android.adaptive.api.login.SocialManager
 import org.stepik.android.adaptive.core.presenter.contracts.LoginView
 import org.stepik.android.adaptive.data.Analytics
-import org.stepik.android.adaptive.data.SharedPreferenceMgr
+import org.stepik.android.adaptive.data.SharedPreferenceHelper
 import org.stepik.android.adaptive.data.model.AccountCredentials
 import org.stepik.android.adaptive.data.model.Profile
 import org.stepik.android.adaptive.di.qualifiers.BackgroundScheduler
@@ -21,7 +21,7 @@ class LoginPresenter
 constructor(
         private val api: Api,
         private val config: Config,
-        private val sharedPreferenceMgr: SharedPreferenceMgr,
+        private val sharedPreferenceHelper: SharedPreferenceHelper,
         private val analytics: Analytics,
 
         @BackgroundScheduler
@@ -59,7 +59,7 @@ constructor(
         disposable addDisposable api
                 .joinCourse(config.courseId)
                 .andThen(api.profile)
-                .doOnNext { sharedPreferenceMgr.profile = it.profile }
+                .doOnNext { sharedPreferenceHelper.profile = it.profile }
                 .subscribeOn(backgroundScheduler)
                 .observeOn(mainScheduler)
                 .subscribe({
@@ -114,7 +114,7 @@ constructor(
                 .subscribe({
                     if (it.isSuccessful) {
                         if (isFake) { // save only if it's fake account
-                            sharedPreferenceMgr.saveFakeUser(credentials)
+                            sharedPreferenceHelper.saveFakeUser(credentials)
                         }
                         authWithLoginPassword(credentials.login, credentials.password, isFake)
                     } else {
