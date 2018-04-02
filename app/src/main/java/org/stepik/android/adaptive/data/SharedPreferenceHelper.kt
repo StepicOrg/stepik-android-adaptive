@@ -1,6 +1,7 @@
 package org.stepik.android.adaptive.data
 
 import android.content.Context
+import android.content.SharedPreferences
 import android.preference.PreferenceManager
 
 import com.google.gson.Gson
@@ -18,8 +19,8 @@ import javax.inject.Inject
 @AppSingleton
 class SharedPreferenceHelper
 @Inject
-constructor(context: Context) {
-    private val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
+constructor(context: Context): SharedPreferenceProvider {
+    override val sharedPreferences: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
     private val gson = Gson()
 
     var oAuthResponse: OAuthResponse?
@@ -59,20 +60,20 @@ constructor(context: Context) {
     val fakeUser: RxOptional<AccountCredentials>
         get() = RxOptional(getString(FAKE_USER)).map { gson.fromJson(it, AccountCredentials::class.java) }
 
-    val isStreakRestoreTooltipWasShown  by sharedBoolean(IS_STREAK_RESTORE_TOOLTIP_WAS_SHOWN)
-    val isPaidContentTooltipWasShown    by sharedBoolean(IS_PAID_CONTENT_TOOLTIP_WAS_SHOWN)
-    val isQuestionsPacksTooltipWasShown by sharedBoolean(IS_QUESTIONS_PACKS_TOOLTIP_WAS_SHOWN)
+    val isStreakRestoreTooltipWasShown:  Boolean by preference(IS_STREAK_RESTORE_TOOLTIP_WAS_SHOWN)
+    val isPaidContentTooltipWasShown:    Boolean by preference(IS_PAID_CONTENT_TOOLTIP_WAS_SHOWN)
+    val isQuestionsPacksTooltipWasShown: Boolean by preference(IS_QUESTIONS_PACKS_TOOLTIP_WAS_SHOWN)
 
-    var isPacksForLevelsWindowWasShown  by sharedBoolean(IS_PACKS_FOR_LEVELS_WINDOW_WAS_SHOWN)
+    var isPacksForLevelsWindowWasShown:  Boolean by preference(IS_PACKS_FOR_LEVELS_WINDOW_WAS_SHOWN)
 
-    var isAuthTokenSocial               by sharedBoolean(IS_OAUTH_TOKEN_SOCIAL)
-    var isNotFirstTime                  by sharedBoolean(NOT_FIRST_TIME)
+    var isAuthTokenSocial:               Boolean by preference(IS_OAUTH_TOKEN_SOCIAL)
+    var isNotFirstTime:                  Boolean by preference(NOT_FIRST_TIME)
 
     var authResponseDeadline: Long
         get() = getLong(OAUTH_RESPONSE_DEADLINE)
         private set(value) = saveLong(OAUTH_RESPONSE_DEADLINE, value)
 
-    var questionsPackIndex by sharedInt(QUESTIONS_PACK_INDEX)
+    var questionsPackIndex: Int by preference(QUESTIONS_PACK_INDEX)
 
     fun removeProfile() {
         Api.authLock.lock()
@@ -114,37 +115,31 @@ constructor(context: Context) {
     }
 
     fun isQuestionsPackViewed(pack: QuestionsPack): Boolean =
-            getBoolean(QUESTIONS_PACK_VIEWED_PREFIX + pack.id)
+            sharedPreferences[QUESTIONS_PACK_VIEWED_PREFIX + pack.id]
 
-    fun saveBoolean(name: String, data: Boolean?) {
-        sharedPreferences.edit().putBoolean(name, data!!).apply()
+    fun saveBoolean(name: String, data: Boolean) {
+        sharedPreferences[name] = data
     }
 
     private fun saveString(name: String, data: String) {
-        sharedPreferences.edit().putString(name, data).apply()
+        sharedPreferences[name] = data
     }
 
     fun saveLong(name: String, data: Long) {
-        sharedPreferences.edit().putLong(name, data).apply()
+        sharedPreferences[name] = data
     }
 
     fun changeLong(name: String, delta: Long): Long {
-        val value = getLong(name) + delta
-        sharedPreferences.edit().putLong(name, value).apply()
+        val value = sharedPreferences.get<Long>(name) + delta
+        sharedPreferences[name] = value
         return value
     }
 
-    fun saveInt(name: String, data: Int) {
-        sharedPreferences.edit().putInt(name, data).apply()
-    }
+    private fun getString(name: String): String? = sharedPreferences[name]
 
-    private fun getString(name: String): String? = sharedPreferences.getString(name, null)
+    fun getLong(name: String): Long = sharedPreferences[name]
 
-    fun getLong(name: String): Long = sharedPreferences.getLong(name, 0)
-
-    fun getBoolean(name: String): Boolean = sharedPreferences.getBoolean(name, false)
-
-    fun getInt(name: String): Int = sharedPreferences.getInt(name, 0)
+    fun getBoolean(name: String): Boolean = sharedPreferences[name]
 
     fun remove(name: String) {
         sharedPreferences.edit().remove(name).apply()
