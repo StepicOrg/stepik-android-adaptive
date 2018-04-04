@@ -17,7 +17,7 @@
         android:layout_height="wrap_content"
         android:fontFamily="sans-serif-medium"
         android:layout_marginTop="8dp"
-        android:textSize="20sp"
+        android:textSize="@dimen/description_title_text_size"
         android:textColor="@color/colorDarkGrayText"
         android:text="@string/description_levels_title" />
 
@@ -25,7 +25,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:textSize="16sp"
+        android:lineSpacingMultiplier="@dimen/description_description_text_multiplier"
+        android:textSize="@dimen/description_description_text_size"
         android:textColor="@color/colorDarkGrayText"
         android:text="@string/description_levels_description" />
 
