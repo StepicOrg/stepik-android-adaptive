@@ -147,6 +147,7 @@
 
     <string name="questions_count"><![CDATA[<b>Cards:</b> %d]]></string>
     <string name="questions_difficulty"><![CDATA[<b>Difficulty:</b> %s]]></string>
+    <string name="questions_progress_description_level">Free at %d level</string>
 
     <string name="questions_difficulty_low">low</string>
     <string name="questions_difficulty_medium">medium</string>

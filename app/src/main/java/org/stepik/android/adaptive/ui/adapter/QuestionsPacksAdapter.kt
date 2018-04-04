@@ -79,12 +79,18 @@ class QuestionsPacksAdapter(
         holder.actionButton.setOnClickListener {
             onPackClicked(sku, pack, isOwned)
         }
-        holder.actionButton.text = (if (questionsPacksResolver.isAvailableForFree(pack) || isOwned) {
+        holder.actionButton.text = (if (isOwned || questionsPacksResolver.isAvailableForFree(pack)) {
             context.getString(R.string.select)
         } else {
             sku.price
         })
         holder.root.setBackgroundResource(pack.background)
+
+        holder.progressDescription.changeVisibillity(!isOwned && pack.hasProgress)
+        holder.progressDescription.setTextColor(setAlpha(pack.textColor, TEXT_ALPHA))
+        if (!isOwned && pack.hasProgress) {
+            holder.progressDescription.text = questionsPacksResolver.getProgressDescription(pack)
+        }
     }
 
     class QuestionsPackViewHolder(root: View): RecyclerView.ViewHolder(root) {
@@ -94,6 +100,7 @@ class QuestionsPacksAdapter(
         val description: TextView = root.packDescription
         val actionButton: Button = root.packButton
         val activeIcon: ImageView = root.packActiveIcon
+        val progressDescription: TextView = root.packProgressDescription
         val root: View = root.cardBody
     }
 }

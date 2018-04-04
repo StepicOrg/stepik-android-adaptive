@@ -1,5 +1,7 @@
 package org.stepik.android.adaptive.content.questions
 
+import android.content.Context
+import org.stepik.android.adaptive.R
 import org.stepik.android.adaptive.di.AppSingleton
 import org.stepik.android.adaptive.gamification.ExpManager
 import javax.inject.Inject
@@ -9,7 +11,8 @@ import kotlin.math.min
 class QuestionsPacksResolverImpl
 @Inject
 constructor(
-        private val expManager: ExpManager
+        private val expManager: ExpManager,
+        private val context: Context
 ): QuestionsPacksResolver {
     companion object {
         private const val ADJECTIVES_PACK_TARGET_LEVEL = 10
@@ -27,5 +30,11 @@ constructor(
         QuestionsPack.Adjectives -> min(expManager.exp * 100 / expManager.getNextLevelExp(ADJECTIVES_PACK_TARGET_LEVEL - 1L), 100).toInt()
         QuestionsPack.Verbs      -> min(expManager.exp * 100 / expManager.getNextLevelExp(VERBS_PACK_TARGET_LEVEL - 1L), 100).toInt()
         else -> 0
+    }
+
+    override fun getProgressDescription(pack: QuestionsPack): String = when(pack) {
+        QuestionsPack.Adjectives -> context.getString(R.string.questions_progress_description_level, ADJECTIVES_PACK_TARGET_LEVEL)
+        QuestionsPack.Verbs      -> context.getString(R.string.questions_progress_description_level, VERBS_PACK_TARGET_LEVEL)
+        else -> String()
     }
 }

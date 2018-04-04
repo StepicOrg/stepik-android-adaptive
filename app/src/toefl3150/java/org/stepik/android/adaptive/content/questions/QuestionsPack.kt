@@ -52,7 +52,8 @@ enum class QuestionsPack(
             courseId    = 3149,
             difficulty  = R.string.questions_difficulty_mixed,
             background  = R.drawable.pack_bg_adjectives,
-            icon        = R.drawable.ic_questions_pack_adjectives
+            icon        = R.drawable.ic_questions_pack_adjectives,
+            hasProgress = true
     ),
 
     Verbs(
@@ -60,6 +61,7 @@ enum class QuestionsPack(
             courseId    = 3124,
             difficulty  = R.string.questions_difficulty_mixed,
             background  = R.drawable.pack_bg_verbs,
-            icon        = R.drawable.ic_questions_pack_verbs
+            icon        = R.drawable.ic_questions_pack_verbs,
+            hasProgress = true
     );
 }
