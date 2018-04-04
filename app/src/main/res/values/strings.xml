@@ -163,9 +163,9 @@
     <string name="description_title" translatable="false">Up!</string>
     <string name="description_description">Levels, exp\nand free questions packs</string>
     <string name="description_levels_title">Levels</string>
-    <string name="description_levels_description">Earn <font color='#FF0092E4'>EXP</font> points for every correct answer, gain <font color='#FF0092E4'>levels</font> and unlock additional materials</string>
+    <string name="description_levels_description"><![CDATA[Earn <font color="#0092E4">EXP</font> points for every correct answer, gain <font color="#0092E4">levels</font> and unlock additional materials]]></string>
     <string name="description_levels_button">My stats</string>
     <string name="description_packs_title">Free questions packs</string>
-    <string name="description_packs_description">When the required <font color='#FF0092E4'>level</font> is reached you will receive free <font color='#FF0092E4'>questions packs</font> like Adjectives or Verbs packs</string>
+    <string name="description_packs_description"><![CDATA[When the required <font color="#0092E4">level</font> is reached you will receive free <font color="#0092E4">questions packs</font> like Adjectives or Verbs packs]]></string>
     <string name="description_packs_button">@string/questions_packs</string>
 </resources>

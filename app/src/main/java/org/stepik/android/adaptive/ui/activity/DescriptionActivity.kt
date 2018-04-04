@@ -9,6 +9,7 @@ import org.stepik.android.adaptive.App
 import org.stepik.android.adaptive.R
 import org.stepik.android.adaptive.core.ScreenManager
 import org.stepik.android.adaptive.data.Analytics
+import org.stepik.android.adaptive.util.fromHtmlCompat
 import javax.inject.Inject
 
 class DescriptionActivity: AppCompatActivity() {
@@ -28,5 +29,8 @@ class DescriptionActivity: AppCompatActivity() {
         close.setOnClickListener { finish() }
         statsButton.setOnClickListener { ScreenManager.showStatsScreen(this, analytics, 0) }
         packsButton.setOnClickListener { ScreenManager.showQuestionsPacksScreen(this, analytics) }
+
+        descriptionLevels.text = fromHtmlCompat(getString(R.string.description_levels_description))
+        descriptionPacks.text = fromHtmlCompat(getString(R.string.description_packs_description))
     }
 }
