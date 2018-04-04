@@ -1,7 +1,7 @@
 package org.stepik.android.adaptive.data.model
 
 import android.support.annotation.DrawableRes
-import org.stepik.android.adaptive.data.SharedPreferenceMgr
+import org.stepik.android.adaptive.data.SharedPreferenceHelper
 import org.stepik.android.adaptive.gamification.achievements.AchievementManager
 
 
@@ -18,11 +18,11 @@ data class Achievement(
 
         val showProgress: Boolean = true,
 
-        private val sharedPreferenceMgr: SharedPreferenceMgr
+        private val sharedPreferenceHelper: SharedPreferenceHelper
 ) {
     var currentValue: Long
-        get() = sharedPreferenceMgr.getLong(path)
-        set(value) = sharedPreferenceMgr.saveLong(path, value)
+        get() = sharedPreferenceHelper.getLong(path)
+        set(value) = sharedPreferenceHelper.saveLong(path, value)
 
     fun isComplete() = currentValue >= targetValue
 }

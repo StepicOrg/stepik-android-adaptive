@@ -1,4 +1,4 @@
-package org.stepik.android.adaptive.data.model
+package org.stepik.android.adaptive.content.questions
 
 import android.support.annotation.ColorInt
 import android.support.annotation.DrawableRes
@@ -13,15 +13,14 @@ enum class QuestionsPack(
         @DrawableRes val background: Int,
         @DrawableRes val icon: Int,
         @ColorInt    val textColor: Int = 0xFFFFFF,
-        val isFree: Boolean = false) {
+        val hasProgress: Boolean = false) {
     Basic(
             id          = "questions_pack_basic",
             courseId    = 3150,
             difficulty  = R.string.questions_difficulty_mixed,
             background  = R.drawable.pack_bg_basic,
             icon        = R.drawable.ic_questions_pack_basic,
-            textColor   = 0x495057,
-            isFree      = true
+            textColor   = 0x495057
     ),
 
     Medium(
@@ -46,9 +45,23 @@ enum class QuestionsPack(
             difficulty  = R.string.questions_difficulty_mixed,
             background  = R.drawable.pack_bg_full,
             icon        = R.drawable.ic_questions_pack_full
-    );
+    ),
 
-    companion object {
-        fun getById(id: String) = values().find { it.id == id }
-    }
+    Adjectives(
+            id          = "questions_pack_adjectives",
+            courseId    = 3149,
+            difficulty  = R.string.questions_difficulty_mixed,
+            background  = R.drawable.pack_bg_adjectives,
+            icon        = R.drawable.ic_questions_pack_adjectives,
+            hasProgress = true
+    ),
+
+    Verbs(
+            id          = "questions_pack_verbs",
+            courseId    = 3124,
+            difficulty  = R.string.questions_difficulty_mixed,
+            background  = R.drawable.pack_bg_verbs,
+            icon        = R.drawable.ic_questions_pack_verbs,
+            hasProgress = true
+    );
 }

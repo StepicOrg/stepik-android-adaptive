@@ -8,9 +8,10 @@ import org.stepik.android.adaptive.App
 import org.stepik.android.adaptive.api.Api
 import org.stepik.android.adaptive.api.SubmissionResponse
 import org.stepik.android.adaptive.configuration.Config
+import org.stepik.android.adaptive.content.questions.QuestionsPacksManager
 import org.stepik.android.adaptive.core.presenter.contracts.CardView
 import org.stepik.android.adaptive.data.Analytics
-import org.stepik.android.adaptive.data.SharedPreferenceMgr
+import org.stepik.android.adaptive.data.SharedPreferenceHelper
 import org.stepik.android.adaptive.data.db.DataBaseMgr
 import org.stepik.android.adaptive.data.model.*
 import org.stepik.android.adaptive.di.qualifiers.BackgroundScheduler
@@ -46,10 +47,13 @@ class CardPresenter(val card: Card, private val listener: AdaptiveReactionListen
     lateinit var dataBaseMgr: DataBaseMgr
 
     @Inject
-    lateinit var sharedPreferenceMgr: SharedPreferenceMgr
+    lateinit var sharedPreferenceHelper: SharedPreferenceHelper
 
     @Inject
     lateinit var analytics: Analytics
+
+    @Inject
+    lateinit var questionsPacksManager: QuestionsPacksManager
 
     @Inject
     @field:MainScheduler
@@ -112,7 +116,7 @@ class CardPresenter(val card: Card, private val listener: AdaptiveReactionListen
         }
 
         return Bookmark(
-                QuestionsPack.values()[sharedPreferenceMgr.questionsPackIndex].courseId,
+                questionsPacksManager.currentCourseId,
                 card.step.id,
                 card.lesson.title,
                 definition

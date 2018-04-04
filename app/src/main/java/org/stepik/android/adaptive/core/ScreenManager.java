@@ -6,10 +6,11 @@ import android.content.Intent;
 
 import org.stepik.android.adaptive.data.Analytics;
 import org.stepik.android.adaptive.ui.activity.IntroActivity;
+import org.stepik.android.adaptive.ui.activity.DescriptionActivity;
 import org.stepik.android.adaptive.ui.activity.PhotoViewActivity;
 import org.stepik.android.adaptive.ui.activity.StatsActivity;
-import org.stepik.android.adaptive.ui.activity.StudyActivity;
 import org.stepik.android.adaptive.ui.activity.QuestionsPacksActivity;
+import org.stepik.android.adaptive.ui.activity.StudyActivity;
 
 public class ScreenManager {
     private static ScreenManager instance;
@@ -58,5 +59,10 @@ public class ScreenManager {
     public static void showQuestionsPacksScreen(Context context, Analytics analytics) {
         analytics.onQuestionsPacksOpened();
         context.startActivity(new Intent(context, QuestionsPacksActivity.class));
+    }
+
+    public static void showGamificationDescription(Context context) {
+        Intent intent = new Intent(context, DescriptionActivity.class);
+        context.startActivity(intent);
     }
 }

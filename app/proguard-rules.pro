@@ -78,6 +78,10 @@
 -keep class com.yandex.metrica.* { *; }
 -dontwarn com.yandex.metrica.*
 
+# Crashlytics
+-keep class com.crashlytics.** { *; }
+-dontwarn com.crashlytics.**
+
 #Keep POJO
 -keep class org.stepik.android.adaptive.data.model.** { *; }
 -keep interface org.stepik.android.adaptive.data.model.** { *; }

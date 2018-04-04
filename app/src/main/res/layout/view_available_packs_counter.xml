@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/availablePacksCounter"
+    android:layout_width="@dimen/description_section_width"
+    android:layout_height="match_parent"
+    android:padding="12dp"
+    android:layout_marginTop="@dimen/description_section_margin"
+    android:layout_marginLeft="@dimen/description_section_margin"
+    android:layout_marginRight="@dimen/description_section_margin"
+    android:background="@drawable/light_blue_view_background"
+    android:layout_gravity="center_horizontal"
+    android:visibility="gone"
+    tools:visibility="visible">
+
+    <ImageView
+        android:id="@+id/starIcon"
+        android:layout_width="16dp"
+        android:layout_height="16dp"
+        app:srcCompat="@drawable/ic_description_star"
+        android:layout_centerVertical="true"
+        android:layout_alignParentStart="true" />
+
+    <TextView
+        android:id="@+id/countText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="16sp"
+        android:fontFamily="sans-serif-light"
+        tools:ignore="MissingPrefix"
+        android:layout_centerVertical="true"
+        android:layout_toEndOf="@id/starIcon"
+        android:layout_marginStart="8dp"
+        android:gravity="start"
+        tools:text="Your current Streak is 4 days. Great!" />
+
+</RelativeLayout>

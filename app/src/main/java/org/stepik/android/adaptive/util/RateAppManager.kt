@@ -1,6 +1,6 @@
 package org.stepik.android.adaptive.util
 
-import org.stepik.android.adaptive.data.SharedPreferenceMgr
+import org.stepik.android.adaptive.data.SharedPreferenceHelper
 import org.stepik.android.adaptive.di.AppSingleton
 import javax.inject.Inject
 
@@ -8,7 +8,7 @@ import javax.inject.Inject
 class RateAppManager
 @Inject
 constructor(
-        private val sharedPreferenceMgr: SharedPreferenceMgr
+        private val sharedPreferenceHelper: SharedPreferenceHelper
 ) {
     companion object {
         private const val NOTIFY_DELAY_LATER = (1000 * 60 * 60 * 24 * 2).toLong()
@@ -26,37 +26,37 @@ constructor(
      * @return true if you should show app rate dialog
      */
     fun onEngagement(): Boolean {
-        val isRated = sharedPreferenceMgr.getBoolean(KEY_RATED)
-        val notifyAllowed = sharedPreferenceMgr.getLong(KEY_NOTIFY_ALLOWED)
+        val isRated = sharedPreferenceHelper.getBoolean(KEY_RATED)
+        val notifyAllowed = sharedPreferenceHelper.getLong(KEY_NOTIFY_ALLOWED)
 
         if (!isRated && notifyAllowed == 0L && notifyAllowed < System.currentTimeMillis()) {
-            val engagements = sharedPreferenceMgr.getLong(KEY_ENGAGEMENT_COUNT)
+            val engagements = sharedPreferenceHelper.getLong(KEY_ENGAGEMENT_COUNT)
             if (engagements + 1 == REQUIRED_ENGAGEMENT.toLong()) {
                 return true
             } else {
-                sharedPreferenceMgr.saveLong(KEY_ENGAGEMENT_COUNT, engagements + 1)
+                sharedPreferenceHelper.saveLong(KEY_ENGAGEMENT_COUNT, engagements + 1)
             }
         }
         return false
     }
 
     fun onRated() {
-        sharedPreferenceMgr.saveBoolean(KEY_RATED, true)
+        sharedPreferenceHelper.saveBoolean(KEY_RATED, true)
     }
 
     fun onCloseLater() {
-        sharedPreferenceMgr.saveLong(KEY_ENGAGEMENT_COUNT, 0)
-        sharedPreferenceMgr.saveLong(KEY_NOTIFY_ALLOWED, sharedPreferenceMgr.getLong(KEY_NOTIFY_ALLOWED) + NOTIFY_DELAY_LATER)
+        sharedPreferenceHelper.saveLong(KEY_ENGAGEMENT_COUNT, 0)
+        sharedPreferenceHelper.saveLong(KEY_NOTIFY_ALLOWED, sharedPreferenceHelper.getLong(KEY_NOTIFY_ALLOWED) + NOTIFY_DELAY_LATER)
     }
 
     fun onCloseNegative() {
-        sharedPreferenceMgr.saveLong(KEY_ENGAGEMENT_COUNT, 0)
-        sharedPreferenceMgr.saveLong(KEY_NOTIFY_ALLOWED, sharedPreferenceMgr.getLong(KEY_NOTIFY_ALLOWED) + NOTIFY_DELAY_NEGATIVE)
+        sharedPreferenceHelper.saveLong(KEY_ENGAGEMENT_COUNT, 0)
+        sharedPreferenceHelper.saveLong(KEY_NOTIFY_ALLOWED, sharedPreferenceHelper.getLong(KEY_NOTIFY_ALLOWED) + NOTIFY_DELAY_NEGATIVE)
     }
 
     fun reset() {
-        sharedPreferenceMgr.remove(KEY_RATED)
-        sharedPreferenceMgr.remove(KEY_NOTIFY_ALLOWED)
-        sharedPreferenceMgr.remove(KEY_ENGAGEMENT_COUNT)
+        sharedPreferenceHelper.remove(KEY_RATED)
+        sharedPreferenceHelper.remove(KEY_NOTIFY_ALLOWED)
+        sharedPreferenceHelper.remove(KEY_ENGAGEMENT_COUNT)
     }
 }

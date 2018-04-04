@@ -7,7 +7,7 @@ import org.stepik.android.adaptive.R
 import org.stepik.android.adaptive.core.events.Client
 import org.stepik.android.adaptive.core.presenter.Presenter
 import org.stepik.android.adaptive.core.presenter.contracts.AchievementView
-import org.stepik.android.adaptive.data.SharedPreferenceMgr
+import org.stepik.android.adaptive.data.SharedPreferenceHelper
 import org.stepik.android.adaptive.data.model.Achievement
 import org.stepik.android.adaptive.di.AppSingleton
 import org.stepik.android.adaptive.gamification.DailyRewardManager
@@ -22,7 +22,7 @@ constructor(
         context: Context,
         private val expManager: ExpManager,
         private val dailyRewardManager: DailyRewardManager,
-        private val sharedPreferenceMgr: SharedPreferenceMgr,
+        private val sharedPreferenceHelper: SharedPreferenceHelper,
         eventClient: Client<AchievementEventListener>
 ): Presenter<AchievementView>, AchievementEventListener {
     private val views = HashSet<AchievementView>()
@@ -61,7 +61,7 @@ constructor(
                 1,
                 R.drawable.ic_ach_onboarding,
                 false,
-                sharedPreferenceMgr
+                sharedPreferenceHelper
         ))
     }
 
@@ -126,7 +126,7 @@ constructor(
                     values[index].toLong(),
 
                     drawables.getResourceId(index, -1),
-                    sharedPreferenceMgr = sharedPreferenceMgr)
+                    sharedPreferenceHelper = sharedPreferenceHelper)
         })
 
         drawables.recycle()
@@ -173,7 +173,7 @@ constructor(
         dailyRewardManager.syncRewardProgress()
         onEvent(Event.DAYS, dailyRewardManager.totalRewardProgress + 1, false)
 
-        if (sharedPreferenceMgr.isNotFirstTime) {
+        if (sharedPreferenceHelper.isNotFirstTime) {
             onEvent(Event.ONBOARDING, 1, false)
         }
     }

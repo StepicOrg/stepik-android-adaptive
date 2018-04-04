@@ -8,7 +8,7 @@ ext.versions = [
         buildTools           : '26.0.2',
 
         androidGradlePlugin  : '3.0.1',
-        kotlin               : '1.2.30',
+        kotlin               : '1.2.31',
         googleServicesVersion: '3.1.0',
         fabric               : '1.25.1',
 

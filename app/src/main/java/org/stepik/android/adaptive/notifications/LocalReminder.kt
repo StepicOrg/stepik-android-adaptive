@@ -8,7 +8,7 @@ import android.os.Build
 import org.joda.time.DateTime
 import org.joda.time.Days
 import org.joda.time.Hours
-import org.stepik.android.adaptive.data.SharedPreferenceMgr
+import org.stepik.android.adaptive.data.SharedPreferenceHelper
 import org.stepik.android.adaptive.receivers.NotificationsReceiver
 import org.stepik.android.adaptive.gamification.DailyRewardManager
 import javax.inject.Inject
@@ -18,7 +18,7 @@ class LocalReminder
 constructor(
         private val context: Context,
         private val dailyRewardManager: DailyRewardManager,
-        private val sharedPreferenceMgr: SharedPreferenceMgr
+        private val sharedPreferenceHelper: SharedPreferenceHelper
 ) {
     companion object {
         private const val NOTIFICATION_TIMESTAMP_KEY = "notification_timestamp"
@@ -34,7 +34,7 @@ constructor(
     private val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
 
     fun resolveDailyRemind() {
-        val notificationTimestamp = sharedPreferenceMgr.getLong(NOTIFICATION_TIMESTAMP_KEY)
+        val notificationTimestamp = sharedPreferenceHelper.getLong(NOTIFICATION_TIMESTAMP_KEY)
         val now = DateTime.now()
 
         val lastSession = DateTime(dailyRewardManager.getLastSessionTimestamp())
@@ -70,7 +70,7 @@ constructor(
         val pendingIntent = PendingIntent.getBroadcast(context, NotificationsReceiver.REQUEST_CODE, intent, PendingIntent.FLAG_UPDATE_CURRENT)
         alarmManager.cancel(pendingIntent)
 
-        sharedPreferenceMgr.saveLong(NOTIFICATION_TIMESTAMP_KEY, newNotificationTimestamp)
+        sharedPreferenceHelper.saveLong(NOTIFICATION_TIMESTAMP_KEY, newNotificationTimestamp)
         scheduleCompat(newNotificationTimestamp, AlarmManager.INTERVAL_HALF_HOUR, pendingIntent)
     }
 

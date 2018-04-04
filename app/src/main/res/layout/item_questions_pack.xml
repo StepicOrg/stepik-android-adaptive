@@ -52,16 +52,35 @@
             android:layout_marginBottom="@dimen/questions_pack_margin"
             tools:textColor="#CCFFFFFF"/>
 
-        <Button
-            android:id="@+id/packButton"
-            android:layout_width="wrap_content"
+        <RelativeLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/questions_pack_margin"
             android:layout_marginBottom="@dimen/questions_pack_margin"
-            android:layout_marginEnd="@dimen/questions_pack_margin"
-            android:theme="@style/AppTheme.WhiteButton"
-            android:textColor="@color/colorDarkGrayText"
-            tools:text="@string/select" />
+            android:layout_marginEnd="@dimen/questions_pack_margin">
+            <Button
+                android:id="@+id/packButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:theme="@style/AppTheme.WhiteButton"
+                android:textColor="@color/colorDarkGrayText"
+                android:layout_alignParentStart="true"
+                android:layout_centerVertical="true"
+                tools:text="@string/select" />
+
+            <TextView
+                android:id="@+id/packProgressDescription"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_alignParentEnd="true"
+                android:layout_toEndOf="@id/packButton"
+                android:layout_marginStart="16dp"
+                android:gravity="end"
+                tools:text="Бесплатно на уровне 10"
+                tools:textColor="#CCFFFFFF"/>
+        </RelativeLayout>
+
 
         <ImageView
             android:id="@+id/packActiveIcon"

@@ -1,6 +1,7 @@
 package org.stepik.android.adaptive.data
 
 import android.content.Context
+import android.content.SharedPreferences
 import android.preference.PreferenceManager
 
 import com.google.gson.Gson
@@ -10,17 +11,16 @@ import org.stepik.android.adaptive.api.Api
 import org.stepik.android.adaptive.api.oauth.OAuthResponse
 import org.stepik.android.adaptive.data.model.AccountCredentials
 import org.stepik.android.adaptive.data.model.Profile
-import org.stepik.android.adaptive.data.model.QuestionsPack
+import org.stepik.android.adaptive.content.questions.QuestionsPack
 import org.stepik.android.adaptive.di.AppSingleton
 import org.stepik.android.adaptive.util.RxOptional
 import javax.inject.Inject
 
 @AppSingleton
-class SharedPreferenceMgr
+class SharedPreferenceHelper
 @Inject
-constructor(context: Context) {
-
-    private val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
+constructor(context: Context): SharedPreferenceProvider {
+    override val sharedPreferences: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
     private val gson = Gson()
 
     var oAuthResponse: OAuthResponse?
@@ -35,7 +35,7 @@ constructor(context: Context) {
                 val currentTime = DateTime.now(DateTimeZone.UTC).millis
 
                 saveString(OAUTH_RESPONSE, json)
-                saveLong(OAUTH_RESPONSE_DEADLINE, currentTime + (response.expiresIn - 50) * 1000)
+                authResponseDeadline = currentTime + (response.expiresIn - 50) * 1000
             }
         }
 
@@ -55,34 +55,25 @@ constructor(context: Context) {
 
     var profileId: Long
         get() = getLong(PROFILE_ID)
-        private set(value) {
-            saveLong(PROFILE_ID, value)
-        }
+        private set(value) = saveLong(PROFILE_ID, value)
 
     val fakeUser: RxOptional<AccountCredentials>
         get() = RxOptional(getString(FAKE_USER)).map { gson.fromJson(it, AccountCredentials::class.java) }
 
-    var isNotFirstTime: Boolean
-        get() = getBoolean(NOT_FIRST_TIME)
-        set(notFirstTime) = saveBoolean(NOT_FIRST_TIME, notFirstTime)
+    val isStreakRestoreTooltipWasShown:  Boolean by preference(IS_STREAK_RESTORE_TOOLTIP_WAS_SHOWN)
+    val isPaidContentTooltipWasShown:    Boolean by preference(IS_PAID_CONTENT_TOOLTIP_WAS_SHOWN)
+    val isQuestionsPacksTooltipWasShown: Boolean by preference(IS_QUESTIONS_PACKS_TOOLTIP_WAS_SHOWN)
 
-    val isStreakRestoreTooltipWasShown: Boolean
-        get() = getBoolean(IS_STREAK_RESTORE_TOOLTIP_WAS_SHOWN)
+    var isGamificationDescriptionWasShown: Boolean by preference(IS_PACKS_FOR_LEVELS_WINDOW_WAS_SHOWN)
 
-    val isPaidContentTooltipWasShown: Boolean
-        get() = getBoolean(IS_PAID_CONTENT_TOOLTIP_WAS_SHOWN)
+    var isAuthTokenSocial:               Boolean by preference(IS_OAUTH_TOKEN_SOCIAL)
+    var isNotFirstTime:                  Boolean by preference(NOT_FIRST_TIME)
 
-    val isQuestionsPacksTooltipWasShown: Boolean
-        get() = getBoolean(IS_QUESTIONS_PACKS_TOOLTIP_WAS_SHOWN)
-
-    val isAuthTokenSocial: Boolean
-        get() = getBoolean(IS_OAUTH_TOKEN_SOCIAL)
-
-    val authResponseDeadline: Long
+    var authResponseDeadline: Long
         get() = getLong(OAUTH_RESPONSE_DEADLINE)
+        private set(value) = saveLong(OAUTH_RESPONSE_DEADLINE, value)
 
-    val questionsPackIndex: Int
-        get() = getInt(QUESTIONS_PACK_INDEX)
+    var questionsPackIndex: Int by preference(QUESTIONS_PACK_INDEX)
 
     fun removeProfile() {
         Api.authLock.lock()
@@ -103,10 +94,6 @@ constructor(context: Context) {
         saveString(FAKE_USER, json)
     }
 
-    fun setIsOauthTokenSocial(isOauthTokenSocial: Boolean) {
-        saveBoolean(IS_OAUTH_TOKEN_SOCIAL, isOauthTokenSocial)
-    }
-
     fun afterStreakRestoreTooltipWasShown() {
         saveBoolean(IS_STREAK_RESTORE_TOOLTIP_WAS_SHOWN, true)
     }
@@ -123,46 +110,36 @@ constructor(context: Context) {
         remove(OAUTH_RESPONSE_DEADLINE)
     }
 
-    fun changeQuestionsPackIndex(index: Int) {
-        saveInt(QUESTIONS_PACK_INDEX, index)
-    }
-
     fun onQuestionsPackViewed(pack: QuestionsPack) {
         saveBoolean(QUESTIONS_PACK_VIEWED_PREFIX + pack.id, true)
     }
 
     fun isQuestionsPackViewed(pack: QuestionsPack): Boolean =
-            getBoolean(QUESTIONS_PACK_VIEWED_PREFIX + pack.id)
+            sharedPreferences[QUESTIONS_PACK_VIEWED_PREFIX + pack.id]
 
-    fun saveBoolean(name: String, data: Boolean?) {
-        sharedPreferences.edit().putBoolean(name, data!!).apply()
+    fun saveBoolean(name: String, data: Boolean) {
+        sharedPreferences[name] = data
     }
 
     private fun saveString(name: String, data: String) {
-        sharedPreferences.edit().putString(name, data).apply()
+        sharedPreferences[name] = data
     }
 
     fun saveLong(name: String, data: Long) {
-        sharedPreferences.edit().putLong(name, data).apply()
+        sharedPreferences[name] = data
     }
 
     fun changeLong(name: String, delta: Long): Long {
-        val value = getLong(name) + delta
-        sharedPreferences.edit().putLong(name, value).apply()
+        val value = sharedPreferences.get<Long>(name) + delta
+        sharedPreferences[name] = value
         return value
     }
 
-    fun saveInt(name: String, data: Int) {
-        sharedPreferences.edit().putInt(name, data).apply()
-    }
+    private fun getString(name: String): String? = sharedPreferences[name]
 
-    private fun getString(name: String): String? = sharedPreferences.getString(name, null)
+    fun getLong(name: String): Long = sharedPreferences[name]
 
-    fun getLong(name: String): Long = sharedPreferences.getLong(name, 0)
-
-    fun getBoolean(name: String): Boolean = sharedPreferences.getBoolean(name, false)
-
-    fun getInt(name: String): Int = sharedPreferences.getInt(name, 0)
+    fun getBoolean(name: String): Boolean = sharedPreferences[name]
 
     fun remove(name: String) {
         sharedPreferences.edit().remove(name).apply()
@@ -182,6 +159,8 @@ constructor(context: Context) {
         private const val IS_PAID_CONTENT_TOOLTIP_WAS_SHOWN = "is_paid_content_tooltip_was_shown"
 
         private const val IS_QUESTIONS_PACKS_TOOLTIP_WAS_SHOWN = "is_questions_packs_tooltip_was_shown"
+
+        private const val IS_PACKS_FOR_LEVELS_WINDOW_WAS_SHOWN = "is_packs_for_levels_window_was_shown"
 
         private const val QUESTIONS_PACK_INDEX = "questions_pack_index"
 

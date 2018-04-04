@@ -11,4 +11,8 @@
         <item quantity="one">%d day</item>
         <item quantity="other">%d days</item>
     </plurals>
+    <plurals name="new_questions_packs">
+        <item quantity="one">%d new questions pack is available for you</item>
+        <item quantity="other">%d new questions packs are available for you</item>
+    </plurals>
 </resources>

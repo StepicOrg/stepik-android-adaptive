@@ -5,7 +5,7 @@ import android.widget.ScrollView;
 
 import org.stepik.android.adaptive.api.Api;
 import org.stepik.android.adaptive.api.RecommendationsResponse;
-import org.stepik.android.adaptive.data.SharedPreferenceMgr;
+import org.stepik.android.adaptive.data.SharedPreferenceHelper;
 import org.stepik.android.adaptive.data.model.RecommendationReaction;
 import org.stepik.android.adaptive.databinding.QuizCardViewBinding;
 
@@ -19,7 +19,7 @@ public class CardHelper {
 
     public static Observable<RecommendationsResponse> createReactionObservable(
             final Api api,
-            final SharedPreferenceMgr sharedPreferenceMgr,
+            final SharedPreferenceHelper sharedPreferenceHelper,
             final long lesson,
             final RecommendationReaction.Reaction reaction,
             final int cacheSize) {
@@ -27,7 +27,7 @@ public class CardHelper {
 
         if (lesson != 0) {
             final Completable reactionCompletable = api
-                    .createReaction(new RecommendationReaction(lesson, reaction, sharedPreferenceMgr.getProfileId()));
+                    .createReaction(new RecommendationReaction(lesson, reaction, sharedPreferenceHelper.getProfileId()));
             if (cacheSize <= MIN_CARDS_IN_CACHE) {
                 return reactionCompletable.andThen(responseObservable);
             } else {

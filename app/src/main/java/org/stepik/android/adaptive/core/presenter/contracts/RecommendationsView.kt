@@ -25,6 +25,7 @@ interface RecommendationsView {
     fun showDailyRewardDialog(progress: Long)
     fun showNewLevelDialog(level: Long)
     fun showRateAppDialog()
+    fun showGamificationDescriptionScreen()
     fun showStreakRestoreDialog(streak: Long, withTooltip: Boolean = false)
     fun hideStreakRestoreDialog()
 

@@ -6,12 +6,11 @@ import android.webkit.CookieManager
 import com.vk.sdk.VKSdk
 
 import org.stepik.android.adaptive.Util
-import org.stepik.android.adaptive.data.SharedPreferenceMgr
+import org.stepik.android.adaptive.data.SharedPreferenceHelper
 import org.stepik.android.adaptive.di.AppSingleton
 
 import io.reactivex.Completable
 import io.reactivex.Scheduler
-import io.reactivex.functions.Action
 import org.stepik.android.adaptive.di.qualifiers.BackgroundScheduler
 import org.stepik.android.adaptive.di.qualifiers.MainScheduler
 import javax.inject.Inject
@@ -20,7 +19,7 @@ import javax.inject.Inject
 class LogoutHelper
 @Inject
 constructor(
-        private val sharedPreferenceMgr: SharedPreferenceMgr,
+        private val sharedPreferenceHelper: SharedPreferenceHelper,
 
         @BackgroundScheduler
         private val backgroundScheduler: Scheduler,
@@ -33,7 +32,7 @@ constructor(
                 .fromRunnable {
                     removeCookiesCompat()
                     VKSdk.logout()
-                    sharedPreferenceMgr.removeProfile()
+                    sharedPreferenceHelper.removeProfile()
                     //                    ExpManager.reset();
                 }
                 .subscribeOn(backgroundScheduler)

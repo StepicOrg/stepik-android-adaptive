@@ -2,7 +2,7 @@ package org.stepik.android.adaptive.util
 
 import android.content.Context
 import org.stepik.android.adaptive.R
-import org.stepik.android.adaptive.data.SharedPreferenceMgr
+import org.stepik.android.adaptive.data.SharedPreferenceHelper
 import org.stepik.android.adaptive.di.AppSingleton
 import javax.inject.Inject
 
@@ -11,7 +11,7 @@ class RatingNamesGenerator
 @Inject
 constructor(
         private val context: Context,
-        private val sharedPreferenceMgr: SharedPreferenceMgr
+        private val sharedPreferenceHelper: SharedPreferenceHelper
 ) {
     private val animalsMale by lazy { context.resources.getStringArray(R.array.animals_m) }
     private val animalsFemale by lazy { context.resources.getStringArray(R.array.animals_f) }
@@ -21,7 +21,7 @@ constructor(
     private val adjectivesFemale by lazy { context.resources.getStringArray(R.array.adjectives_female) }
 
     fun getName(user: Long) : String =
-            if (user == sharedPreferenceMgr.profileId) {
+            if (user == sharedPreferenceHelper.profileId) {
                 context.getString(R.string.rating_you_placeholder)
             } else {
                 val hash = hash(user)

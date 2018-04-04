@@ -2,7 +2,7 @@ package org.stepik.android.adaptive.gamification
 
 import org.joda.time.DateTime
 import org.joda.time.Days
-import org.stepik.android.adaptive.data.SharedPreferenceMgr
+import org.stepik.android.adaptive.data.SharedPreferenceHelper
 import org.stepik.android.adaptive.di.AppSingleton
 import org.stepik.android.adaptive.gamification.achievements.AchievementEventPoster
 import org.stepik.android.adaptive.gamification.achievements.AchievementManager
@@ -13,7 +13,7 @@ class DailyRewardManager
 @Inject
 constructor(
         private val achievementEventPoster: AchievementEventPoster,
-        private val sharedPreferenceMgr: SharedPreferenceMgr,
+        private val sharedPreferenceHelper: SharedPreferenceHelper,
         private val inventoryManager: InventoryManager
 ) {
     companion object {
@@ -35,21 +35,21 @@ constructor(
     }
 
     fun getLastSessionTimestamp() =
-            sharedPreferenceMgr.getLong(LAST_SESSION_KEY)
+            sharedPreferenceHelper.getLong(LAST_SESSION_KEY)
 
     private fun getRewardProgress() =
-            sharedPreferenceMgr.getLong(REWARD_PROGRESS_KEY)
+            sharedPreferenceHelper.getLong(REWARD_PROGRESS_KEY)
 
     var totalRewardProgress: Long
-        get() = sharedPreferenceMgr.getLong(TOTAL_REWARD_PROGRESS_KEY)
-        set(value) = sharedPreferenceMgr.saveLong(TOTAL_REWARD_PROGRESS_KEY, value)
+        get() = sharedPreferenceHelper.getLong(TOTAL_REWARD_PROGRESS_KEY)
+        set(value) = sharedPreferenceHelper.saveLong(TOTAL_REWARD_PROGRESS_KEY, value)
 
     fun syncRewardProgress() {
         totalRewardProgress = Math.max(totalRewardProgress, getRewardProgress())
     }
 
     private fun getCurrentRewardDay() : Long {
-        val lastSession = sharedPreferenceMgr.getLong(LAST_SESSION_KEY)
+        val lastSession = sharedPreferenceHelper.getLong(LAST_SESSION_KEY)
 
         val lastSessionDay = DateTime(lastSession).withTimeAtStartOfDay()
         val now = DateTime.now().withTimeAtStartOfDay()
@@ -57,10 +57,10 @@ constructor(
         val diff = Days.daysBetween(lastSessionDay, now).days
 
         var progress = if (diff == 1) {
-            sharedPreferenceMgr.changeLong(TOTAL_REWARD_PROGRESS_KEY, 1)
-            sharedPreferenceMgr.changeLong(REWARD_PROGRESS_KEY, 1)
+            sharedPreferenceHelper.changeLong(TOTAL_REWARD_PROGRESS_KEY, 1)
+            sharedPreferenceHelper.changeLong(REWARD_PROGRESS_KEY, 1)
         } else {
-            sharedPreferenceMgr.getLong(REWARD_PROGRESS_KEY)
+            sharedPreferenceHelper.getLong(REWARD_PROGRESS_KEY)
         }
 
         val isDayStreakBroken = diff > 1 || diff < 0
@@ -73,7 +73,7 @@ constructor(
             }
         }
 
-        sharedPreferenceMgr.saveLong(LAST_SESSION_KEY, now.millis)
+        sharedPreferenceHelper.saveLong(LAST_SESSION_KEY, now.millis)
 
         return if (diff < 1)
             DISCARD
@@ -93,6 +93,6 @@ constructor(
         return day
     }
 
-    private fun resetProgress() = sharedPreferenceMgr.remove(REWARD_PROGRESS_KEY)
+    private fun resetProgress() = sharedPreferenceHelper.remove(REWARD_PROGRESS_KEY)
 
 }

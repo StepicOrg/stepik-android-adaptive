@@ -24,4 +24,6 @@
     <color name="colorStroke">#E4E4E4</color>
 
     <color name="colorYellow">#ffca1d</color>
+
+    <color name="light_blue_color">#1445b0ff</color>
 </resources>

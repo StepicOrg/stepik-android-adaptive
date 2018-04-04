@@ -12,11 +12,10 @@ import org.stepik.android.adaptive.api.oauth.OAuthResponse
 import org.stepik.android.adaptive.api.login.SocialManager
 import org.stepik.android.adaptive.core.LogoutHelper
 import org.stepik.android.adaptive.core.ScreenManager
-import org.stepik.android.adaptive.data.SharedPreferenceMgr
+import org.stepik.android.adaptive.data.SharedPreferenceHelper
 import org.stepik.android.adaptive.data.model.EnrollmentWrapper
 import org.stepik.android.adaptive.data.model.AccountCredentials
 import org.stepik.android.adaptive.data.model.Profile
-import org.stepik.android.adaptive.data.model.QuestionsPack
 import org.stepik.android.adaptive.data.model.RecommendationReaction
 import org.stepik.android.adaptive.data.model.RegistrationUser
 import org.stepik.android.adaptive.data.model.Submission
@@ -41,6 +40,7 @@ import okhttp3.Credentials
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.Request
+import org.stepik.android.adaptive.content.questions.QuestionsPacksManager
 import retrofit2.Call
 import retrofit2.Response
 import retrofit2.Retrofit
@@ -53,8 +53,9 @@ class Api
 @Inject
 constructor(
         private val config: Config,
-        private val sharedPreferenceMgr: SharedPreferenceMgr,
+        private val sharedPreferenceHelper: SharedPreferenceHelper,
         private val logoutHelper: LogoutHelper,
+        private val questionsPacksManager: QuestionsPacksManager,
 
         @Named(AppConstants.userAgentName)
         private val userAgent: String
@@ -78,7 +79,7 @@ constructor(
 
         var response = addAuthHeaderAndProceed(chain, request)
         if (response.code() == 400) { // was bug when user has incorrect token deadline due to wrong datetime had been set on phone
-            sharedPreferenceMgr.resetAuthResponseDeadline()
+            sharedPreferenceHelper.resetAuthResponseDeadline()
             response = addAuthHeaderAndProceed(chain, request)
         }
 
@@ -87,7 +88,7 @@ constructor(
 
     private val isUpdateNeeded: Boolean
         get() {
-            val expireAt = sharedPreferenceMgr.authResponseDeadline
+            val expireAt = sharedPreferenceHelper.authResponseDeadline
             return DateTime.now(DateTimeZone.UTC).millis > expireAt
         }
 
@@ -166,8 +167,8 @@ constructor(
                 .authWithLoginPassword(config.grantType, login, password)
                 .doOnNext { response ->
                     authLock.lock()
-                    sharedPreferenceMgr.oAuthResponse = response
-                    sharedPreferenceMgr.setIsOauthTokenSocial(false)
+                    sharedPreferenceHelper.oAuthResponse = response
+                    sharedPreferenceHelper.isAuthTokenSocial = false
                     authLock.unlock()
                 }
     }
@@ -185,8 +186,8 @@ constructor(
                 codeType)
                 .doOnNext { response ->
                     authLock.lock()
-                    sharedPreferenceMgr.oAuthResponse = response
-                    sharedPreferenceMgr.setIsOauthTokenSocial(true)
+                    sharedPreferenceHelper.oAuthResponse = response
+                    sharedPreferenceHelper.isAuthTokenSocial = true
                     authLock.unlock()
                 }
     }
@@ -196,14 +197,14 @@ constructor(
                 config.grantTypeSocial, code, config.redirectUri
         ).doOnNext { response ->
             authLock.lock()
-            sharedPreferenceMgr.oAuthResponse = response
-            sharedPreferenceMgr.setIsOauthTokenSocial(true)
+            sharedPreferenceHelper.oAuthResponse = response
+            sharedPreferenceHelper.isAuthTokenSocial = true
             authLock.unlock()
         }
     }
 
     private fun authWithRefreshToken(refreshToken: String): Call<OAuthResponse> {
-        return getAuthService(if (sharedPreferenceMgr.isAuthTokenSocial) TokenType.SOCIAL else TokenType.PASSWORD)
+        return getAuthService(if (sharedPreferenceHelper.isAuthTokenSocial) TokenType.SOCIAL else TokenType.PASSWORD)
                 .refreshAccessToken(config.refreshGrantType, refreshToken)
     }
 
@@ -267,7 +268,7 @@ constructor(
         var request = req
         try {
             authLock.lock()
-            var response = sharedPreferenceMgr.oAuthResponse
+            var response = sharedPreferenceHelper.oAuthResponse
 
             if (response != null) {
                 if (isUpdateNeeded) {
@@ -289,7 +290,7 @@ constructor(
                         return chain.proceed(request)
                     }
 
-                    sharedPreferenceMgr.oAuthResponse = response
+                    sharedPreferenceHelper.oAuthResponse = response
                 }
                 request = request.newBuilder()
                         .addHeader(AppConstants.authorizationHeaderName, response.tokenType + " " + response.accessToken)
@@ -362,15 +363,8 @@ constructor(
     fun joinCourse(course: Long): Completable =
             stepikService.joinCourse(EnrollmentWrapper(course))
 
-    fun getNextRecommendations(count: Int): Observable<RecommendationsResponse> {
-        val courseId: Long = try {
-            QuestionsPack.values()[sharedPreferenceMgr.questionsPackIndex].courseId
-        } catch (e: Exception) {
-            config.courseId
-        }
-
-        return stepikService.getNextRecommendations(courseId, count)
-    }
+    fun getNextRecommendations(count: Int): Observable<RecommendationsResponse> =
+            stepikService.getNextRecommendations(questionsPacksManager.currentCourseId, count)
 
     fun getSteps(lesson: Long): Observable<StepsResponse> =
             stepikService.getSteps(lesson)
@@ -379,7 +373,7 @@ constructor(
             stepikService.createAttempt(AttemptRequest(step))
 
     fun getAttempts(step: Long): Observable<AttemptResponse> =
-            stepikService.getAttempts(step, sharedPreferenceMgr.profileId)
+            stepikService.getAttempts(step, sharedPreferenceHelper.profileId)
 
     fun createSubmission(submission: Submission): Completable =
             stepikService.createSubmission(SubmissionRequest(submission))
@@ -402,10 +396,10 @@ constructor(
             stepikService.reportView(ViewRequest(assignment, step))
 
     fun getRating(count: Int, days: Int): Observable<RatingResponse> =
-            ratingService.getRating(config.courseId, count.toLong(), days.toLong(), sharedPreferenceMgr.profileId)
+            ratingService.getRating(config.courseId, count.toLong(), days.toLong(), sharedPreferenceHelper.profileId)
 
     fun putRating(exp: Long): Completable =
-            ratingService.putRating(RatingRequest(exp, config.courseId, sharedPreferenceMgr.oAuthResponse?.accessToken))
+            ratingService.putRating(RatingRequest(exp, config.courseId, sharedPreferenceHelper.oAuthResponse?.accessToken))
 
     private fun setTimeout(builder: OkHttpClient.Builder, seconds: Int) {
         builder.connectTimeout(seconds.toLong(), TimeUnit.SECONDS)
