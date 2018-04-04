@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="description_section_width">420dp</dimen>
+    <dimen name="description_section_width">372dp</dimen>
 </resources>
