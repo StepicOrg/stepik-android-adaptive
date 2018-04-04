@@ -10,6 +10,7 @@
         android:orientation="vertical">
 
         <include layout="@layout/header_description" />
+        <include layout="@layout/view_available_packs_counter" />
         <include layout="@layout/section_description_levels" />
         <include layout="@layout/stroke" />
         <include layout="@layout/section_description_packs" />
