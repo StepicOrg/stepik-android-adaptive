@@ -151,5 +151,11 @@
     <string name="bookmarks_empty">Закладок нет</string>
     <string name="bookmarks">Закладки</string>
 
-    <string name="levels_screen_description">Уровни, опыт\nи бесплатные наборы вопросов</string>
+    <string name="description_description">Уровни, опыт\nи бесплатные наборы вопросов</string>
+    <string name="description_levels_title">Уровни</string>
+    <string name="description_levels_description">За каж</string>
+    <string name="description_levels_button">Мой прогресс</string>
+    <string name="description_packs_title">Бесплатные наборы вопросов</string>
+    <string name="description_packs_description">При наборе необходимого уровня вам будут открываться </string>
+    <string name="description_packs_button">@string/questions_packs</string>
 </resources>

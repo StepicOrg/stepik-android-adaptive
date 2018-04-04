@@ -160,6 +160,12 @@
     <string name="bookmarks_empty">No bookmarks</string>
     <string name="bookmarks">Bookmarks</string>
 
-    <string name="levels_screen_title" translatable="false">Up!</string>
-    <string name="levels_screen_description">Levels, exp\nand free questions packs</string>
+    <string name="description_title" translatable="false">Up!</string>
+    <string name="description_description">Levels, exp\nand free questions packs</string>
+    <string name="description_levels_title">Levels</string>
+    <string name="description_levels_description">Earn EXP points for every correct answer, gain levels and unlock additional materials</string>
+    <string name="description_levels_button">My stats</string>
+    <string name="description_packs_title">Free questions packs</string>
+    <string name="description_packs_description">When the required level is reached you will receive free questions packs, for example Verbs or Adjectives packs</string>
+    <string name="description_packs_button">@string/questions_packs</string>
 </resources>
