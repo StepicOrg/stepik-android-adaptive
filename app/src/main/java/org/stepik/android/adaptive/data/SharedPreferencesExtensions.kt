@@ -3,15 +3,16 @@ package org.stepik.android.adaptive.data
 import android.content.SharedPreferences
 import kotlin.properties.ReadOnlyProperty
 import kotlin.properties.ReadWriteProperty
+import kotlin.reflect.KClass
 import kotlin.reflect.KProperty
 
 interface SharedPreferenceProvider {
     val sharedPreferences: SharedPreferences
 }
 
-class SharedPreferenceDelegate<in R: SharedPreferenceProvider, T>(
+class SharedPreferenceDelegate<in R: SharedPreferenceProvider, T: Any>(
         private val key: String,
-        private val klass: Class<T>
+        private val klass: KClass<T>
 ) : ReadWriteProperty<R, T>, ReadOnlyProperty<R, T> {
     override fun getValue(thisRef: R, property: KProperty<*>) = thisRef.sharedPreferences[klass, key]
 
@@ -20,7 +21,7 @@ class SharedPreferenceDelegate<in R: SharedPreferenceProvider, T>(
     }
 }
 
-inline fun <R: SharedPreferenceProvider, reified T>preference(key: String) = SharedPreferenceDelegate<R, T>(key, T::class.java)
+inline fun <R: SharedPreferenceProvider, reified T: Any>preference(key: String) = SharedPreferenceDelegate<R, T>(key, T::class)
 
 inline fun SharedPreferences.edit(operation: SharedPreferences.Editor.() -> Unit) {
     val editor = edit()
@@ -38,7 +39,7 @@ operator fun SharedPreferences.set(key: String, value: Any?) = when(value) {
 }
 
 @Suppress("UNCHECKED_CAST")
-operator fun <T>SharedPreferences.get(klass: Class<T>, key: String, default: T? = null) = when(klass) {
+operator fun <T: Any>SharedPreferences.get(klass: KClass<T>, key: String, default: T? = null) = when(klass) {
     Boolean::class  -> getBoolean(key, default as? Boolean ?: false) as T
     Long::class     -> getLong(key, default as? Long ?: 0) as T
     Int::class      -> getInt(key, default as? Int ?: 0) as T
@@ -47,4 +48,4 @@ operator fun <T>SharedPreferences.get(klass: Class<T>, key: String, default: T? 
     else -> throw IllegalStateException("unsupported type $klass")
 }
 
-inline operator fun <reified T>SharedPreferences.get(key: String, default: T? = null): T = get(T::class.java, key, default)
+inline operator fun <reified T: Any>SharedPreferences.get(key: String, default: T? = null): T = get(T::class, key, default)
