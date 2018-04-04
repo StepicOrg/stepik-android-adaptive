@@ -159,4 +159,7 @@
 
     <string name="bookmarks_empty">No bookmarks</string>
     <string name="bookmarks">Bookmarks</string>
+
+    <string name="levels_screen_title" translatable="false">Up!</string>
+    <string name="levels_screen_description">Levels, exp\nand free questions packs</string>
 </resources>

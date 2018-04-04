@@ -150,4 +150,6 @@
 
     <string name="bookmarks_empty">Закладок нет</string>
     <string name="bookmarks">Закладки</string>
+
+    <string name="levels_screen_description">Уровни, опыт\nи бесплатные наборы вопросов</string>
 </resources>
