@@ -44,6 +44,8 @@ constructor(
 ): PresenterBase<RecommendationsView>(), AnswerListener {
     companion object {
         private const val MIN_STREAK_TO_OFFER_TO_BUY = 7
+        private const val LEVEL_TO_SHOW_GAMIFICATION_DESCRIPTION = 2
+        private const val LEVEL_TOO_HIGH_TO_WAIT = 10
         private const val MIN_EXP_TO_OFFER_PACKS = 50
     }
 
@@ -97,8 +99,19 @@ constructor(
 
         view?.updateExp(exp, prev, next, level)
 
-        if (showLevelDialog && level != expManager.getCurrentLevel(exp - streak)) {
-            view?.showNewLevelDialog(level)
+        if (showLevelDialog) {
+            val isNewLevelGained = level != expManager.getCurrentLevel(exp - streak)
+
+            val shouldShowGamificationDescription =
+                    (isNewLevelGained && level >= LEVEL_TO_SHOW_GAMIFICATION_DESCRIPTION || level >= LEVEL_TOO_HIGH_TO_WAIT)
+                    && !sharedPreferenceHelper.isGamificationDescriptionWasShown
+
+            if (shouldShowGamificationDescription) {
+                sharedPreferenceHelper.isGamificationDescriptionWasShown = true
+                view?.showGamificationDescriptionScreen()
+            } else if (isNewLevelGained) {
+                view?.showNewLevelDialog(level)
+            }
         }
 
         if (exp > MIN_EXP_TO_OFFER_PACKS) {

@@ -64,7 +64,7 @@ constructor(context: Context): SharedPreferenceProvider {
     val isPaidContentTooltipWasShown:    Boolean by preference(IS_PAID_CONTENT_TOOLTIP_WAS_SHOWN)
     val isQuestionsPacksTooltipWasShown: Boolean by preference(IS_QUESTIONS_PACKS_TOOLTIP_WAS_SHOWN)
 
-    var isPacksForLevelsWindowWasShown:  Boolean by preference(IS_PACKS_FOR_LEVELS_WINDOW_WAS_SHOWN)
+    var isGamificationDescriptionWasShown: Boolean by preference(IS_PACKS_FOR_LEVELS_WINDOW_WAS_SHOWN)
 
     var isAuthTokenSocial:               Boolean by preference(IS_OAUTH_TOKEN_SOCIAL)
     var isNotFirstTime:                  Boolean by preference(NOT_FIRST_TIME)
