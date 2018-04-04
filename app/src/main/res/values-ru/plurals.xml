@@ -18,4 +18,10 @@
         <item quantity="many">%d дней</item>
         <item quantity="other">%d дней</item>
     </plurals>
+    <plurals name="new_questions_packs">
+        <item quantity="one">Вам доступен %d новый набор вопросов</item>
+        <item quantity="few">Вам доступно %d новых набора вопросов</item>
+        <item quantity="many">Вам доступно %d новых наборов вопросов</item>
+        <item quantity="other">Вам доступно %d новых наборов вопросов</item>
+    </plurals>
 </resources>
