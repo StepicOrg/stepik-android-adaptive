@@ -153,9 +153,9 @@
 
     <string name="description_description">Уровни, опыт\nи бесплатные наборы вопросов</string>
     <string name="description_levels_title">Уровни</string>
-    <string name="description_levels_description">За каж</string>
+    <string name="description_levels_description">Получайте <font color='#FF0092E4'>опыт</font> за верные ответы, набирайте <font color='#FF0092E4'>уровни</font> и открывайте доступ к дополнительным материалам</string>
     <string name="description_levels_button">Мой прогресс</string>
     <string name="description_packs_title">Бесплатные наборы вопросов</string>
-    <string name="description_packs_description">При наборе необходимого уровня вам будут открываться </string>
+    <string name="description_packs_description">При наборе необходимого <font color='#FF0092E4'>уровня</font> вам будут открываться новые <font color='#FF0092E4'>наборы вопросов</font>, например Adjectives или Verbs</string>
     <string name="description_packs_button">@string/questions_packs</string>
 </resources>
