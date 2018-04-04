@@ -73,7 +73,7 @@
 
         <activity
             android:theme="@style/AppTheme.NoActionBar"
-            android:name=".ui.activity.LevelsScreenActivity" />
+            android:name=".ui.activity.DescriptionActivity" />
 
         <receiver
             android:name="org.stepik.android.adaptive.receivers.BootCompletedReceiver"
