@@ -12,7 +12,7 @@ import org.stepik.android.adaptive.databinding.DialogBodyDailyRewardsBinding
 import org.stepik.android.adaptive.databinding.DialogDefaultBodyBinding
 import org.stepik.android.adaptive.ui.adapter.DailyRewardsAdapter
 import org.stepik.android.adaptive.ui.fragment.RecommendationsFragment
-import org.stepik.android.adaptive.util.DailyRewardManager
+import org.stepik.android.adaptive.gamification.DailyRewardManager
 
 class DailyRewardDialog : DialogFragment() {
     companion object {

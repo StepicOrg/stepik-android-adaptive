@@ -14,6 +14,7 @@ import android.view.animation.AnticipateInterpolator
 import android.view.animation.OvershootInterpolator
 import org.stepik.android.adaptive.R
 import org.stepik.android.adaptive.core.ScreenManager
+import org.stepik.android.adaptive.data.Analytics
 import org.stepik.android.adaptive.data.model.Achievement
 import org.stepik.android.adaptive.databinding.PopupAchievementBinding
 import org.stepik.android.adaptive.ui.view.morphing.MorphingAnimation
@@ -31,7 +32,7 @@ object AchievementAnimations {
     private const val HIDE_ANIMATION_START_DELAY = 2000L
 
     @JvmStatic
-    fun show(container: ViewGroup, achievement: Achievement): ChainedAnimator {
+    fun show(container: ViewGroup, achievement: Achievement, analytics: Analytics): ChainedAnimator {
         val context = container.context
         val binding = PopupAchievementBinding.inflate(LayoutInflater.from(context), container, false)
 
@@ -49,7 +50,7 @@ object AchievementAnimations {
         binding.root.scaleX = 0f
         binding.root.scaleY = 0f
 
-        binding.root.setOnClickListener { ScreenManager.showStatsScreen(context, 1) }
+        binding.root.setOnClickListener { ScreenManager.showStatsScreen(context, analytics, 1) }
 
         container.addView(binding.root)
 

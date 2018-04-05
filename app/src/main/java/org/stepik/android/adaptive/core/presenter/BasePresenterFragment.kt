@@ -6,13 +6,17 @@ import android.support.v4.app.Fragment
 import android.support.v4.app.LoaderManager
 import android.support.v4.content.Loader
 import org.stepik.android.adaptive.core.loader.PresenterLoader
+import javax.inject.Provider
 
 abstract class BasePresenterFragment<P : Presenter<V>, in V> : Fragment() {
-    private val LOADER_ID = 127
+    companion object {
+        private const val LOADER_ID = 127
+    }
     protected var presenter: P? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        injectComponent()
 
         val loader = loaderManager.getLoader<P>(LOADER_ID)
         if (loader == null) {
@@ -33,14 +37,16 @@ abstract class BasePresenterFragment<P : Presenter<V>, in V> : Fragment() {
             }
 
             override fun onCreateLoader(id: Int, args: Bundle?): Loader<P> =
-                    PresenterLoader(this@BasePresenterFragment.context, getPresenterFactory())
+                    PresenterLoader(this@BasePresenterFragment.context, getPresenterProvider())
         })
     }
+
 
     @CallSuper
     protected open fun onPresenter(presenter: P?) {
         this.presenter = presenter
     }
 
-    protected abstract fun getPresenterFactory() : PresenterFactory<P>
+    protected abstract fun injectComponent()
+    protected abstract fun getPresenterProvider(): Provider<P>
 }

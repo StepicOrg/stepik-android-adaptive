@@ -11,18 +11,21 @@ import android.view.ViewGroup
 import android.view.animation.DecelerateInterpolator
 import io.reactivex.Completable
 import io.reactivex.Observable
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.schedulers.Schedulers
+import io.reactivex.Scheduler
+import org.stepik.android.adaptive.App
 import org.stepik.android.adaptive.R
 import org.stepik.android.adaptive.core.presenter.LoginPresenter
 import org.stepik.android.adaptive.core.presenter.contracts.LoginView
-import org.stepik.android.adaptive.data.AnalyticMgr
-import org.stepik.android.adaptive.data.SharedPreferenceMgr
+import org.stepik.android.adaptive.data.Analytics
+import org.stepik.android.adaptive.data.SharedPreferenceHelper
 import org.stepik.android.adaptive.data.model.*
 import org.stepik.android.adaptive.databinding.FragmentRecommendationsBinding
+import org.stepik.android.adaptive.di.qualifiers.BackgroundScheduler
+import org.stepik.android.adaptive.di.qualifiers.MainScheduler
 import org.stepik.android.adaptive.ui.activity.StudyActivity
 import org.stepik.android.adaptive.ui.adapter.OnboardingQuizCardsAdapter
-import org.stepik.android.adaptive.util.AchievementManager
+import org.stepik.android.adaptive.gamification.achievements.AchievementManager
+import javax.inject.Inject
 
 class OnboardingFragment : Fragment(), LoginView {
     companion object {
@@ -30,27 +33,49 @@ class OnboardingFragment : Fragment(), LoginView {
     }
 
     private lateinit var binding : FragmentRecommendationsBinding
-    private val presenter = LoginPresenter()
     private var completed = 0
+
+    @Inject
+    lateinit var achievementManager: AchievementManager
+
+    @Inject
+    lateinit var analytics: Analytics
+
+    @Inject
+    @field:MainScheduler
+    lateinit var mainScheduler: Scheduler
+
+    @Inject
+    @field:BackgroundScheduler
+    lateinit var backgroundScheduler: Scheduler
+
+    @Inject
+    lateinit var presenter: LoginPresenter
+
+    @Inject
+    lateinit var sharedPreferenceHelper: SharedPreferenceHelper
 
     private val adapter = OnboardingQuizCardsAdapter {
         updateToolbar(true)
         if (it == 0) Completable.fromAction {
-            SharedPreferenceMgr.getInstance().isNotFirstTime = true
-            AchievementManager.onEvent(AchievementManager.Event.ONBOARDING, 1)
+            sharedPreferenceHelper.isNotFirstTime = true
+            achievementManager.onEvent(AchievementManager.Event.ONBOARDING, 1)
         }
-                .observeOn(AndroidSchedulers.mainThread())
+                .observeOn(mainScheduler)
                 .subscribe(this::onSuccess)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        App.componentManager()
+                .studyComponent
+                .inject(this)
         retainInstance = true
         initOnboardingCards()
         presenter.attachView(this)
 
-        Observable.fromCallable(SharedPreferenceMgr.getInstance()::getAuthResponseDeadline)
-                .observeOn(AndroidSchedulers.mainThread())
+        Observable.fromCallable(sharedPreferenceHelper::authResponseDeadline)
+                .observeOn(mainScheduler)
                 .subscribe {
                     if(it == 0L)
                         createMockAccount()
@@ -141,7 +166,7 @@ class OnboardingFragment : Fragment(), LoginView {
 
     private fun onComplete() {
         if (completed == 2) {
-            AnalyticMgr.getInstance().onBoardingFinished()
+            analytics.onBoardingFinished()
             startActivity(Intent(this@OnboardingFragment.context, StudyActivity::class.java))
             this@OnboardingFragment.activity.finish()
         }
@@ -159,11 +184,11 @@ class OnboardingFragment : Fragment(), LoginView {
 
 
     private fun createMockAccount() {
-        Observable.fromCallable(SharedPreferenceMgr.getInstance()::getFakeUser)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribeOn(Schedulers.io())
+        Observable.fromCallable(sharedPreferenceHelper::fakeUser)
+                .observeOn(mainScheduler)
+                .subscribeOn(backgroundScheduler)
                 .subscribe {
-                    if (it.isNotEmpty) {
+                    if (it.value != null) {
                         // we got here if on some reason server returns us 401, so we try to re-login with existing fake account
                         presenter.authWithLoginPassword(it.value.login, it.value.password, true)
                     } else {

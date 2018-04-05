@@ -10,10 +10,12 @@ import android.support.v4.app.DialogFragment
 import android.os.Bundle
 import android.support.v7.app.AlertDialog
 import android.view.View
+import org.stepik.android.adaptive.App
 import org.stepik.android.adaptive.R
-import org.stepik.android.adaptive.data.AnalyticMgr
+import org.stepik.android.adaptive.data.Analytics
 import org.stepik.android.adaptive.databinding.RateAppDialogBinding
-import org.stepik.android.adaptive.util.RateAppUtil
+import org.stepik.android.adaptive.util.RateAppManager
+import javax.inject.Inject
 
 class RateAppDialog : DialogFragment() {
     companion object {
@@ -25,6 +27,17 @@ class RateAppDialog : DialogFragment() {
     }
 
     private lateinit var binding: RateAppDialogBinding
+
+    @Inject
+    lateinit var rateAppManager: RateAppManager
+
+    @Inject
+    lateinit var analytics: Analytics
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        App.component().inject(this)
+    }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val builder = AlertDialog.Builder(context)
@@ -42,16 +55,16 @@ class RateAppDialog : DialogFragment() {
         binding.ok.setOnClickListener {
             binding.starsContainer.setIsIndicator(true)
             refresh()
-            AnalyticMgr.getInstance().rate(binding.starsContainer.rating.toInt())
+            analytics.rate(binding.starsContainer.rating.toInt())
         }
 
         binding.later.setOnClickListener {
             if (binding.starsContainer.rating >= MIN_POSITIVE) {
-                AnalyticMgr.getInstance().ratePositiveLater()
+                analytics.ratePositiveLater()
             } else {
-                AnalyticMgr.getInstance().rateNegativeLater()
+                analytics.rateNegativeLater()
             }
-            RateAppUtil.onCloseLater()
+            rateAppManager.onCloseLater()
             dismiss()
         }
 
@@ -70,8 +83,8 @@ class RateAppDialog : DialogFragment() {
                 startActivity(mailer)
             } catch (e: ActivityNotFoundException) {}
 
-            AnalyticMgr.getInstance().rateNegativeEmail()
-            RateAppUtil.onCloseNegative()
+            analytics.rateNegativeEmail()
+            rateAppManager.onCloseNegative()
             dismiss()
         }
 
@@ -84,8 +97,8 @@ class RateAppDialog : DialogFragment() {
                 intent.data = Uri.parse("http://play.google.com/store/apps/details?id=${context.packageName}")
                 startActivity(intent)
             }
-            AnalyticMgr.getInstance().ratePositiveGooglePlay()
-            RateAppUtil.onRated()
+            analytics.ratePositiveGooglePlay()
+            rateAppManager.onRated()
             dismiss()
         }
 
@@ -104,8 +117,8 @@ class RateAppDialog : DialogFragment() {
     }
 
     override fun onDismiss(dialog: DialogInterface?) {
-        AnalyticMgr.getInstance().rateCanceled()
-        RateAppUtil.onCloseLater()
+        analytics.rateCanceled()
+        rateAppManager.onCloseLater()
         super.onDismiss(dialog)
     }
 

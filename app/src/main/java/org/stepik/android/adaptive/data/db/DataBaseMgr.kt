@@ -1,41 +1,37 @@
 package org.stepik.android.adaptive.data.db
 
 import android.content.ContentValues
-import android.content.Context
+import android.database.sqlite.SQLiteDatabase
+import io.reactivex.Completable
+import io.reactivex.Single
 import org.joda.time.DateTime
 import org.joda.time.Days
-import org.stepik.android.adaptive.data.db.dao.BookmarksDao
-import org.stepik.android.adaptive.data.db.operations.DatabaseOperationsImpl
+import org.stepik.android.adaptive.data.db.dao.IDao
 import org.stepik.android.adaptive.data.db.structure.BookmarksDbStructure
 import org.stepik.android.adaptive.data.db.structure.ExpDbStructure
 import org.stepik.android.adaptive.data.model.WeekProgress
 import org.stepik.android.adaptive.data.model.Bookmark
+import org.stepik.android.adaptive.di.storage.StorageSingleton
+import javax.inject.Inject
 
-class DataBaseMgr private constructor(context: Context) {
-    companion object {
-        @JvmStatic
-        lateinit var instance: DataBaseMgr
-
-        @JvmStatic
-        fun init(context: Context) {
-            instance = DataBaseMgr(context)
-        }
-    }
-
-    private val db = DataBaseHelper(context).writableDatabase
-    private val databaseOperations = DatabaseOperationsImpl(db)
-    private val bookmarksDao = BookmarksDao(databaseOperations) // todo replace with DI
-
-    fun onExpGained(exp: Long, submissionId: Long) {
+@StorageSingleton
+class DataBaseMgr
+@Inject
+constructor(
+        private val db: SQLiteDatabase,
+        private val bookmarksDao: IDao<Bookmark>
+) {
+    fun onExpGained(exp: Long, submissionId: Long): Completable = Completable.create { emitter ->
         val cv = ContentValues()
 
         cv.put(ExpDbStructure.Columns.EXP, exp)
         cv.put(ExpDbStructure.Columns.SUBMISSION_ID, submissionId)
 
         db.insert(ExpDbStructure.TABLE_NAME, null, cv)
+        emitter.onComplete()
     }
 
-    fun getExpForLast7Days(): Array<Long> {
+    fun getExpForLast7Days(): Single<Array<Long>> = Single.create { emitter ->
         val res = Array<Long>(7) { 0 }
 
         val FIELD_DAY = "day"
@@ -68,10 +64,10 @@ class DataBaseMgr private constructor(context: Context) {
             }
         }
 
-        return res
+        emitter.onSuccess(res)
     }
 
-    fun getWeeks() : List<WeekProgress> {
+    fun getWeeks(): Single<List<WeekProgress>> = Single.create { emitter ->
         val res = ArrayList<WeekProgress>()
 
         val FIELD_WEEK = "week"
@@ -103,10 +99,10 @@ class DataBaseMgr private constructor(context: Context) {
             }
         }
 
-        return res
+        emitter.onSuccess(res)
     }
 
-    fun getExp(): Long {
+    fun getExp(): Single<Long> = Single.create { emitter ->
         val cursor = db.query(
                 ExpDbStructure.TABLE_NAME,
                 arrayOf("sum(${ExpDbStructure.Columns.EXP}) as ${ExpDbStructure.Columns.EXP}"),
@@ -121,7 +117,7 @@ class DataBaseMgr private constructor(context: Context) {
             }
         }
 
-        return exp
+        emitter.onSuccess(exp)
     }
 
     fun addBookmark(bookmark: Bookmark) =

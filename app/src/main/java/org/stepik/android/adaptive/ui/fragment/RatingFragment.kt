@@ -9,16 +9,26 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
+import org.stepik.android.adaptive.App
 import org.stepik.android.adaptive.R
-import org.stepik.android.adaptive.core.presenter.BasePresenterFragment
-import org.stepik.android.adaptive.core.presenter.PresenterFactory
-import org.stepik.android.adaptive.core.presenter.RatingPresenter
+import org.stepik.android.adaptive.core.presenter.*
 import org.stepik.android.adaptive.core.presenter.contracts.RatingView
 import org.stepik.android.adaptive.databinding.FragmentRatingBinding
 import org.stepik.android.adaptive.ui.adapter.RatingAdapter
+import javax.inject.Inject
+import javax.inject.Provider
 
 class RatingFragment : BasePresenterFragment<RatingPresenter, RatingView>(), RatingView {
     private lateinit var binding: FragmentRatingBinding
+
+    @Inject
+    lateinit var ratingPresenterProvider: Provider<RatingPresenter>
+
+    override fun injectComponent() {
+        App.componentManager()
+                .statsComponent
+                .inject(this)
+    }
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         binding = FragmentRatingBinding.inflate(inflater, container, false)
@@ -86,5 +96,5 @@ class RatingFragment : BasePresenterFragment<RatingPresenter, RatingView>(), Rat
         super.onStop()
     }
 
-    override fun getPresenterFactory(): PresenterFactory<RatingPresenter> = RatingPresenter.Companion
+    override fun getPresenterProvider() = ratingPresenterProvider
 }

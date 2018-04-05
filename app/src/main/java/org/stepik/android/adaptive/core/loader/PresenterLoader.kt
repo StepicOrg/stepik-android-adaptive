@@ -3,11 +3,11 @@ package org.stepik.android.adaptive.core.loader
 import android.content.Context
 import android.support.v4.content.Loader
 import org.stepik.android.adaptive.core.presenter.Presenter
-import org.stepik.android.adaptive.core.presenter.PresenterFactory
+import javax.inject.Provider
 
 class PresenterLoader<P: Presenter<*>>(
         appContext: Context,
-        private val presenterFactory: PresenterFactory<P>
+        private val presenterProvider: Provider<P>
 ) : Loader<P>(appContext) {
 
     var presenter: P? = null
@@ -23,7 +23,7 @@ class PresenterLoader<P: Presenter<*>>(
     }
 
     override fun onForceLoad() {
-        presenter = presenterFactory.create()
+        presenter = presenterProvider.get()
         deliverResult(presenter)
     }
 

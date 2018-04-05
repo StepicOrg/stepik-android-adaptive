@@ -13,12 +13,16 @@ import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.widget.Toast;
 
+import org.stepik.android.adaptive.App;
 import org.stepik.android.adaptive.R;
-import org.stepik.android.adaptive.api.API;
+import org.stepik.android.adaptive.api.Api;
+import org.stepik.android.adaptive.di.qualifiers.BackgroundScheduler;
+import org.stepik.android.adaptive.di.qualifiers.MainScheduler;
 import org.stepik.android.adaptive.util.ValidateUtil;
 
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.schedulers.Schedulers;
+import javax.inject.Inject;
+
+import io.reactivex.Scheduler;
 
 public final class RemindPasswordDialog extends DialogFragment {
     private TextInputEditText editText;
@@ -26,9 +30,22 @@ public final class RemindPasswordDialog extends DialogFragment {
 
     private static final String PROGRESS = "progress";
 
+    @Inject
+    public Api api;
+
+    @Inject
+    @MainScheduler
+    public Scheduler mainScheduler;
+
+    @Inject
+    @BackgroundScheduler
+    public Scheduler backgroundScheduler;
+
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        App.Companion.componentManager().getLoginComponent().inject(this);
         setRetainInstance(true);
     }
 
@@ -67,10 +84,10 @@ public final class RemindPasswordDialog extends DialogFragment {
             dialog.getButton(DialogInterface.BUTTON_POSITIVE).setOnClickListener(__ -> {
                 if (validateEmail()) {
                     showProgressDialog();
-                    API.getInstance()
+                    api
                             .remindPassword(editText.getText().toString().trim())
-                            .subscribeOn(Schedulers.io())
-                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribeOn(backgroundScheduler)
+                            .observeOn(mainScheduler)
                             .subscribe(this::onSuccess, this::onError);
                 }
             });

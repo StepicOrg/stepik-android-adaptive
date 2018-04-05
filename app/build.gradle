@@ -2,7 +2,6 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
 apply plugin: 'kotlin-android-extensions'
-apply plugin: 'me.tatarka.retrolambda'
 apply plugin: 'io.fabric'
 
 def globalConf = rootProject.ext
@@ -37,7 +36,7 @@ android {
     }
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
@@ -85,6 +84,9 @@ android {
 
 dependencies {
     implementation libraries.kotlinStd
+
+    implementation libraries.dagger
+    kapt libraries.daggerCompiler
 
     implementation libraries.rxAndroid
     implementation libraries.rxJava2
@@ -147,7 +149,6 @@ dependencies {
         exclude group: 'com.android.support'
     }
 
-    implementation libraries.multidex
     kapt libraries.databinding
 
     compile fileTree(include: ['*.jar'], dir: 'libs')

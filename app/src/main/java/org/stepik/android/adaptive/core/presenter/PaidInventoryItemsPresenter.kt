@@ -1,20 +1,26 @@
 package org.stepik.android.adaptive.core.presenter
 
 import io.reactivex.Observable
-import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.Scheduler
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 import org.solovyev.android.checkout.*
 import org.stepik.android.adaptive.core.presenter.contracts.PaidInventoryItemsView
+import org.stepik.android.adaptive.di.qualifiers.MainScheduler
+import org.stepik.android.adaptive.gamification.InventoryManager
 import org.stepik.android.adaptive.ui.adapter.PaidInventoryAdapter
 import org.stepik.android.adaptive.util.*
+import javax.inject.Inject
 
-class PaidInventoryItemsPresenter : PaidContentPresenterBase<PaidInventoryItemsView>() {
-    companion object : PresenterFactory<PaidInventoryItemsPresenter> {
-        override fun create() = PaidInventoryItemsPresenter()
-    }
-
-    private val skus = InventoryUtil.PaidContent.ids.toList()
+class PaidInventoryItemsPresenter
+@Inject
+constructor(
+        @MainScheduler
+        private val mainScheduler: Scheduler,
+        private val inventoryManager: InventoryManager,
+        billing: Billing
+): PaidContentPresenterBase<PaidInventoryItemsView>(billing) {
+    private val skus = InventoryManager.PaidContent.ids.toList()
     private val adapter = PaidInventoryAdapter(this::purchase)
     private val compositeDisposable = CompositeDisposable()
     private var isInventoryLoaded = false
@@ -26,21 +32,21 @@ class PaidInventoryItemsPresenter : PaidContentPresenterBase<PaidInventoryItemsV
 
     private fun purchase(sku: Sku) {
         val purchaseObservable = checkout?.startPurchaseFlowRx(sku) ?: Observable.empty<Purchase>()
-        compositeDisposable.add(consume(purchaseObservable))
+        compositeDisposable addDisposable consume(purchaseObservable)
     }
 
     fun restorePurchases() {
         view?.showProgress()
-        compositeDisposable.add(consume(getAllPurchases()))
+        compositeDisposable addDisposable consume(getAllPurchases())
     }
 
     private fun consume(observable: Observable<Purchase> /* , some additional info */): Disposable = observable.mapNotNull {
-        InventoryUtil.PaidContent.getById(it.sku)?.to(it.token)
+        InventoryManager.PaidContent.getById(it.sku)?.to(it.token)
     }.flatMap { p ->
         checkout?.onReady()?.flatMap { it.consumeRx(p.second).andThen(Observable.just(p.first)) }
-    }.subscribeOn(AndroidSchedulers.mainThread()).observeOn(AndroidSchedulers.mainThread()).subscribe({
+    }.subscribeOn(mainScheduler).observeOn(mainScheduler).subscribe({
         // onNext
-        InventoryUtil.changeItemCount(it.item, it.count.toLong())
+        inventoryManager.changeItemCount(it.item, it.count.toLong())
     }, {
         // onError
         if (it !is BillingException || it.response != ResponseCodes.USER_CANCELED) {
@@ -57,7 +63,7 @@ class PaidInventoryItemsPresenter : PaidContentPresenterBase<PaidInventoryItemsV
             val product = it.get(ProductTypes.IN_APP)
             if (product.supported) {
                 adapter.items = product.skus.map { sku ->
-                    sku to InventoryUtil.PaidContent.getById(sku.id.code)!!
+                    sku to InventoryManager.PaidContent.getById(sku.id.code)!!
                 }
                 view?.hideContentProgress()
                 isInventoryLoaded = true

@@ -12,16 +12,18 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.PopupWindow
+import com.google.firebase.remoteconfig.FirebaseRemoteConfig
+import org.stepik.android.adaptive.App
 import org.stepik.android.adaptive.R
 import org.stepik.android.adaptive.Util
 import org.stepik.android.adaptive.configuration.RemoteConfig
+import org.stepik.android.adaptive.content.questions.QuestionsPacksManager
 import org.stepik.android.adaptive.core.ScreenManager
 import org.stepik.android.adaptive.core.presenter.BasePresenterFragment
 import org.stepik.android.adaptive.core.presenter.RecommendationsPresenter
 import org.stepik.android.adaptive.core.presenter.contracts.RecommendationsView
-import org.stepik.android.adaptive.data.AnalyticMgr
-import org.stepik.android.adaptive.data.SharedPreferenceMgr
-import org.stepik.android.adaptive.data.model.QuestionsPack
+import org.stepik.android.adaptive.data.Analytics
+import org.stepik.android.adaptive.data.SharedPreferenceHelper
 import org.stepik.android.adaptive.databinding.FragmentRecommendationsBinding
 import org.stepik.android.adaptive.ui.activity.PaidInventoryItemsActivity
 import org.stepik.android.adaptive.ui.adapter.QuizCardsAdapter
@@ -31,9 +33,11 @@ import org.stepik.android.adaptive.ui.dialog.ExpLevelDialog
 import org.stepik.android.adaptive.ui.dialog.QuestionsPacksDialog
 import org.stepik.android.adaptive.ui.dialog.RateAppDialog
 import org.stepik.android.adaptive.ui.helper.dpToPx
-import org.stepik.android.adaptive.util.InventoryUtil
+import org.stepik.android.adaptive.gamification.InventoryManager
 import org.stepik.android.adaptive.util.PopupHelper
 import org.stepik.android.adaptive.util.changeVisibillity
+import javax.inject.Inject
+import javax.inject.Provider
 
 class RecommendationsFragment : BasePresenterFragment<RecommendationsPresenter, RecommendationsView>(), RecommendationsView {
     companion object {
@@ -61,9 +65,31 @@ class RecommendationsFragment : BasePresenterFragment<RecommendationsPresenter, 
 
     private var questionsPacksTooltip: PopupWindow? = null
 
-    private val isQuestionsPackSupported = QuestionsPack.values().size > 1
+    private val isQuestionsPackSupported by lazy { questionsPacksManager.isQuestionsPacksSupported }
 
     private lateinit var binding: FragmentRecommendationsBinding
+
+    @Inject
+    lateinit var analytics: Analytics
+
+    @Inject
+    lateinit var remoteConfig: FirebaseRemoteConfig
+
+    @Inject
+    lateinit var sharedPreferenceHelper: SharedPreferenceHelper
+
+    @Inject
+    lateinit var inventoryManager: InventoryManager
+
+    @Inject
+    lateinit var recommendationsPresenterProvider: Provider<RecommendationsPresenter>
+
+    @Inject
+    lateinit var questionsPacksManager: QuestionsPacksManager
+
+    override fun injectComponent() {
+        App.componentManager().studyComponent.inject(this)
+    }
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         binding = FragmentRecommendationsBinding.inflate(inflater, container, false)
@@ -74,7 +100,7 @@ class RecommendationsFragment : BasePresenterFragment<RecommendationsPresenter, 
         binding.streakSuccessContainer.nestedTextView = binding.streakSuccess
         binding.streakSuccessContainer.setGradientDrawableParams(ContextCompat.getColor(context, R.color.colorAccent), 0f)
 
-        binding.toolbar.setOnClickListener { ScreenManager.showStatsScreen(context, 0) }
+        binding.toolbar.setOnClickListener { ScreenManager.showStatsScreen(context, analytics, 0) }
 
         savedInstanceState?.getLong(STREAK_RESTORE_KEY, -1)?.let {
             if (it != -1L) {
@@ -85,7 +111,7 @@ class RecommendationsFragment : BasePresenterFragment<RecommendationsPresenter, 
         binding.questionsPacks.changeVisibillity(isQuestionsPackSupported)
         binding.questionsPacks.setOnClickListener {
             questionsPacksTooltip?.dismiss()
-            ScreenManager.showQuestionsPacksScreen(context)
+            ScreenManager.showQuestionsPacksScreen(context, analytics)
         }
 
         return binding.root
@@ -94,11 +120,11 @@ class RecommendationsFragment : BasePresenterFragment<RecommendationsPresenter, 
     private fun resolveQuestionsPackIcon() {
         @DimenRes val paddingRes: Int
         @DrawableRes val iconRes: Int
-        if (RemoteConfig.getFirebaseConfig().getBoolean(RemoteConfig.QUESTIONS_PACKS_ICON_EXPERIMENT)) {
-            iconRes = QuestionsPack.values()[SharedPreferenceMgr.getInstance().questionsPackIndex].icon // small icon of current pack
+        if (remoteConfig.getBoolean(RemoteConfig.QUESTIONS_PACKS_ICON_EXPERIMENT)) {
+            iconRes = questionsPacksManager.currentPack.icon // small icon of current pack
             paddingRes = R.dimen.action_bar_icon_padding_small
 
-            val badgeCount = getQuestionsPacksBadgesCount()
+            val badgeCount = questionsPacksManager.unviewedPacksCount
             binding.questionsPacksBadge.text = badgeCount.toString()
             binding.questionsPacksBadge.changeVisibillity(badgeCount > 0 && isQuestionsPackSupported)
         } else {
@@ -109,9 +135,6 @@ class RecommendationsFragment : BasePresenterFragment<RecommendationsPresenter, 
         binding.questionsPacks.setImageResource(iconRes)
         binding.questionsPacks.setPadding(padding, padding, padding, padding)
     }
-
-    private fun getQuestionsPacksBadgesCount() =
-            QuestionsPack.values().count { !SharedPreferenceMgr.getInstance().isQuestionsPackViewed(it) }
 
     override fun onAdapter(cardsAdapter: QuizCardsAdapter) =
         binding.cardsContainer.setAdapter(cardsAdapter)
@@ -190,6 +213,9 @@ class RecommendationsFragment : BasePresenterFragment<RecommendationsPresenter, 
     override fun showRateAppDialog() =
             RateAppDialog.newInstance().show(childFragmentManager, RATE_APP_DIALOG_TAG)
 
+    override fun showGamificationDescriptionScreen() =
+            ScreenManager.showGamificationDescription(context, analytics)
+
     override fun showStreakRestoreDialog(streak: Long, withTooltip: Boolean) {
         refreshStreakRestoreDialog()
         streakToRestore = streak
@@ -197,7 +223,7 @@ class RecommendationsFragment : BasePresenterFragment<RecommendationsPresenter, 
                 .createShowStreakRestoreWidgetAnimation(binding.ticketsContainer, streakRestoreViewOffsetX)
                 .apply {
                     if (withTooltip) {
-                        val tooltipText = getString(if (InventoryUtil.hasTickets()) {
+                        val tooltipText = getString(if (inventoryManager.hasTickets()) {
                             R.string.streak_restore_text
                         } else {
                             R.string.paid_content_tooltip
@@ -209,8 +235,8 @@ class RecommendationsFragment : BasePresenterFragment<RecommendationsPresenter, 
                 }
                 .start()
         binding.ticketsContainer.setOnClickListener {
-            if (InventoryUtil.hasTickets()) {
-                if (InventoryUtil.useItem(InventoryUtil.Item.Ticket)) {
+            if (inventoryManager.hasTickets()) {
+                if (inventoryManager.useItem(InventoryManager.Item.Ticket)) {
                     presenter?.restoreStreak(streak)
                 }
                 hideStreakRestoreDialog()
@@ -221,12 +247,12 @@ class RecommendationsFragment : BasePresenterFragment<RecommendationsPresenter, 
     }
 
     private fun refreshStreakRestoreDialog() {
-        binding.ticketItem.counter.text = getString(R.string.amount, InventoryUtil.getItemsCount(InventoryUtil.Item.Ticket))
+        binding.ticketItem.counter.text = getString(R.string.amount, inventoryManager.getItemsCount(InventoryManager.Item.Ticket))
     }
 
     override fun showQuestionsPacksTooltip() {
         if (isQuestionsPackSupported) {
-            if (RemoteConfig.getFirebaseConfig().getBoolean(RemoteConfig.QUESTIONS_PACKS_DIALOG_EXPERIMENT)) {
+            if (remoteConfig.getBoolean(RemoteConfig.QUESTIONS_PACKS_DIALOG_EXPERIMENT)) {
                 QuestionsPacksDialog.newInstance().show(childFragmentManager, QUESTIONS_PACKS_DIALOG_TAG)
             } else {
                 questionsPacksTooltip = PopupHelper.showPopupAnchoredToView(
@@ -245,7 +271,7 @@ class RecommendationsFragment : BasePresenterFragment<RecommendationsPresenter, 
     }
 
     private fun openPaidContentList() {
-        AnalyticMgr.getInstance().paidContentOpened()
+        analytics.paidContentOpened()
         startActivityForResult(Intent(context, PaidInventoryItemsActivity::class.java), PAID_CONTENT_REQUEST_CODE)
     }
 
@@ -282,5 +308,5 @@ class RecommendationsFragment : BasePresenterFragment<RecommendationsPresenter, 
         super.onStop()
     }
 
-    override fun getPresenterFactory() = RecommendationsPresenter.Companion
+    override fun getPresenterProvider() = recommendationsPresenterProvider
 }

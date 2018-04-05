@@ -138,6 +138,7 @@
 
     <string name="questions_count"><![CDATA[<b>Карточек:</b> %d]]></string>
     <string name="questions_difficulty"><![CDATA[<b>Сложность:</b> %s]]></string>
+    <string name="questions_progress_description_level">Бесплатно на уровне %d</string>
 
     <string name="questions_difficulty_low">низкая</string>
     <string name="questions_difficulty_medium">средняя</string>
@@ -150,4 +151,12 @@
 
     <string name="bookmarks_empty">Закладок нет</string>
     <string name="bookmarks">Закладки</string>
+
+    <string name="description_description">Уровни, опыт\nи бесплатные наборы вопросов</string>
+    <string name="description_levels_title">Уровни</string>
+    <string name="description_levels_description"><![CDATA[Получайте <font color="#0092E4">опыт</font> за верные ответы, набирайте <font color="#0092E4">уровни</font> и открывайте доступ к дополнительным материалам]]></string>
+    <string name="description_levels_button">Мой прогресс</string>
+    <string name="description_packs_title">Бесплатные наборы вопросов</string>
+    <string name="description_packs_description"><![CDATA[При наборе необходимого <font color="#0092E4">уровня</font> вам будут открываться новые <font color="#0092E4">наборы вопросов</font>, например Adjectives или Verbs]]></string>
+    <string name="description_packs_button">@string/questions_packs</string>
 </resources>

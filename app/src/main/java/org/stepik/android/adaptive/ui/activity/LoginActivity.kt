@@ -6,16 +6,18 @@ import android.support.design.widget.Snackbar
 import android.text.method.LinkMovementMethod
 import android.view.MenuItem
 import android.view.View
+import org.stepik.android.adaptive.App
 import org.stepik.android.adaptive.R
 import org.stepik.android.adaptive.Util
 import org.stepik.android.adaptive.core.ScreenManager
 import org.stepik.android.adaptive.core.presenter.BasePresenterActivity
 import org.stepik.android.adaptive.core.presenter.LoginPresenter
-import org.stepik.android.adaptive.core.presenter.PresenterFactory
 import org.stepik.android.adaptive.core.presenter.contracts.LoginView
 import org.stepik.android.adaptive.databinding.ActivityLoginBinding
 import org.stepik.android.adaptive.ui.dialog.RemindPasswordDialog
 import org.stepik.android.adaptive.util.ValidateUtil
+import javax.inject.Inject
+import javax.inject.Provider
 
 class LoginActivity : BasePresenterActivity<LoginPresenter, LoginView>(), LoginView {
     private companion object {
@@ -24,6 +26,13 @@ class LoginActivity : BasePresenterActivity<LoginPresenter, LoginView>(), LoginV
     }
 
     private lateinit var binding: ActivityLoginBinding
+
+    @Inject
+    lateinit var loginPresenterProvider: Provider<LoginPresenter>
+
+    override fun injectComponent() {
+        App.componentManager().loginComponent.inject(this)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -108,5 +117,5 @@ class LoginActivity : BasePresenterActivity<LoginPresenter, LoginView>(), LoginV
         showProgressDialogFragment(PROGRESS, getString(R.string.sign_in), getString(R.string.processing_your_request))
     }
 
-    override fun getPresenterFactory(): PresenterFactory<LoginPresenter> = LoginPresenter.Companion
+    override fun getPresenterProvider() = loginPresenterProvider
 }

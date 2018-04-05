@@ -13,11 +13,15 @@ import android.widget.TextView
 import kotlinx.android.synthetic.main.item_questions_pack.view.*
 import org.solovyev.android.checkout.Sku
 import org.stepik.android.adaptive.R
-import org.stepik.android.adaptive.data.model.QuestionsPack
+import org.stepik.android.adaptive.content.questions.QuestionsPacksResolver
+import org.stepik.android.adaptive.content.questions.QuestionsPack
 import org.stepik.android.adaptive.ui.helper.setAlpha
 import org.stepik.android.adaptive.util.changeVisibillity
 
-class QuestionsPacksAdapter(private val onPackClicked: (Sku, QuestionsPack, Boolean) -> Unit) : RecyclerView.Adapter<QuestionsPacksAdapter.QuestionsPackViewHolder>() {
+class QuestionsPacksAdapter(
+        private val onPackClicked: (Sku, QuestionsPack, Boolean) -> Unit,
+        private val questionsPacksResolver: QuestionsPacksResolver
+) : RecyclerView.Adapter<QuestionsPacksAdapter.QuestionsPackViewHolder>() {
     companion object {
         private const val TITLE_ALPHA = 0xDD
         private const val TEXT_ALPHA = 0xCC
@@ -75,12 +79,18 @@ class QuestionsPacksAdapter(private val onPackClicked: (Sku, QuestionsPack, Bool
         holder.actionButton.setOnClickListener {
             onPackClicked(sku, pack, isOwned)
         }
-        holder.actionButton.text = (if (pack.isFree || isOwned) {
+        holder.actionButton.text = (if (isOwned || questionsPacksResolver.isAvailableForFree(pack)) {
             context.getString(R.string.select)
         } else {
             sku.price
         })
         holder.root.setBackgroundResource(pack.background)
+
+        holder.progressDescription.changeVisibillity(!isOwned && pack.hasProgress)
+        holder.progressDescription.setTextColor(setAlpha(pack.textColor, TEXT_ALPHA))
+        if (!isOwned && pack.hasProgress) {
+            holder.progressDescription.text = questionsPacksResolver.getProgressDescription(pack)
+        }
     }
 
     class QuestionsPackViewHolder(root: View): RecyclerView.ViewHolder(root) {
@@ -90,6 +100,7 @@ class QuestionsPacksAdapter(private val onPackClicked: (Sku, QuestionsPack, Bool
         val description: TextView = root.packDescription
         val actionButton: Button = root.packButton
         val activeIcon: ImageView = root.packActiveIcon
+        val progressDescription: TextView = root.packProgressDescription
         val root: View = root.cardBody
     }
 }

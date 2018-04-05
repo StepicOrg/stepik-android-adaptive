@@ -8,30 +8,36 @@ import android.os.Build
 import org.joda.time.DateTime
 import org.joda.time.Days
 import org.joda.time.Hours
-import org.stepik.android.adaptive.data.SharedPreferenceMgr
+import org.stepik.android.adaptive.data.SharedPreferenceHelper
 import org.stepik.android.adaptive.receivers.NotificationsReceiver
-import org.stepik.android.adaptive.util.DailyRewardManager
+import org.stepik.android.adaptive.gamification.DailyRewardManager
+import javax.inject.Inject
 
-object LocalReminder {
-    private const val NOTIFICATION_TIMESTAMP_KEY = "notification_timestamp"
+class LocalReminder
+@Inject
+constructor(
+        private val context: Context,
+        private val dailyRewardManager: DailyRewardManager,
+        private val sharedPreferenceHelper: SharedPreferenceHelper
+) {
+    companion object {
+        private const val NOTIFICATION_TIMESTAMP_KEY = "notification_timestamp"
+        private const val GOOD_STUDY_HOUR = 20
 
-    const val DAYS_MULTIPLIER_KEY = "days_multiplier"
+        const val DAYS_MULTIPLIER_KEY = "days_multiplier"
 
-    private const val GOOD_STUDY_HOUR = 20
-
-    private lateinit var context: Context
-    private lateinit var alarmManager: AlarmManager
-
-    fun init(context: Context) {
-        LocalReminder.context = context
-        alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        @JvmStatic
+        fun isGoodTime(hour: Int) = hour in 7..23
     }
 
+
+    private val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+
     fun resolveDailyRemind() {
-        val notificationTimestamp = SharedPreferenceMgr.getInstance().getLong(NOTIFICATION_TIMESTAMP_KEY)
+        val notificationTimestamp = sharedPreferenceHelper.getLong(NOTIFICATION_TIMESTAMP_KEY)
         val now = DateTime.now()
 
-        val lastSession = DateTime(DailyRewardManager.getLastSessionTimestamp())
+        val lastSession = DateTime(dailyRewardManager.getLastSessionTimestamp())
 
         val daysSinceLastSession = Days.daysBetween(lastSession.withTimeAtStartOfDay(), now.withTimeAtStartOfDay()).days
         val dayMultiplier = if (daysSinceLastSession > 2) {
@@ -64,12 +70,9 @@ object LocalReminder {
         val pendingIntent = PendingIntent.getBroadcast(context, NotificationsReceiver.REQUEST_CODE, intent, PendingIntent.FLAG_UPDATE_CURRENT)
         alarmManager.cancel(pendingIntent)
 
-        SharedPreferenceMgr.getInstance().saveLong(NOTIFICATION_TIMESTAMP_KEY, newNotificationTimestamp)
+        sharedPreferenceHelper.saveLong(NOTIFICATION_TIMESTAMP_KEY, newNotificationTimestamp)
         scheduleCompat(newNotificationTimestamp, AlarmManager.INTERVAL_HALF_HOUR, pendingIntent)
     }
-
-    @JvmStatic
-    fun isGoodTime(hour: Int) = hour in 7..23
 
     private fun scheduleCompat(scheduleMillis: Long, interval: Long, pendingIntent: PendingIntent) {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {

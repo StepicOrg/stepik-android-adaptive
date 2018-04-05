@@ -2,23 +2,28 @@ package org.stepik.android.adaptive.data.db.dao
 
 import android.content.ContentValues
 import android.database.Cursor
+import io.reactivex.Completable
+import io.reactivex.Maybe
+import io.reactivex.Single
 import org.stepik.android.adaptive.data.db.operations.DatabaseOperations
+import org.stepik.android.adaptive.util.RxOptional
 
 abstract class DaoBase<T>(private val databaseOperations: DatabaseOperations): IDao<T> {
-    override fun insertOrUpdate(persistentObject: T) {
+    override fun insertOrUpdate(persistentObject: T): Completable {
         val primaryValue = getDefaultPrimaryValue(persistentObject)
         val primaryKey = getDefaultPrimaryColumn()
         val cv = getContentValues(persistentObject)
-        if (isInDb(primaryKey, primaryValue)) {
-            databaseOperations.executeUpdate(getDbName(), cv, "$primaryKey = ?", arrayOf(primaryValue))
-        } else {
-            databaseOperations.executeInsert(getDbName(), cv)
+        return isInDb(primaryKey, primaryValue).flatMapCompletable { inDb ->
+            if (inDb) {
+                databaseOperations.executeUpdate(getDbName(), cv, "$primaryKey = ?", arrayOf(primaryValue))
+            } else {
+                databaseOperations.executeInsert(getDbName(), cv)
+            }
         }
     }
 
-    override fun insertOrReplace(persistentObject: T) {
+    override fun insertOrReplace(persistentObject: T) =
         databaseOperations.executeReplace(getDbName(), getContentValues(persistentObject))
-    }
 
     override fun update(persistentObject: T) =
         databaseOperations.executeUpdate(
@@ -42,8 +47,8 @@ abstract class DaoBase<T>(private val databaseOperations: DatabaseOperations): I
     override fun getAll(whereColumnName: String, whereValue: String) =
             getAll("SELECT * FROM ${getDbName()} WHERE $whereColumnName = ?", arrayOf(whereValue))
 
-    override fun getAll(query: String, whereArgs: Array<String>?) =
-            databaseOperations.executeQuery(query, whereArgs) {cursor ->
+    override fun getAll(query: String, whereArgs: Array<String>?): Single<List<T>> =
+            databaseOperations.executeQuery(query, whereArgs) { cursor ->
                 val data = ArrayList<T>()
 
                 if (cursor.moveToFirst()) {
@@ -58,8 +63,15 @@ abstract class DaoBase<T>(private val databaseOperations: DatabaseOperations): I
     override fun getAllOrdered(orderBy: String, orderDirection: String) =
             getAll("SELECT * FROM ${getDbName()} ORDER BY $orderBy $orderDirection", null)
 
-    override fun get(whereColumnName: String, whereValue: String): T? =
-            getAll("SELECT * FROM ${getDbName()} WHERE $whereColumnName = ? COUNT 1", arrayOf(whereValue)).firstOrNull()
+    override fun get(whereColumnName: String, whereValue: String): Maybe<T> =
+            getAll("SELECT * FROM ${getDbName()} WHERE $whereColumnName = ? COUNT 1", arrayOf(whereValue)).flatMapMaybe {
+                val item = it.firstOrNull()
+                if (item != null) {
+                    Maybe.just(item)
+                } else {
+                    Maybe.empty()
+                }
+            }
 
     override fun remove(whereColumn: String, whereValue: String) =
             databaseOperations.executeDelete(getDbName(), "$whereColumn = ?", arrayOf(whereValue))

@@ -8,14 +8,16 @@ import org.solovyev.android.checkout.*
 import org.stepik.android.adaptive.core.presenter.contracts.PaidContentView
 import org.stepik.android.adaptive.util.getPurchasesRx
 
-abstract class PaidContentPresenterBase<V: PaidContentView> : PresenterBase<V>() {
+abstract class PaidContentPresenterBase<V: PaidContentView>(
+        private val billing: Billing
+) : PresenterBase<V>() {
     protected class PurchasesNotSupportedException : Exception()
 
     protected var checkout: ActivityCheckout? = null
         private set
 
     private fun createPurchasesObservable(continuationToken: String? = null) =
-            view?.getBilling()?.newRequestsBuilder()?.create()?.getPurchasesRx(ProductTypes.IN_APP, continuationToken) ?: Observable.empty<Purchases>()
+            billing.newRequestsBuilder().create().getPurchasesRx(ProductTypes.IN_APP, continuationToken)
 
     protected fun getAllPurchases(): Observable<Purchase> = createPurchasesObservable().concatMap {
         Observable.just(it).concatWith(createPurchasesObservable(it.continuationToken))

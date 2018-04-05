@@ -7,11 +7,14 @@ import android.view.ViewGroup
 import android.widget.TextView
 import kotlinx.android.synthetic.main.item_bookmark.view.*
 import org.stepik.android.adaptive.R
-import org.stepik.android.adaptive.data.AnalyticMgr
+import org.stepik.android.adaptive.data.Analytics
 import org.stepik.android.adaptive.data.model.Bookmark
 import org.stepik.android.adaptive.util.changeVisibillity
 
-class BookmarksAdapter(private val removeBookmark: (Bookmark, Int) -> Unit) : RecyclerView.Adapter<BookmarksAdapter.BookmarkViewHolder>() {
+class BookmarksAdapter(
+        private val removeBookmark: (Bookmark, Int) -> Unit,
+        private val analytics: Analytics
+) : RecyclerView.Adapter<BookmarksAdapter.BookmarkViewHolder>() {
     private val data = ArrayList<Bookmark>()
 
     fun addAll(bookmarks: List<Bookmark>) {
@@ -51,7 +54,7 @@ class BookmarksAdapter(private val removeBookmark: (Bookmark, Int) -> Unit) : Re
             }
 
             root.setOnClickListener {
-                AnalyticMgr.getInstance().logEvent(AnalyticMgr.EVENT_ON_BOOKMARK_CLICKED)
+                analytics.logEvent(Analytics.EVENT_ON_BOOKMARK_CLICKED)
             }
         }
     }

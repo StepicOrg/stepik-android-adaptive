@@ -1,22 +1,56 @@
 package org.stepik.android.adaptive
 
-import android.support.multidex.MultiDexApplication
+import android.app.Application
+import com.facebook.FacebookSdk
+import com.vk.sdk.VKSdk
 import com.yandex.metrica.YandexMetrica
-import org.solovyev.android.checkout.Billing
 import org.stepik.android.adaptive.configuration.Config
+import org.stepik.android.adaptive.core.ScreenManager
+import org.stepik.android.adaptive.di.AppCoreComponent
+import org.stepik.android.adaptive.di.ComponentManager
+import org.stepik.android.adaptive.di.DaggerAppCoreComponent
+import org.stepik.android.adaptive.di.storage.DaggerStorageComponent
+import javax.inject.Inject
 
-class App : MultiDexApplication() {
-    val billing by lazy {
-        Billing(this, object : Billing.DefaultConfiguration() {
-            override fun getPublicKey() = Config.getInstance().appPublicLicenseKey
-        })
+class App : Application() {
+    companion object {
+        private lateinit var app: App
+
+        fun component() = app.component
+        fun componentManager() = app.componentManager
     }
+
+    private lateinit var component: AppCoreComponent
+    private lateinit var componentManager: ComponentManager
+
+    @Inject
+    lateinit var config: Config
 
     override fun onCreate() {
         super.onCreate()
-        Util.initMgr(applicationContext)
+        app = this
 
-        YandexMetrica.activate(applicationContext, Config.getInstance().appMetricaKey)
+        component = DaggerAppCoreComponent
+                .builder()
+                .setStorageComponent(
+                        DaggerStorageComponent.builder()
+                                .context(applicationContext)
+                                .build()
+                )
+                .context(applicationContext)
+                .build()
+        componentManager = ComponentManager(component)
+        component.inject(this)
+
+        initServices()
+    }
+
+    private fun initServices() {
+        ScreenManager.init(applicationContext)
+        VKSdk.initialize(applicationContext)
+        FacebookSdk.sdkInitialize(applicationContext)
+
+        YandexMetrica.activate(applicationContext, config.appMetricaKey)
         YandexMetrica.enableActivityAutoTracking(this)
     }
 }

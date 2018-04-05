@@ -5,10 +5,10 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import org.stepik.android.adaptive.R
 import org.stepik.android.adaptive.databinding.ItemInventoryBinding
-import org.stepik.android.adaptive.util.InventoryUtil
+import org.stepik.android.adaptive.gamification.InventoryManager
 
-class InventoryAdapter(private var _data: List<Pair<InventoryUtil.Item, Int>>) : RecyclerView.Adapter<InventoryAdapter.InventoryItemViewHolder>() {
-     var data : List<Pair<InventoryUtil.Item, Int>>
+class InventoryAdapter(private var _data: List<Pair<InventoryManager.Item, Int>>) : RecyclerView.Adapter<InventoryAdapter.InventoryItemViewHolder>() {
+     var data : List<Pair<InventoryManager.Item, Int>>
         get() = _data
         set(value) {
             _data = value
