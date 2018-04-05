@@ -61,7 +61,8 @@ public class ScreenManager {
         context.startActivity(new Intent(context, QuestionsPacksActivity.class));
     }
 
-    public static void showGamificationDescription(Context context) {
+    public static void showGamificationDescription(Context context, Analytics analytics) {
+        analytics.logEvent(Analytics.EVENT_ON_GAMIFICATION_DESCRIPTION_SHOWN);
         Intent intent = new Intent(context, DescriptionActivity.class);
         context.startActivity(intent);
     }

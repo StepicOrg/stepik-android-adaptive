@@ -211,5 +211,7 @@ constructor(context: Context) {
         const val EVENT_ON_BOOKMARK_CLICKED = "bookmark_clicked"
         const val EVENT_ON_BOOKMARK_ADDED = "bookmark_added"
         const val EVENT_ON_BOOKMARK_REMOVED = "bookmark_removed"
+
+        const val EVENT_ON_GAMIFICATION_DESCRIPTION_SHOWN = "gamification_description_shown"
     }
 }
