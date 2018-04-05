@@ -6,9 +6,9 @@
             <div class="padding-box">
                 <img src="file:///android_asset/web/images/01.svg" />
             </div>
-            <h3>TOEFL vocabulary</h3>
+            <h3>English vocabulary</h3>
         </div>
-        <p>Welcome to adaptive TOEFL Vocabulary course. During this course you\'ll receive tasks depending on your answers and reactions. Let\'s look how is it work.</p>
+        <p>Welcome to adaptive English Vocabulary course. During this course you\'ll receive tasks depending on your answers and reactions. Let\'s look how is it work.</p>
     ]]></string>
     <string name="questions_count"><![CDATA[<b>Words:</b> %d]]></string>
 </resources>
