@@ -214,7 +214,7 @@ class RecommendationsFragment : BasePresenterFragment<RecommendationsPresenter, 
             RateAppDialog.newInstance().show(childFragmentManager, RATE_APP_DIALOG_TAG)
 
     override fun showGamificationDescriptionScreen() =
-            ScreenManager.showGamificationDescription(context)
+            ScreenManager.showGamificationDescription(context, analytics)
 
     override fun showStreakRestoreDialog(streak: Long, withTooltip: Boolean) {
         refreshStreakRestoreDialog()
