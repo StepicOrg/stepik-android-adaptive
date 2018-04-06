@@ -11,9 +11,10 @@ import org.stepik.android.adaptive.di.AppSingleton
 
 import io.reactivex.Completable
 import io.reactivex.Scheduler
-import org.stepik.android.adaptive.api.Api
+import org.stepik.android.adaptive.di.qualifiers.AuthLock
 import org.stepik.android.adaptive.di.qualifiers.BackgroundScheduler
 import org.stepik.android.adaptive.di.qualifiers.MainScheduler
+import java.util.concurrent.locks.ReentrantLock
 import javax.inject.Inject
 import kotlin.concurrent.withLock
 
@@ -26,7 +27,10 @@ constructor(
         @BackgroundScheduler
         private val backgroundScheduler: Scheduler,
         @MainScheduler
-        private val mainScheduler: Scheduler
+        private val mainScheduler: Scheduler,
+
+        @AuthLock
+        private val authLock: ReentrantLock
 ) {
 
     fun logout(onComplete: (() -> Unit)?) {
@@ -35,7 +39,7 @@ constructor(
                     removeCookiesCompat()
                     VKSdk.logout()
 
-                    Api.authLock.withLock {
+                    authLock.withLock {
                         sharedPreferenceHelper.removeProfile()
                     }
                     //                    ExpManager.reset();

@@ -41,6 +41,7 @@ import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import org.stepik.android.adaptive.content.questions.QuestionsPacksManager
+import org.stepik.android.adaptive.di.qualifiers.AuthLock
 import retrofit2.Call
 import retrofit2.Response
 import retrofit2.Retrofit
@@ -58,13 +59,14 @@ constructor(
         private val questionsPacksManager: QuestionsPacksManager,
 
         @Named(AppConstants.userAgentName)
-        private val userAgent: String
+        private val userAgent: String,
+
+        @AuthLock
+        private val authLock: ReentrantLock
 ) {
     companion object {
         private const val FAKE_MAIL_PATTERN = "adaptive_%s_android_%d%s@stepik.org"
         private const val TIMEOUT_IN_SECONDS = 60
-
-        val authLock = ReentrantLock()
     }
 
     private var authServiceTokenType: TokenType? = null
