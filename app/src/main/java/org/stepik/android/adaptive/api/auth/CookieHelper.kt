@@ -5,7 +5,6 @@ import android.webkit.CookieManager
 import io.reactivex.Completable
 import io.reactivex.Scheduler
 import okhttp3.Request
-import org.jetbrains.annotations.Contract
 import org.stepik.android.adaptive.Util
 import org.stepik.android.adaptive.configuration.Config
 import org.stepik.android.adaptive.di.AppSingleton
@@ -52,7 +51,6 @@ class CookieHelper
         }
     }
 
-    @Contract(pure = true)
     fun addCsrfTokenToRequest(request: Request): Request {
         val cookies = cookieManager.getCookie(config.host)
         return if (cookies == null) {
@@ -67,7 +65,6 @@ class CookieHelper
         }
     }
 
-    @Contract(pure = true)
     fun getCookiesForBaseUrl(): List<HttpCookie>? {
         val lang = Locale.getDefault().language
         val response = emptyAuthService.getStepicForFun(lang).execute()
