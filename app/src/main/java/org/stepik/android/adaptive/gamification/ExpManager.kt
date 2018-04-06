@@ -14,6 +14,7 @@ import org.stepik.android.adaptive.di.AppSingleton
 import org.stepik.android.adaptive.di.qualifiers.BackgroundScheduler
 import org.stepik.android.adaptive.gamification.achievements.AchievementEventPoster
 import org.stepik.android.adaptive.gamification.achievements.AchievementManager
+import org.stepik.android.adaptive.util.addDisposable
 import retrofit2.HttpException
 import javax.inject.Inject
 
@@ -50,16 +51,15 @@ constructor(
 
         achievementEventPoster.onEvent(AchievementManager.Event.EXP, exp, true)
 
-        compositeDisposable.add(
-                dataBaseMgr.onExpGained(delta, submissionId)
-                        .andThen(syncRating(dataBaseMgr, api))
-                        .subscribeOn(backgroundScheduler)
-                        .subscribe(Functions.EMPTY_ACTION, Consumer { e ->
-                            if (e is HttpException) {
-                                analytics.onRatingError()
-                            }
-                        })
-        )
+        compositeDisposable addDisposable dataBaseMgr.onExpGained(delta, submissionId)
+                .andThen(syncRating(dataBaseMgr, api))
+                .subscribeOn(backgroundScheduler)
+                .subscribe(Functions.EMPTY_ACTION, Consumer { e ->
+                    if (e is HttpException) {
+                        analytics.onRatingError()
+                    }
+                })
+
 
         return exp
     }
