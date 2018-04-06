@@ -12,7 +12,6 @@ interface AuthRepository {
     fun authWithNativeCode(code: String, type: SocialManager.SocialType): Single<OAuthResponse>
 
     fun authWithCode(code: String): Single<OAuthResponse>
-    fun authWithRefreshToken(refreshToken: String): Single<OAuthResponse>
 
     fun createAccount(credentials: RegistrationUser): Single<Response<RegistrationResponse>>
 

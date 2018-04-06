@@ -63,10 +63,6 @@ constructor(
             .getTokenByCode(config.grantTypeSocial, code, config.redirectUri)
             .doOnSuccess { saveResponse(it, isSocial = true) }
 
-    override fun authWithRefreshToken(refreshToken: String): Single<OAuthResponse> {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
-
     override fun createAccount(credentials: RegistrationUser): Single<Response<RegistrationResponse>> =
             cookieAuthService.createAccount(UserRegistrationRequest(credentials))
 
