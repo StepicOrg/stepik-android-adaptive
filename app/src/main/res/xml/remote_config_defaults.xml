@@ -8,4 +8,8 @@
         <key>questions_packs_icon_experiment</key>
         <value>false</value>
     </entry>
+    <entry>
+        <key>exp_level_formula_experiment</key>
+        <value>false</value>
+    </entry>
 </defaultsMap>
