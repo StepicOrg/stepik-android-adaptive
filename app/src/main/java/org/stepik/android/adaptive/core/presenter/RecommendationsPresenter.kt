@@ -7,6 +7,7 @@ import io.reactivex.functions.BiFunction
 import io.reactivex.subjects.PublishSubject
 import org.stepik.android.adaptive.api.Api
 import org.stepik.android.adaptive.api.RecommendationsResponse
+import org.stepik.android.adaptive.content.questions.QuestionsPacksManager
 import org.stepik.android.adaptive.core.presenter.contracts.RecommendationsView
 import org.stepik.android.adaptive.data.SharedPreferenceHelper
 import org.stepik.android.adaptive.data.model.Card
@@ -40,7 +41,8 @@ constructor(
         private val dailyRewardManager: DailyRewardManager,
         private val expManager: ExpManager,
         private val inventoryManager: InventoryManager,
-        private val rateAppManager: RateAppManager
+        private val rateAppManager: RateAppManager,
+        questionsPacksManager: QuestionsPacksManager
 ): PresenterBase<RecommendationsView>(), AnswerListener {
     companion object {
         private const val MIN_STREAK_TO_OFFER_TO_BUY = 7
@@ -61,6 +63,7 @@ constructor(
 
     private var isCourseCompleted = false
 
+    private val isQuestionsPacksSupported = questionsPacksManager.isQuestionsPacksSupported
 
     init {
         createReaction(0, RecommendationReaction.Reaction.INTERESTING)
@@ -102,7 +105,7 @@ constructor(
         if (showLevelDialog) {
             val isNewLevelGained = level != expManager.getCurrentLevel(exp - streak)
 
-            val shouldShowGamificationDescription =
+            val shouldShowGamificationDescription = isQuestionsPacksSupported &&
                     (isNewLevelGained && level >= LEVEL_TO_SHOW_GAMIFICATION_DESCRIPTION || level >= LEVEL_TOO_HIGH_TO_WAIT)
                     && !sharedPreferenceHelper.isGamificationDescriptionWasShown
 

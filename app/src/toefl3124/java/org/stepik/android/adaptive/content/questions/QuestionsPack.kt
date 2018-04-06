@@ -1,4 +1,4 @@
-package org.stepik.android.adaptive.data.model
+package org.stepik.android.adaptive.content.questions
 
 import android.support.annotation.ColorInt
 import android.support.annotation.DrawableRes
@@ -13,7 +13,7 @@ enum class QuestionsPack(
         @DrawableRes val background: Int,
         @DrawableRes val icon: Int,
         @ColorInt    val textColor: Int = 0xFFFFFF,
-        val isFree: Boolean = false) {
+        val hasProgress: Boolean = false) {
     Basic(
             id          = "questions_pack_basic",
             courseId    = 3124,
@@ -21,10 +21,6 @@ enum class QuestionsPack(
             background  = R.drawable.pack_bg_basic,
             icon        = R.drawable.ic_questions_pack_basic,
             textColor   = 0x495057,
-            isFree      = true
-    );
-
-    companion object {
-        fun getById(id: String) = values().find { it.id == id }
-    }
+            hasProgress = false
+    )
 }
