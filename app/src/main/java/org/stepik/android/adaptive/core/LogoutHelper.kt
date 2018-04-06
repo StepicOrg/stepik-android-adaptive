@@ -1,16 +1,13 @@
 package org.stepik.android.adaptive.core
 
-import android.os.Looper
-import android.webkit.CookieManager
-
 import com.vk.sdk.VKSdk
 
-import org.stepik.android.adaptive.Util
 import org.stepik.android.adaptive.data.SharedPreferenceHelper
 import org.stepik.android.adaptive.di.AppSingleton
 
 import io.reactivex.Completable
 import io.reactivex.Scheduler
+import org.stepik.android.adaptive.api.auth.CookieHelper
 import org.stepik.android.adaptive.di.qualifiers.AuthLock
 import org.stepik.android.adaptive.di.qualifiers.BackgroundScheduler
 import org.stepik.android.adaptive.di.qualifiers.MainScheduler
@@ -30,12 +27,14 @@ constructor(
         private val mainScheduler: Scheduler,
 
         @AuthLock
-        private val authLock: ReentrantLock
+        private val authLock: ReentrantLock,
+
+        private val cookieHelper: CookieHelper
 ) {
 
     fun logout(onComplete: (() -> Unit)?) {
         val c = Completable.fromRunnable {
-                    removeCookiesCompat()
+                    cookieHelper.removeCookiesCompat()
                     VKSdk.logout()
 
                     authLock.withLock {
@@ -50,19 +49,6 @@ constructor(
             c.subscribe(onComplete)
         } else {
             c.subscribe()
-        }
-    }
-
-    fun removeCookiesCompat() {
-        if (Util.isLowAndroidVersion()) {
-            @Suppress("DEPRECATION")
-            CookieManager.getInstance().removeAllCookie()
-        } else {
-            Completable.fromRunnable {
-                Looper.prepare()
-                CookieManager.getInstance().removeAllCookies(null)
-                Looper.loop()
-            }.subscribeOn(backgroundScheduler).subscribe()
         }
     }
 }

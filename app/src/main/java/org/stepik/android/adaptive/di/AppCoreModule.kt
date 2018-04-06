@@ -2,6 +2,7 @@ package org.stepik.android.adaptive.di
 
 import android.content.Context
 import android.content.pm.PackageManager
+import android.webkit.CookieManager
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings
 import dagger.Binds
@@ -86,6 +87,11 @@ abstract class AppCoreModule {
                 } catch (e: PackageManager.NameNotFoundException) {
                     ""
                 }
-    
+
+        @JvmStatic
+        @Provides
+        @AppSingleton
+        internal fun provideCookieManager(): CookieManager = CookieManager.getInstance()
+
     }
 }

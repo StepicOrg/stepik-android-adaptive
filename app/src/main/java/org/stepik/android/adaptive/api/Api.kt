@@ -1,7 +1,6 @@
 package org.stepik.android.adaptive.api
 
 import android.net.Uri
-import android.webkit.CookieManager
 import org.joda.time.DateTime
 import org.joda.time.DateTimeZone
 import org.stepik.android.adaptive.configuration.Config
@@ -17,17 +16,12 @@ import org.stepik.android.adaptive.data.model.EnrollmentWrapper
 import org.stepik.android.adaptive.data.model.AccountCredentials
 import org.stepik.android.adaptive.data.model.Profile
 import org.stepik.android.adaptive.data.model.RecommendationReaction
-import org.stepik.android.adaptive.data.model.RegistrationUser
 import org.stepik.android.adaptive.data.model.Submission
 import org.stepik.android.adaptive.di.AppSingleton
 import org.stepik.android.adaptive.util.AppConstants
 
 import java.io.IOException
-import java.net.HttpCookie
-import java.net.URI
-import java.net.URISyntaxException
 import java.net.URLEncoder
-import java.util.Locale
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.locks.ReentrantLock
 
@@ -40,6 +34,7 @@ import okhttp3.Credentials
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.Request
+import org.stepik.android.adaptive.api.auth.CookieHelper
 import org.stepik.android.adaptive.content.questions.QuestionsPacksManager
 import org.stepik.android.adaptive.di.qualifiers.AuthLock
 import retrofit2.Call
@@ -62,7 +57,9 @@ constructor(
         private val userAgent: String,
 
         @AuthLock
-        private val authLock: ReentrantLock
+        private val authLock: ReentrantLock,
+
+        private val cookieHelper: CookieHelper
 ) {
     companion object {
         private const val FAKE_MAIL_PATTERN = "adaptive_%s_android_%d%s@stepik.org"
@@ -74,7 +71,6 @@ constructor(
 
     private val stepikService: StepikService
     private val ratingService: RatingService
-    private val emptyAuthService: EmptyAuthService
 
     private val authInterceptor = Interceptor { chain ->
         val request = addUserAgentTo(chain)
@@ -97,24 +93,6 @@ constructor(
     val profile: Observable<ProfileResponse>
         get() = stepikService.profile
 
-    private val cookiesForBaseUrl: List<HttpCookie>?
-        @Throws(IOException::class)
-        get() {
-            val lang = Locale.getDefault().language
-            val response = emptyAuthService.getStepicForFun(lang).execute()
-            val headers = response.headers()
-            val cookieManager = java.net.CookieManager()
-            val myUri: URI
-            try {
-                myUri = URI(config.host)
-            } catch (e: URISyntaxException) {
-                return null
-            }
-
-            cookieManager.put(myUri, headers.toMultimap())
-            return cookieManager.cookieStore.get(myUri)
-        }
-
     private enum class TokenType {
         SOCIAL,
         PASSWORD
@@ -123,7 +101,6 @@ constructor(
     init {
         stepikService = initStepikService()
         ratingService = initRatingService()
-        emptyAuthService = initEmptyAuthService()
     }
 
     /**
@@ -134,18 +111,14 @@ constructor(
     private fun initAuthService(tokenType: TokenType): OAuthService {
         val okHttpBuilder = OkHttpClient.Builder()
 
+        val credentials = if (tokenType == TokenType.SOCIAL) {
+            Credentials.basic(config.oAuthClientIdSocial, config.oAuthClientSecretSocial)
+        } else {
+            Credentials.basic(config.oAuthClientId, config.oAuthClientSecret)
+        }
+
         okHttpBuilder.addInterceptor { chain ->
-            chain.proceed(addUserAgentTo(chain).newBuilder().header(AppConstants.authorizationHeaderName,
-                    Credentials.basic(
-                            if (tokenType == TokenType.SOCIAL)
-                                config.oAuthClientIdSocial
-                            else
-                                config.oAuthClientId,
-                            if (tokenType == TokenType.SOCIAL)
-                                config.oAuthClientSecretSocial
-                            else
-                                config.oAuthClientSecret)
-            ).build())
+            chain.proceed(addUserAgentTo(chain).newBuilder().header(AppConstants.authorizationHeaderName, credentials).build())
         }
 
         setTimeout(okHttpBuilder, TIMEOUT_IN_SECONDS)
@@ -164,47 +137,6 @@ constructor(
         return authService!!
     }
 
-    fun authWithLoginPassword(login: String, password: String): Observable<OAuthResponse> {
-        return getAuthService(TokenType.PASSWORD)
-                .authWithLoginPassword(config.grantType, login, password)
-                .doOnNext { response ->
-                    authLock.lock()
-                    sharedPreferenceHelper.oAuthResponse = response
-                    sharedPreferenceHelper.isAuthTokenSocial = false
-                    authLock.unlock()
-                }
-    }
-
-    fun authWithNativeCode(code: String, type: SocialManager.SocialType): Observable<OAuthResponse> {
-        var codeType: String? = null
-        if (type.needUseAccessTokenInsteadOfCode()) {
-            codeType = "access_token"
-        }
-        return getAuthService(TokenType.SOCIAL).getTokenByNativeCode(
-                type.identifier,
-                code,
-                config.grantTypeSocial,
-                config.redirectUri,
-                codeType)
-                .doOnNext { response ->
-                    authLock.lock()
-                    sharedPreferenceHelper.oAuthResponse = response
-                    sharedPreferenceHelper.isAuthTokenSocial = true
-                    authLock.unlock()
-                }
-    }
-
-    fun authWithCode(code: String): Observable<OAuthResponse> {
-        return getAuthService(TokenType.SOCIAL).getTokenByCode(
-                config.grantTypeSocial, code, config.redirectUri
-        ).doOnNext { response ->
-            authLock.lock()
-            sharedPreferenceHelper.oAuthResponse = response
-            sharedPreferenceHelper.isAuthTokenSocial = true
-            authLock.unlock()
-        }
-    }
-
     private fun authWithRefreshToken(refreshToken: String): Call<OAuthResponse> {
         return getAuthService(if (sharedPreferenceHelper.isAuthTokenSocial) TokenType.SOCIAL else TokenType.PASSWORD)
                 .refreshAccessToken(config.refreshGrantType, refreshToken)
@@ -216,33 +148,6 @@ constructor(
         val firstName = Util.randomString(10)
         val lastName = Util.randomString(10)
         return AccountCredentials(email, password, firstName, lastName)
-    }
-
-    fun createAccount(firstName: String, lastName: String,
-                      email: String, password: String): Observable<Response<RegistrationResponse>> {
-        val okHttpBuilder = OkHttpClient.Builder()
-        okHttpBuilder.addNetworkInterceptor { chain ->
-            var newRequest = addUserAgentTo(chain)
-            logoutHelper.removeCookiesCompat()
-            updateCookieForBaseUrl()
-            val cookies = CookieManager.getInstance().getCookie(config.host)
-                    ?: return@addNetworkInterceptor chain.proceed(newRequest)
-
-            val csrftoken = getCsrfTokenFromCookies(cookies)
-            val requestBuilder = newRequest
-                    .newBuilder()
-                    .addHeader(AppConstants.refererHeaderName, config.host)
-                    .addHeader(AppConstants.csrfTokenHeaderName, csrftoken)
-                    .addHeader(AppConstants.cookieHeaderName, cookies)
-            newRequest = requestBuilder.build()
-            chain.proceed(newRequest)
-        }
-        setTimeout(okHttpBuilder, TIMEOUT_IN_SECONDS)
-
-        val notLogged = buildRetrofit(okHttpBuilder.build(), config.host)
-        val tmpService = notLogged.create(OAuthService::class.java)
-
-        return tmpService.createAccount(UserRegistrationRequest(RegistrationUser(firstName, lastName, email, password)))
     }
 
     private fun initRatingService(): RatingService {
@@ -305,22 +210,12 @@ constructor(
         return chain.proceed(request)
     }
 
-    private fun initEmptyAuthService(): EmptyAuthService {
-        val okHttpBuilder = OkHttpClient.Builder()
-        setTimeout(okHttpBuilder, TIMEOUT_IN_SECONDS)
-
-        val retrofit = buildRetrofit(okHttpBuilder.build(), config.host)
-
-        return retrofit.create(EmptyAuthService::class.java)
-    }
-
     fun remindPassword(email: String): Completable {
         val encodedEmail = URLEncoder.encode(email)
         val interceptor = Interceptor { chain ->
             var newRequest = addUserAgentTo(chain)
 
-            val cookies = cookiesForBaseUrl
-                    ?: return@Interceptor chain.proceed(newRequest)
+            val cookies = cookieHelper.getCookiesForBaseUrl() ?: return@Interceptor chain.proceed(newRequest)
             var csrftoken: String? = null
             var sessionId: String? = null
             for (item in cookies) {
@@ -406,46 +301,6 @@ constructor(
     private fun setTimeout(builder: OkHttpClient.Builder, seconds: Int) {
         builder.connectTimeout(seconds.toLong(), TimeUnit.SECONDS)
         builder.readTimeout(seconds.toLong(), TimeUnit.SECONDS)
-    }
-
-    @Throws(IOException::class)
-    private fun updateCookieForBaseUrl() {
-        val lang = Locale.getDefault().language
-        val response = emptyAuthService.getStepicForFun(lang).execute()
-
-        val setCookieHeaders = response.headers().values(AppConstants.setCookieHeaderName)
-        if (!setCookieHeaders.isEmpty()) {
-            for (value in setCookieHeaders) {
-                if (value != null) {
-                    CookieManager.getInstance().setCookie(config.host, value) //set-cookie is not empty
-                }
-            }
-        }
-    }
-
-    private fun tryGetCsrfFromOnePair(keyValueCookie: String): String? {
-        val cookieList = HttpCookie.parse(keyValueCookie)
-        for (item in cookieList) {
-            if (item.name == AppConstants.csrfTokenCookieName) {
-                return item.value
-            }
-        }
-        return null
-    }
-
-    private fun getCsrfTokenFromCookies(cookies: String): String {
-        var csrftoken: String? = null
-        val cookiePairs = cookies.split(";".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
-        for (cookieItem in cookiePairs) {
-            csrftoken = tryGetCsrfFromOnePair(cookieItem)
-            if (csrftoken != null) {
-                break
-            }
-        }
-        if (csrftoken == null) {
-            csrftoken = ""
-        }
-        return csrftoken
     }
 
     private fun addUserAgentTo(chain: Interceptor.Chain): Request {

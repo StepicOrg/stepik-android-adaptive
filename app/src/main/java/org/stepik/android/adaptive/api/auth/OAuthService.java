@@ -3,7 +3,7 @@ package org.stepik.android.adaptive.api.auth;
 import org.stepik.android.adaptive.api.RegistrationResponse;
 import org.stepik.android.adaptive.api.UserRegistrationRequest;
 
-import io.reactivex.Observable;
+import io.reactivex.Single;
 import retrofit2.Call;
 import retrofit2.Response;
 import retrofit2.http.Body;
@@ -15,7 +15,7 @@ public interface OAuthService {
 
     @FormUrlEncoded
     @POST("oauth2/token/")
-    Observable<OAuthResponse> authWithLoginPassword(
+    Single<OAuthResponse> authWithLoginPassword(
             @Field("grant_type") final String grant_type,
             @Field(value = "username", encoded = true) final String username,
             @Field(value = "password", encoded = true) final String password
@@ -23,7 +23,7 @@ public interface OAuthService {
 
     @FormUrlEncoded
     @POST("oauth2/token/")
-    Observable<OAuthResponse> getTokenByCode(
+    Single<OAuthResponse> getTokenByCode(
             @Field("grant_type") final String grant_type,
             @Field("code") final String code,
             @Field("redirect_uri") final String redirect_uri
@@ -38,7 +38,7 @@ public interface OAuthService {
 
     @FormUrlEncoded
     @POST("/oauth2/social-token/")
-    Observable<OAuthResponse> getTokenByNativeCode(
+    Single<OAuthResponse> getTokenByNativeCode(
             @Field("provider") String providerName,
             @Field("code") String providerCode,
             @Field("grant_type") String grant_type,
@@ -47,7 +47,7 @@ public interface OAuthService {
     );
 
     @POST("/api/users")
-    Observable<Response<RegistrationResponse>> createAccount(
+    Single<Response<RegistrationResponse>> createAccount(
             @Body UserRegistrationRequest user
     );
 
