@@ -1,4 +1,4 @@
-package org.stepik.android.adaptive.api.oauth;
+package org.stepik.android.adaptive.api.auth;
 
 import org.stepik.android.adaptive.api.RegistrationResponse;
 import org.stepik.android.adaptive.api.UserRegistrationRequest;

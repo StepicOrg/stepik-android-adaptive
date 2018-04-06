@@ -34,8 +34,7 @@ constructor(
 ) {
 
     fun logout(onComplete: (() -> Unit)?) {
-        val c = Completable
-                .fromRunnable {
+        val c = Completable.fromRunnable {
                     removeCookiesCompat()
                     VKSdk.logout()
 

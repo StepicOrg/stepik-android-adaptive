@@ -7,7 +7,7 @@ import android.preference.PreferenceManager
 import com.google.gson.Gson
 import org.joda.time.DateTime
 import org.joda.time.DateTimeZone
-import org.stepik.android.adaptive.api.oauth.OAuthResponse
+import org.stepik.android.adaptive.api.auth.OAuthResponse
 import org.stepik.android.adaptive.data.model.AccountCredentials
 import org.stepik.android.adaptive.data.model.Profile
 import org.stepik.android.adaptive.content.questions.QuestionsPack

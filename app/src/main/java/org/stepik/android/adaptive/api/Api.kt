@@ -6,9 +6,9 @@ import org.joda.time.DateTime
 import org.joda.time.DateTimeZone
 import org.stepik.android.adaptive.configuration.Config
 import org.stepik.android.adaptive.Util
-import org.stepik.android.adaptive.api.oauth.EmptyAuthService
-import org.stepik.android.adaptive.api.oauth.OAuthService
-import org.stepik.android.adaptive.api.oauth.OAuthResponse
+import org.stepik.android.adaptive.api.auth.EmptyAuthService
+import org.stepik.android.adaptive.api.auth.OAuthService
+import org.stepik.android.adaptive.api.auth.OAuthResponse
 import org.stepik.android.adaptive.api.login.SocialManager
 import org.stepik.android.adaptive.core.LogoutHelper
 import org.stepik.android.adaptive.core.ScreenManager

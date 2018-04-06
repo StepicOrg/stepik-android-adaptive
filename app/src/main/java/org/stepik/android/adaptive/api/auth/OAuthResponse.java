@@ -1,4 +1,4 @@
-package org.stepik.android.adaptive.api.oauth;
+package org.stepik.android.adaptive.api.auth;
 
 public class OAuthResponse {
     private String refresh_token;
