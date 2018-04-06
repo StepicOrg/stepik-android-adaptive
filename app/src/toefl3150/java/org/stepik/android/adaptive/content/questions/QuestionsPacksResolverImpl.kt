@@ -5,7 +5,6 @@ import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import org.stepik.android.adaptive.R
 import org.stepik.android.adaptive.configuration.RemoteConfig
 import org.stepik.android.adaptive.di.AppSingleton
-import org.stepik.android.adaptive.di.`AppCoreModule_Companion_ProvideFirebaseRemoteConfig$app_toefl3150ReleaseFactory`
 import org.stepik.android.adaptive.gamification.ExpManager
 import javax.inject.Inject
 import kotlin.math.min
