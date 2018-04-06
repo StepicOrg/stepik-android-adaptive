@@ -52,6 +52,7 @@ constructor(
 
     fun removeCookiesCompat() {
         if (Util.isLowAndroidVersion()) {
+            @Suppress("DEPRECATION")
             CookieManager.getInstance().removeAllCookie()
         } else {
             Completable.fromRunnable {
