@@ -14,7 +14,6 @@ import org.stepik.android.adaptive.di.AppSingleton
 import org.stepik.android.adaptive.util.AppConstants
 
 import java.net.URLEncoder
-import java.util.concurrent.TimeUnit
 
 import javax.inject.Inject
 
@@ -23,9 +22,10 @@ import io.reactivex.Observable
 import io.reactivex.Single
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
-import okhttp3.Request
 import org.stepik.android.adaptive.api.auth.*
 import org.stepik.android.adaptive.content.questions.QuestionsPacksManager
+import org.stepik.android.adaptive.util.addUserAgent
+import org.stepik.android.adaptive.util.setTimeoutsInSeconds
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
@@ -47,7 +47,7 @@ constructor(
 ) {
     companion object {
         private const val FAKE_MAIL_PATTERN = "adaptive_%s_android_%d%s@stepik.org"
-        private const val TIMEOUT_IN_SECONDS = 60
+        private const val TIMEOUT_IN_SECONDS = 60L
     }
 
     private val stepikService: StepikService
@@ -72,8 +72,7 @@ constructor(
     private fun initRatingService(): RatingService {
         val okHttpBuilder = OkHttpClient.Builder()
         okHttpBuilder.addInterceptor(authInterceptor)
-
-        setTimeout(okHttpBuilder, TIMEOUT_IN_SECONDS)
+        okHttpBuilder.setTimeoutsInSeconds(TIMEOUT_IN_SECONDS)
         val retrofit = buildRetrofit(okHttpBuilder.build(), config.ratingHost)
 
         return retrofit.create(RatingService::class.java)
@@ -83,16 +82,16 @@ constructor(
         val okHttpBuilder = OkHttpClient.Builder()
         okHttpBuilder.addInterceptor(authInterceptor)
 
-        setTimeout(okHttpBuilder, TIMEOUT_IN_SECONDS)
+        okHttpBuilder.setTimeoutsInSeconds(TIMEOUT_IN_SECONDS)
         val retrofit = buildRetrofit(okHttpBuilder.build(), config.host)
 
         return retrofit.create(StepikService::class.java)
     }
 
     fun remindPassword(email: String): Completable {
-        val encodedEmail = URLEncoder.encode(email)
+        val encodedEmail = URLEncoder.encode(email, Charsets.UTF_8.name())
         val interceptor = Interceptor { chain ->
-            var newRequest = addUserAgentTo(chain)
+            var newRequest = chain.addUserAgent(userAgent)
 
             val cookies = cookieHelper.getCookiesForBaseUrl() ?: return@Interceptor chain.proceed(newRequest)
             var csrftoken: String? = null
@@ -126,7 +125,7 @@ constructor(
         val okHttpBuilder = OkHttpClient.Builder()
         okHttpBuilder.addNetworkInterceptor(interceptor)
         //        okHttpBuilder.addNetworkInterceptor(this.stethoInterceptor);
-        setTimeout(okHttpBuilder, TIMEOUT_IN_SECONDS)
+        okHttpBuilder.setTimeoutsInSeconds(TIMEOUT_IN_SECONDS)
         val notLogged = buildRetrofit(okHttpBuilder.build(), config.host)
 
         val tempService = notLogged.create(EmptyAuthService::class.java)
@@ -176,19 +175,6 @@ constructor(
 
     fun putRating(exp: Long): Completable =
             ratingService.putRating(RatingRequest(exp, config.courseId, sharedPreferenceHelper.oAuthResponse?.accessToken))
-
-    private fun setTimeout(builder: OkHttpClient.Builder, seconds: Int) {
-        builder.connectTimeout(seconds.toLong(), TimeUnit.SECONDS)
-        builder.readTimeout(seconds.toLong(), TimeUnit.SECONDS)
-    }
-
-    private fun addUserAgentTo(chain: Interceptor.Chain): Request {
-        return chain
-                .request()
-                .newBuilder()
-                .header(AppConstants.userAgentName, userAgent)
-                .build()
-    }
 
     private fun buildRetrofit(client: OkHttpClient, baseUrl: String): Retrofit {
         return Retrofit.Builder()
