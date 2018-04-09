@@ -20,7 +20,12 @@ abstract class PaidContentPresenterBase<V: PaidContentView>(
             billing.newRequestsBuilder().create().getPurchasesRx(ProductTypes.IN_APP, continuationToken)
 
     protected fun getAllPurchases(): Observable<Purchase> = createPurchasesObservable().concatMap {
-        Observable.just(it).concatWith(createPurchasesObservable(it.continuationToken))
+        val observable = Observable.just(it)
+        if (it.continuationToken != null) {
+            observable.concatWith(createPurchasesObservable(it.continuationToken))
+        } else {
+            observable
+        }
     }.concatMap {
         Observable.fromIterable(it.list)
     }
