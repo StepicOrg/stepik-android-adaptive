@@ -24,11 +24,9 @@ import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import org.stepik.android.adaptive.api.auth.*
 import org.stepik.android.adaptive.content.questions.QuestionsPacksManager
+import org.stepik.android.adaptive.di.network.NetworkHelper
 import org.stepik.android.adaptive.util.addUserAgent
 import org.stepik.android.adaptive.util.setTimeoutsInSeconds
-import retrofit2.Retrofit
-import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
-import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Named
 
 @AppSingleton
@@ -101,7 +99,7 @@ constructor(
         okHttpBuilder.addNetworkInterceptor(interceptor)
         //        okHttpBuilder.addNetworkInterceptor(this.stethoInterceptor);
         okHttpBuilder.setTimeoutsInSeconds(TIMEOUT_IN_SECONDS)
-        val notLogged = buildRetrofit(okHttpBuilder.build(), config.host)
+        val notLogged = NetworkHelper.createRetrofit(okHttpBuilder.build(), config.host)
 
         val tempService = notLogged.create(EmptyAuthService::class.java)
         return tempService.remindPassword(encodedEmail)
@@ -150,15 +148,6 @@ constructor(
 
     fun putRating(exp: Long): Completable =
             ratingService.putRating(RatingRequest(exp, config.courseId, sharedPreferenceHelper.oAuthResponse?.accessToken))
-
-    private fun buildRetrofit(client: OkHttpClient, baseUrl: String): Retrofit {
-        return Retrofit.Builder()
-                .baseUrl(baseUrl)
-                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-                .addConverterFactory(GsonConverterFactory.create())
-                .client(client)
-                .build()
-    }
 
     fun getUriForSocialAuth(type: SocialManager.SocialType): Uri {
         val socialIdentifier = type.identifier
