@@ -43,23 +43,17 @@ constructor(
         private val userAgent: String,
 
         private val cookieHelper: CookieHelper,
-        private val authInterceptor: AuthInterceptor
+
+        private val stepikService: StepikService,
+        private val ratingService: RatingService
 ) {
     companion object {
         private const val FAKE_MAIL_PATTERN = "adaptive_%s_android_%d%s@stepik.org"
         private const val TIMEOUT_IN_SECONDS = 60L
     }
 
-    private val stepikService: StepikService
-    private val ratingService: RatingService
-
     val profile: Observable<ProfileResponse>
         get() = stepikService.profile
-
-    init {
-        stepikService = initStepikService()
-        ratingService = initRatingService()
-    }
 
     fun createFakeAccount(): AccountCredentials {
         val email = String.format(FAKE_MAIL_PATTERN, config.courseId, System.currentTimeMillis(), Util.randomString(5))
@@ -67,25 +61,6 @@ constructor(
         val firstName = Util.randomString(10)
         val lastName = Util.randomString(10)
         return AccountCredentials(email, password, firstName, lastName)
-    }
-
-    private fun initRatingService(): RatingService {
-        val okHttpBuilder = OkHttpClient.Builder()
-        okHttpBuilder.addInterceptor(authInterceptor)
-        okHttpBuilder.setTimeoutsInSeconds(TIMEOUT_IN_SECONDS)
-        val retrofit = buildRetrofit(okHttpBuilder.build(), config.ratingHost)
-
-        return retrofit.create(RatingService::class.java)
-    }
-
-    private fun initStepikService(): StepikService {
-        val okHttpBuilder = OkHttpClient.Builder()
-        okHttpBuilder.addInterceptor(authInterceptor)
-
-        okHttpBuilder.setTimeoutsInSeconds(TIMEOUT_IN_SECONDS)
-        val retrofit = buildRetrofit(okHttpBuilder.build(), config.host)
-
-        return retrofit.create(StepikService::class.java)
     }
 
     fun remindPassword(email: String): Completable {

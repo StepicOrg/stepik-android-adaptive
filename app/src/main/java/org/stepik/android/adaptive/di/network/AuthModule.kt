@@ -37,8 +37,6 @@ abstract class AuthModule {
 
     @Module
     companion object {
-        private const val TIMEOUT_IN_SECONDS = 60L
-
         @Provides
         @AppSingleton
         @JvmStatic
@@ -70,7 +68,7 @@ abstract class AuthModule {
         @JvmStatic
         internal fun provideEmptyAuthService(config: Config): EmptyAuthService {
             val okHttpBuilder = OkHttpClient.Builder()
-            okHttpBuilder.setTimeoutsInSeconds(TIMEOUT_IN_SECONDS)
+            okHttpBuilder.setTimeoutsInSeconds(NetworkHelper.TIMEOUT_IN_SECONDS)
             val retrofit = NetworkHelper.createRetrofit(okHttpBuilder.build(), config.host)
             return retrofit.create(EmptyAuthService::class.java)
         }
@@ -91,7 +89,7 @@ abstract class AuthModule {
                 cookieHelper.updateCookieForBaseUrl()
                 chain.proceed(cookieHelper.addCsrfTokenToRequest(chain.addUserAgent(userAgent)))
             }
-            okHttpBuilder.setTimeoutsInSeconds(TIMEOUT_IN_SECONDS)
+            okHttpBuilder.setTimeoutsInSeconds(NetworkHelper.TIMEOUT_IN_SECONDS)
 
             val retrofit = NetworkHelper.createRetrofit(okHttpBuilder.build(), config.host)
             return retrofit.create(OAuthService::class.java)
@@ -103,7 +101,7 @@ abstract class AuthModule {
             okHttpBuilder.addInterceptor { chain ->
                 chain.proceed(chain.addUserAgent(userAgent).newBuilder().header(AppConstants.authorizationHeaderName, credentials).build())
             }
-            okHttpBuilder.setTimeoutsInSeconds(TIMEOUT_IN_SECONDS)
+            okHttpBuilder.setTimeoutsInSeconds(NetworkHelper.TIMEOUT_IN_SECONDS)
 
             val retrofit = NetworkHelper.createRetrofit(okHttpBuilder.build(), host)
             return retrofit.create(OAuthService::class.java)
