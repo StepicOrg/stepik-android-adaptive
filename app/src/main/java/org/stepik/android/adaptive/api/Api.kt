@@ -3,7 +3,7 @@ package org.stepik.android.adaptive.api
 import android.net.Uri
 import org.stepik.android.adaptive.configuration.Config
 import org.stepik.android.adaptive.Util
-import org.stepik.android.adaptive.api.login.SocialManager
+import org.stepik.android.adaptive.api.auth.SocialManager
 import org.stepik.android.adaptive.data.SharedPreferenceHelper
 import org.stepik.android.adaptive.data.model.EnrollmentWrapper
 import org.stepik.android.adaptive.data.model.AccountCredentials

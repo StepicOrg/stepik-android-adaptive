@@ -5,7 +5,7 @@ import io.reactivex.disposables.CompositeDisposable
 import org.stepik.android.adaptive.configuration.Config
 import org.stepik.android.adaptive.api.Api
 import org.stepik.android.adaptive.api.auth.AuthRepository
-import org.stepik.android.adaptive.api.login.SocialManager
+import org.stepik.android.adaptive.api.auth.SocialManager
 import org.stepik.android.adaptive.core.presenter.contracts.LoginView
 import org.stepik.android.adaptive.data.Analytics
 import org.stepik.android.adaptive.data.SharedPreferenceHelper

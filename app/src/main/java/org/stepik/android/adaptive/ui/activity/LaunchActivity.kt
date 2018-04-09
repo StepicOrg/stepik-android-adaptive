@@ -25,7 +25,7 @@ import org.stepik.android.adaptive.configuration.Config
 import org.stepik.android.adaptive.R
 import org.stepik.android.adaptive.Util
 import org.stepik.android.adaptive.api.Api
-import org.stepik.android.adaptive.api.login.SocialManager
+import org.stepik.android.adaptive.api.auth.SocialManager
 import org.stepik.android.adaptive.core.ScreenManager
 import org.stepik.android.adaptive.core.presenter.BasePresenterActivity
 import org.stepik.android.adaptive.core.presenter.LoginPresenter

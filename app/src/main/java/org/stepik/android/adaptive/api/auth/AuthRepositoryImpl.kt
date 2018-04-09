@@ -3,7 +3,6 @@ package org.stepik.android.adaptive.api.auth
 import io.reactivex.Single
 import org.stepik.android.adaptive.api.RegistrationResponse
 import org.stepik.android.adaptive.api.UserRegistrationRequest
-import org.stepik.android.adaptive.api.login.SocialManager
 import org.stepik.android.adaptive.configuration.Config
 import org.stepik.android.adaptive.data.model.RegistrationUser
 import org.stepik.android.adaptive.data.preference.AuthPreferences
