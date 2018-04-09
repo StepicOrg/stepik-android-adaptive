@@ -5,6 +5,7 @@ import io.reactivex.Scheduler
 import io.reactivex.disposables.CompositeDisposable
 import org.solovyev.android.checkout.*
 import org.stepik.android.adaptive.api.Api
+import org.stepik.android.adaptive.api.storage.RemoteStorageRepository
 import org.stepik.android.adaptive.content.questions.QuestionsPacksManager
 import org.stepik.android.adaptive.content.questions.QuestionsPacksResolver
 import org.stepik.android.adaptive.core.presenter.contracts.QuestionsPacksView
@@ -14,6 +15,8 @@ import org.stepik.android.adaptive.di.qualifiers.BackgroundScheduler
 import org.stepik.android.adaptive.di.qualifiers.MainScheduler
 import org.stepik.android.adaptive.ui.adapter.QuestionsPacksAdapter
 import org.stepik.android.adaptive.util.addDisposable
+import org.stepik.android.adaptive.util.consumeRx
+import org.stepik.android.adaptive.util.onReady
 import org.stepik.android.adaptive.util.startPurchaseFlowRx
 import javax.inject.Inject
 
@@ -29,6 +32,8 @@ constructor(
 
         private val questionsPacksManager: QuestionsPacksManager,
         private val questionsPacksResolver: QuestionsPacksResolver,
+
+        private val remoteStorageRepository: RemoteStorageRepository,
         billing: Billing
 ): PaidContentPresenterBase<QuestionsPacksView>(billing) {
     private val adapter = QuestionsPacksAdapter(this::onPackPressed, questionsPacksResolver)
@@ -80,11 +85,16 @@ constructor(
     }
 
 
-    private fun consume(observable: Observable<Purchase>) = observable.map {
-            it.sku
-        }.filter {
-            skus.contains(it)
-        }.subscribeOn(mainScheduler).observeOn(mainScheduler).toList().subscribe({
+    private fun consume(observable: Observable<Purchase>) = observable.subscribeOn(mainScheduler).filter {
+            skus.contains(it.sku)
+        }.flatMap {
+            remoteStorageRepository
+                    .storeQuestionsPack(it.sku)
+                    .subscribeOn(backgroundScheduler)
+                    .andThen(Observable.just(it))
+        }.flatMapCompletable { purchase ->
+            checkout?.onReady()?.flatMapCompletable { it.consumeRx(purchase.token) }?.subscribeOn(mainScheduler)
+        }.andThen(remoteStorageRepository.getQuestionsPacks().subscribeOn(backgroundScheduler)).observeOn(mainScheduler).subscribe({
             adapter.addOwnedContent(it)
             view?.hideProgress()
         }, {
