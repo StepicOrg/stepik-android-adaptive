@@ -84,7 +84,6 @@ constructor(
         compositeDisposable addDisposable consume(getAllPurchases())
     }
 
-
     private fun consume(observable: Observable<Purchase>) = observable.subscribeOn(mainScheduler).filter {
             skus.contains(it.sku)
         }.flatMap {
@@ -93,7 +92,9 @@ constructor(
                     .subscribeOn(backgroundScheduler)
                     .andThen(Observable.just(it))
         }.flatMapCompletable { purchase ->
-            checkout?.onReady()?.flatMapCompletable { it.consumeRx(purchase.token) }?.subscribeOn(mainScheduler)
+            checkout?.onReady()
+                    ?.flatMapCompletable { it.consumeRx(purchase.token) }
+                    ?.subscribeOn(mainScheduler)
         }.andThen(remoteStorageRepository.getQuestionsPacks().subscribeOn(backgroundScheduler)).observeOn(mainScheduler).subscribe({
             adapter.addOwnedContent(it)
             view?.hideProgress()
@@ -116,7 +117,7 @@ constructor(
     private fun purchase(sku: Sku) {
         analytics.logEvent(Analytics.EVENT_ON_QUESTIONS_PACK_PURCHASE_BUTTON_CLICKED)
         val purchaseObservable = checkout?.startPurchaseFlowRx(sku) ?: Observable.empty<Purchase>()
-        compositeDisposable addDisposable consume(purchaseObservable)
+        compositeDisposable addDisposable consume(purchaseObservable.flatMap { getAllPurchases() })
     }
 
     private fun changeCourse(pack: QuestionsPack) {
