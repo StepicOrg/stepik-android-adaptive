@@ -3,6 +3,7 @@ package org.stepik.android.adaptive.util
 import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.Observable.just
+import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
@@ -26,3 +27,7 @@ inline fun <T, R> Observable<T>.mapNotNull(crossinline f: (T) -> R?): Observable
 }
 
 infix fun CompositeDisposable.addDisposable(d: Disposable) = this.add(d)
+
+infix fun Completable.then(completable: Completable?): Completable = this.andThen(completable)
+infix fun <T> Completable.then(observable: Observable<T>): Observable<T> = this.andThen(observable)
+infix fun <T> Completable.then(single: Single<T>): Single<T> = this.andThen(single)

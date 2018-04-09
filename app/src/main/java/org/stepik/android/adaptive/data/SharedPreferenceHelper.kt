@@ -83,6 +83,9 @@ constructor(context: Context): SharedPreferenceProvider, AuthPreferences {
         remove(OAUTH_RESPONSE_DEADLINE)
     }
 
+    fun isFakeUser(): Boolean =
+            sharedPreferences.contains(FAKE_USER)
+
     fun removeFakeUser() {
         remove(FAKE_USER)
     }
