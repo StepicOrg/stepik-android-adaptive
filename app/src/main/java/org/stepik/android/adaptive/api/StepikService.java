@@ -16,7 +16,7 @@ import retrofit2.http.PUT;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
 
-interface StepikService {
+public interface StepikService {
 
     @GET("api/courses")
     Single<CoursesResponse> getCourses(
@@ -99,7 +99,8 @@ interface StepikService {
 
     // storage
     @GET("api/storage-records")
-    <T> Single<StorageResponse<T>> getStorageRecords(
+    <T> Observable<StorageResponse<T>> getStorageRecords(
+            @Query("page") final int page,
             @Query("user") final long userId,
             @Query("kind") final String kind
     );
