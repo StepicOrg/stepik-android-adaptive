@@ -99,21 +99,21 @@ public interface StepikService {
 
     // storage
     @GET("api/storage-records")
-    <T> Observable<StorageResponse<T>> getStorageRecords(
+    Observable<StorageResponse> getStorageRecords(
             @Query("page") final int page,
             @Query("user") final long userId,
             @Query("kind") final String kind
     );
 
     @POST("api/storage-records")
-    <T> Completable createStorageRecord(
-            @Body final StorageRequest<T> body
+    Completable createStorageRecord(
+            @Body final StorageRequest body
     );
 
     @PUT("api/storage-records/{recordId}")
-    <T> Completable setStorageRecord(
+    Completable setStorageRecord(
             @Path("recordId") final long recordId,
-            @Body final StorageRequest<T> body
+            @Body final StorageRequest body
     );
 
     @DELETE("api/storage-records/{recordId}")
