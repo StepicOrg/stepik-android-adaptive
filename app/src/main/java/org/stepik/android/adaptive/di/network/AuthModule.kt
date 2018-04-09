@@ -1,4 +1,4 @@
-package org.stepik.android.adaptive.di.auth
+package org.stepik.android.adaptive.di.network
 
 
 import dagger.Binds

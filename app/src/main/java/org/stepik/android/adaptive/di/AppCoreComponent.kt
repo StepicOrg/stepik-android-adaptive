@@ -4,7 +4,7 @@ import android.content.Context
 import dagger.BindsInstance
 import dagger.Component
 import org.stepik.android.adaptive.App
-import org.stepik.android.adaptive.di.auth.AuthModule
+import org.stepik.android.adaptive.di.network.AuthModule
 import org.stepik.android.adaptive.di.content.questions.QuestionsModule
 import org.stepik.android.adaptive.di.login.LoginComponent
 import org.stepik.android.adaptive.di.paid_content.PaidContentComponent
