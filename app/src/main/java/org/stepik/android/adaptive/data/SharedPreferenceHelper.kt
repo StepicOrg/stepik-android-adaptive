@@ -11,6 +11,7 @@ import org.stepik.android.adaptive.api.auth.OAuthResponse
 import org.stepik.android.adaptive.data.model.AccountCredentials
 import org.stepik.android.adaptive.data.model.Profile
 import org.stepik.android.adaptive.content.questions.QuestionsPack
+import org.stepik.android.adaptive.data.preference.AuthPreferences
 import org.stepik.android.adaptive.di.AppSingleton
 import org.stepik.android.adaptive.util.RxOptional
 import javax.inject.Inject
@@ -18,11 +19,11 @@ import javax.inject.Inject
 @AppSingleton
 class SharedPreferenceHelper
 @Inject
-constructor(context: Context): SharedPreferenceProvider {
+constructor(context: Context): SharedPreferenceProvider, AuthPreferences {
     override val sharedPreferences: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
     private val gson = Gson()
 
-    var oAuthResponse: OAuthResponse?
+    override var oAuthResponse: OAuthResponse?
         get() {
             val json = getString(OAUTH_RESPONSE) ?: return null
             return gson.fromJson(json, OAuthResponse::class.java)
@@ -37,6 +38,10 @@ constructor(context: Context): SharedPreferenceProvider {
                 authResponseDeadline = currentTime + (response.expiresIn - 50) * 1000
             }
         }
+
+    override var authResponseDeadline: Long
+        get() = getLong(OAUTH_RESPONSE_DEADLINE)
+        private set(value) = saveLong(OAUTH_RESPONSE_DEADLINE, value)
 
     var profile: Profile?
         get() {
@@ -65,12 +70,8 @@ constructor(context: Context): SharedPreferenceProvider {
 
     var isGamificationDescriptionWasShown: Boolean by preference(IS_PACKS_FOR_LEVELS_WINDOW_WAS_SHOWN)
 
-    var isAuthTokenSocial:               Boolean by preference(IS_OAUTH_TOKEN_SOCIAL)
+    override var isAuthTokenSocial:      Boolean by preference(IS_OAUTH_TOKEN_SOCIAL)
     var isNotFirstTime:                  Boolean by preference(NOT_FIRST_TIME)
-
-    var authResponseDeadline: Long
-        get() = getLong(OAUTH_RESPONSE_DEADLINE)
-        private set(value) = saveLong(OAUTH_RESPONSE_DEADLINE, value)
 
     var questionsPackIndex: Int by preference(QUESTIONS_PACK_INDEX)
 
@@ -103,7 +104,7 @@ constructor(context: Context): SharedPreferenceProvider {
         saveBoolean(IS_QUESTIONS_PACKS_TOOLTIP_WAS_SHOWN, true)
     }
 
-    fun resetAuthResponseDeadline() {
+    override fun resetAuthResponseDeadline() {
         remove(OAUTH_RESPONSE_DEADLINE)
     }
 

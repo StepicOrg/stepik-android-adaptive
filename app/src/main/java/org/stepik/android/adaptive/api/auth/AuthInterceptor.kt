@@ -8,7 +8,7 @@ import org.joda.time.DateTimeZone
 import org.stepik.android.adaptive.configuration.Config
 import org.stepik.android.adaptive.core.LogoutHelper
 import org.stepik.android.adaptive.core.ScreenManager
-import org.stepik.android.adaptive.data.SharedPreferenceHelper
+import org.stepik.android.adaptive.data.preference.AuthPreferences
 import org.stepik.android.adaptive.di.AppSingleton
 import org.stepik.android.adaptive.di.qualifiers.AuthLock
 import org.stepik.android.adaptive.di.qualifiers.AuthService
@@ -37,7 +37,7 @@ constructor(
         private val socialAuthService: OAuthService,
 
         private val config: Config,
-        private val sharedPreferenceHelper: SharedPreferenceHelper,
+        private val authPreferences: AuthPreferences,
         private val logoutHelper: LogoutHelper
 ): Interceptor {
 
@@ -45,7 +45,7 @@ constructor(
         val request = chain.addUserAgent(userAgent)
         var response = addAuthHeaderAndProceed(chain, request)
         if (response.code() == 400) { // was bug when user has incorrect token deadline due to wrong datetime had been set on phone
-            sharedPreferenceHelper.resetAuthResponseDeadline()
+            authPreferences.resetAuthResponseDeadline()
             response = addAuthHeaderAndProceed(chain, request)
         }
 
@@ -56,7 +56,7 @@ constructor(
         var request = req
         try {
             authLock.lock()
-            var response = sharedPreferenceHelper.oAuthResponse
+            var response = authPreferences.oAuthResponse
 
             if (response != null) {
                 if (isUpdateNeeded()) {
@@ -78,7 +78,7 @@ constructor(
                         return chain.proceed(request)
                     }
 
-                    sharedPreferenceHelper.oAuthResponse = response
+                    authPreferences.oAuthResponse = response
                 }
                 request = request.newBuilder()
                         .addHeader(AppConstants.authorizationHeaderName, response.tokenType + " " + response.accessToken)
@@ -92,10 +92,10 @@ constructor(
     }
 
     private fun isUpdateNeeded() =
-            DateTime.now(DateTimeZone.UTC).millis > sharedPreferenceHelper.authResponseDeadline
+            DateTime.now(DateTimeZone.UTC).millis > authPreferences.authResponseDeadline
 
     private fun authWithRefreshToken(refreshToken: String): Call<OAuthResponse> =
-            (if (sharedPreferenceHelper.isAuthTokenSocial) socialAuthService else authService)
+            (if (authPreferences.isAuthTokenSocial) socialAuthService else authService)
                     .refreshAccessToken(config.refreshGrantType, refreshToken)
 
 }

@@ -8,6 +8,8 @@ import okhttp3.Credentials
 import okhttp3.OkHttpClient
 import org.stepik.android.adaptive.api.auth.*
 import org.stepik.android.adaptive.configuration.Config
+import org.stepik.android.adaptive.data.SharedPreferenceHelper
+import org.stepik.android.adaptive.data.preference.AuthPreferences
 import org.stepik.android.adaptive.di.AppSingleton
 import org.stepik.android.adaptive.di.qualifiers.AuthLock
 import org.stepik.android.adaptive.di.qualifiers.AuthService
@@ -28,6 +30,10 @@ abstract class AuthModule {
     @Binds
     @AppSingleton
     abstract fun provideAuthRepository(authRepositoryImpl: AuthRepositoryImpl): AuthRepository
+
+    @Binds
+    @AppSingleton
+    abstract fun provideAuthPreferences(sharedPreferenceHelper: SharedPreferenceHelper): AuthPreferences
 
     @Module
     companion object {

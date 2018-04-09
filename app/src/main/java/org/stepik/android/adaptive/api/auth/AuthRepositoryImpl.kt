@@ -5,8 +5,8 @@ import org.stepik.android.adaptive.api.RegistrationResponse
 import org.stepik.android.adaptive.api.UserRegistrationRequest
 import org.stepik.android.adaptive.api.login.SocialManager
 import org.stepik.android.adaptive.configuration.Config
-import org.stepik.android.adaptive.data.SharedPreferenceHelper
 import org.stepik.android.adaptive.data.model.RegistrationUser
+import org.stepik.android.adaptive.data.preference.AuthPreferences
 import org.stepik.android.adaptive.di.AppSingleton
 import org.stepik.android.adaptive.di.qualifiers.AuthLock
 import org.stepik.android.adaptive.di.qualifiers.AuthService
@@ -32,12 +32,12 @@ constructor(
         private val cookieAuthService: OAuthService,
 
         private val config: Config,
-        private val sharedPreferenceHelper: SharedPreferenceHelper
+        private val authPreferences: AuthPreferences
 ): AuthRepository {
 
     private fun saveResponse(response: OAuthResponse, isSocial: Boolean) = authLock.withLock {
-        sharedPreferenceHelper.oAuthResponse = response
-        sharedPreferenceHelper.isAuthTokenSocial = isSocial
+        authPreferences.oAuthResponse = response
+        authPreferences.isAuthTokenSocial = isSocial
     }
 
     override fun authWithLoginPassword(login: String, password: String): Single<OAuthResponse> = authService
