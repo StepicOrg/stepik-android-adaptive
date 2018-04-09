@@ -14,13 +14,13 @@ import org.stepik.android.adaptive.di.AppSingleton
 import javax.inject.Inject
 
 @AppSingleton
-class StorageRepositoryImpl
+class RemoteStorageRepositoryImpl
 @Inject
 constructor(
         config: Config,
         private val stepikService: StepikService,
         private val sharedPreferenceHelper: SharedPreferenceHelper
-): StorageRepository {
+): RemoteStorageRepository {
     private val packsKind = "adaptive_${config.courseId}_packs"
 
     override fun storeQuestionsPack(packId: String): Completable =

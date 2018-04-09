@@ -71,7 +71,7 @@ abstract class AuthModule {
         internal fun provideEmptyAuthService(config: Config): EmptyAuthService {
             val okHttpBuilder = OkHttpClient.Builder()
             okHttpBuilder.setTimeoutsInSeconds(TIMEOUT_IN_SECONDS)
-            val retrofit = createRetrofit(okHttpBuilder.build(), config.host)
+            val retrofit = NetworkHelper.createRetrofit(okHttpBuilder.build(), config.host)
             return retrofit.create(EmptyAuthService::class.java)
         }
 
@@ -93,7 +93,7 @@ abstract class AuthModule {
             }
             okHttpBuilder.setTimeoutsInSeconds(TIMEOUT_IN_SECONDS)
 
-            val retrofit = createRetrofit(okHttpBuilder.build(), config.host)
+            val retrofit = NetworkHelper.createRetrofit(okHttpBuilder.build(), config.host)
             return retrofit.create(OAuthService::class.java)
         }
 
@@ -105,16 +105,9 @@ abstract class AuthModule {
             }
             okHttpBuilder.setTimeoutsInSeconds(TIMEOUT_IN_SECONDS)
 
-            val retrofit = createRetrofit(okHttpBuilder.build(), host)
+            val retrofit = NetworkHelper.createRetrofit(okHttpBuilder.build(), host)
             return retrofit.create(OAuthService::class.java)
         }
-
-        private fun createRetrofit(client: OkHttpClient, baseUrl: String) = Retrofit.Builder()
-                .baseUrl(baseUrl)
-                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-                .addConverterFactory(GsonConverterFactory.create())
-                .client(client)
-                .build()
     }
 
 }
