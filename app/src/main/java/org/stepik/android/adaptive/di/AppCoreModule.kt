@@ -15,6 +15,7 @@ import org.solovyev.android.checkout.Billing
 import org.stepik.android.adaptive.BuildConfig
 import org.stepik.android.adaptive.R
 import org.stepik.android.adaptive.configuration.Config
+import org.stepik.android.adaptive.configuration.ConfigImpl
 import org.stepik.android.adaptive.core.events.Client
 import org.stepik.android.adaptive.core.events.ClientImpl
 import org.stepik.android.adaptive.core.events.ListenerContainer
@@ -51,7 +52,7 @@ abstract class AppCoreModule {
         @Provides
         @AppSingleton
         @JvmStatic
-        internal fun provideConfig(configFactory: Config.ConfigFactory): Config =
+        internal fun provideConfig(configFactory: ConfigImpl.ConfigFactory): Config =
                 configFactory.create()
 
         @JvmStatic
