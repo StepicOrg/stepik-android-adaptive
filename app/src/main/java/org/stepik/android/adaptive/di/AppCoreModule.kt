@@ -16,6 +16,8 @@ import org.stepik.android.adaptive.BuildConfig
 import org.stepik.android.adaptive.R
 import org.stepik.android.adaptive.configuration.Config
 import org.stepik.android.adaptive.configuration.ConfigImpl
+import org.stepik.android.adaptive.core.LogoutHelper
+import org.stepik.android.adaptive.core.LogoutHelperImpl
 import org.stepik.android.adaptive.core.events.Client
 import org.stepik.android.adaptive.core.events.ClientImpl
 import org.stepik.android.adaptive.core.events.ListenerContainer
@@ -42,6 +44,10 @@ abstract class AppCoreModule {
     @Binds
     @AppSingleton
     abstract fun provideAuthRepository(sharedPreferenceHelper: SharedPreferenceHelper): ProfilePreferences
+
+    @Binds
+    @AppSingleton
+    abstract fun provideLogoutHelper(logoutHelperImpl: LogoutHelperImpl): LogoutHelper
 
     @Module
     companion object {
