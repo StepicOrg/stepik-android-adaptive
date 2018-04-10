@@ -7,6 +7,8 @@ import dagger.Module
 import dagger.Provides
 import org.stepik.android.adaptive.data.db.DataBaseHelper
 import org.stepik.android.adaptive.data.db.dao.BookmarksDao
+import org.stepik.android.adaptive.data.db.dao.ExpDao
+import org.stepik.android.adaptive.data.db.dao.ExpDaoImpl
 import org.stepik.android.adaptive.data.db.dao.IDao
 import org.stepik.android.adaptive.data.db.operations.DatabaseOperations
 import org.stepik.android.adaptive.data.db.operations.DatabaseOperationsImpl
@@ -21,6 +23,10 @@ abstract class StorageModule {
     @StorageSingleton
     @Binds
     internal abstract fun provideBookmarksDao(bookmarksDao: BookmarksDao): IDao<Bookmark>
+
+    @StorageSingleton
+    @Binds
+    internal abstract fun provideExpDao(expDaoImpl: ExpDaoImpl): ExpDao
 
     @StorageSingleton
     @Binds

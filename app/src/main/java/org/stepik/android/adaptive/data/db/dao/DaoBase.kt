@@ -81,6 +81,9 @@ abstract class DaoBase<T>(private val databaseOperations: DatabaseOperations): I
 
     override fun removeAll() = databaseOperations.executeDelete(getDbName(), null, null)
 
+    protected fun <U> rawQuery(query: String, whereArgs: Array<String>?, handler: (Cursor) -> U): Single<U> =
+            databaseOperations.executeQuery(query, whereArgs, handler)
+
     protected abstract fun getDbName(): String
     protected abstract fun getDefaultPrimaryColumn(): String
     protected abstract fun getDefaultPrimaryValue(persistentObject: T): String
