@@ -23,16 +23,18 @@ constructor(
         private val expManager: ExpManager,
         private val dataBaseMgr: DataBaseMgr
 ) : PresenterBase<ProgressView>() {
-
-    private val total by lazy { expManager.exp }
-    private val level by lazy { expManager.getCurrentLevel(total) }
-
     private val adapter = WeeksAdapter()
 
     private val composite = CompositeDisposable()
 
     init {
-        adapter.setHeaderLevelAndTotal(level, total)
+        composite addDisposable expManager.fetchExp()
+                .subscribeOn(backgroundScheduler)
+                .observeOn(mainScheduler)
+                .subscribe { exp ->
+                    val level = expManager.getCurrentLevel(exp)
+                    adapter.setHeaderLevelAndTotal(level = level, total = exp)
+                }
 
         composite addDisposable dataBaseMgr.getWeeks()
                 .subscribeOn(backgroundScheduler)

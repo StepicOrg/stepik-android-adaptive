@@ -65,10 +65,20 @@ constructor(
 
     private val isQuestionsPacksSupported = questionsPacksManager.isQuestionsPacksSupported
 
+    private var exp = 0L
+
     init {
         createReaction(0, RecommendationReaction.Reaction.INTERESTING)
         inventoryManager.starterPack()
         localReminder.resolveDailyRemind()
+
+        compositeDisposable addDisposable expManager.fetchExp()
+                .observeOn(mainScheduler)
+                .subscribeOn(backgroundScheduler)
+                .subscribe {
+                    exp = it
+                    updateExp()
+                }
     }
 
     private fun resolveDailyReward() {
@@ -94,7 +104,7 @@ constructor(
         view.onAdapter(adapter)
     }
 
-    private fun updateExp(exp: Long = expManager.exp, streak: Long = 0, showLevelDialog: Boolean = false) {
+    private fun updateExp(streak: Long = 0, showLevelDialog: Boolean = false) {
         val level = expManager.getCurrentLevel(exp)
 
         val prev = expManager.getNextLevelExp(level - 1)
@@ -135,7 +145,8 @@ constructor(
         val streak = expManager.incStreak()
 
         view?.onStreak(streak)
-        updateExp(expManager.changeExp(streak, submissionId), streak, true)
+        exp = expManager.changeExp(streak, submissionId)
+        updateExp(streak, true)
 
         if (rateAppManager.onEngagement()) {
             view?.showRateAppDialog()

@@ -6,6 +6,7 @@ import org.stepik.android.adaptive.data.preference.SharedPreferenceHelper
 import org.stepik.android.adaptive.data.db.DataBaseMgr
 
 import io.reactivex.Completable
+import io.reactivex.Observable
 import io.reactivex.Scheduler
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.functions.Consumer
@@ -53,8 +54,14 @@ constructor(
     val streak: Long
         get() = sharedPreferenceHelper.getLong(STREAK_KEY)
 
-    init {
-//        compositeDisposable addDisposable
+    fun fetchExp(): Observable<Long> = Observable.concat(
+            Observable.just(exp),
+            dataBaseMgr.getExp().toObservable(),
+            ratingRepository.fetchRating().flatMap { dataBaseMgr.syncExp(it) }.toObservable()
+    ).doOnNext {
+        exp = it
+    }.onErrorReturn {
+        exp
     }
 
     fun changeExp(delta: Long, submissionId: Long): Long {
