@@ -8,7 +8,6 @@ import org.stepik.android.adaptive.api.StepikService
 import org.stepik.android.adaptive.api.storage.model.StorageRequest
 import org.stepik.android.adaptive.api.storage.model.StorageResponse
 import org.stepik.android.adaptive.configuration.Config
-import org.stepik.android.adaptive.data.preference.SharedPreferenceHelper
 import org.stepik.android.adaptive.data.model.QuestionsPackStorageItem
 import org.stepik.android.adaptive.data.model.StorageRecord
 import org.stepik.android.adaptive.data.preference.ProfilePreferences
