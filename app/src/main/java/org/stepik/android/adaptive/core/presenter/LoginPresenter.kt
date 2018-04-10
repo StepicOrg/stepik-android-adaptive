@@ -8,7 +8,7 @@ import org.stepik.android.adaptive.api.auth.AuthRepository
 import org.stepik.android.adaptive.api.auth.SocialManager
 import org.stepik.android.adaptive.core.presenter.contracts.LoginView
 import org.stepik.android.adaptive.data.Analytics
-import org.stepik.android.adaptive.data.SharedPreferenceHelper
+import org.stepik.android.adaptive.data.preference.SharedPreferenceHelper
 import org.stepik.android.adaptive.data.model.AccountCredentials
 import org.stepik.android.adaptive.data.model.Profile
 import org.stepik.android.adaptive.di.qualifiers.BackgroundScheduler

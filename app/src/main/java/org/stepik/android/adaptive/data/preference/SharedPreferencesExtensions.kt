@@ -1,4 +1,4 @@
-package org.stepik.android.adaptive.data
+package org.stepik.android.adaptive.data.preference
 
 import android.content.SharedPreferences
 import kotlin.properties.ReadOnlyProperty

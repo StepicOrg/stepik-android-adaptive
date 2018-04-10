@@ -7,7 +7,7 @@ import io.reactivex.functions.BiFunction
 import io.reactivex.subjects.PublishSubject
 import org.stepik.android.adaptive.api.Api
 import org.stepik.android.adaptive.core.presenter.contracts.RatingView
-import org.stepik.android.adaptive.data.SharedPreferenceHelper
+import org.stepik.android.adaptive.data.preference.SharedPreferenceHelper
 import org.stepik.android.adaptive.data.db.DataBaseMgr
 import org.stepik.android.adaptive.data.model.RatingItem
 import org.stepik.android.adaptive.di.qualifiers.BackgroundScheduler

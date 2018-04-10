@@ -8,7 +8,7 @@ import android.os.Build
 import org.joda.time.DateTime
 import org.joda.time.Days
 import org.joda.time.Hours
-import org.stepik.android.adaptive.data.SharedPreferenceHelper
+import org.stepik.android.adaptive.data.preference.SharedPreferenceHelper
 import org.stepik.android.adaptive.receivers.NotificationsReceiver
 import org.stepik.android.adaptive.gamification.DailyRewardManager
 import javax.inject.Inject

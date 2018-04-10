@@ -2,7 +2,7 @@ package org.stepik.android.adaptive.core
 
 import com.vk.sdk.VKSdk
 
-import org.stepik.android.adaptive.data.SharedPreferenceHelper
+import org.stepik.android.adaptive.data.preference.SharedPreferenceHelper
 import org.stepik.android.adaptive.di.AppSingleton
 
 import io.reactivex.Completable

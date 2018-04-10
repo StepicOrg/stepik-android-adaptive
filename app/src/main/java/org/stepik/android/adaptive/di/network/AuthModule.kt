@@ -8,7 +8,7 @@ import okhttp3.Credentials
 import okhttp3.OkHttpClient
 import org.stepik.android.adaptive.api.auth.*
 import org.stepik.android.adaptive.configuration.Config
-import org.stepik.android.adaptive.data.SharedPreferenceHelper
+import org.stepik.android.adaptive.data.preference.SharedPreferenceHelper
 import org.stepik.android.adaptive.data.preference.AuthPreferences
 import org.stepik.android.adaptive.di.AppSingleton
 import org.stepik.android.adaptive.di.qualifiers.AuthLock
@@ -18,9 +18,6 @@ import org.stepik.android.adaptive.di.qualifiers.SocialAuthService
 import org.stepik.android.adaptive.util.AppConstants
 import org.stepik.android.adaptive.util.addUserAgent
 import org.stepik.android.adaptive.util.setTimeoutsInSeconds
-import retrofit2.Retrofit
-import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
-import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.locks.ReentrantLock
 import javax.inject.Named
 

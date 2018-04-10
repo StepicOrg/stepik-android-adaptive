@@ -1,4 +1,4 @@
-package org.stepik.android.adaptive.data
+package org.stepik.android.adaptive.data.preference
 
 import android.content.Context
 import android.content.SharedPreferences
@@ -11,7 +11,6 @@ import org.stepik.android.adaptive.api.auth.OAuthResponse
 import org.stepik.android.adaptive.data.model.AccountCredentials
 import org.stepik.android.adaptive.data.model.Profile
 import org.stepik.android.adaptive.content.questions.QuestionsPack
-import org.stepik.android.adaptive.data.preference.AuthPreferences
 import org.stepik.android.adaptive.di.AppSingleton
 import org.stepik.android.adaptive.util.RxOptional
 import javax.inject.Inject

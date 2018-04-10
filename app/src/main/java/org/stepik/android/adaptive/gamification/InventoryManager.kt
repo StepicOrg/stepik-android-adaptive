@@ -3,7 +3,7 @@ package org.stepik.android.adaptive.gamification
 import android.support.annotation.DrawableRes
 import org.stepik.android.adaptive.BuildConfig
 import org.stepik.android.adaptive.R
-import org.stepik.android.adaptive.data.SharedPreferenceHelper
+import org.stepik.android.adaptive.data.preference.SharedPreferenceHelper
 import org.stepik.android.adaptive.di.AppSingleton
 import javax.inject.Inject
 
