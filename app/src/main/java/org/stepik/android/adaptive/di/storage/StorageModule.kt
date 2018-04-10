@@ -13,6 +13,8 @@ import org.stepik.android.adaptive.data.db.dao.IDao
 import org.stepik.android.adaptive.data.db.operations.DatabaseOperations
 import org.stepik.android.adaptive.data.db.operations.DatabaseOperationsImpl
 import org.stepik.android.adaptive.data.model.Bookmark
+import org.stepik.android.adaptive.di.qualifiers.DatabaseLock
+import java.util.concurrent.locks.ReentrantReadWriteLock
 
 @Module
 abstract class StorageModule {
@@ -39,6 +41,12 @@ abstract class StorageModule {
         @JvmStatic
         internal fun provideWritableDatabase(helper: SQLiteOpenHelper): SQLiteDatabase =
                 helper.writableDatabase
+
+        @StorageSingleton
+        @Provides
+        @JvmStatic
+        @DatabaseLock
+        internal fun provideDatabaseLock(): ReentrantReadWriteLock = ReentrantReadWriteLock()
     }
 
 }
