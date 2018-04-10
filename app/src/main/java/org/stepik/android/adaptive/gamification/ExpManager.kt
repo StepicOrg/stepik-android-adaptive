@@ -1,22 +1,24 @@
 package org.stepik.android.adaptive.gamification
 
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
-import org.stepik.android.adaptive.api.Api
 import org.stepik.android.adaptive.data.Analytics
 import org.stepik.android.adaptive.data.preference.SharedPreferenceHelper
 import org.stepik.android.adaptive.data.db.DataBaseMgr
 
 import io.reactivex.Completable
+import io.reactivex.Observable
 import io.reactivex.Scheduler
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.functions.Consumer
 import io.reactivex.internal.functions.Functions
+import org.stepik.android.adaptive.api.rating.RatingRepository
 import org.stepik.android.adaptive.configuration.RemoteConfig
 import org.stepik.android.adaptive.di.AppSingleton
 import org.stepik.android.adaptive.di.qualifiers.BackgroundScheduler
 import org.stepik.android.adaptive.gamification.achievements.AchievementEventPoster
 import org.stepik.android.adaptive.gamification.achievements.AchievementManager
 import org.stepik.android.adaptive.util.addDisposable
+import org.stepik.android.adaptive.util.then
 import retrofit2.HttpException
 import javax.inject.Inject
 
@@ -24,7 +26,7 @@ import javax.inject.Inject
 class ExpManager
 @Inject
 constructor(
-        private val api: Api,
+        private val ratingRepository: RatingRepository,
         @BackgroundScheduler
         private val backgroundScheduler: Scheduler,
         private val achievementEventPoster: AchievementEventPoster,
@@ -39,16 +41,28 @@ constructor(
 
         private const val LEVEL_POW = 2.5
 
-        fun syncRating(dataBaseMgr: DataBaseMgr, api: Api): Completable = dataBaseMgr.getExp().flatMapCompletable { e -> api.putRating(e) }
+        fun syncRating(dataBaseMgr: DataBaseMgr, ratingRepository: RatingRepository): Completable =
+                dataBaseMgr.getExp().flatMapCompletable { e -> ratingRepository.putRating(e) }
     }
 
     private val compositeDisposable = CompositeDisposable()
 
-    val exp: Long
+    var exp: Long
         get() = sharedPreferenceHelper.getLong(EXP_KEY)
+        private set(value) = sharedPreferenceHelper.saveLong(EXP_KEY, value)
 
     val streak: Long
         get() = sharedPreferenceHelper.getLong(STREAK_KEY)
+
+    fun fetchExp(): Observable<Long> = Observable.concat(
+            Observable.just(exp),
+            dataBaseMgr.getExp().toObservable(),
+            ratingRepository.fetchRating().flatMap { dataBaseMgr.syncExp(it) }.toObservable()
+    ).doOnNext {
+        exp = it
+    }.onErrorReturn {
+        exp
+    }
 
     fun changeExp(delta: Long, submissionId: Long): Long {
         val exp = sharedPreferenceHelper.changeLong(EXP_KEY, delta)
@@ -56,8 +70,7 @@ constructor(
 
         achievementEventPoster.onEvent(AchievementManager.Event.EXP, exp, true)
 
-        compositeDisposable addDisposable dataBaseMgr.onExpGained(delta, submissionId)
-                .andThen(syncRating(dataBaseMgr, api))
+        compositeDisposable addDisposable (dataBaseMgr.onExpGained(delta, submissionId) then syncRating(dataBaseMgr, ratingRepository))
                 .subscribeOn(backgroundScheduler)
                 .subscribe(Functions.EMPTY_ACTION, Consumer { e ->
                     if (e is HttpException) {

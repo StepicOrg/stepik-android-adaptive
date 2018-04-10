@@ -42,8 +42,7 @@ constructor(
 
         private val cookieHelper: CookieHelper,
 
-        private val stepikService: StepikService,
-        private val ratingService: RatingService
+        private val stepikService: StepikService
 ) {
     companion object {
         private const val FAKE_MAIL_PATTERN = "adaptive_%s_android_%d%s@stepik.org"
@@ -142,12 +141,6 @@ constructor(
 
     fun reportView(assignment: Long, step: Long): Completable =
             stepikService.reportView(ViewRequest(assignment, step))
-
-    fun getRating(count: Int, days: Int): Observable<RatingResponse> =
-            ratingService.getRating(config.courseId, count.toLong(), days.toLong(), sharedPreferenceHelper.profileId)
-
-    fun putRating(exp: Long): Completable =
-            ratingService.putRating(RatingRequest(exp, config.courseId, sharedPreferenceHelper.oAuthResponse?.accessToken))
 
     fun getUriForSocialAuth(type: SocialManager.SocialType): Uri {
         val socialIdentifier = type.identifier
