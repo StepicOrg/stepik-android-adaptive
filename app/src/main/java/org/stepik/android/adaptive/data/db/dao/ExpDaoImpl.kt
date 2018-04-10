@@ -29,11 +29,15 @@ constructor(databaseOperations: DatabaseOperations): DaoBase<LocalExpItem>(datab
     override fun getContentValues(persistentObject: LocalExpItem) = ContentValues().apply {
         put(ExpDbStructure.Columns.SUBMISSION_ID, persistentObject.submissionId)
         put(ExpDbStructure.Columns.EXP, persistentObject.exp)
+        persistentObject.solvedAt?.let {
+            put(ExpDbStructure.Columns.SOLVED_AT, it)
+        }
     }
 
     override fun parsePersistentObject(cursor: Cursor) = LocalExpItem(
             exp          = cursor.getLong(cursor.getColumnIndex(ExpDbStructure.Columns.EXP)),
-            submissionId = cursor.getLong(cursor.getColumnIndex(ExpDbStructure.Columns.SUBMISSION_ID))
+            submissionId = cursor.getLong(cursor.getColumnIndex(ExpDbStructure.Columns.SUBMISSION_ID)),
+            solvedAt     = cursor.getString(cursor.getColumnIndex(ExpDbStructure.Columns.SOLVED_AT))
     )
 
     override fun getExpItem(submissionId: Long): Maybe<LocalExpItem> {

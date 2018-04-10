@@ -28,8 +28,9 @@ constructor(
     fun syncExp(apiExp: Long): Single<Long> = getExp().flatMap { localExp ->
         val diff = apiExp - localExp
         if (diff > 0) {
-            val syncRecord = expDao.getExpItem(0).blockingGet()?.exp ?: 0
-            expDao.insertOrReplace(LocalExpItem(syncRecord + diff, 0)) then getExp()
+            val syncRecord = expDao.getExpItem(0).blockingGet()
+            val exp = syncRecord?.exp ?: 0
+            expDao.insertOrReplace(LocalExpItem(exp + diff, 0, solvedAt = syncRecord?.solvedAt)) then getExp()
         } else {
             Single.just(localExp)
         }
