@@ -11,6 +11,7 @@ import org.stepik.android.adaptive.configuration.Config
 import org.stepik.android.adaptive.data.preference.SharedPreferenceHelper
 import org.stepik.android.adaptive.data.model.QuestionsPackStorageItem
 import org.stepik.android.adaptive.data.model.StorageRecord
+import org.stepik.android.adaptive.data.preference.ProfilePreferences
 import org.stepik.android.adaptive.di.AppSingleton
 import javax.inject.Inject
 
@@ -20,7 +21,7 @@ class RemoteStorageRepositoryImpl
 constructor(
         config: Config,
         private val stepikService: StepikService,
-        private val sharedPreferenceHelper: SharedPreferenceHelper
+        private val profilePreferences: ProfilePreferences
 ): RemoteStorageRepository {
     private val packsKind = "adaptive_${config.courseId}_packs"
     private val gson = Gson()
@@ -35,7 +36,7 @@ constructor(
     }
 
     private fun getQuestionsPacks(page: Int): Observable<StorageResponse> =
-            Observable.fromCallable(sharedPreferenceHelper::profileId).flatMap {
+            Observable.fromCallable(profilePreferences::profileId).flatMap {
                 stepikService.getStorageRecords(page, it, packsKind)
             }
 

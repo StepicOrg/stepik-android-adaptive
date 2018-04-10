@@ -134,6 +134,9 @@ dependencies {
     testImplementation libraries.robolectric
     testImplementation libraries.mockitoCore
     testImplementation libraries.hamcrest
+    testImplementation libraries.retrofitMock
+    testImplementation libraries.mockwebserver
+    testImplementation libraries.mockitoKt
 
     androidTestImplementation(libraries.supportTestRunner) {
         exclude group: 'com.android.support'

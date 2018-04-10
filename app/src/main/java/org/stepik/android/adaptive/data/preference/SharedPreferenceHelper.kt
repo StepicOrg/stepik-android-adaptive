@@ -18,7 +18,7 @@ import javax.inject.Inject
 @AppSingleton
 class SharedPreferenceHelper
 @Inject
-constructor(context: Context): SharedPreferenceProvider, AuthPreferences {
+constructor(context: Context): SharedPreferenceProvider, AuthPreferences, ProfilePreferences {
     override val sharedPreferences: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
     private val gson = Gson()
 
@@ -42,7 +42,7 @@ constructor(context: Context): SharedPreferenceProvider, AuthPreferences {
         get() = getLong(OAUTH_RESPONSE_DEADLINE)
         private set(value) = saveLong(OAUTH_RESPONSE_DEADLINE, value)
 
-    var profile: Profile?
+    override var profile: Profile?
         get() {
             val json = getString(PROFILE) ?: return null
             return gson.fromJson(json, Profile::class.java)
@@ -56,7 +56,7 @@ constructor(context: Context): SharedPreferenceProvider, AuthPreferences {
             }
         }
 
-    var profileId: Long
+    override var profileId: Long
         get() = getLong(PROFILE_ID)
         private set(value) = saveLong(PROFILE_ID, value)
 
