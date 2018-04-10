@@ -5,7 +5,7 @@ import io.reactivex.Scheduler
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.functions.BiFunction
 import io.reactivex.subjects.PublishSubject
-import org.stepik.android.adaptive.api.Api
+import org.stepik.android.adaptive.api.rating.RatingRepository
 import org.stepik.android.adaptive.core.presenter.contracts.RatingView
 import org.stepik.android.adaptive.data.preference.SharedPreferenceHelper
 import org.stepik.android.adaptive.data.db.DataBaseMgr
@@ -15,20 +15,21 @@ import org.stepik.android.adaptive.di.qualifiers.MainScheduler
 import org.stepik.android.adaptive.ui.adapter.RatingAdapter
 import org.stepik.android.adaptive.gamification.ExpManager
 import org.stepik.android.adaptive.util.RatingNamesGenerator
+import org.stepik.android.adaptive.util.addDisposable
 import retrofit2.HttpException
 import javax.inject.Inject
 
 class RatingPresenter
 @Inject
 constructor(
-        private val api: Api,
+        private val ratingRepository: RatingRepository,
         private val sharedPreferenceHelper: SharedPreferenceHelper,
         @BackgroundScheduler
         private val backgroundScheduler: Scheduler,
         @MainScheduler
         private val mainScheduler: Scheduler,
         private val ratingNamesGenerator: RatingNamesGenerator,
-        private val dataBaseMgr: DataBaseMgr
+        dataBaseMgr: DataBaseMgr
 ): PresenterBase<RatingView>() {
     companion object {
         private const val ITEMS_PER_PAGE = 10
@@ -49,30 +50,29 @@ constructor(
     private var periodsLoaded = 0
 
     init {
-        compositeDisposable.add(
-                ExpManager.syncRating(dataBaseMgr, api)
+        compositeDisposable addDisposable
+                ExpManager.syncRating(dataBaseMgr, ratingRepository)
                         .subscribeOn(backgroundScheduler)
                         .observeOn(mainScheduler)
                         .doOnError(this::onError)
                         .doOnComplete { initRatingPeriods() }
                         .retryWhen { x -> x.zipWith<Int, Throwable>(retrySubject.toFlowable(BackpressureStrategy.BUFFER), BiFunction { a, _ -> a }) }
-                        .subscribe())
+                        .subscribe()
     }
 
     private fun initRatingPeriods() {
         val first = BiFunction<Throwable, Int, Throwable> { a, _ -> a }
         RATING_PERIODS.forEachIndexed { pos, period ->
-            compositeDisposable.add(api.getRating(ITEMS_PER_PAGE, period)
+            compositeDisposable addDisposable ratingRepository.getRatingTable(ITEMS_PER_PAGE, period)
                     .subscribeOn(backgroundScheduler)
                     .observeOn(mainScheduler)
                     .doOnError(this::onError)
-                    .retryWhen { it.zipWith(retrySubject, first) }
-                    .map { it.users }
+                    .retryWhen { it.zipWith(retrySubject.toFlowable(BackpressureStrategy.BUFFER), first) }
                     .subscribe({
                         adapters[pos].set(prepareRatingItems(it))
                         periodsLoaded++
                         onLoadComplete()
-                    }, this::onError))
+                    }, this::onError)
         }
     }
 
