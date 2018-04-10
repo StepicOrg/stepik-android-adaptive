@@ -1,20 +1,23 @@
 package org.stepik.android.adaptive.core.presenter
 
+import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.Scheduler
+import io.reactivex.Single
 import io.reactivex.disposables.CompositeDisposable
 import org.solovyev.android.checkout.*
 import org.stepik.android.adaptive.api.Api
+import org.stepik.android.adaptive.api.storage.RemoteStorageRepository
 import org.stepik.android.adaptive.content.questions.QuestionsPacksManager
 import org.stepik.android.adaptive.content.questions.QuestionsPacksResolver
 import org.stepik.android.adaptive.core.presenter.contracts.QuestionsPacksView
 import org.stepik.android.adaptive.data.Analytics
 import org.stepik.android.adaptive.content.questions.QuestionsPack
+import org.stepik.android.adaptive.data.preference.SharedPreferenceHelper
 import org.stepik.android.adaptive.di.qualifiers.BackgroundScheduler
 import org.stepik.android.adaptive.di.qualifiers.MainScheduler
 import org.stepik.android.adaptive.ui.adapter.QuestionsPacksAdapter
-import org.stepik.android.adaptive.util.addDisposable
-import org.stepik.android.adaptive.util.startPurchaseFlowRx
+import org.stepik.android.adaptive.util.*
 import javax.inject.Inject
 
 class QuestionsPacksPresenter
@@ -29,6 +32,9 @@ constructor(
 
         private val questionsPacksManager: QuestionsPacksManager,
         private val questionsPacksResolver: QuestionsPacksResolver,
+
+        private val remoteStorageRepository: RemoteStorageRepository,
+        private val sharedPreferenceHelper: SharedPreferenceHelper,
         billing: Billing
 ): PaidContentPresenterBase<QuestionsPacksView>(billing) {
     private val adapter = QuestionsPacksAdapter(this::onPackPressed, questionsPacksResolver)
@@ -79,12 +85,9 @@ constructor(
         compositeDisposable addDisposable consume(getAllPurchases())
     }
 
-
-    private fun consume(observable: Observable<Purchase>) = observable.map {
-            it.sku
-        }.filter {
-            skus.contains(it)
-        }.subscribeOn(mainScheduler).observeOn(mainScheduler).toList().subscribe({
+    private fun consume(observable: Observable<Purchase>) = consumeIfNotFake(observable.subscribeOn(mainScheduler).filter {
+            skus.contains(it.sku)
+        }).observeOn(mainScheduler).subscribe({
             adapter.addOwnedContent(it)
             view?.hideProgress()
         }, {
@@ -93,6 +96,23 @@ constructor(
             }
             view?.hideProgress()
         })
+
+    private fun consumeIfNotFake(observable: Observable<Purchase>) = Single.fromCallable(sharedPreferenceHelper::isFakeUser).flatMap { isFake ->
+        if (isFake) {
+            observable.map { it.sku }.toList()
+        } else {
+            observable.flatMapCompletable { saveToRemoteStorageAndThenConsume(it) } then
+                    remoteStorageRepository.getQuestionsPacks().subscribeOn(backgroundScheduler)
+        }
+    }
+
+    private fun saveToRemoteStorageAndThenConsume(purchase: Purchase): Completable =
+            remoteStorageRepository
+                    .storeQuestionsPack(purchase.sku)
+                    .subscribeOn(backgroundScheduler) then
+                checkout?.onReady()
+                        ?.flatMapCompletable { it.consumeRx(purchase.token) }
+                        ?.subscribeOn(mainScheduler)
 
 
     private fun onPackPressed(sku: Sku, pack: QuestionsPack, isOwned: Boolean) {
@@ -106,7 +126,7 @@ constructor(
     private fun purchase(sku: Sku) {
         analytics.logEvent(Analytics.EVENT_ON_QUESTIONS_PACK_PURCHASE_BUTTON_CLICKED)
         val purchaseObservable = checkout?.startPurchaseFlowRx(sku) ?: Observable.empty<Purchase>()
-        compositeDisposable addDisposable consume(purchaseObservable)
+        compositeDisposable addDisposable consume(purchaseObservable.flatMap { getAllPurchases() })
     }
 
     private fun changeCourse(pack: QuestionsPack) {

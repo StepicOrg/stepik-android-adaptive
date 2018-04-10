@@ -1,4 +1,4 @@
-package org.stepik.android.adaptive.data
+package org.stepik.android.adaptive.data.preference
 
 import android.content.Context
 import android.content.SharedPreferences
@@ -7,8 +7,7 @@ import android.preference.PreferenceManager
 import com.google.gson.Gson
 import org.joda.time.DateTime
 import org.joda.time.DateTimeZone
-import org.stepik.android.adaptive.api.Api
-import org.stepik.android.adaptive.api.oauth.OAuthResponse
+import org.stepik.android.adaptive.api.auth.OAuthResponse
 import org.stepik.android.adaptive.data.model.AccountCredentials
 import org.stepik.android.adaptive.data.model.Profile
 import org.stepik.android.adaptive.content.questions.QuestionsPack
@@ -19,11 +18,11 @@ import javax.inject.Inject
 @AppSingleton
 class SharedPreferenceHelper
 @Inject
-constructor(context: Context): SharedPreferenceProvider {
+constructor(context: Context): SharedPreferenceProvider, AuthPreferences, ProfilePreferences {
     override val sharedPreferences: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
     private val gson = Gson()
 
-    var oAuthResponse: OAuthResponse?
+    override var oAuthResponse: OAuthResponse?
         get() {
             val json = getString(OAUTH_RESPONSE) ?: return null
             return gson.fromJson(json, OAuthResponse::class.java)
@@ -39,7 +38,11 @@ constructor(context: Context): SharedPreferenceProvider {
             }
         }
 
-    var profile: Profile?
+    override var authResponseDeadline: Long
+        get() = getLong(OAUTH_RESPONSE_DEADLINE)
+        private set(value) = saveLong(OAUTH_RESPONSE_DEADLINE, value)
+
+    override var profile: Profile?
         get() {
             val json = getString(PROFILE) ?: return null
             return gson.fromJson(json, Profile::class.java)
@@ -53,7 +56,7 @@ constructor(context: Context): SharedPreferenceProvider {
             }
         }
 
-    var profileId: Long
+    override var profileId: Long
         get() = getLong(PROFILE_ID)
         private set(value) = saveLong(PROFILE_ID, value)
 
@@ -66,24 +69,21 @@ constructor(context: Context): SharedPreferenceProvider {
 
     var isGamificationDescriptionWasShown: Boolean by preference(IS_PACKS_FOR_LEVELS_WINDOW_WAS_SHOWN)
 
-    var isAuthTokenSocial:               Boolean by preference(IS_OAUTH_TOKEN_SOCIAL)
+    override var isAuthTokenSocial:      Boolean by preference(IS_OAUTH_TOKEN_SOCIAL)
     var isNotFirstTime:                  Boolean by preference(NOT_FIRST_TIME)
-
-    var authResponseDeadline: Long
-        get() = getLong(OAUTH_RESPONSE_DEADLINE)
-        private set(value) = saveLong(OAUTH_RESPONSE_DEADLINE, value)
 
     var questionsPackIndex: Int by preference(QUESTIONS_PACK_INDEX)
 
     fun removeProfile() {
-        Api.authLock.lock()
         remove(PROFILE)
         remove(PROFILE_ID)
         remove(OAUTH_RESPONSE)
         remove(IS_OAUTH_TOKEN_SOCIAL)
         remove(OAUTH_RESPONSE_DEADLINE)
-        Api.authLock.unlock()
     }
+
+    fun isFakeUser(): Boolean =
+            sharedPreferences.contains(FAKE_USER)
 
     fun removeFakeUser() {
         remove(FAKE_USER)
@@ -106,7 +106,7 @@ constructor(context: Context): SharedPreferenceProvider {
         saveBoolean(IS_QUESTIONS_PACKS_TOOLTIP_WAS_SHOWN, true)
     }
 
-    fun resetAuthResponseDeadline() {
+    override fun resetAuthResponseDeadline() {
         remove(OAUTH_RESPONSE_DEADLINE)
     }
 

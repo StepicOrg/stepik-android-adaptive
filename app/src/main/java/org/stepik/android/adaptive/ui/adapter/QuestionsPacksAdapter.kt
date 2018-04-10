@@ -3,7 +3,6 @@ package org.stepik.android.adaptive.ui.adapter
 import android.support.v4.content.ContextCompat
 import android.support.v4.graphics.drawable.DrawableCompat
 import android.support.v7.widget.RecyclerView
-import android.text.Html
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,6 +16,7 @@ import org.stepik.android.adaptive.content.questions.QuestionsPacksResolver
 import org.stepik.android.adaptive.content.questions.QuestionsPack
 import org.stepik.android.adaptive.ui.helper.setAlpha
 import org.stepik.android.adaptive.util.changeVisibillity
+import org.stepik.android.adaptive.util.fromHtmlCompat
 
 class QuestionsPacksAdapter(
         private val onPackClicked: (Sku, QuestionsPack, Boolean) -> Unit,
@@ -64,10 +64,10 @@ class QuestionsPacksAdapter(
         holder.description.text = sku.description
         holder.description.setTextColor(setAlpha(pack.textColor, TEXT_ALPHA))
 
-        holder.questionsCount.text = Html.fromHtml(context.getString(R.string.questions_count, pack.size))
+        holder.questionsCount.text = fromHtmlCompat(context.getString(R.string.questions_count, pack.size))
         holder.questionsCount.setTextColor(setAlpha(pack.textColor, TEXT_ALPHA))
 
-        holder.difficulty.text = Html.fromHtml(context.getString(R.string.questions_difficulty, context.getString(pack.difficulty)))
+        holder.difficulty.text = fromHtmlCompat(context.getString(R.string.questions_difficulty, context.getString(pack.difficulty)))
         holder.difficulty.setTextColor(setAlpha(pack.textColor, TEXT_ALPHA))
 
         val activeDrawable = DrawableCompat.wrap(ContextCompat.getDrawable(context, R.drawable.ic_correct))

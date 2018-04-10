@@ -5,7 +5,7 @@ import android.widget.ScrollView;
 
 import org.stepik.android.adaptive.api.Api;
 import org.stepik.android.adaptive.api.RecommendationsResponse;
-import org.stepik.android.adaptive.data.SharedPreferenceHelper;
+import org.stepik.android.adaptive.data.preference.SharedPreferenceHelper;
 import org.stepik.android.adaptive.data.model.RecommendationReaction;
 import org.stepik.android.adaptive.databinding.QuizCardViewBinding;
 

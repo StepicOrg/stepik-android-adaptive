@@ -7,7 +7,7 @@ import org.stepik.android.adaptive.R
 import org.stepik.android.adaptive.core.events.Client
 import org.stepik.android.adaptive.core.presenter.Presenter
 import org.stepik.android.adaptive.core.presenter.contracts.AchievementView
-import org.stepik.android.adaptive.data.SharedPreferenceHelper
+import org.stepik.android.adaptive.data.preference.SharedPreferenceHelper
 import org.stepik.android.adaptive.data.model.Achievement
 import org.stepik.android.adaptive.di.AppSingleton
 import org.stepik.android.adaptive.gamification.DailyRewardManager

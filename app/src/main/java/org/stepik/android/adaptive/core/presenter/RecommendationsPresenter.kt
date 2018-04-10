@@ -9,7 +9,7 @@ import org.stepik.android.adaptive.api.Api
 import org.stepik.android.adaptive.api.RecommendationsResponse
 import org.stepik.android.adaptive.content.questions.QuestionsPacksManager
 import org.stepik.android.adaptive.core.presenter.contracts.RecommendationsView
-import org.stepik.android.adaptive.data.SharedPreferenceHelper
+import org.stepik.android.adaptive.data.preference.SharedPreferenceHelper
 import org.stepik.android.adaptive.data.model.Card
 import org.stepik.android.adaptive.data.model.RecommendationReaction
 import org.stepik.android.adaptive.di.qualifiers.BackgroundScheduler

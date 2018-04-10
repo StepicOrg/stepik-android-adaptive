@@ -1,6 +1,6 @@
 package org.stepik.android.adaptive.util
 
-import org.stepik.android.adaptive.data.SharedPreferenceHelper
+import org.stepik.android.adaptive.data.preference.SharedPreferenceHelper
 import org.stepik.android.adaptive.di.AppSingleton
 import javax.inject.Inject
 

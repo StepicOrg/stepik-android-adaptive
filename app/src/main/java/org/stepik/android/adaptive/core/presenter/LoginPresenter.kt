@@ -4,10 +4,11 @@ import io.reactivex.Scheduler
 import io.reactivex.disposables.CompositeDisposable
 import org.stepik.android.adaptive.configuration.Config
 import org.stepik.android.adaptive.api.Api
-import org.stepik.android.adaptive.api.login.SocialManager
+import org.stepik.android.adaptive.api.auth.AuthRepository
+import org.stepik.android.adaptive.api.auth.SocialManager
 import org.stepik.android.adaptive.core.presenter.contracts.LoginView
 import org.stepik.android.adaptive.data.Analytics
-import org.stepik.android.adaptive.data.SharedPreferenceHelper
+import org.stepik.android.adaptive.data.preference.SharedPreferenceHelper
 import org.stepik.android.adaptive.data.model.AccountCredentials
 import org.stepik.android.adaptive.data.model.Profile
 import org.stepik.android.adaptive.di.qualifiers.BackgroundScheduler
@@ -20,6 +21,7 @@ class LoginPresenter
 @Inject
 constructor(
         private val api: Api,
+        private val authRepository: AuthRepository,
         private val config: Config,
         private val sharedPreferenceHelper: SharedPreferenceHelper,
         private val analytics: Analytics,
@@ -41,7 +43,7 @@ constructor(
     fun authWithLoginPassword(login: String, password: String, isFake: Boolean = false) {
         view?.onLoading()
 
-        disposable.add(api
+        disposable addDisposable authRepository
                 .authWithLoginPassword(login, password)
                 .subscribeOn(backgroundScheduler)
                 .observeOn(mainScheduler)
@@ -52,10 +54,10 @@ constructor(
                     } else {
                         this.onError()
                     }
-                }))
+                })
     }
 
-    fun onLogin(isFake: Boolean = false) {
+    private fun onLogin(isFake: Boolean = false) {
         disposable addDisposable api
                 .joinCourse(config.courseId)
                 .andThen(api.profile)
@@ -81,7 +83,7 @@ constructor(
     fun onSocialLogin(token: String, type: SocialManager.SocialType) {
         view?.onLoading()
 
-        disposable addDisposable api
+        disposable addDisposable authRepository
                 .authWithNativeCode(token, type)
                 .subscribeOn(backgroundScheduler)
                 .observeOn(mainScheduler)
@@ -91,7 +93,7 @@ constructor(
     fun authWithCode(code: String) {
         view?.onLoading()
 
-        disposable addDisposable api
+        disposable addDisposable authRepository
                 .authWithCode(code)
                 .subscribeOn(backgroundScheduler)
                 .observeOn(mainScheduler)
@@ -107,8 +109,8 @@ constructor(
     fun createAccount(credentials: AccountCredentials, isFake: Boolean = false) {
         view?.onLoading()
 
-        disposable addDisposable api
-                .createAccount(credentials.firstName, credentials.lastName, credentials.login, credentials.password)
+        disposable addDisposable authRepository
+                .createAccount(credentials.toRegistrationUser())
                 .observeOn(mainScheduler)
                 .subscribeOn(backgroundScheduler)
                 .subscribe({

@@ -1,4 +1,4 @@
-package org.stepik.android.adaptive.api.oauth;
+package org.stepik.android.adaptive.api.auth;
 
 import io.reactivex.Completable;
 import retrofit2.Call;
