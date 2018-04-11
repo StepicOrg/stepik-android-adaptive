@@ -9,6 +9,7 @@ import kotlinx.android.synthetic.main.empty_auth.*
 import kotlinx.android.synthetic.main.fragment_profile.*
 import org.stepik.android.adaptive.App
 import org.stepik.android.adaptive.R
+import org.stepik.android.adaptive.core.ScreenManager
 import org.stepik.android.adaptive.core.presenter.BasePresenterFragment
 import org.stepik.android.adaptive.core.presenter.ProfilePresenter
 import org.stepik.android.adaptive.core.presenter.contracts.ProfileView
@@ -21,6 +22,9 @@ class ProfileFragment: BasePresenterFragment<ProfilePresenter, ProfileView>(), P
     @Inject
     lateinit var profilePresenterProvider: Provider<ProfilePresenter>
 
+    @Inject
+    lateinit var screenManager: ScreenManager
+
     override fun injectComponent() {
         App.componentManager()
                 .statsComponent.inject(this)
@@ -30,8 +34,8 @@ class ProfileFragment: BasePresenterFragment<ProfilePresenter, ProfileView>(), P
             inflater.inflate(R.layout.fragment_profile, container, false)
 
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
-        signIn.setOnClickListener {  }
-        signUp.setOnClickListener {  }
+        signIn.setOnClickListener { screenManager.showSignInScreen(context) }
+        signUp.setOnClickListener { screenManager.showSignUpScreen(context) }
         signLater.changeVisibillity(false)
     }
 

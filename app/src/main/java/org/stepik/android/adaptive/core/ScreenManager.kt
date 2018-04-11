@@ -9,4 +9,7 @@ interface ScreenManager {
     fun showStatsScreen(context: Context, page: Int)
     fun showQuestionsPacksScreen(context: Context)
     fun showGamificationDescription(context: Context)
+
+    fun showSignInScreen(context: Context)
+    fun showSignUpScreen(context: Context)
 }

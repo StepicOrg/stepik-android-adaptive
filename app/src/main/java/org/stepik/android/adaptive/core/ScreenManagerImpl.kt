@@ -6,12 +6,7 @@ import android.content.Intent
 
 import org.stepik.android.adaptive.data.Analytics
 import org.stepik.android.adaptive.di.AppSingleton
-import org.stepik.android.adaptive.ui.activity.IntroActivity
-import org.stepik.android.adaptive.ui.activity.DescriptionActivity
-import org.stepik.android.adaptive.ui.activity.PhotoViewActivity
-import org.stepik.android.adaptive.ui.activity.StatsActivity
-import org.stepik.android.adaptive.ui.activity.QuestionsPacksActivity
-import org.stepik.android.adaptive.ui.activity.StudyActivity
+import org.stepik.android.adaptive.ui.activity.*
 import javax.inject.Inject
 
 @AppSingleton
@@ -55,5 +50,13 @@ constructor(
         analytics.logEvent(Analytics.EVENT_ON_GAMIFICATION_DESCRIPTION_SHOWN)
         val intent = Intent(context, DescriptionActivity::class.java)
         context.startActivity(intent)
+    }
+
+    override fun showSignInScreen(context: Context) {
+        context.startActivity(Intent(context, LoginActivity::class.java))
+    }
+
+    override fun showSignUpScreen(context: Context) {
+        context.startActivity(Intent(context, RegisterActivity::class.java))
     }
 }
