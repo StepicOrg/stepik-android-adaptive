@@ -91,7 +91,7 @@ class RecommendationsFragment : BasePresenterFragment<RecommendationsPresenter, 
         App.componentManager().studyComponent.inject(this)
     }
 
-    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         binding = FragmentRecommendationsBinding.inflate(inflater, container, false)
 
         binding.tryAgain.setOnClickListener { presenter?.retry() }
@@ -247,7 +247,7 @@ class RecommendationsFragment : BasePresenterFragment<RecommendationsPresenter, 
     }
 
     private fun refreshStreakRestoreDialog() {
-        binding.ticketItem.counter.text = getString(R.string.amount, inventoryManager.getItemsCount(InventoryManager.Item.Ticket))
+        binding.ticketItem?.counter?.text = getString(R.string.amount, inventoryManager.getItemsCount(InventoryManager.Item.Ticket))
     }
 
     override fun showQuestionsPacksTooltip() {
