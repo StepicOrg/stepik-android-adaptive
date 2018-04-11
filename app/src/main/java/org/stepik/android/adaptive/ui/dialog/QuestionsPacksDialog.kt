@@ -25,6 +25,9 @@ class QuestionsPacksDialog : DialogFragment() {
     @Inject
     lateinit var analytics: Analytics
 
+    @Inject
+    lateinit var screenManager: ScreenManager
+
     init {
         App.component().inject(this)
     }
@@ -39,7 +42,7 @@ class QuestionsPacksDialog : DialogFragment() {
 
         root.actionButton.setOnClickListener {
             analytics.logEvent(Analytics.EVENT_ON_QUESTIONS_DIALOG_ACTION_CLICKED)
-            ScreenManager.showQuestionsPacksScreen(activity, analytics)
+            screenManager.showQuestionsPacksScreen(activity)
             dismiss()
         }
 

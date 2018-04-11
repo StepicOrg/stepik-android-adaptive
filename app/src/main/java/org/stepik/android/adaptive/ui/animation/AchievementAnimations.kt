@@ -32,7 +32,7 @@ object AchievementAnimations {
     private const val HIDE_ANIMATION_START_DELAY = 2000L
 
     @JvmStatic
-    fun show(container: ViewGroup, achievement: Achievement, analytics: Analytics): ChainedAnimator {
+    fun show(container: ViewGroup, achievement: Achievement, screenManager: ScreenManager): ChainedAnimator {
         val context = container.context
         val binding = PopupAchievementBinding.inflate(LayoutInflater.from(context), container, false)
 
@@ -50,7 +50,7 @@ object AchievementAnimations {
         binding.root.scaleX = 0f
         binding.root.scaleY = 0f
 
-        binding.root.setOnClickListener { ScreenManager.showStatsScreen(context, analytics, 1) }
+        binding.root.setOnClickListener { screenManager.showStatsScreen(context, 1) }
 
         container.addView(binding.root)
 

@@ -15,6 +15,9 @@ class LogoutDialog: DialogFragment(), DialogInterface.OnClickListener {
     @Inject
     lateinit var logoutHelper: LogoutHelper
 
+    @Inject
+    lateinit var screenManager: ScreenManager
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         App.component().inject(this)
@@ -32,7 +35,7 @@ class LogoutDialog: DialogFragment(), DialogInterface.OnClickListener {
 
     override fun onClick(dialogInterface: DialogInterface, which: Int) {
         if (which == DialogInterface.BUTTON_POSITIVE) {
-            logoutHelper.logout(ScreenManager.getInstance()::showOnboardingScreen)
+            logoutHelper.logout(screenManager::showOnboardingScreen)
         }
     }
 }

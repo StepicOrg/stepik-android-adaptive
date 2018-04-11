@@ -38,7 +38,8 @@ constructor(
 
         private val config: Config,
         private val authPreferences: AuthPreferences,
-        private val logoutHelper: LogoutHelper
+        private val logoutHelper: LogoutHelper,
+        private val screenManager: ScreenManager
 ): Interceptor {
 
     override fun intercept(chain: Interceptor.Chain): Response {
@@ -72,7 +73,7 @@ constructor(
                     if (response == null || !oAuthResponse.isSuccessful) {
                         if (oAuthResponse.code() == 401) {
                             logoutHelper.logout {
-                                ScreenManager.getInstance().showOnboardingScreen()
+                                screenManager.showOnboardingScreen()
                             }
                         }
                         return chain.proceed(request)

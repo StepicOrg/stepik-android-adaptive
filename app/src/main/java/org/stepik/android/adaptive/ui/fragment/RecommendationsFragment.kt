@@ -87,6 +87,9 @@ class RecommendationsFragment : BasePresenterFragment<RecommendationsPresenter, 
     @Inject
     lateinit var questionsPacksManager: QuestionsPacksManager
 
+    @Inject
+    lateinit var screenManager: ScreenManager
+
     override fun injectComponent() {
         App.componentManager().studyComponent.inject(this)
     }
@@ -100,7 +103,7 @@ class RecommendationsFragment : BasePresenterFragment<RecommendationsPresenter, 
         binding.streakSuccessContainer.nestedTextView = binding.streakSuccess
         binding.streakSuccessContainer.setGradientDrawableParams(ContextCompat.getColor(context, R.color.colorAccent), 0f)
 
-        binding.toolbar.setOnClickListener { ScreenManager.showStatsScreen(context, analytics, 0) }
+        binding.toolbar.setOnClickListener { screenManager.showStatsScreen(context, 0) }
 
         savedInstanceState?.getLong(STREAK_RESTORE_KEY, -1)?.let {
             if (it != -1L) {
@@ -111,7 +114,7 @@ class RecommendationsFragment : BasePresenterFragment<RecommendationsPresenter, 
         binding.questionsPacks.changeVisibillity(isQuestionsPackSupported)
         binding.questionsPacks.setOnClickListener {
             questionsPacksTooltip?.dismiss()
-            ScreenManager.showQuestionsPacksScreen(context, analytics)
+            screenManager.showQuestionsPacksScreen(context)
         }
 
         return binding.root
@@ -214,7 +217,7 @@ class RecommendationsFragment : BasePresenterFragment<RecommendationsPresenter, 
             RateAppDialog.newInstance().show(childFragmentManager, RATE_APP_DIALOG_TAG)
 
     override fun showGamificationDescriptionScreen() =
-            ScreenManager.showGamificationDescription(context, analytics)
+            screenManager.showGamificationDescription(context)
 
     override fun showStreakRestoreDialog(streak: Long, withTooltip: Boolean) {
         refreshStreakRestoreDialog()

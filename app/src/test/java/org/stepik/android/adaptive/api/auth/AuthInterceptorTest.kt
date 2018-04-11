@@ -8,6 +8,7 @@ import org.junit.Before
 import org.junit.Test
 import org.stepik.android.adaptive.configuration.Config
 import org.stepik.android.adaptive.core.LogoutHelper
+import org.stepik.android.adaptive.core.ScreenManager
 import org.stepik.android.adaptive.data.preference.AuthPreferences
 import org.stepik.android.adaptive.util.AppConstants
 import java.util.concurrent.locks.ReentrantLock
@@ -23,6 +24,8 @@ class AuthInterceptorTest {
     private lateinit var authPreferences: AuthPreferences
 
     private lateinit var logoutHelper: LogoutHelper
+
+    private lateinit var screenManager: ScreenManager
 
     private fun isRequestsEquals(expected: Request?, argument: Request?) =
             expected == argument || (
@@ -43,6 +46,7 @@ class AuthInterceptorTest {
         authPreferences = mock()
 
         logoutHelper = mock()
+        screenManager = mock()
     }
 
     @Test
@@ -58,7 +62,7 @@ class AuthInterceptorTest {
             on { proceed(any()) } doReturn response
         }
 
-        val authInterceptor = AuthInterceptor(userAgent, authLock, authService, socialAuthService, config, authPreferences, logoutHelper)
+        val authInterceptor = AuthInterceptor(userAgent, authLock, authService, socialAuthService, config, authPreferences, logoutHelper, screenManager)
         authInterceptor.intercept(chain)
 
         val targetRequest = request.newBuilder()
@@ -79,6 +83,7 @@ class AuthInterceptorTest {
         verifyZeroInteractions(config)
         verifyZeroInteractions(authService)
         verifyZeroInteractions(socialAuthService)
+        verifyZeroInteractions(screenManager)
     }
 
     @Test
@@ -107,7 +112,7 @@ class AuthInterceptorTest {
                 .build()
 
 
-        val authInterceptor = AuthInterceptor(userAgent, authLock, authService, socialAuthService, config, authPreferences, logoutHelper)
+        val authInterceptor = AuthInterceptor(userAgent, authLock, authService, socialAuthService, config, authPreferences, logoutHelper, screenManager)
         authInterceptor.intercept(chain)
 
         verify(authPreferences)::oAuthResponse.set(oAuthResponse)
@@ -123,6 +128,7 @@ class AuthInterceptorTest {
         verifyNoMoreInteractions(config)
         verifyNoMoreInteractions(authService)
         verifyZeroInteractions(socialAuthService)
+        verifyZeroInteractions(screenManager)
     }
 
 }

@@ -56,6 +56,9 @@ class LaunchActivity: BasePresenterActivity<LoginPresenter, LoginView>(), LoginV
     @Inject
     lateinit var loginPresenterProvider: Provider<LoginPresenter>
 
+    @Inject
+    lateinit var screenManager: ScreenManager
+
     override fun injectComponent() {
         App.componentManager().loginComponent.inject(this)
     }
@@ -191,7 +194,7 @@ class LaunchActivity: BasePresenterActivity<LoginPresenter, LoginView>(), LoginV
     }
 
     override fun onSuccess() {
-        ScreenManager.getInstance().startStudy()
+        screenManager.startStudy()
     }
 
     override fun onNetworkError() {

@@ -23,6 +23,9 @@ class DescriptionActivity: AppCompatActivity() {
     @Inject
     lateinit var questionsPacksManager: QuestionsPacksManager
 
+    @Inject
+    lateinit var screenManager: ScreenManager
+
     private fun injectComponent() {
         App.componentManager().studyComponent.inject(this)
     }
@@ -33,10 +36,10 @@ class DescriptionActivity: AppCompatActivity() {
 
         injectComponent()
 
-        val questionsPacksListener = View.OnClickListener { ScreenManager.showQuestionsPacksScreen(this, analytics) }
+        val questionsPacksListener = View.OnClickListener { screenManager.showQuestionsPacksScreen(this) }
 
         close.setOnClickListener { finish() }
-        statsButton.setOnClickListener { ScreenManager.showStatsScreen(this, analytics, 0) }
+        statsButton.setOnClickListener { screenManager.showStatsScreen(this, 0) }
         packsButton.setOnClickListener(questionsPacksListener)
 
         descriptionLevels.text = fromHtmlCompat(getString(R.string.description_levels_description))

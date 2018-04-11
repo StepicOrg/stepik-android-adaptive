@@ -32,6 +32,9 @@ class RegisterActivity : BasePresenterActivity<LoginPresenter, LoginView>(), Log
     @Inject
     lateinit var loginPresenterProvider: Provider<LoginPresenter>
 
+    @Inject
+    lateinit var screenManager: ScreenManager
+
     override fun injectComponent() {
         App.componentManager().loginComponent.inject(this)
     }
@@ -106,7 +109,7 @@ class RegisterActivity : BasePresenterActivity<LoginPresenter, LoginView>(), Log
     }
 
     override fun onSuccess() {
-        ScreenManager.getInstance().startStudy()
+        screenManager.startStudy()
     }
 
     override fun onNetworkError() {

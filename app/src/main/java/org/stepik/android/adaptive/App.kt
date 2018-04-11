@@ -5,7 +5,6 @@ import com.facebook.FacebookSdk
 import com.vk.sdk.VKSdk
 import com.yandex.metrica.YandexMetrica
 import org.stepik.android.adaptive.configuration.Config
-import org.stepik.android.adaptive.core.ScreenManager
 import org.stepik.android.adaptive.di.AppCoreComponent
 import org.stepik.android.adaptive.di.ComponentManager
 import org.stepik.android.adaptive.di.DaggerAppCoreComponent
@@ -46,7 +45,6 @@ class App : Application() {
     }
 
     private fun initServices() {
-        ScreenManager.init(applicationContext)
         VKSdk.initialize(applicationContext)
         FacebookSdk.sdkInitialize(applicationContext)
 
