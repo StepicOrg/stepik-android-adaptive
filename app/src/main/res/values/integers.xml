@@ -3,4 +3,6 @@
     <integer name="dialog_appear_animation_duration">300</integer>
     <integer name="dialog_disappear_animation_duration">200</integer>
     <integer name="popup_transition_duration">200</integer>
+
+    <integer name="max_length_of_password">128</integer>
 </resources>

@@ -16,6 +16,7 @@
     <string name="email" translatable="false">E-mail</string>
     <string name="password">Password</string>
     <string name="sign_in">Sign In</string>
+    <string name="sign_in_with_password_suffix">" with e-mail"</string>
     <string name="sign_up">Sign Up</string>
     <string name="sign_later">Sign Later</string>
     <string name="continue_with">Or continue with</string>

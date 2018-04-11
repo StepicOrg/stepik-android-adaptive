@@ -16,6 +16,7 @@
     <string name="logout_dialog">Вы уверены, что хотите выйти из текущего профиля?</string>
     <string name="password">Пароль</string>
     <string name="sign_in">Войти</string>
+    <string name="sign_in_with_password_suffix">" с e-mail"</string>
     <string name="sign_up">Регистрация</string>
     <string name="sign_later">Позже</string>
     <string name="continue_with">Или авторизоваться через</string>

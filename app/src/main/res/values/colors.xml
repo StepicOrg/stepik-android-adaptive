@@ -26,4 +26,15 @@
     <color name="colorYellow">#ffca1d</color>
 
     <color name="light_blue_color">#1445b0ff</color>
+
+    <color name="auth_form_stroke_color">#979797</color>
+    <color name="auth_form_background_color">@android:color/transparent</color>
+    <color name="auth_form_background_color_wrong">#0CC82850</color>
+    <color name="auth_error_color">#C82850</color>
+    <color name="auth_remind_password_color">#4990e2</color>
+
+    <color name="auth_button_color">#1966CC66</color>
+    <color name="auth_button_color_pressed">#6666CC66</color>
+    <color name="auth_button_color_disabled">#0C66CC66</color>
+    <color name="auth_button_text_color">#FF66CC66</color>
 </resources>

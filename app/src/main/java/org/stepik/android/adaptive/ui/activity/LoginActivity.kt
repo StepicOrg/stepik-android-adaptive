@@ -1,11 +1,14 @@
 package org.stepik.android.adaptive.ui.activity
 
-import android.databinding.DataBindingUtil
+import android.graphics.Typeface
 import android.os.Bundle
-import android.support.design.widget.Snackbar
-import android.text.method.LinkMovementMethod
+import android.text.Spannable
+import android.text.SpannableString
+import android.text.style.StyleSpan
 import android.view.MenuItem
 import android.view.View
+import android.view.inputmethod.EditorInfo
+import kotlinx.android.synthetic.main.activity_login.*
 import org.stepik.android.adaptive.App
 import org.stepik.android.adaptive.R
 import org.stepik.android.adaptive.Util
@@ -13,9 +16,9 @@ import org.stepik.android.adaptive.core.ScreenManager
 import org.stepik.android.adaptive.core.presenter.BasePresenterActivity
 import org.stepik.android.adaptive.core.presenter.LoginPresenter
 import org.stepik.android.adaptive.core.presenter.contracts.LoginView
-import org.stepik.android.adaptive.databinding.ActivityLoginBinding
 import org.stepik.android.adaptive.ui.dialog.RemindPasswordDialog
-import org.stepik.android.adaptive.util.ValidateUtil
+import org.stepik.android.adaptive.util.changeVisibillity
+import org.stepik.android.adaptive.util.setOnKeyboardOpenListener
 import javax.inject.Inject
 import javax.inject.Provider
 
@@ -23,9 +26,9 @@ class LoginActivity : BasePresenterActivity<LoginPresenter, LoginView>(), LoginV
     private companion object {
         private const val PROGRESS = "login_progress"
         private const val REMIND_PASSWORD_DIALOG = "remind_password_dialog"
-    }
 
-    private lateinit var binding: ActivityLoginBinding
+        private const val EMAIL_KEY = "email"
+    }
 
     @Inject
     lateinit var screenManager: ScreenManager
@@ -39,29 +42,59 @@ class LoginActivity : BasePresenterActivity<LoginPresenter, LoginView>(), LoginV
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_login)
+        setContentView(R.layout.activity_login)
 
-        setSupportActionBar(binding.loginActivityToolbar)
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        supportActionBar?.setDisplayShowTitleEnabled(false)
+        initTitle()
 
-        val focusChangeListener = View.OnFocusChangeListener { v, hasFocus ->
-            if (hasFocus) when(v.id) {
-                R.id.login_activity_email        -> binding.loginActivityEmailWrapper.isErrorEnabled      = false
-                R.id.login_activity_password     -> binding.loginActivityPasswordWrapper.isErrorEnabled   = false
+        loginField.setOnEditorActionListener { _, actionId, _ ->
+            var handled = false
+            if (actionId == EditorInfo.IME_ACTION_NEXT) {
+                passwordField.requestFocus()
+                handled = true
             }
+            handled
         }
 
-        binding.loginActivityEmail.onFocusChangeListener = focusChangeListener
-        binding.loginActivityPassword.onFocusChangeListener = focusChangeListener
+        passwordField.setOnEditorActionListener { _, actionId, _ ->
+            var handled = false
+            if (actionId == EditorInfo.IME_ACTION_SEND) {
+                tryLogin()
+                handled = true
+            }
+            handled
+        }
 
-        binding.loginActivityTerms.movementMethod = LinkMovementMethod.getInstance()
+        loginRootView.requestFocus()
 
-        binding.loginActivitySignIn.setOnClickListener { authWithLoginPassword() }
+        if (savedInstanceState == null && intent.hasExtra(EMAIL_KEY)) {
+            loginField.setText(intent.getStringExtra(EMAIL_KEY))
+            passwordField.requestFocus()
+        }
 
-        binding.loginActivityRemindPassword.setOnClickListener {
+        loginButton.setOnClickListener {
+            tryLogin()
+        }
+
+        remindPasswordButton.setOnClickListener {
             RemindPasswordDialog().show(supportFragmentManager, REMIND_PASSWORD_DIALOG)
         }
+
+        setOnKeyboardOpenListener(
+                root_view,
+                onKeyboardShown = { signInText.changeVisibillity(false) },
+                onKeyboardHidden = { signInText.changeVisibillity(true) }
+        )
+    }
+
+    private fun initTitle() {
+        val signInString = getString(R.string.sign_in)
+        val signInWithPasswordSuffix = getString(R.string.sign_in_with_password_suffix)
+
+        val spannableSignIn = SpannableString(signInString + signInWithPasswordSuffix)
+        val typefaceSpan = StyleSpan(Typeface.BOLD)
+
+        spannableSignIn.setSpan(typefaceSpan, 0, signInString.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+        signInText.text = spannableSignIn
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
@@ -83,25 +116,12 @@ class LoginActivity : BasePresenterActivity<LoginPresenter, LoginView>(), LoginV
         super.onStop()
     }
 
-    override fun onDestroy() {
-        binding.unbind()
-        super.onDestroy()
+    private fun tryLogin() {
+        val login = loginField.text.toString()
+        val password = passwordField.text.toString()
+
+        presenter?.authWithLoginPassword(login, password)
     }
-
-    fun authWithLoginPassword() {
-        val email = binding.loginActivityEmail.text.toString().trim()
-        val password = binding.loginActivityPassword.text.toString()
-
-        var isOk = true
-
-        isOk = isOk && ValidateUtil.validateEmail(binding.loginActivityEmailWrapper, binding.loginActivityEmail)
-        isOk = isOk && ValidateUtil.validatePassword(binding.loginActivityPasswordWrapper, binding.loginActivityPassword)
-
-        if (isOk) {
-            presenter?.authWithLoginPassword(email, password)
-        }
-    }
-
 
     override fun onSuccess() {
         screenManager.startStudy()
@@ -109,7 +129,7 @@ class LoginActivity : BasePresenterActivity<LoginPresenter, LoginView>(), LoginV
 
     override fun onNetworkError() {
         hideProgressDialogFragment(PROGRESS)
-        Snackbar.make(binding.root, R.string.auth_error, Snackbar.LENGTH_LONG).show()
+//        Snackbar.make(binding.root, R.string.auth_error, Snackbar.LENGTH_LONG).show()
     }
 
     override fun onError(errorBody: String) {
