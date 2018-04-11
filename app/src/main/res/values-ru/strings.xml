@@ -17,6 +17,7 @@
     <string name="password">Пароль</string>
     <string name="sign_in">Войти</string>
     <string name="sign_up">Регистрация</string>
+    <string name="sign_later">Позже</string>
     <string name="continue_with">Или авторизоваться через</string>
     <string name="create_account">Регистрация</string>
     <string name="remind_password">Вспомнить пароль</string>
@@ -159,4 +160,6 @@
     <string name="description_packs_title">Бесплатные наборы вопросов</string>
     <string name="description_packs_description"><![CDATA[При наборе необходимого <font color="#0092E4">уровня</font> вам будут открываться новые <font color="#0092E4">наборы вопросов</font>, например Adjectives или Verbs]]></string>
     <string name="description_packs_button">@string/questions_packs</string>
+
+    <string name="profile">Профиль</string>
 </resources>

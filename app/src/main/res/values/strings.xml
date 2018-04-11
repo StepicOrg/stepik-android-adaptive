@@ -17,6 +17,7 @@
     <string name="password">Password</string>
     <string name="sign_in">Sign In</string>
     <string name="sign_up">Sign Up</string>
+    <string name="sign_later">Sign Later</string>
     <string name="continue_with">Or continue with</string>
     <string name="create_account">Create account</string>
     <string name="remind_password">Forgot password</string>
@@ -169,4 +170,6 @@
     <string name="description_packs_title">Free questions packs</string>
     <string name="description_packs_description"><![CDATA[When the required <font color="#0092E4">level</font> is reached you will receive free <font color="#0092E4">questions packs</font> like Adjectives or Verbs packs]]></string>
     <string name="description_packs_button">@string/questions_packs</string>
+
+    <string name="profile">Profile</string>
 </resources>
