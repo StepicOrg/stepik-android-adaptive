@@ -1,13 +1,12 @@
 package org.stepik.android.adaptive.ui.activity
 
-import android.databinding.DataBindingUtil
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.view.MenuItem
+import kotlinx.android.synthetic.main.activity_stats.*
 import org.stepik.android.adaptive.App
 import org.stepik.android.adaptive.R
 import org.stepik.android.adaptive.configuration.Config
-import org.stepik.android.adaptive.databinding.ActivityStatsBinding
 import org.stepik.android.adaptive.ui.adapter.StatsViewPagerAdapter
 import javax.inject.Inject
 
@@ -15,8 +14,6 @@ class StatsActivity : AppCompatActivity() {
     companion object {
         const val PAGE_KEY = "page"
     }
-
-    private lateinit var binding: ActivityStatsBinding
 
     @Inject
     lateinit var config: Config
@@ -26,19 +23,18 @@ class StatsActivity : AppCompatActivity() {
         App.componentManager().statsComponent.inject(this)
 
         overridePendingTransition(R.anim.slide_down, R.anim.fade_in)
+        setContentView(R.layout.activity_stats)
 
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_stats)
-
-        setSupportActionBar(binding.toolbar)
+        setSupportActionBar(toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.title = getString(R.string.stats)
 
-        binding.pager.adapter = StatsViewPagerAdapter(supportFragmentManager, this, config)
-        binding.pager.offscreenPageLimit = binding.pager.adapter.count
-        binding.tabLayout.setupWithViewPager(binding.pager)
+        pager.adapter = StatsViewPagerAdapter(supportFragmentManager, this, config)
+        pager.offscreenPageLimit = pager.adapter.count
+        tabLayout.setupWithViewPager(pager)
 
         if (savedInstanceState == null) {
-            binding.pager.currentItem = intent.getIntExtra(PAGE_KEY, 0)
+            pager.currentItem = intent.getIntExtra(PAGE_KEY, 0)
         }
     }
 
