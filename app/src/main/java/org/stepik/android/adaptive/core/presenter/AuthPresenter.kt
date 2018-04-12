@@ -105,7 +105,7 @@ constructor(
             .map { it.profile }
             .doOnSuccess { sharedPreferenceHelper.profile = it }
             .flatMapCompletable {
-                it.setSubscribed_for_mail(false)
+                it.subscribedForMail = false
                 api.setProfile(it)
             }
 
