@@ -63,15 +63,16 @@ constructor(
     }
 
     private fun handleLoginError(error: Throwable) {
-        if (error is HttpException) {
+        val authError = if (error is HttpException) {
             if (error.code() == 429) {
-                onError(AuthError.TooManyAttempts)
+                AuthError.TooManyAttempts
             } else {
-                onError(AuthError.EmailPasswordInvalid)
+                AuthError.EmailPasswordInvalid
             }
         } else {
-            onError(AuthError.ConnectionProblem)
+            AuthError.ConnectionProblem
         }
+        onError(authError)
     }
 
     private fun createAccountRx(credentials: AccountCredentials): Completable =
