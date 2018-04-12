@@ -57,6 +57,5 @@ constructor(
     }
 
     override fun showSignUpScreen(context: Context) {
-        context.startActivity(Intent(context, RegisterActivity::class.java))
     }
 }

@@ -1,7 +1,7 @@
 package org.stepik.android.adaptive.api.auth
 
+import io.reactivex.Completable
 import io.reactivex.Single
-import org.stepik.android.adaptive.api.RegistrationResponse
 import org.stepik.android.adaptive.api.UserRegistrationRequest
 import org.stepik.android.adaptive.configuration.Config
 import org.stepik.android.adaptive.data.model.RegistrationUser
@@ -11,7 +11,6 @@ import org.stepik.android.adaptive.di.qualifiers.AuthLock
 import org.stepik.android.adaptive.di.qualifiers.AuthService
 import org.stepik.android.adaptive.di.qualifiers.CookieAuthService
 import org.stepik.android.adaptive.di.qualifiers.SocialAuthService
-import retrofit2.Response
 import java.util.concurrent.locks.ReentrantLock
 import javax.inject.Inject
 import kotlin.concurrent.withLock
@@ -62,7 +61,7 @@ constructor(
             .getTokenByCode(config.grantTypeSocial, code, config.redirectUri)
             .doOnSuccess { saveResponse(it, isSocial = true) }
 
-    override fun createAccount(credentials: RegistrationUser): Single<Response<RegistrationResponse>> =
+    override fun createAccount(credentials: RegistrationUser): Completable =
             cookieAuthService.createAccount(UserRegistrationRequest(credentials))
 
 }

@@ -24,12 +24,8 @@
     <string name="remind_password">Вспомнить пароль</string>
     <string name="first_name">Имя</string>
     <string name="second_name">Фамилия</string>
-    <string name="auth_error">Ошибка авторизации</string>
-    <string name="auth_error_empty_email">Введите корректный E-mail</string>
-    <string name="auth_error_empty_password">Введите пароль</string>
     <string name="processing_your_request">Обработка запроса</string>
     <string name="loading_message">Пожалуйста, подождите…</string>
-    <string name="auth">Авторизация</string>
     <string name="remind_password_success">Мы отправили вам письмо</string>
     <string name="open">Открыть</string>
     <string name="close">Закрыть</string>
@@ -163,4 +159,9 @@
     <string name="description_packs_button">@string/questions_packs</string>
 
     <string name="profile">Профиль</string>
+
+    <string name="auth_error_empty_email">Введите корректный E-mail</string>
+    <string name="auth_error_connectivity">@string/connectivity_error</string>
+    <string name="auth_error_email_password_invalid">E-mail адрес/пароль неверны</string>
+    <string name="auth_error_too_many_attempts">Слишком много неверных попыток. Попробуйте позже</string>
 </resources>

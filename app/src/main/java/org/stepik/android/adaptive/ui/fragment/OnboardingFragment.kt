@@ -14,7 +14,8 @@ import io.reactivex.Observable
 import io.reactivex.Scheduler
 import org.stepik.android.adaptive.App
 import org.stepik.android.adaptive.R
-import org.stepik.android.adaptive.core.presenter.LoginPresenter
+import org.stepik.android.adaptive.api.auth.AuthError
+import org.stepik.android.adaptive.core.presenter.AuthPresenter
 import org.stepik.android.adaptive.core.presenter.contracts.LoginView
 import org.stepik.android.adaptive.data.Analytics
 import org.stepik.android.adaptive.data.preference.SharedPreferenceHelper
@@ -50,7 +51,7 @@ class OnboardingFragment : Fragment(), LoginView {
     lateinit var backgroundScheduler: Scheduler
 
     @Inject
-    lateinit var presenter: LoginPresenter
+    lateinit var presenter: AuthPresenter
 
     @Inject
     lateinit var sharedPreferenceHelper: SharedPreferenceHelper
@@ -147,15 +148,11 @@ class OnboardingFragment : Fragment(), LoginView {
         onComplete()
     }
 
-    override fun onNetworkError() {
+    override fun onError(authError: AuthError) {
         binding.error.visibility = View.VISIBLE
 
         binding.progress.visibility = View.GONE
         binding.cardsContainer.visibility = View.GONE
-    }
-
-    override fun onError(errorBody: String) {
-        onNetworkError()
     }
 
     override fun onLoading() {
@@ -167,8 +164,8 @@ class OnboardingFragment : Fragment(), LoginView {
     private fun onComplete() {
         if (completed == 2) {
             analytics.onBoardingFinished()
-            startActivity(Intent(this@OnboardingFragment.context, StudyActivity::class.java))
-            this@OnboardingFragment.activity.finish()
+            startActivity(Intent(context, StudyActivity::class.java))
+            activity.finish()
         }
     }
 
@@ -184,16 +181,6 @@ class OnboardingFragment : Fragment(), LoginView {
 
 
     private fun createMockAccount() {
-        Observable.fromCallable(sharedPreferenceHelper::fakeUser)
-                .observeOn(mainScheduler)
-                .subscribeOn(backgroundScheduler)
-                .subscribe {
-                    if (it.value != null) {
-                        // we got here if on some reason server returns us 401, so we try to re-login with existing fake account
-                        presenter.authWithLoginPassword(it.value.login, it.value.password, true)
-                    } else {
-                        presenter.createFakeUser()
-                    }
-                }
+        presenter.authFakeUser()
     }
 }

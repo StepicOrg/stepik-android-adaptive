@@ -59,7 +59,7 @@ public interface StepikService {
     );
 
     @GET("api/stepics/1")
-    Observable<ProfileResponse> getProfile();
+    Single<ProfileResponse> getProfile();
 
     @POST("api/recommendation-reactions")
     Completable createRecommendationReaction(

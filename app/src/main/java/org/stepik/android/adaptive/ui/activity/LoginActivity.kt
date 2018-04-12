@@ -2,8 +2,11 @@ package org.stepik.android.adaptive.ui.activity
 
 import android.graphics.Typeface
 import android.os.Bundle
+import android.support.annotation.StringRes
+import android.text.Editable
 import android.text.Spannable
 import android.text.SpannableString
+import android.text.TextWatcher
 import android.text.style.StyleSpan
 import android.view.MenuItem
 import android.view.View
@@ -12,9 +15,10 @@ import kotlinx.android.synthetic.main.activity_login.*
 import org.stepik.android.adaptive.App
 import org.stepik.android.adaptive.R
 import org.stepik.android.adaptive.Util
+import org.stepik.android.adaptive.api.auth.AuthError
 import org.stepik.android.adaptive.core.ScreenManager
 import org.stepik.android.adaptive.core.presenter.BasePresenterActivity
-import org.stepik.android.adaptive.core.presenter.LoginPresenter
+import org.stepik.android.adaptive.core.presenter.AuthPresenter
 import org.stepik.android.adaptive.core.presenter.contracts.LoginView
 import org.stepik.android.adaptive.ui.dialog.RemindPasswordDialog
 import org.stepik.android.adaptive.util.changeVisibillity
@@ -22,7 +26,7 @@ import org.stepik.android.adaptive.util.setOnKeyboardOpenListener
 import javax.inject.Inject
 import javax.inject.Provider
 
-class LoginActivity : BasePresenterActivity<LoginPresenter, LoginView>(), LoginView {
+class LoginActivity : BasePresenterActivity<AuthPresenter, LoginView>(), LoginView {
     private companion object {
         private const val PROGRESS = "login_progress"
         private const val REMIND_PASSWORD_DIALOG = "remind_password_dialog"
@@ -34,7 +38,7 @@ class LoginActivity : BasePresenterActivity<LoginPresenter, LoginView>(), LoginV
     lateinit var screenManager: ScreenManager
 
     @Inject
-    lateinit var loginPresenterProvider: Provider<LoginPresenter>
+    lateinit var authPresenterProvider: Provider<AuthPresenter>
 
     override fun injectComponent() {
         App.componentManager().loginComponent.inject(this)
@@ -45,6 +49,18 @@ class LoginActivity : BasePresenterActivity<LoginPresenter, LoginView>(), LoginV
         setContentView(R.layout.activity_login)
 
         initTitle()
+
+        val errorTextWatcher = object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                onClearLoginError()
+            }
+
+            override fun afterTextChanged(s: Editable?) {}
+        }
+        loginField.addTextChangedListener(errorTextWatcher)
+        passwordField.addTextChangedListener(errorTextWatcher)
 
         loginField.setOnEditorActionListener { _, actionId, _ ->
             var handled = false
@@ -116,6 +132,12 @@ class LoginActivity : BasePresenterActivity<LoginPresenter, LoginView>(), LoginV
         super.onStop()
     }
 
+    private fun onClearLoginError() {
+        loginButton.isEnabled = true
+        authForm.isEnabled = true
+        loginErrorMessage.visibility = View.GONE
+    }
+
     private fun tryLogin() {
         val login = loginField.text.toString()
         val password = passwordField.text.toString()
@@ -127,12 +149,21 @@ class LoginActivity : BasePresenterActivity<LoginPresenter, LoginView>(), LoginV
         screenManager.startStudy()
     }
 
-    override fun onNetworkError() {
-        hideProgressDialogFragment(PROGRESS)
-//        Snackbar.make(binding.root, R.string.auth_error, Snackbar.LENGTH_LONG).show()
-    }
+    override fun onError(authError: AuthError) {
+        @StringRes val messageResId = when (authError) {
+            AuthError.ConnectionProblem     -> R.string.auth_error_connectivity
+            AuthError.EmailPasswordInvalid  -> R.string.auth_error_email_password_invalid
+            AuthError.TooManyAttempts       -> R.string.auth_error_too_many_attempts
+        }
 
-    override fun onError(errorBody: String) {
+        if (authError == AuthError.EmailPasswordInvalid) {
+            authForm.isEnabled = false
+            loginButton.isEnabled = false
+        }
+
+        loginErrorMessage.setText(messageResId)
+        loginErrorMessage.changeVisibillity(true)
+
         hideProgressDialogFragment(PROGRESS)
     }
 
@@ -140,5 +171,5 @@ class LoginActivity : BasePresenterActivity<LoginPresenter, LoginView>(), LoginV
         showProgressDialogFragment(PROGRESS, getString(R.string.sign_in), getString(R.string.processing_your_request))
     }
 
-    override fun getPresenterProvider() = loginPresenterProvider
+    override fun getPresenterProvider() = authPresenterProvider
 }

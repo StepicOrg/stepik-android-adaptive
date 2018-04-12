@@ -24,12 +24,8 @@
     <string name="remind_password">Forgot password</string>
     <string name="first_name">First name</string>
     <string name="second_name">Second name</string>
-    <string name="auth_error">Authorization error</string>
-    <string name="auth_error_empty_email">Enter valid email address</string>
-    <string name="auth_error_empty_password">Enter the password</string>
     <string name="processing_your_request">Processing your request</string>
     <string name="loading_message">Please wait…</string>
-    <string name="auth">Authorization</string>
     <integer name="com_vk_sdk_AppId" translatable="false">6018407</integer>
     <string name="remind_password_success">We sent you a letter</string>
     <string name="open">Open</string>
@@ -173,4 +169,9 @@
     <string name="description_packs_button">@string/questions_packs</string>
 
     <string name="profile">Profile</string>
+
+    <string name="auth_error_empty_email">Enter valid email address</string>
+    <string name="auth_error_connectivity">@string/connectivity_error</string>
+    <string name="auth_error_email_password_invalid">Login/password was incorrect</string>
+    <string name="auth_error_too_many_attempts">Too many attempts. Please try later.</string>
 </resources>

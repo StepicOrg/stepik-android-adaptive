@@ -12,7 +12,6 @@ import org.stepik.android.adaptive.data.model.AccountCredentials
 import org.stepik.android.adaptive.data.model.Profile
 import org.stepik.android.adaptive.content.questions.QuestionsPack
 import org.stepik.android.adaptive.di.AppSingleton
-import org.stepik.android.adaptive.util.RxOptional
 import javax.inject.Inject
 
 @AppSingleton
@@ -60,8 +59,12 @@ constructor(context: Context): SharedPreferenceProvider, AuthPreferences, Profil
         get() = getLong(PROFILE_ID)
         private set(value) = saveLong(PROFILE_ID, value)
 
-    val fakeUser: RxOptional<AccountCredentials>
-        get() = RxOptional(getString(FAKE_USER)).map { gson.fromJson(it, AccountCredentials::class.java) }
+    var fakeUser: AccountCredentials?
+        get() = getString(FAKE_USER)?.let { gson.fromJson(it, AccountCredentials::class.java) }
+        set(value) {
+            val json = value?.let { gson.toJson(it) }
+            saveString(FAKE_USER, json)
+        }
 
     val isStreakRestoreTooltipWasShown:  Boolean by preference(IS_STREAK_RESTORE_TOOLTIP_WAS_SHOWN)
     val isPaidContentTooltipWasShown:    Boolean by preference(IS_PAID_CONTENT_TOOLTIP_WAS_SHOWN)
@@ -87,11 +90,6 @@ constructor(context: Context): SharedPreferenceProvider, AuthPreferences, Profil
 
     fun removeFakeUser() {
         remove(FAKE_USER)
-    }
-
-    fun saveFakeUser(credentials: AccountCredentials) {
-        val json = gson.toJson(credentials)
-        saveString(FAKE_USER, json)
     }
 
     fun afterStreakRestoreTooltipWasShown() {
@@ -121,7 +119,7 @@ constructor(context: Context): SharedPreferenceProvider, AuthPreferences, Profil
         sharedPreferences[name] = data
     }
 
-    private fun saveString(name: String, data: String) {
+    private fun saveString(name: String, data: String?) {
         sharedPreferences[name] = data
     }
 

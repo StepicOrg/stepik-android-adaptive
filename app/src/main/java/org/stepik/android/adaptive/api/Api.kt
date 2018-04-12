@@ -49,7 +49,7 @@ constructor(
         private const val TIMEOUT_IN_SECONDS = 60L
     }
 
-    val profile: Observable<ProfileResponse>
+    val profile: Single<ProfileResponse>
         get() = stepikService.profile
 
     fun createFakeAccount(): AccountCredentials {

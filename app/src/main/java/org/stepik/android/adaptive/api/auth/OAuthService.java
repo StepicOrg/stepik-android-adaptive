@@ -1,11 +1,10 @@
 package org.stepik.android.adaptive.api.auth;
 
-import org.stepik.android.adaptive.api.RegistrationResponse;
 import org.stepik.android.adaptive.api.UserRegistrationRequest;
 
+import io.reactivex.Completable;
 import io.reactivex.Single;
 import retrofit2.Call;
-import retrofit2.Response;
 import retrofit2.http.Body;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
@@ -47,7 +46,7 @@ public interface OAuthService {
     );
 
     @POST("/api/users")
-    Single<Response<RegistrationResponse>> createAccount(
+    Completable createAccount(
             @Body UserRegistrationRequest user
     );
 
