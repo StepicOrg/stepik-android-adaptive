@@ -16,14 +16,18 @@
     <string name="email" translatable="false">E-mail</string>
     <string name="password">Password</string>
     <string name="sign_in">Sign In</string>
-    <string name="sign_in_with_password_suffix">" with e-mail"</string>
+    <string name="sign_in_title"><![CDATA[<b>Sign In</b> with e-mail]]></string>
     <string name="sign_up">Sign Up</string>
+    <string name="sign_up_title"><![CDATA[<b>Sign Up</b> with e-mail]]></string>
     <string name="sign_later">Sign Later</string>
     <string name="continue_with">Or continue with</string>
     <string name="create_account">Create account</string>
     <string name="remind_password">Forgot password</string>
+
+    <string name="name">Name</string>
     <string name="first_name">First name</string>
     <string name="second_name">Second name</string>
+
     <string name="processing_your_request">Processing your request</string>
     <string name="loading_message">Please wait…</string>
     <integer name="com_vk_sdk_AppId" translatable="false">6018407</integer>

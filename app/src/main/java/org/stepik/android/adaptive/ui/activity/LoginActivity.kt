@@ -1,13 +1,9 @@
 package org.stepik.android.adaptive.ui.activity
 
-import android.graphics.Typeface
 import android.os.Bundle
 import android.support.annotation.StringRes
 import android.text.Editable
-import android.text.Spannable
-import android.text.SpannableString
 import android.text.TextWatcher
-import android.text.style.StyleSpan
 import android.view.MenuItem
 import android.view.View
 import android.view.inputmethod.EditorInfo
@@ -22,6 +18,7 @@ import org.stepik.android.adaptive.core.presenter.AuthPresenter
 import org.stepik.android.adaptive.core.presenter.contracts.AuthView
 import org.stepik.android.adaptive.ui.dialog.RemindPasswordDialog
 import org.stepik.android.adaptive.util.changeVisibillity
+import org.stepik.android.adaptive.util.fromHtmlCompat
 import org.stepik.android.adaptive.util.setOnKeyboardOpenListener
 import javax.inject.Inject
 import javax.inject.Provider
@@ -48,7 +45,7 @@ class LoginActivity : BasePresenterActivity<AuthPresenter, AuthView>(), AuthView
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
 
-        initTitle()
+        signInText.text = fromHtmlCompat(getString(R.string.sign_in_title))
 
         val errorTextWatcher = object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
@@ -101,18 +98,6 @@ class LoginActivity : BasePresenterActivity<AuthPresenter, AuthView>(), AuthView
                 onKeyboardHidden = { signInText.changeVisibillity(true) }
         )
     }
-
-    private fun initTitle() {
-        val signInString = getString(R.string.sign_in)
-        val signInWithPasswordSuffix = getString(R.string.sign_in_with_password_suffix)
-
-        val spannableSignIn = SpannableString(signInString + signInWithPasswordSuffix)
-        val typefaceSpan = StyleSpan(Typeface.BOLD)
-
-        spannableSignIn.setSpan(typefaceSpan, 0, signInString.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-        signInText.text = spannableSignIn
-    }
-
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         if ((item?.itemId ?: -1) == android.R.id.home) {
             Util.hideSoftKeyboard(this)

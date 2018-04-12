@@ -33,19 +33,11 @@
 
         <activity
             android:theme="@style/AppTheme.NoActionBar"
-            android:name="org.stepik.android.adaptive.ui.activity.LaunchActivity" />
-
-        <activity
-            android:theme="@style/AppTheme.NoActionBar"
             android:name="org.stepik.android.adaptive.ui.activity.StudyActivity" />
 
         <activity
             android:theme="@style/AppTheme.NoActionBar"
             android:name="org.stepik.android.adaptive.ui.activity.LoginActivity" />
-
-        <activity
-            android:theme="@style/AppTheme.NoActionBar"
-            android:name="org.stepik.android.adaptive.ui.activity.RegisterActivity" />
 
         <activity
             android:theme="@style/AppTheme.NoActionBar"
@@ -74,6 +66,10 @@
         <activity
             android:theme="@style/AppTheme.NoActionBar"
             android:name=".ui.activity.DescriptionActivity" />
+
+        <activity
+            android:theme="@style/AppTheme.NoActionBar"
+            android:name=".ui.activity.EditProfileActivity" />
 
         <receiver
             android:name="org.stepik.android.adaptive.receivers.BootCompletedReceiver"

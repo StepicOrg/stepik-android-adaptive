@@ -57,5 +57,8 @@ constructor(
     }
 
     override fun showSignUpScreen(context: Context) {
+        val intent = Intent(context, EditProfileActivity::class.java)
+        intent.putExtra(EditProfileActivity.IS_FAKE_REGISTER_MODE, true)
+        context.startActivity(intent)
     }
 }
