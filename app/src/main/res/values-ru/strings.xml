@@ -40,7 +40,7 @@
     <string name="required_field">Обязательное поле</string>
     <string name="terms_message_launch"><a href="https://stepik.org/page/terms/?from_mobile_app=true">Условия использования</a> и <a href="https://stepik.org/page/privacy/?from_mobile_app=true">Политика конфиденциальности</a></string>
     <string name="terms_message_login">Входя в приложение, Вы соглашаетесь с <a href="https://stepik.org/page/terms/?from_mobile_app=true">Условиями использования</a> и <a href="https://stepik.org/page/privacy/?from_mobile_app=true">Политикой конфиденциальности</a></string>
-    <string name="terms_message_register">Регистрируясь, Вы соглашаетесь с <a href="https://stepik.org/page/terms/?from_mobile_app=true">Условиями использования</a> и <a href="https://stepik.org/page/privacy/?from_mobile_app=true">Политикой конфиденциальности</a></string>
+    <string name="terms_message_register"><![CDATA[Регистрируясь, Вы соглашаетесь с <a href="https://stepik.org/page/terms/?from_mobile_app=true">Условиями использования</a> и <a href="https://stepik.org/page/privacy/?from_mobile_app=true">Политикой конфиденциальности</a>]]></string>
     <string name="register_error">При регистрации возникла ошибка</string>
     <string name="retry">Попробовать снова</string>
     <string name="onboarding_card_title_1">Добро пожаловать</string>

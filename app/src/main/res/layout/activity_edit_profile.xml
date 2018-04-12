@@ -75,7 +75,16 @@
                 <EditText
                     android:id="@+id/firstNameField"
                     style="@style/AuthFormFields"
-                    android:hint="@string/name"
+                    android:hint="@string/first_name"
+                    android:imeOptions="flagNoFullscreen|actionNext"
+                    android:inputType="textPersonName|textAutoCorrect|textCapWords"/>
+
+                <include layout="@layout/separator_auth_form" />
+
+                <EditText
+                    android:id="@+id/secondNameField"
+                    style="@style/AuthFormFields"
+                    android:hint="@string/second_name"
                     android:imeOptions="flagNoFullscreen|actionNext"
                     android:inputType="textPersonName|textAutoCorrect|textCapWords"/>
 

@@ -1,13 +1,18 @@
 package org.stepik.android.adaptive.ui.activity
 
 import android.os.Bundle
+import android.text.method.LinkMovementMethod
+import android.view.inputmethod.EditorInfo
 import kotlinx.android.synthetic.main.activity_edit_profile.*
 import org.stepik.android.adaptive.App
 import org.stepik.android.adaptive.R
 import org.stepik.android.adaptive.core.presenter.BasePresenterActivity
 import org.stepik.android.adaptive.core.presenter.EditProfilePresenter
 import org.stepik.android.adaptive.core.presenter.contracts.EditProfileView
+import org.stepik.android.adaptive.util.changeVisibillity
 import org.stepik.android.adaptive.util.fromHtmlCompat
+import org.stepik.android.adaptive.util.setOnKeyboardOpenListener
+import org.stepik.android.adaptive.util.stripUnderlinesFromLinks
 import javax.inject.Inject
 import javax.inject.Provider
 
@@ -28,6 +33,44 @@ class EditProfileActivity: BasePresenterActivity<EditProfilePresenter, EditProfi
         setContentView(R.layout.activity_edit_profile)
 
         signUpText.text = fromHtmlCompat(getString(R.string.sign_up_title))
+
+        termsPrivacyRegisterTextView.movementMethod = LinkMovementMethod.getInstance()
+        termsPrivacyRegisterTextView.text = fromHtmlCompat(getString(R.string.terms_message_register)).stripUnderlinesFromLinks()
+
+        firstNameField.setOnEditorActionListener { _, actionId, _ ->
+            if (actionId == EditorInfo.IME_ACTION_NEXT) {
+                secondNameField.requestFocus()
+                true
+            } else {
+                false
+            }
+        }
+
+        secondNameField.setOnEditorActionListener { _, actionId, _ ->
+            if (actionId == EditorInfo.IME_ACTION_NEXT) {
+                emailField.requestFocus()
+                true
+            } else {
+                false
+            }
+        }
+
+        emailField.setOnEditorActionListener { _, actionId, _ ->
+            if (actionId == EditorInfo.IME_ACTION_NEXT) {
+                passwordField.requestFocus()
+                true
+            } else {
+                false
+            }
+        }
+
+        editProfileView.requestFocus()
+
+        setOnKeyboardOpenListener(root_view, {
+            signUpText.changeVisibillity(false)
+        }, {
+            signUpText.changeVisibillity(true)
+        })
     }
 
     override fun onStart() {
