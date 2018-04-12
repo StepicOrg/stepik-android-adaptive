@@ -8,7 +8,7 @@ import org.stepik.android.adaptive.api.Api
 import org.stepik.android.adaptive.api.auth.AuthError
 import org.stepik.android.adaptive.api.auth.AuthRepository
 import org.stepik.android.adaptive.content.questions.QuestionsPacksManager
-import org.stepik.android.adaptive.core.presenter.contracts.LoginView
+import org.stepik.android.adaptive.core.presenter.contracts.AuthView
 import org.stepik.android.adaptive.data.Analytics
 import org.stepik.android.adaptive.data.preference.SharedPreferenceHelper
 import org.stepik.android.adaptive.data.model.AccountCredentials
@@ -34,7 +34,7 @@ constructor(
         private val backgroundScheduler: Scheduler,
         @MainScheduler
         private val mainScheduler: Scheduler
-): PresenterBase<LoginView>() {
+): PresenterBase<AuthView>() {
 
     private val disposable = CompositeDisposable()
 
@@ -56,6 +56,7 @@ constructor(
         view?.onLoading()
 
         disposable addDisposable loginRx(login, password).andThen(onLoginRx())
+                .doOnComplete { sharedPreferenceHelper.removeFakeUser() } // we auth as normal user and can remove fake credentials
                 .subscribeOn(backgroundScheduler)
                 .observeOn(mainScheduler)
                 .subscribe(this::onSuccess, this::handleLoginError)
@@ -117,7 +118,7 @@ constructor(
         view?.onSuccess()
     }
 
-    override fun attachView(view: LoginView) {
+    override fun attachView(view: AuthView) {
         super.attachView(view)
         if (isSuccess) view.onSuccess()
     }

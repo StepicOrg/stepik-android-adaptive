@@ -19,14 +19,14 @@ import org.stepik.android.adaptive.api.auth.AuthError
 import org.stepik.android.adaptive.core.ScreenManager
 import org.stepik.android.adaptive.core.presenter.BasePresenterActivity
 import org.stepik.android.adaptive.core.presenter.AuthPresenter
-import org.stepik.android.adaptive.core.presenter.contracts.LoginView
+import org.stepik.android.adaptive.core.presenter.contracts.AuthView
 import org.stepik.android.adaptive.ui.dialog.RemindPasswordDialog
 import org.stepik.android.adaptive.util.changeVisibillity
 import org.stepik.android.adaptive.util.setOnKeyboardOpenListener
 import javax.inject.Inject
 import javax.inject.Provider
 
-class LoginActivity : BasePresenterActivity<AuthPresenter, LoginView>(), LoginView {
+class LoginActivity : BasePresenterActivity<AuthPresenter, AuthView>(), AuthView {
     private companion object {
         private const val PROGRESS = "login_progress"
         private const val REMIND_PASSWORD_DIALOG = "remind_password_dialog"

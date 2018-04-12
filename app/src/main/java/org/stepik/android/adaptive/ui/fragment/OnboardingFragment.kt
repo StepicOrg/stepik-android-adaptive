@@ -16,7 +16,7 @@ import org.stepik.android.adaptive.App
 import org.stepik.android.adaptive.R
 import org.stepik.android.adaptive.api.auth.AuthError
 import org.stepik.android.adaptive.core.presenter.AuthPresenter
-import org.stepik.android.adaptive.core.presenter.contracts.LoginView
+import org.stepik.android.adaptive.core.presenter.contracts.AuthView
 import org.stepik.android.adaptive.data.Analytics
 import org.stepik.android.adaptive.data.preference.SharedPreferenceHelper
 import org.stepik.android.adaptive.data.model.*
@@ -28,7 +28,7 @@ import org.stepik.android.adaptive.ui.adapter.OnboardingQuizCardsAdapter
 import org.stepik.android.adaptive.gamification.achievements.AchievementManager
 import javax.inject.Inject
 
-class OnboardingFragment : Fragment(), LoginView {
+class OnboardingFragment : Fragment(), AuthView {
     companion object {
         private const val ONBOARDING_CARDS_COUNT = 4
     }
