@@ -1,14 +1,14 @@
 package org.stepik.android.adaptive.api;
 
-import org.stepik.android.adaptive.api.storage.model.StorageRequest;
-import org.stepik.android.adaptive.api.storage.model.StorageResponse;
+import org.stepik.android.adaptive.api.profile.model.ProfileRequest;
+import org.stepik.android.adaptive.api.profile.model.ProfileResponse;
+import org.stepik.android.adaptive.api.storage.RemoteStorageService;
 import org.stepik.android.adaptive.data.model.EnrollmentWrapper;
 
 import io.reactivex.Completable;
 import io.reactivex.Observable;
 import io.reactivex.Single;
 import retrofit2.http.Body;
-import retrofit2.http.DELETE;
 import retrofit2.http.GET;
 import retrofit2.http.Headers;
 import retrofit2.http.POST;
@@ -16,7 +16,7 @@ import retrofit2.http.PUT;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
 
-public interface StepikService {
+public interface StepikService extends RemoteStorageService {
 
     @GET("api/courses")
     Single<CoursesResponse> getCourses(
@@ -95,30 +95,6 @@ public interface StepikService {
     Observable<SubmissionResponse> getSubmissions(
             @Query("attempt") final long attempt_id,
             @Query("order") final String desc
-    );
-
-    // storage
-    @GET("api/storage-records")
-    Observable<StorageResponse> getStorageRecords(
-            @Query("page") final int page,
-            @Query("user") final long userId,
-            @Query("kind") final String kind
-    );
-
-    @POST("api/storage-records")
-    Completable createStorageRecord(
-            @Body final StorageRequest body
-    );
-
-    @PUT("api/storage-records/{recordId}")
-    Completable setStorageRecord(
-            @Path("recordId") final long recordId,
-            @Body final StorageRequest body
-    );
-
-    @DELETE("api/storage-records/{recordId}")
-    Completable removeStorageRecord(
-            @Path("recordId") final long recordId
     );
 
 }

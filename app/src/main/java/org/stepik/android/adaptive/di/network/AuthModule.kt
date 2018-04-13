@@ -29,10 +29,6 @@ abstract class AuthModule {
     @AppSingleton
     abstract fun provideAuthRepository(authRepositoryImpl: AuthRepositoryImpl): AuthRepository
 
-    @Binds
-    @AppSingleton
-    abstract fun provideAuthPreferences(sharedPreferenceHelper: SharedPreferenceHelper): AuthPreferences
-
     @Module
     companion object {
         @Provides

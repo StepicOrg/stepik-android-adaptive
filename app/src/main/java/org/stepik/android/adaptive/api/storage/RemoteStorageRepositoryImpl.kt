@@ -4,7 +4,6 @@ import com.google.gson.Gson
 import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.Single
-import org.stepik.android.adaptive.api.StepikService
 import org.stepik.android.adaptive.api.storage.model.StorageRequest
 import org.stepik.android.adaptive.api.storage.model.StorageResponse
 import org.stepik.android.adaptive.configuration.Config
@@ -19,7 +18,7 @@ class RemoteStorageRepositoryImpl
 @Inject
 constructor(
         config: Config,
-        private val stepikService: StepikService,
+        private val remoteStorageService: RemoteStorageService,
         private val profilePreferences: ProfilePreferences
 ): RemoteStorageRepository {
     private val packsKind = "adaptive_${config.courseId}_packs"
@@ -28,7 +27,7 @@ constructor(
     override fun storeQuestionsPack(packId: String): Completable = Single.fromCallable {
         gson.toJsonTree(QuestionsPackStorageItem(packId))
     }.flatMapCompletable { data ->
-        stepikService.createStorageRecord(StorageRequest(StorageRecord(
+        remoteStorageService.createStorageRecord(StorageRequest(StorageRecord(
                 kind = packsKind,
                 data = data
         )))
@@ -36,7 +35,7 @@ constructor(
 
     private fun getQuestionsPacks(page: Int): Observable<StorageResponse> =
             Observable.fromCallable(profilePreferences::profileId).flatMap {
-                stepikService.getStorageRecords(page, it, packsKind)
+                remoteStorageService.getStorageRecords(page, it, packsKind)
             }
 
 
