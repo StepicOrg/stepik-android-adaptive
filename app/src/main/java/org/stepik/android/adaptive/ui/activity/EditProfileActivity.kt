@@ -21,6 +21,8 @@ class EditProfileActivity: BasePresenterActivity<EditProfilePresenter, EditProfi
         const val IS_FAKE_REGISTER_MODE = "is_fake_register_mode"
     }
 
+    private val isFakeRegisterMode by lazy { intent?.getBooleanExtra(IS_FAKE_REGISTER_MODE, false) ?: false }
+
     @Inject
     lateinit var editProfilePresenterProvider: Provider<EditProfilePresenter>
 
@@ -36,6 +38,7 @@ class EditProfileActivity: BasePresenterActivity<EditProfilePresenter, EditProfi
 
         termsPrivacyRegisterTextView.movementMethod = LinkMovementMethod.getInstance()
         termsPrivacyRegisterTextView.text = fromHtmlCompat(getString(R.string.terms_message_register)).stripUnderlinesFromLinks()
+        termsPrivacyRegisterTextView.changeVisibillity(isFakeRegisterMode)
 
         firstNameField.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_NEXT) {
@@ -71,6 +74,8 @@ class EditProfileActivity: BasePresenterActivity<EditProfilePresenter, EditProfi
         }, {
             signUpText.changeVisibillity(true)
         })
+
+        close.setOnClickListener { finish() }
     }
 
     override fun onStart() {

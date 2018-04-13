@@ -97,7 +97,10 @@ class LoginActivity : BasePresenterActivity<AuthPresenter, AuthView>(), AuthView
                 onKeyboardShown = { signInText.changeVisibillity(false) },
                 onKeyboardHidden = { signInText.changeVisibillity(true) }
         )
+
+        close.setOnClickListener { finish() }
     }
+
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         if ((item?.itemId ?: -1) == android.R.id.home) {
             Util.hideSoftKeyboard(this)
