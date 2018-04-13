@@ -8,7 +8,6 @@ import org.stepik.android.adaptive.api.profile.ProfileRepository
 import org.stepik.android.adaptive.api.profile.model.ProfileCompositeError
 import org.stepik.android.adaptive.core.presenter.contracts.RegisterView
 import org.stepik.android.adaptive.data.preference.ProfilePreferences
-import org.stepik.android.adaptive.data.preference.SharedPreferenceHelper
 import org.stepik.android.adaptive.di.AppSingleton
 import org.stepik.android.adaptive.di.qualifiers.BackgroundScheduler
 import org.stepik.android.adaptive.di.qualifiers.MainScheduler
@@ -24,13 +23,12 @@ class RegisterPresenter
 constructor(
         private val profileRepository: ProfileRepository,
         private val profilePreferences: ProfilePreferences,
-        private val sharedPreferenceHelper: SharedPreferenceHelper,
 
         @BackgroundScheduler
         private val backgroundScheduler: Scheduler,
         @MainScheduler
         private val mainScheduler: Scheduler
-        ): PresenterBase<RegisterView>() {
+): PresenterBase<RegisterView>() {
     private val compositeDisposable = CompositeDisposable()
     private val gson = Gson()
 
@@ -59,12 +57,14 @@ constructor(
             profile.firstName = firstName
             profile.lastName = lastName
 
-            profileRepository.updateProfile(profile).doOnComplete { profilePreferences.profile = profile } then profileRepository.updateEmail(email) then Single.just(profile.id)
+            profileRepository.updateProfile(profile).doOnComplete { profilePreferences.profile = profile } then
+                    profileRepository.updateEmail(email) then
+                    Single.just(profile.id)
         }.flatMapCompletable { profileId ->
-            val oldPassword = sharedPreferenceHelper.fakeUser?.password ?: ""
+            val oldPassword = profilePreferences.fakeUser?.password ?: ""
             profileRepository.updatePassword(profileId, oldPassword, password)
         }.subscribeOn(backgroundScheduler).observeOn(mainScheduler).doOnComplete {
-            sharedPreferenceHelper.removeFakeUser()
+            profilePreferences.removeFakeUser()
         }.subscribe({
             state = RegisterView.State.Success
         }, {

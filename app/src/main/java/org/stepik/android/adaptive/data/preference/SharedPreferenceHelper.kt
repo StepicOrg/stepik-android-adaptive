@@ -59,7 +59,7 @@ constructor(context: Context): SharedPreferenceProvider, AuthPreferences, Profil
         get() = getLong(PROFILE_ID)
         private set(value) = saveLong(PROFILE_ID, value)
 
-    var fakeUser: AccountCredentials?
+    override var fakeUser: AccountCredentials?
         get() = getString(FAKE_USER)?.let { gson.fromJson(it, AccountCredentials::class.java) }
         set(value) {
             val json = value?.let { gson.toJson(it) }
@@ -85,10 +85,10 @@ constructor(context: Context): SharedPreferenceProvider, AuthPreferences, Profil
         remove(OAUTH_RESPONSE_DEADLINE)
     }
 
-    fun isFakeUser(): Boolean =
+    override fun isFakeUser(): Boolean =
             sharedPreferences.contains(FAKE_USER)
 
-    fun removeFakeUser() {
+    override fun removeFakeUser() {
         remove(FAKE_USER)
     }
 
