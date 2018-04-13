@@ -7,7 +7,6 @@ import org.stepik.android.adaptive.api.auth.SocialManager
 import org.stepik.android.adaptive.data.preference.SharedPreferenceHelper
 import org.stepik.android.adaptive.data.model.EnrollmentWrapper
 import org.stepik.android.adaptive.data.model.AccountCredentials
-import org.stepik.android.adaptive.data.model.Profile
 import org.stepik.android.adaptive.data.model.RecommendationReaction
 import org.stepik.android.adaptive.data.model.Submission
 import org.stepik.android.adaptive.di.AppSingleton
@@ -23,8 +22,6 @@ import io.reactivex.Single
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import org.stepik.android.adaptive.api.auth.*
-import org.stepik.android.adaptive.api.profile.model.ProfileRequest
-import org.stepik.android.adaptive.api.profile.model.ProfileResponse
 import org.stepik.android.adaptive.content.questions.QuestionsPacksManager
 import org.stepik.android.adaptive.di.network.NetworkHelper
 import org.stepik.android.adaptive.util.addUserAgent
@@ -50,9 +47,6 @@ constructor(
         private const val FAKE_MAIL_PATTERN = "adaptive_%s_android_%d%s@stepik.org"
         private const val TIMEOUT_IN_SECONDS = 60L
     }
-
-    val profile: Single<ProfileResponse>
-        get() = stepikService.profile
 
     fun createFakeAccount(): AccountCredentials {
         val email = String.format(FAKE_MAIL_PATTERN, config.courseId, System.currentTimeMillis(), Util.randomString(5))
@@ -133,10 +127,8 @@ constructor(
     fun createReaction(reaction: RecommendationReaction): Completable =
             stepikService.createRecommendationReaction(RecommendationReactionsRequest(reaction))
 
-    fun getLessons(lesson: Long): Observable<LessonsResponse> = stepikService.getLessons(lesson)
-
-    fun setProfile(profile: Profile): Completable =
-            stepikService.setProfile(profile.id, ProfileRequest(profile))
+    fun getLessons(lesson: Long): Observable<LessonsResponse> =
+            stepikService.getLessons(lesson)
 
     fun getUnits(lesson: Long): Observable<UnitsResponse> =
             stepikService.getUnits(config.courseId, lesson)

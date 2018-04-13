@@ -1,7 +1,6 @@
 package org.stepik.android.adaptive.api;
 
-import org.stepik.android.adaptive.api.profile.model.ProfileRequest;
-import org.stepik.android.adaptive.api.profile.model.ProfileResponse;
+import org.stepik.android.adaptive.api.profile.ProfileService;
 import org.stepik.android.adaptive.api.storage.RemoteStorageService;
 import org.stepik.android.adaptive.data.model.EnrollmentWrapper;
 
@@ -12,11 +11,10 @@ import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.Headers;
 import retrofit2.http.POST;
-import retrofit2.http.PUT;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
 
-public interface StepikService extends RemoteStorageService {
+public interface StepikService {
 
     @GET("api/courses")
     Single<CoursesResponse> getCourses(
@@ -58,9 +56,6 @@ public interface StepikService extends RemoteStorageService {
             @Path("lesson") final long lesson
     );
 
-    @GET("api/stepics/1")
-    Single<ProfileResponse> getProfile();
-
     @POST("api/recommendation-reactions")
     Completable createRecommendationReaction(
             @Body final RecommendationReactionsRequest reactionsRequest
@@ -77,14 +72,6 @@ public interface StepikService extends RemoteStorageService {
     Completable reportView(
             @Body final ViewRequest viewRequest
     );
-
-
-    @PUT("api/profiles/{userId}")
-    Completable setProfile(
-            @Path("userId") final long userId,
-            @Body final ProfileRequest profileRequest
-    );
-
 
     @POST("api/submissions")
     Completable createSubmission(
