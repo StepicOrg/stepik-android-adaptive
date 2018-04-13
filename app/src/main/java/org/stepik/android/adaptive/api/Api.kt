@@ -23,6 +23,8 @@ import io.reactivex.Single
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import org.stepik.android.adaptive.api.auth.*
+import org.stepik.android.adaptive.api.profile.model.ProfileRequest
+import org.stepik.android.adaptive.api.profile.model.ProfileResponse
 import org.stepik.android.adaptive.content.questions.QuestionsPacksManager
 import org.stepik.android.adaptive.di.network.NetworkHelper
 import org.stepik.android.adaptive.util.addUserAgent
