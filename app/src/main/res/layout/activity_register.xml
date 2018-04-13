@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:fillViewport="true"
     android:overScrollMode="never"
-    android:id="@+id/editProfileView">
+    android:id="@+id/registerView">
 
     <android.support.constraint.ConstraintLayout
         android:id="@+id/root_view"
