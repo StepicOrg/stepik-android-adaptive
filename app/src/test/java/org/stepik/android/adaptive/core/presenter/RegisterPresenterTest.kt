@@ -117,7 +117,6 @@ class RegisterPresenterTest {
         verify(registerView).setState(RegisterView.State.NetworkError)
 
         verifyNoMoreInteractions(registerView)
-        verifyNoMoreInteractions(profileRepository)
         verifyNoMoreInteractions(profilePreferences)
     }
 
