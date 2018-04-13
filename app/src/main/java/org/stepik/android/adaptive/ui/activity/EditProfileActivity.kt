@@ -3,7 +3,7 @@ package org.stepik.android.adaptive.ui.activity
 import android.os.Bundle
 import android.text.method.LinkMovementMethod
 import android.view.inputmethod.EditorInfo
-import kotlinx.android.synthetic.main.activity_edit_profile.*
+import kotlinx.android.synthetic.main.activity_register.*
 import org.stepik.android.adaptive.App
 import org.stepik.android.adaptive.R
 import org.stepik.android.adaptive.core.presenter.BasePresenterActivity
@@ -32,7 +32,7 @@ class EditProfileActivity: BasePresenterActivity<EditProfilePresenter, EditProfi
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_edit_profile)
+        setContentView(R.layout.activity_register)
 
         signUpText.text = fromHtmlCompat(getString(R.string.sign_up_title))
 
@@ -67,7 +67,7 @@ class EditProfileActivity: BasePresenterActivity<EditProfilePresenter, EditProfi
             }
         }
 
-        editProfileView.requestFocus()
+        registerView.requestFocus()
 
         setOnKeyboardOpenListener(root_view, {
             signUpText.changeVisibillity(false)
@@ -76,6 +76,15 @@ class EditProfileActivity: BasePresenterActivity<EditProfilePresenter, EditProfi
         })
 
         close.setOnClickListener { finish() }
+    }
+
+    override fun setState(state: EditProfileView.State) = when (state) {
+        is EditProfileView.State.ProfileLoaded -> {
+            firstNameField.setText(state.profile.firstName ?: "")
+            secondNameField.setText(state.profile.lastName ?: "")
+
+        }
+        else -> {}
     }
 
     override fun onStart() {

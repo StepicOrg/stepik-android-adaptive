@@ -19,6 +19,7 @@ import org.stepik.android.adaptive.core.presenter.contracts.AuthView
 import org.stepik.android.adaptive.ui.dialog.RemindPasswordDialog
 import org.stepik.android.adaptive.util.changeVisibillity
 import org.stepik.android.adaptive.util.fromHtmlCompat
+import org.stepik.android.adaptive.util.hideSoftKeyboard
 import org.stepik.android.adaptive.util.setOnKeyboardOpenListener
 import javax.inject.Inject
 import javax.inject.Provider
@@ -103,7 +104,7 @@ class LoginActivity : BasePresenterActivity<AuthPresenter, AuthView>(), AuthView
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         if ((item?.itemId ?: -1) == android.R.id.home) {
-            Util.hideSoftKeyboard(this)
+            hideSoftKeyboard()
             onBackPressed()
             return true
         }
@@ -155,9 +156,8 @@ class LoginActivity : BasePresenterActivity<AuthPresenter, AuthView>(), AuthView
         hideProgressDialogFragment(PROGRESS)
     }
 
-    override fun onLoading() {
+    override fun onLoading() =
         showProgressDialogFragment(PROGRESS, getString(R.string.sign_in), getString(R.string.processing_your_request))
-    }
 
     override fun getPresenterProvider() = authPresenterProvider
 }

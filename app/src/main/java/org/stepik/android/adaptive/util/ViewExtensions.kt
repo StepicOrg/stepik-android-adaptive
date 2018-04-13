@@ -1,11 +1,14 @@
 package org.stepik.android.adaptive.util
 
+import android.app.Activity
+import android.content.Context
 import android.text.SpannableString
 import android.text.Spanned
 import android.text.TextPaint
 import android.text.style.URLSpan
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import android.widget.TextView
 
 fun View.changeVisibillity(needShow: Boolean) {
@@ -40,5 +43,13 @@ private class URLSpanWithoutUnderline(url: String) : URLSpan(url) {
     override fun updateDrawState(textPaint: TextPaint?) {
         super.updateDrawState(textPaint)
         textPaint?.isUnderlineText = false
+    }
+}
+
+fun Activity.hideSoftKeyboard() {
+    val view = currentFocus
+    if (view != null) {
+        val mgr = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        mgr.hideSoftInputFromWindow(view.windowToken, 0)
     }
 }
