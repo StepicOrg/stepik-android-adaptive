@@ -11,6 +11,9 @@ object NetworkHelper {
     const val TIMEOUT_IN_SECONDS = 60L
 
     @JvmStatic
+    val cache = HashMap<String, Retrofit>()
+
+    @JvmStatic
     fun createRetrofit(client: OkHttpClient, baseUrl: String): Retrofit = Retrofit.Builder()
             .baseUrl(baseUrl)
             .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
@@ -21,11 +24,13 @@ object NetworkHelper {
 
     @JvmStatic
     inline fun <reified T> createServiceWithAuth(authInterceptor: AuthInterceptor, host: String): T {
-        val okHttpBuilder = OkHttpClient.Builder()
-        okHttpBuilder.addInterceptor(authInterceptor)
+        val retrofit = cache.getOrPut(host) {
+            val okHttpBuilder = OkHttpClient.Builder()
+            okHttpBuilder.addInterceptor(authInterceptor)
 
-        okHttpBuilder.setTimeoutsInSeconds(NetworkHelper.TIMEOUT_IN_SECONDS)
-        val retrofit = NetworkHelper.createRetrofit(okHttpBuilder.build(), host)
+            okHttpBuilder.setTimeoutsInSeconds(NetworkHelper.TIMEOUT_IN_SECONDS)
+            NetworkHelper.createRetrofit(okHttpBuilder.build(), host)
+        }
 
         return retrofit.create(T::class.java)
     }
