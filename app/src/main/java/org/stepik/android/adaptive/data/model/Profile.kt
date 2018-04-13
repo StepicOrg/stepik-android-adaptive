@@ -12,6 +12,6 @@ class Profile (
     var fullName: String? = null,
     var avatar: String? = null,
     @SerializedName("subscribed_for_mail")
-    var subscribedForMail: Boolean,
+    var subscribedForMail: Boolean? = null,
     var emailAddresses: LongArray? = null
 )

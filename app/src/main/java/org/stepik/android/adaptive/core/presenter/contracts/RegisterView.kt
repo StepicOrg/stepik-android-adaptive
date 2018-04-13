@@ -1,0 +1,12 @@
+package org.stepik.android.adaptive.core.presenter.contracts
+
+interface RegisterView {
+    fun setState(state: State)
+
+    sealed class State {
+        object Idle: State()
+        object Loading: State()
+        object Success: State()
+        class Error(val message: String): State()
+    }
+}

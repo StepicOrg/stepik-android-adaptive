@@ -7,6 +7,7 @@ import io.reactivex.disposables.CompositeDisposable
 import org.stepik.android.adaptive.api.Api
 import org.stepik.android.adaptive.api.auth.AuthError
 import org.stepik.android.adaptive.api.auth.AuthRepository
+import org.stepik.android.adaptive.api.profile.ProfileRepository
 import org.stepik.android.adaptive.content.questions.QuestionsPacksManager
 import org.stepik.android.adaptive.core.presenter.contracts.AuthView
 import org.stepik.android.adaptive.data.Analytics
@@ -25,6 +26,7 @@ class AuthPresenter
 constructor(
         private val api: Api,
         private val authRepository: AuthRepository,
+        private val profileRepository: ProfileRepository,
         private val sharedPreferenceHelper: SharedPreferenceHelper,
         private val analytics: Analytics,
 
@@ -101,12 +103,11 @@ constructor(
 
     private fun onLoginRx(): Completable = api
             .joinCourse(questionsPacksManager.currentCourseId)
-            .andThen(api.profile)
-            .map { it.profile }
+            .andThen(profileRepository.fetchProfile())
             .doOnSuccess { sharedPreferenceHelper.profile = it }
             .flatMapCompletable {
                 it.subscribedForMail = false
-                api.setProfile(it)
+                profileRepository.updateProfile(it)
             }
 
     private fun onError(authError: AuthError) {
