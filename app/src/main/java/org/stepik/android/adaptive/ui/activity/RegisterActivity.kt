@@ -1,7 +1,10 @@
 package org.stepik.android.adaptive.ui.activity
 
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.text.method.LinkMovementMethod
+import android.view.View
 import android.view.inputmethod.EditorInfo
 import kotlinx.android.synthetic.main.activity_register.*
 import org.stepik.android.adaptive.App
@@ -33,6 +36,21 @@ class RegisterActivity: BasePresenterActivity<RegisterPresenter, RegisterView>()
 
         termsPrivacyRegisterTextView.movementMethod = LinkMovementMethod.getInstance()
         termsPrivacyRegisterTextView.text = fromHtmlCompat(getString(R.string.terms_message_register)).stripUnderlinesFromLinks()
+
+        val formWatcher = object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {            }
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+
+            override fun afterTextChanged(s: Editable?) {
+                onClearError()
+                setSignUpButtonState()
+            }
+        }
+
+        firstNameField.addTextChangedListener(formWatcher)
+        secondNameField.addTextChangedListener(formWatcher)
+        emailField.addTextChangedListener(formWatcher)
+        passwordField.addTextChangedListener(formWatcher)
 
         firstNameField.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_NEXT) {
@@ -72,6 +90,7 @@ class RegisterActivity: BasePresenterActivity<RegisterPresenter, RegisterView>()
         close.setOnClickListener { finish() }
 
         signUpButton.setOnClickListener { register() }
+        setSignUpButtonState()
     }
 
     private fun register() {
@@ -83,10 +102,6 @@ class RegisterActivity: BasePresenterActivity<RegisterPresenter, RegisterView>()
         val email = emailField.text.toString().trim()
         val password = passwordField.text.toString()
 
-        if (!ValidateUtil.isEmailValid(email)) {
-//            return onError(getString(R.string.auth_error_empty_email))
-        }
-
         presenter?.register(firstName, lastName, email, password)
     }
 
@@ -95,18 +110,45 @@ class RegisterActivity: BasePresenterActivity<RegisterPresenter, RegisterView>()
             // reset view state
         }
 
-        is RegisterView.State.Loading -> {
+        is RegisterView.State.Loading ->
             showProgressDialogFragment(PROGRESS, getString(R.string.sign_up), getString(R.string.processing_your_request))
-        }
 
-        is RegisterView.State.Error -> {
-            hideProgressDialogFragment(PROGRESS)
-        }
+        is RegisterView.State.NetworkError ->
+            onError(getString(R.string.connectivity_error))
+
+        is RegisterView.State.EmptyEmailError ->
+            onChangesNeededError(getString(R.string.auth_error_empty_email))
+
+        is RegisterView.State.Error ->
+            onChangesNeededError(state.message)
 
         is RegisterView.State.Success -> {
             hideProgressDialogFragment(PROGRESS)
             finish()
         }
+    }
+
+    private fun onChangesNeededError(message: String) {
+        signUpButton.isEnabled = false
+        onError(message)
+    }
+
+    private fun onError(message: String) {
+        hideProgressDialogFragment(PROGRESS)
+
+        registerForm.isEnabled = false
+        registerErrorMessage.text = message
+        registerErrorMessage.changeVisibillity(true)
+    }
+
+    private fun onClearError() {
+        signUpButton.isEnabled = true
+        registerForm.isEnabled = true
+        registerErrorMessage.changeVisibillity(false)
+    }
+
+    private fun setSignUpButtonState() {
+        signUpButton.isEnabled = emailField.text.isNotBlank() && firstNameField.text.isNotBlank() && passwordField.text.isNotBlank()
     }
 
     override fun onStart() {

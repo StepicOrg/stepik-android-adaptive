@@ -8,5 +8,7 @@ interface RegisterView {
         object Loading: State()
         object Success: State()
         class Error(val message: String): State()
+        object EmptyEmailError: State()
+        object NetworkError: State()
     }
 }

@@ -1,8 +1,9 @@
 package org.stepik.android.adaptive.api.profile.model
 
 class ProfileCompositeError(
-        val email: String?
+        val email: List<String>?,
+        val detail: String?
 ) {
     val asList: List<String?>
-        get() = listOf(email)
+        get() = (email ?: emptyList()) + detail
 }

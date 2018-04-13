@@ -12,6 +12,7 @@ import org.stepik.android.adaptive.data.preference.SharedPreferenceHelper
 import org.stepik.android.adaptive.di.AppSingleton
 import org.stepik.android.adaptive.di.qualifiers.BackgroundScheduler
 import org.stepik.android.adaptive.di.qualifiers.MainScheduler
+import org.stepik.android.adaptive.util.ValidateUtil
 import org.stepik.android.adaptive.util.addDisposable
 import org.stepik.android.adaptive.util.then
 import retrofit2.HttpException
@@ -39,7 +40,19 @@ constructor(
             view?.setState(value)
         }
 
+    private fun validate(firstName: String, lastName: String, email: String, password: String): Boolean {
+        if (!ValidateUtil.isEmailValid(email)) {
+            state = RegisterView.State.EmptyEmailError
+            return false
+        }
+
+        return true
+    }
+
+
     fun register(firstName: String, lastName: String, email: String, password: String) {
+        if (!validate(firstName, lastName, email, password)) return
+
         state = RegisterView.State.Loading
 
         compositeDisposable addDisposable profileRepository.fetchProfile().flatMap { profile ->
@@ -55,14 +68,17 @@ constructor(
         }.subscribe({
             state = RegisterView.State.Success
         }, {
-            it.printStackTrace()
-            val errorMessage = if (it is HttpException) {
-                val error = gson.fromJson(it.response()?.errorBody()?.string() ?: "", ProfileCompositeError::class.java)
-                error.asList.filterNotNull().firstOrNull() ?: ""
+            state = if (it is HttpException) {
+                val error = gson.fromJson(it.response()?.errorBody()?.string(), ProfileCompositeError::class.java)
+                val errorMessage = error?.asList?.filterNotNull()?.firstOrNull()
+                if (errorMessage != null) {
+                    RegisterView.State.Error(errorMessage)
+                } else {
+                    RegisterView.State.NetworkError
+                }
             } else {
-                ""
+                RegisterView.State.NetworkError
             }
-            state = RegisterView.State.Error(errorMessage)
         })
     }
 
