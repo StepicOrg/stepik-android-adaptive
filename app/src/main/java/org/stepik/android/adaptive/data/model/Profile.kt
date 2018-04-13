@@ -1,6 +1,7 @@
 package org.stepik.android.adaptive.data.model
 
 import com.google.gson.annotations.SerializedName
+import org.stepik.android.adaptive.api.profile.model.EmailAddress
 
 class Profile (
     val id: Long = 0,
@@ -13,5 +14,6 @@ class Profile (
     var avatar: String? = null,
     @SerializedName("subscribed_for_mail")
     var subscribedForMail: Boolean? = null,
-    var emailAddresses: LongArray? = null
+    var emailAddresses: LongArray = longArrayOf(),
+    var emailAddressesResolved: List<EmailAddress> = emptyList()
 )

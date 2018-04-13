@@ -14,6 +14,7 @@ import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
 import retrofit2.http.Path;
+import retrofit2.http.Query;
 
 public interface ProfileService {
 
@@ -30,6 +31,11 @@ public interface ProfileService {
     Completable changePassword(
             @Path("userId") final long userId,
             @Body final ChangePasswordRequest request
+    );
+
+    @GET("api/email-addresses")
+    Single<EmailAddressesResponse> getEmailAddresses(
+            @Query("ids[]") long[] ids
     );
 
     @GET("api/email-addresses/{emailId}")
