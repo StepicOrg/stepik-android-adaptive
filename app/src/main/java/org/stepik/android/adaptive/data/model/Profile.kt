@@ -14,6 +14,7 @@ class Profile (
     var avatar: String? = null,
     @SerializedName("subscribed_for_mail")
     var subscribedForMail: Boolean? = null,
+    @SerializedName("email_addresses")
     var emailAddresses: LongArray = longArrayOf(),
     var emailAddressesResolved: List<EmailAddress> = emptyList()
 )
