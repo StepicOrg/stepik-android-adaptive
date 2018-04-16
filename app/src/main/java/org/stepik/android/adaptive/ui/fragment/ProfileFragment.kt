@@ -17,6 +17,7 @@ import org.stepik.android.adaptive.core.presenter.ProfilePresenter
 import org.stepik.android.adaptive.core.presenter.contracts.ProfileView
 import org.stepik.android.adaptive.ui.activity.LoginActivity
 import org.stepik.android.adaptive.ui.activity.RegisterActivity
+import org.stepik.android.adaptive.ui.dialog.profile.EditEmailDialogFragment
 import org.stepik.android.adaptive.ui.dialog.profile.EditNameDialogFragment
 import org.stepik.android.adaptive.util.changeVisibillity
 import org.stepik.android.adaptive.util.hideAllChildren
@@ -26,6 +27,7 @@ import javax.inject.Provider
 class ProfileFragment: BasePresenterFragment<ProfilePresenter, ProfileView>(), ProfileView {
     companion object {
         const val EDIT_NAME_DIALOG = "edit_name"
+        const val EDIT_EMAIL_DIALOG = "edit_email"
 
         const val PROFILE_CHANGED_REQUEST_CODE = 131
     }
@@ -49,12 +51,18 @@ class ProfileFragment: BasePresenterFragment<ProfilePresenter, ProfileView>(), P
         signUp.setOnClickListener { startActivityForResult(Intent(context, RegisterActivity::class.java), RegisterActivity.REQUEST_CODE) }
         signLater.changeVisibillity(false)
 
-        changeName.setOnClickListener { EditNameDialogFragment().show(childFragmentManager, EDIT_NAME_DIALOG) }
+        changeName.setOnClickListener { showEditNameDialog() }
+        changeEmail.setOnClickListener { showEditEmailDialog() }
     }
+
+    private fun showEditNameDialog() =
+            EditNameDialogFragment().show(childFragmentManager, EDIT_NAME_DIALOG)
+
+    private fun showEditEmailDialog() =
+            EditEmailDialogFragment().show(childFragmentManager, EDIT_EMAIL_DIALOG)
 
     override fun setState(state: ProfileView.State) {
         (view as? ViewGroup)?.hideAllChildren()
-        Log.d(javaClass.canonicalName, "state = $state")
         when(state) {
             is ProfileView.State.EmptyAuth -> {
                 emptyAuth.changeVisibillity(true)

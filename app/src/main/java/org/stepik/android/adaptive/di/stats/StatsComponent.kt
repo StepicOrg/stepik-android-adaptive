@@ -2,6 +2,7 @@ package org.stepik.android.adaptive.di.stats
 
 import dagger.Subcomponent
 import org.stepik.android.adaptive.ui.activity.StatsActivity
+import org.stepik.android.adaptive.ui.dialog.profile.EditEmailDialogFragment
 import org.stepik.android.adaptive.ui.dialog.profile.EditNameDialogFragment
 import org.stepik.android.adaptive.ui.fragment.*
 
@@ -21,6 +22,7 @@ interface StatsComponent {
 
     fun inject(activity: StatsActivity)
 
+    fun inject(dialog: EditEmailDialogFragment)
     fun inject(dialog: EditNameDialogFragment)
 
 }

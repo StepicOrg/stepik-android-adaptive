@@ -5,8 +5,8 @@ import io.reactivex.Scheduler
 import io.reactivex.Single
 import io.reactivex.disposables.CompositeDisposable
 import org.stepik.android.adaptive.api.profile.ProfileRepository
-import org.stepik.android.adaptive.api.profile.model.EditNameError
 import org.stepik.android.adaptive.core.presenter.contracts.EditProfileFieldView
+import org.stepik.android.adaptive.data.model.Profile
 import org.stepik.android.adaptive.data.preference.ProfilePreferences
 import org.stepik.android.adaptive.di.qualifiers.BackgroundScheduler
 import org.stepik.android.adaptive.di.qualifiers.MainScheduler
@@ -40,7 +40,8 @@ constructor(
                 .subscribeOn(backgroundScheduler)
                 .subscribe({
                     viewState = if (it != null) {
-                        EditProfileFieldView.State.ProfileLoaded(it)
+                        view?.onProfile(it)
+                        EditProfileFieldView.State.ProfileLoaded
                     } else {
                         EditProfileFieldView.State.NetworkError
                     }
@@ -49,39 +50,55 @@ constructor(
                 })
     }
 
-    fun syncName(firstName: String, lastName: String) = viewState.let { state ->
-        if (state is EditProfileFieldView.State.ProfileLoaded) {
-            state.profile.firstName = firstName
-            state.profile.lastName = lastName
-        }
-    }
-
-    fun changeName(firstName: String, lastName: String) = viewState.let { state ->
-        viewState = EditProfileFieldView.State.Loading
-        if (state is EditProfileFieldView.State.ProfileLoaded) {
-            val profile = state.profile.copy(firstName = firstName, lastName = lastName)
-
-            compositeDisposable addDisposable profileRepository.updateProfile(profile)
-                    .andThen(profileRepository.fetchProfileWithEmailAddresses())
+    private fun syncProfile(): Single<Profile> =
+            profileRepository
+                    .fetchProfileWithEmailAddresses()
                     .doOnSuccess { profilePreferences.profile = it }
-                    .observeOn(mainScheduler)
-                    .subscribeOn(backgroundScheduler)
-                    .subscribe({
-                        viewState = EditProfileFieldView.State.Success
-                    }, {
-                        viewState = if (it is HttpException) {
-                            val error = gson.fromJson(it.response()?.errorBody()?.string(), EditNameError::class.java)
-                            if (error != null) {
-                                EditProfileFieldView.State.NameError(error)
-                            } else {
-                                EditProfileFieldView.State.NetworkError
-                            }
-                        } else {
-                            EditProfileFieldView.State.NetworkError
-                        }
-                    })
-        }
+
+    fun changeName(firstName: String, lastName: String) {
+        viewState = EditProfileFieldView.State.Loading
+
+        compositeDisposable addDisposable Single.fromCallable(profilePreferences::profile)
+                .flatMapCompletable {
+                    it.firstName = firstName
+                    it.lastName = lastName
+                    profileRepository.updateProfile(it)
+                }
+                .andThen(syncProfile())
+                .observeOn(mainScheduler)
+                .subscribeOn(backgroundScheduler)
+                .subscribe({
+                    viewState = EditProfileFieldView.State.Success
+                }) {
+                    viewState = parseErrorState(it, EditProfileFieldView.State::NameError)
+                }
     }
+
+    fun changeEmail(email: String) {
+        viewState = EditProfileFieldView.State.Loading
+
+        compositeDisposable addDisposable profileRepository.updateEmail(email)
+                .andThen(syncProfile())
+                .observeOn(mainScheduler)
+                .subscribeOn(backgroundScheduler)
+                .subscribe({
+                    viewState = EditProfileFieldView.State.Success
+                }) {
+                    viewState = parseErrorState(it, EditProfileFieldView.State::EmailError)
+                }
+    }
+
+    private inline fun <reified T> parseErrorState(throwable: Throwable, stateConstructor: (T) -> EditProfileFieldView.State) =
+            if (throwable is HttpException) {
+                val error = gson.fromJson(throwable.response()?.errorBody()?.string(), T::class.java)
+                if (error != null) {
+                    stateConstructor(error)
+                } else {
+                    EditProfileFieldView.State.NetworkError
+                }
+            } else {
+                EditProfileFieldView.State.NetworkError
+            }
 
     override fun attachView(view: EditProfileFieldView) {
         super.attachView(view)

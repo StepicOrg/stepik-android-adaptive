@@ -5,7 +5,7 @@ import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
 import org.stepik.android.adaptive.api.profile.model.EmailAddress
 
-data class Profile (
+class Profile (
     val id: Long = 0,
     @SerializedName("first_name")
     var firstName: String? = null,

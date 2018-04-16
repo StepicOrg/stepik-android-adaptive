@@ -11,7 +11,7 @@
         android:layout_marginTop="?dialogPreferredPadding"
         android:layout_marginStart="?dialogPreferredPadding"
         android:layout_marginEnd="?dialogPreferredPadding"
-        android:text="@string/profile_change_name"
+        android:text="@string/profile_change_email"
         android:textAppearance="@style/TextAppearance.AppCompat.Title"/>
 
     <FrameLayout
@@ -35,38 +35,19 @@
             android:orientation="vertical"
             android:layout_gravity="center">
 
-            <LinearLayout
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/emailWrapper"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
                 android:padding="?dialogPreferredPadding">
-
-                <android.support.design.widget.TextInputLayout
-                    android:id="@+id/firstNameWrapper"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-                    <android.support.design.widget.TextInputEditText
-                        android:id="@+id/firstName"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:inputType="textPersonName"
-                        android:hint="@string/first_name" />
-                </android.support.design.widget.TextInputLayout>
-
-                <android.support.design.widget.TextInputLayout
-                    android:id="@+id/secondNameWrapper"
+                <android.support.design.widget.TextInputEditText
+                    android:id="@+id/email"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp">
-                    <android.support.design.widget.TextInputEditText
-                        android:id="@+id/secondName"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:inputType="textPersonName"
-                        android:hint="@string/second_name" />
-                </android.support.design.widget.TextInputLayout>
+                    android:inputType="textEmailAddress"
+                    android:hint="@string/email" />
+            </android.support.design.widget.TextInputLayout>
 
-            </LinearLayout>
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

@@ -1,6 +1,6 @@
 package org.stepik.android.adaptive.ui.dialog.profile
 
-import android.app.Activity.RESULT_OK
+import android.app.Activity
 import android.app.Dialog
 import android.os.Bundle
 import android.support.design.widget.TextInputLayout
@@ -10,21 +10,21 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.Window
-import kotlinx.android.synthetic.main.dialog_edit_name.*
+import kotlinx.android.synthetic.main.dialog_edit_email.*
 import org.stepik.android.adaptive.App
 import org.stepik.android.adaptive.R
 import org.stepik.android.adaptive.core.presenter.BasePresenterDialogFragment
 import org.stepik.android.adaptive.core.presenter.EditProfileFieldPresenter
 import org.stepik.android.adaptive.core.presenter.contracts.EditProfileFieldView
 import org.stepik.android.adaptive.data.model.Profile
-import org.stepik.android.adaptive.ui.fragment.ProfileFragment.Companion.PROFILE_CHANGED_REQUEST_CODE
+import org.stepik.android.adaptive.ui.fragment.ProfileFragment
 import org.stepik.android.adaptive.util.ValidateUtil
 import org.stepik.android.adaptive.util.changeVisibillity
 import org.stepik.android.adaptive.util.hideAllChildren
 import javax.inject.Inject
 import javax.inject.Provider
 
-class EditNameDialogFragment: BasePresenterDialogFragment<EditProfileFieldPresenter, EditProfileFieldView>(), EditProfileFieldView {
+class EditEmailDialogFragment: BasePresenterDialogFragment<EditProfileFieldPresenter, EditProfileFieldView>(), EditProfileFieldView {
     @Inject
     lateinit var editProfileFieldPresenterProvider: Provider<EditProfileFieldPresenter>
 
@@ -49,10 +49,10 @@ class EditNameDialogFragment: BasePresenterDialogFragment<EditProfileFieldPresen
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
-            inflater.inflate(R.layout.dialog_edit_name, container, false)
+            inflater.inflate(R.layout.dialog_edit_email, container, false)
 
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
-        confirm.setOnClickListener { changeName() }
+        confirm.setOnClickListener { changeEmail() }
         setConfirmButton()
 
         val formWatcher = object : TextWatcher {
@@ -65,33 +65,27 @@ class EditNameDialogFragment: BasePresenterDialogFragment<EditProfileFieldPresen
             }
         }
 
-        firstName.addTextChangedListener(formWatcher)
-        secondName.addTextChangedListener(formWatcher)
-
+        email.addTextChangedListener(formWatcher)
         cancel.setOnClickListener { dismiss() }
     }
 
-    private fun changeName() {
-        val isValid = ValidateUtil.validateRequiredField(firstNameWrapper, firstName) &&
-                ValidateUtil.validateRequiredField(secondNameWrapper, secondName)
+    private fun changeEmail() {
+        if (!ValidateUtil.validateEmail(emailWrapper, email)) return
 
-        if (!isValid) return
-
-        presenter?.changeName(firstName.text.toString(), secondName.text.toString())
+        presenter?.changeEmail(email.text.toString())
     }
 
     private fun onClearError() {
-        firstNameWrapper.isErrorEnabled = false
-        secondNameWrapper.isErrorEnabled = false
+        emailWrapper.isErrorEnabled = false
     }
 
     private fun setConfirmButton() {
-        confirm.isEnabled = firstName.text.isNotBlank() && secondName.text.isNotBlank()
+        confirm.isEnabled = email.text.isNotBlank()
     }
 
     override fun onProfile(profile: Profile) {
-        firstName.setText(profile.firstName)
-        secondName.setText(profile.lastName)
+        val mail = profile.emailAddressesResolved.firstOrNull()?.email
+        email.setText(mail ?: "")
     }
 
     override fun setState(state: EditProfileFieldView.State) {
@@ -105,19 +99,18 @@ class EditNameDialogFragment: BasePresenterDialogFragment<EditProfileFieldPresen
                 profileForm.changeVisibillity(true)
 
             is EditProfileFieldView.State.Success -> {
-                parentFragment?.onActivityResult(PROFILE_CHANGED_REQUEST_CODE, RESULT_OK, null)
+                parentFragment?.onActivityResult(ProfileFragment.PROFILE_CHANGED_REQUEST_CODE, Activity.RESULT_OK, null)
                 dismiss()
             }
 
-            is EditProfileFieldView.State.NameError -> {
+            is EditProfileFieldView.State.EmailError -> {
                 profileForm.changeVisibillity(true)
-                onFieldError(state.error.firstName, firstNameWrapper)
-                onFieldError(state.error.lastName, secondNameWrapper)
+                onFieldError(state.error.email, emailWrapper)
             }
 
             is EditProfileFieldView.State.NetworkError -> {
                 profileForm.changeVisibillity(true)
-                secondNameWrapper.error = getString(R.string.connectivity_error)
+                emailWrapper.error = getString(R.string.connectivity_error)
             }
         }
     }
