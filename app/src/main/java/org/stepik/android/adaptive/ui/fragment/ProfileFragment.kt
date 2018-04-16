@@ -2,7 +2,6 @@ package org.stepik.android.adaptive.ui.fragment
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -19,6 +18,7 @@ import org.stepik.android.adaptive.ui.activity.LoginActivity
 import org.stepik.android.adaptive.ui.activity.RegisterActivity
 import org.stepik.android.adaptive.ui.dialog.profile.EditEmailDialogFragment
 import org.stepik.android.adaptive.ui.dialog.profile.EditNameDialogFragment
+import org.stepik.android.adaptive.ui.dialog.profile.EditPasswordDialogFragment
 import org.stepik.android.adaptive.util.changeVisibillity
 import org.stepik.android.adaptive.util.hideAllChildren
 import javax.inject.Inject
@@ -28,6 +28,7 @@ class ProfileFragment: BasePresenterFragment<ProfilePresenter, ProfileView>(), P
     companion object {
         const val EDIT_NAME_DIALOG = "edit_name"
         const val EDIT_EMAIL_DIALOG = "edit_email"
+        const val EDIT_EMAIL_PASSWORD = "edit_password"
 
         const val PROFILE_CHANGED_REQUEST_CODE = 131
     }
@@ -53,6 +54,7 @@ class ProfileFragment: BasePresenterFragment<ProfilePresenter, ProfileView>(), P
 
         changeName.setOnClickListener { showEditNameDialog() }
         changeEmail.setOnClickListener { showEditEmailDialog() }
+        changePassword.setOnClickListener { showEditPasswordDialog() }
     }
 
     private fun showEditNameDialog() =
@@ -60,6 +62,9 @@ class ProfileFragment: BasePresenterFragment<ProfilePresenter, ProfileView>(), P
 
     private fun showEditEmailDialog() =
             EditEmailDialogFragment().show(childFragmentManager, EDIT_EMAIL_DIALOG)
+
+    private fun showEditPasswordDialog() =
+            EditPasswordDialogFragment().show(childFragmentManager, EDIT_EMAIL_PASSWORD)
 
     override fun setState(state: ProfileView.State) {
         (view as? ViewGroup)?.hideAllChildren()

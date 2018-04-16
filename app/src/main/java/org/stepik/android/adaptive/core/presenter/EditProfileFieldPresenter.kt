@@ -88,6 +88,22 @@ constructor(
                 }
     }
 
+    fun changePassword(oldPassword: String, newPassword: String) {
+        viewState = EditProfileFieldView.State.Loading
+
+        compositeDisposable addDisposable Single.fromCallable(profilePreferences::profileId)
+                .flatMapCompletable {
+                    profileRepository.updatePassword(it, oldPassword, newPassword)
+                }
+                .observeOn(mainScheduler)
+                .subscribeOn(backgroundScheduler)
+                .subscribe({
+                    viewState = EditProfileFieldView.State.Success
+                }) {
+                    viewState = parseErrorState(it, EditProfileFieldView.State::PasswordError)
+                }
+    }
+
     private inline fun <reified T> parseErrorState(throwable: Throwable, stateConstructor: (T) -> EditProfileFieldView.State) =
             if (throwable is HttpException) {
                 val error = gson.fromJson(throwable.response()?.errorBody()?.string(), T::class.java)

@@ -182,4 +182,7 @@
     <string name="profile_change_name">Change name</string>
     <string name="profile_change_email">Change email</string>
     <string name="profile_change_password">Change password</string>
+
+    <string name="password_old">Old password</string>
+    <string name="password_new">New password</string>
 </resources>

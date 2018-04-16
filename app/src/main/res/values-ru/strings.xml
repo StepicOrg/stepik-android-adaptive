@@ -172,4 +172,7 @@
     <string name="profile_change_name">Изменить имя</string>
     <string name="profile_change_email">Изменить email</string>
     <string name="profile_change_password">Изменить пароль</string>
+
+    <string name="password_old">Old password</string>
+    <string name="password_new">New password</string>
 </resources>
