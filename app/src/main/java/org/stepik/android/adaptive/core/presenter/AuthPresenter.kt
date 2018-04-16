@@ -103,7 +103,7 @@ constructor(
 
     private fun onLoginRx(): Completable = api
             .joinCourse(questionsPacksManager.currentCourseId)
-            .andThen(profileRepository.fetchProfile())
+            .andThen(profileRepository.fetchProfileWithEmailAddresses())
             .doOnSuccess { profilePreferences.profile = it }
             .flatMapCompletable {
                 it.subscribedForMail = false

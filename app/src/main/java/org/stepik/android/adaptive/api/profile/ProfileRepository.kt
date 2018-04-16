@@ -6,6 +6,7 @@ import org.stepik.android.adaptive.data.model.Profile
 
 interface ProfileRepository {
     fun fetchProfile(): Single<Profile>
+    fun fetchProfileWithEmailAddresses(): Single<Profile>
     fun updateProfile(profile: Profile): Completable
 
     fun updatePassword(profileId: Long, oldPassword: String, newPassword: String): Completable

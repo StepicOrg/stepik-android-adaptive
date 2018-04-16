@@ -57,9 +57,9 @@ constructor(
             profile.firstName = firstName
             profile.lastName = lastName
 
-            profileRepository.updateProfile(profile).doOnComplete { profilePreferences.profile = profile } then
+            profileRepository.updateProfile(profile) then
                     profileRepository.updateEmail(email) then
-                    Single.just(profile.id)
+                    profileRepository.fetchProfileWithEmailAddresses().doOnSuccess { profilePreferences.profile = it }.map { it.id }
         }.flatMapCompletable { profileId ->
             val oldPassword = profilePreferences.fakeUser?.password ?: ""
             profileRepository.updatePassword(profileId, oldPassword, password)

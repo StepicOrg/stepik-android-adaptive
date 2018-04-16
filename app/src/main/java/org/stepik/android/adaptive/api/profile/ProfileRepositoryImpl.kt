@@ -21,7 +21,7 @@ constructor(
     override fun fetchProfile(): Single<Profile> =
             profileService.profile.map { it.profile!! }
 
-    private fun fetchProfileWithEmailAddresses(): Single<Profile> =
+    override fun fetchProfileWithEmailAddresses(): Single<Profile> =
             fetchProfile().flatMap { profile -> profileService.getEmailAddresses(profile.emailAddresses).map {
                 profile.emailAddressesResolved = it.emailAddresses!!
                 profile

@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import kotlinx.android.synthetic.main.empty_auth.*
 import kotlinx.android.synthetic.main.fragment_profile.*
+import kotlinx.android.synthetic.main.view_profile.*
 import org.stepik.android.adaptive.App
 import org.stepik.android.adaptive.R
 import org.stepik.android.adaptive.core.ScreenManager
@@ -40,6 +41,8 @@ class ProfileFragment: BasePresenterFragment<ProfilePresenter, ProfileView>(), P
         signIn.setOnClickListener { startActivityForResult(Intent(context, LoginActivity::class.java), LoginActivity.REQUEST_CODE) }
         signUp.setOnClickListener { startActivityForResult(Intent(context, RegisterActivity::class.java), RegisterActivity.REQUEST_CODE) }
         signLater.changeVisibillity(false)
+
+
     }
 
     override fun setState(state: ProfileView.State) {
@@ -48,6 +51,15 @@ class ProfileFragment: BasePresenterFragment<ProfilePresenter, ProfileView>(), P
         when(state) {
             is ProfileView.State.EmptyAuth -> {
                 emptyAuth.changeVisibillity(true)
+            }
+
+            is ProfileView.State.ProfileLoaded -> {
+                profileView.changeVisibillity(true)
+                profileName.text = state.profile.fullName
+
+                val email = state.profile.emailAddressesResolved.firstOrNull()?.email
+                profileMail.text = email
+                profileMail.changeVisibillity(email != null)
             }
         }
     }
