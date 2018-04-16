@@ -11,6 +11,7 @@ import org.stepik.android.adaptive.data.preference.ProfilePreferences
 import org.stepik.android.adaptive.di.qualifiers.BackgroundScheduler
 import org.stepik.android.adaptive.di.qualifiers.MainScheduler
 import org.stepik.android.adaptive.util.addDisposable
+import org.stepik.android.adaptive.util.toObject
 import retrofit2.HttpException
 import javax.inject.Inject
 
@@ -106,7 +107,7 @@ constructor(
 
     private inline fun <reified T> parseErrorState(throwable: Throwable, stateConstructor: (T) -> EditProfileFieldView.State) =
             if (throwable is HttpException) {
-                val error = gson.fromJson(throwable.response()?.errorBody()?.string(), T::class.java)
+                val error = throwable.response()?.errorBody()?.string()?.toObject<T>(gson)
                 if (error != null) {
                     stateConstructor(error)
                 } else {

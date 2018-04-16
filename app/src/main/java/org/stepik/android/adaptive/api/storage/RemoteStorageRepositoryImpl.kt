@@ -4,6 +4,7 @@ import com.google.gson.Gson
 import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.Single
+import io.reactivex.rxkotlin.toObservable
 import org.stepik.android.adaptive.api.storage.model.StorageRequest
 import org.stepik.android.adaptive.api.storage.model.StorageResponse
 import org.stepik.android.adaptive.configuration.Config
@@ -11,6 +12,7 @@ import org.stepik.android.adaptive.data.model.QuestionsPackStorageItem
 import org.stepik.android.adaptive.data.model.StorageRecord
 import org.stepik.android.adaptive.data.preference.ProfilePreferences
 import org.stepik.android.adaptive.di.AppSingleton
+import org.stepik.android.adaptive.util.toObject
 import javax.inject.Inject
 
 @AppSingleton
@@ -41,11 +43,11 @@ constructor(
 
     override fun getQuestionsPacks(): Single<List<String>> = getQuestionsPacks(page = 1).concatMap {
         if (it.meta?.hasNext == true) {
-            Observable.just(it).concatWith(getQuestionsPacks(page = it.meta.page))
+            Observable.just(it).concatWith(getQuestionsPacks(page = it.meta.page + 1))
         } else {
             Observable.just(it)
         }
     }.concatMap {
-        Observable.fromIterable(it.records.map { gson.fromJson(it.data, QuestionsPackStorageItem::class.java).packId })
+        it.records.map { it.data.toObject<QuestionsPackStorageItem>(gson).packId }.toObservable()
     }.toList()
 }

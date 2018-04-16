@@ -2,7 +2,6 @@ package org.stepik.android.adaptive.core.presenter
 
 import com.google.gson.Gson
 import io.reactivex.Scheduler
-import io.reactivex.Single
 import io.reactivex.disposables.CompositeDisposable
 import org.stepik.android.adaptive.api.profile.ProfileRepository
 import org.stepik.android.adaptive.api.profile.model.ProfileCompositeError

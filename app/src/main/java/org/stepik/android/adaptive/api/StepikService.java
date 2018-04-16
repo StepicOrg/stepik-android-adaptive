@@ -1,7 +1,5 @@
 package org.stepik.android.adaptive.api;
 
-import org.stepik.android.adaptive.api.profile.ProfileService;
-import org.stepik.android.adaptive.api.storage.RemoteStorageService;
 import org.stepik.android.adaptive.data.model.EnrollmentWrapper;
 
 import io.reactivex.Completable;
