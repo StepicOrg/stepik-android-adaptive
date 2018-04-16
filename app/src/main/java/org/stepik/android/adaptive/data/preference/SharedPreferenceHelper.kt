@@ -5,6 +5,7 @@ import android.content.SharedPreferences
 import android.preference.PreferenceManager
 
 import com.google.gson.Gson
+import io.reactivex.Single
 import org.joda.time.DateTime
 import org.joda.time.DateTimeZone
 import org.stepik.android.adaptive.api.auth.OAuthResponse
@@ -85,8 +86,8 @@ constructor(context: Context): SharedPreferenceProvider, AuthPreferences, Profil
         remove(OAUTH_RESPONSE_DEADLINE)
     }
 
-    override fun isFakeUser(): Boolean =
-            sharedPreferences.contains(FAKE_USER)
+    override fun isFakeUser(): Single<Boolean> =
+            Single.fromCallable { sharedPreferences.contains(FAKE_USER) }
 
     override fun removeFakeUser() {
         remove(FAKE_USER)

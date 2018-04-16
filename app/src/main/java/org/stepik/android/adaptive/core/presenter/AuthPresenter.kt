@@ -11,8 +11,8 @@ import org.stepik.android.adaptive.api.profile.ProfileRepository
 import org.stepik.android.adaptive.content.questions.QuestionsPacksManager
 import org.stepik.android.adaptive.core.presenter.contracts.AuthView
 import org.stepik.android.adaptive.data.Analytics
-import org.stepik.android.adaptive.data.preference.SharedPreferenceHelper
 import org.stepik.android.adaptive.data.model.AccountCredentials
+import org.stepik.android.adaptive.data.preference.ProfilePreferences
 import org.stepik.android.adaptive.di.qualifiers.BackgroundScheduler
 import org.stepik.android.adaptive.di.qualifiers.MainScheduler
 import org.stepik.android.adaptive.util.RxOptional
@@ -27,7 +27,7 @@ constructor(
         private val api: Api,
         private val authRepository: AuthRepository,
         private val profileRepository: ProfileRepository,
-        private val sharedPreferenceHelper: SharedPreferenceHelper,
+        private val profilePreferences: ProfilePreferences,
         private val analytics: Analytics,
 
         private val questionsPacksManager: QuestionsPacksManager,
@@ -58,7 +58,7 @@ constructor(
         view?.onLoading()
 
         disposable addDisposable loginRx(login, password).andThen(onLoginRx())
-                .doOnComplete { sharedPreferenceHelper.removeFakeUser() } // we auth as normal user and can remove fake credentials
+                .doOnComplete { profilePreferences.removeFakeUser() } // we auth as normal user and can remove fake credentials
                 .subscribeOn(backgroundScheduler)
                 .observeOn(mainScheduler)
                 .subscribe(this::onSuccess, this::handleLoginError)
@@ -84,15 +84,15 @@ constructor(
             authRepository.authWithLoginPassword(login, password).toCompletable()
 
     private fun createFakeUserRx(): Completable =
-            Single.fromCallable { RxOptional(sharedPreferenceHelper.fakeUser) }.flatMapCompletable { optional ->
+            Single.fromCallable { RxOptional(profilePreferences.fakeUser) }.flatMapCompletable { optional ->
                 val credentials = optional.value ?: api.createFakeAccount()
                 if (optional.value == null) {
-                    sharedPreferenceHelper.fakeUser = credentials
+                    profilePreferences.fakeUser = credentials
                     createAccountRx(credentials) then loginRx(credentials.login, credentials.password)
                 } else {
                     loginRx(credentials.login, credentials.password).onErrorResumeNext { error ->
                         if (error is HttpException && error.code() == 401) { // on some reason we cannot authorize user with old fake account credential
-                            sharedPreferenceHelper.fakeUser = null // remove old fake user
+                            profilePreferences.fakeUser = null // remove old fake user
                             createFakeUserRx() // retry
                         } else {
                             Completable.error(error)
@@ -104,7 +104,7 @@ constructor(
     private fun onLoginRx(): Completable = api
             .joinCourse(questionsPacksManager.currentCourseId)
             .andThen(profileRepository.fetchProfile())
-            .doOnSuccess { sharedPreferenceHelper.profile = it }
+            .doOnSuccess { profilePreferences.profile = it }
             .flatMapCompletable {
                 it.subscribedForMail = false
                 profileRepository.updateProfile(it)
