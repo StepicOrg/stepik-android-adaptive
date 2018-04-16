@@ -168,4 +168,8 @@
     <string name="auth_error_connectivity">@string/connectivity_error</string>
     <string name="auth_error_email_password_invalid">E-mail адрес/пароль неверны</string>
     <string name="auth_error_too_many_attempts">Слишком много неверных попыток. Попробуйте позже</string>
+
+    <string name="profile_change_name">Изменить имя</string>
+    <string name="profile_change_email">Изменить email</string>
+    <string name="profile_change_password">Изменить пароль</string>
 </resources>

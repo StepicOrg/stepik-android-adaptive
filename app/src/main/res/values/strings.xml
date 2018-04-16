@@ -178,4 +178,8 @@
     <string name="auth_error_connectivity">@string/connectivity_error</string>
     <string name="auth_error_email_password_invalid">Login/password was incorrect</string>
     <string name="auth_error_too_many_attempts">Too many attempts. Please try later.</string>
+
+    <string name="profile_change_name">Change name</string>
+    <string name="profile_change_email">Change email</string>
+    <string name="profile_change_password">Change password</string>
 </resources>
