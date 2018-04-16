@@ -1,5 +1,6 @@
 package org.stepik.android.adaptive.ui.fragment
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -13,6 +14,8 @@ import org.stepik.android.adaptive.core.ScreenManager
 import org.stepik.android.adaptive.core.presenter.BasePresenterFragment
 import org.stepik.android.adaptive.core.presenter.ProfilePresenter
 import org.stepik.android.adaptive.core.presenter.contracts.ProfileView
+import org.stepik.android.adaptive.ui.activity.LoginActivity
+import org.stepik.android.adaptive.ui.activity.RegisterActivity
 import org.stepik.android.adaptive.util.changeVisibillity
 import org.stepik.android.adaptive.util.hideAllChildren
 import javax.inject.Inject
@@ -34,8 +37,8 @@ class ProfileFragment: BasePresenterFragment<ProfilePresenter, ProfileView>(), P
             inflater.inflate(R.layout.fragment_profile, container, false)
 
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
-        signIn.setOnClickListener { screenManager.showSignInScreen(context) }
-        signUp.setOnClickListener { screenManager.showSignUpScreen(context) }
+        signIn.setOnClickListener { startActivityForResult(Intent(context, LoginActivity::class.java), LoginActivity.REQUEST_CODE) }
+        signUp.setOnClickListener { startActivityForResult(Intent(context, RegisterActivity::class.java), RegisterActivity.REQUEST_CODE) }
         signLater.changeVisibillity(false)
     }
 
@@ -47,6 +50,10 @@ class ProfileFragment: BasePresenterFragment<ProfilePresenter, ProfileView>(), P
                 emptyAuth.changeVisibillity(true)
             }
         }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        presenter?.fetchProfile()
     }
 
     override fun onStart() {

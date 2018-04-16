@@ -51,12 +51,4 @@ constructor(
         val intent = Intent(context, DescriptionActivity::class.java)
         context.startActivity(intent)
     }
-
-    override fun showSignInScreen(context: Context) {
-        context.startActivity(Intent(context, LoginActivity::class.java))
-    }
-
-    override fun showSignUpScreen(context: Context) {
-        context.startActivity(Intent(context, RegisterActivity::class.java))
-    }
 }

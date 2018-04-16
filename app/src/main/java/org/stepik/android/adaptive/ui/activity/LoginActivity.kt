@@ -10,7 +10,6 @@ import android.view.inputmethod.EditorInfo
 import kotlinx.android.synthetic.main.activity_login.*
 import org.stepik.android.adaptive.App
 import org.stepik.android.adaptive.R
-import org.stepik.android.adaptive.Util
 import org.stepik.android.adaptive.api.auth.AuthError
 import org.stepik.android.adaptive.core.ScreenManager
 import org.stepik.android.adaptive.core.presenter.BasePresenterActivity
@@ -25,11 +24,13 @@ import javax.inject.Inject
 import javax.inject.Provider
 
 class LoginActivity : BasePresenterActivity<AuthPresenter, AuthView>(), AuthView {
-    private companion object {
+    companion object {
         private const val PROGRESS = "login_progress"
         private const val REMIND_PASSWORD_DIALOG = "remind_password_dialog"
 
         private const val EMAIL_KEY = "email"
+
+        const val REQUEST_CODE = 788
     }
 
     @Inject
@@ -135,7 +136,12 @@ class LoginActivity : BasePresenterActivity<AuthPresenter, AuthView>(), AuthView
     }
 
     override fun onSuccess() {
-        screenManager.startStudy()
+        if (callingActivity == null) {
+            screenManager.startStudy()
+        } else {
+            setResult(RESULT_OK)
+            finish()
+        }
     }
 
     override fun onError(authError: AuthError) {

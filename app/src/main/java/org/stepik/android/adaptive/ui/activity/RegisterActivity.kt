@@ -8,6 +8,7 @@ import android.view.inputmethod.EditorInfo
 import kotlinx.android.synthetic.main.activity_register.*
 import org.stepik.android.adaptive.App
 import org.stepik.android.adaptive.R
+import org.stepik.android.adaptive.core.ScreenManager
 import org.stepik.android.adaptive.core.presenter.BasePresenterActivity
 import org.stepik.android.adaptive.core.presenter.RegisterPresenter
 import org.stepik.android.adaptive.core.presenter.contracts.RegisterView
@@ -18,10 +19,15 @@ import javax.inject.Provider
 class RegisterActivity: BasePresenterActivity<RegisterPresenter, RegisterView>(), RegisterView {
     companion object {
         private const val PROGRESS = "register_progress"
+
+        const val REQUEST_CODE = 520
     }
 
     @Inject
     lateinit var registerPresenterProvider: Provider<RegisterPresenter>
+
+    @Inject
+    lateinit var screenManager: ScreenManager
 
     override fun injectComponent() {
         App.componentManager().loginComponent.inject(this)
@@ -123,7 +129,7 @@ class RegisterActivity: BasePresenterActivity<RegisterPresenter, RegisterView>()
 
         is RegisterView.State.Success -> {
             hideProgressDialogFragment(PROGRESS)
-            finish()
+            onSuccess()
         }
     }
 
@@ -144,6 +150,15 @@ class RegisterActivity: BasePresenterActivity<RegisterPresenter, RegisterView>()
         signUpButton.isEnabled = true
         registerForm.isEnabled = true
         registerErrorMessage.changeVisibillity(false)
+    }
+
+    private fun onSuccess() {
+        if (callingActivity == null) {
+            screenManager.startStudy()
+        } else {
+            setResult(RESULT_OK)
+            finish()
+        }
     }
 
     private fun setSignUpButtonState() {
