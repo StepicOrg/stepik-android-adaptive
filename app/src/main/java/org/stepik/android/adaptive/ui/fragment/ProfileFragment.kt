@@ -26,6 +26,8 @@ import javax.inject.Provider
 class ProfileFragment: BasePresenterFragment<ProfilePresenter, ProfileView>(), ProfileView {
     companion object {
         const val EDIT_NAME_DIALOG = "edit_name"
+
+        const val PROFILE_CHANGED_REQUEST_CODE = 131
     }
 
     @Inject
