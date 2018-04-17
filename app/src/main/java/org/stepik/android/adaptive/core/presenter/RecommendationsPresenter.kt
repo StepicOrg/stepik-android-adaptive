@@ -72,6 +72,10 @@ constructor(
         inventoryManager.starterPack()
         localReminder.resolveDailyRemind()
 
+        fetchExp()
+    }
+
+    private fun fetchExp() {
         compositeDisposable addDisposable expManager.fetchExp()
                 .observeOn(mainScheduler)
                 .subscribeOn(backgroundScheduler)
@@ -90,6 +94,8 @@ constructor(
     override fun attachView(view: RecommendationsView) {
         super.attachView(view)
         resolveDailyReward()
+
+        fetchExp()
         updateExp()
 
         view.onLoading()
