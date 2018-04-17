@@ -14,7 +14,7 @@ import org.stepik.android.adaptive.di.AppSingleton
 abstract class RemoteStorageModule {
     @Binds
     @AppSingleton
-    abstract fun provideAuthRepository(authRepositoryImpl: RemoteStorageRepositoryImpl): RemoteStorageRepository
+    abstract fun provideRemoteStorageRepository(remoteStorageRepository: RemoteStorageRepositoryImpl): RemoteStorageRepository
 
     @Module
     companion object {
