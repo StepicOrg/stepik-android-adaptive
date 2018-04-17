@@ -10,7 +10,7 @@ import org.stepik.android.adaptive.data.preference.AuthPreferences
 import org.stepik.android.adaptive.data.preference.SharedPreferenceHelper
 import org.stepik.android.adaptive.di.AppSingleton
 
-@Module(includes = [AuthModule::class, ProfileModule::class, RatingModule::class, RemoteStorageModule::class])
+@Module(includes = [AuthModule::class, ProfileModule::class, RatingModule::class, RemoteStorageModule::class, UserModule::class])
 abstract class NetworkModule {
 
     // AuthModule link
