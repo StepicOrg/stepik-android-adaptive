@@ -62,8 +62,8 @@ constructor(
         disposable addDisposable loginRx(login, password).andThen(onLoginRx())
                 .doOnComplete {
                     profilePreferences.removeFakeUser() // we auth as normal user and can remove fake credentials
-                    expManager.reset() // reset rating from previous account
                 }
+                .andThen(expManager.reset()) // reset rating from previous account
                 .subscribeOn(backgroundScheduler)
                 .observeOn(mainScheduler)
                 .subscribe(this::onSuccess, this::handleLoginError)

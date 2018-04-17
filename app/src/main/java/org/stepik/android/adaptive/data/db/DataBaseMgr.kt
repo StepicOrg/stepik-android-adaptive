@@ -36,6 +36,9 @@ constructor(
         }
     }
 
+    fun resetExp(): Completable =
+            expDao.removeAll()
+
     fun addBookmark(bookmark: Bookmark) =
             bookmarksDao.insertOrReplace(bookmark)
 
