@@ -122,7 +122,7 @@ constructor(
     fun getAttempts(step: Long): Observable<AttemptResponse> =
             stepikService.getAttempts(step, sharedPreferenceHelper.profileId)
 
-    fun createSubmission(submission: Submission): Completable =
+    fun createSubmission(submission: Submission?): Completable =
             stepikService.createSubmission(SubmissionRequest(submission))
 
     fun getSubmissions(attempt: Long): Observable<SubmissionResponse> =

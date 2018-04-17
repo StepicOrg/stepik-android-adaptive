@@ -62,7 +62,7 @@ class QuizCardViewHolder(val binding: QuizCardViewBinding) : ContainerView.ViewH
                 onSubmissionLoading()
             } else {
                 binding.submit.visibility = View.VISIBLE
-                (binding.answers.adapter as AttemptAnswersAdapter).setEnabled(true)
+                (binding.answers.adapter as AttemptAnswersAdapter).isEnabled = true
             }
         }
 
@@ -108,8 +108,8 @@ class QuizCardViewHolder(val binding: QuizCardViewBinding) : ContainerView.ViewH
 
     override fun setAnswerAdapter(adapter: AttemptAnswersAdapter) {
         binding.answers.adapter = adapter
-        adapter.setSubmitButton(binding.submit)
-        adapter.setEnabled(false)
+        adapter.submitButton = binding.submit
+        adapter.isEnabled = false
 
         binding.submit.visibility = View.GONE
     }

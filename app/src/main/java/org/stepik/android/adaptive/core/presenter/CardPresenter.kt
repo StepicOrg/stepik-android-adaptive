@@ -174,25 +174,26 @@ class CardPresenter(val card: Card, private val listener: AdaptiveReactionListen
 
     fun createSubmission() {
         if (disposable == null || disposable?.isDisposed != false) {
-            card.adapter.setEnabled(false)
-            view?.onSubmissionLoading()
-            isLoading = true
-            error = null
+            card.adapter.createSubmission()?.let { submission ->
+                card.adapter.isEnabled = false
+                view?.onSubmissionLoading()
+                isLoading = true
+                error = null
 
-            val submission = card.adapter.submission
-            disposable = api.createSubmission(submission)
-                    .andThen(api.getSubmissions(submission.attempt))
-                    .subscribeOn(backgroundScheduler)
-                    .observeOn(mainScheduler)
-                    .subscribe(this::onSubmissionLoaded, this::onError)
+                disposable = api.createSubmission(submission)
+                        .andThen(api.getSubmissions(submission.attempt))
+                        .subscribeOn(backgroundScheduler)
+                        .observeOn(mainScheduler)
+                        .subscribe(this::onSubmissionLoaded, this::onError)
 
-            analytics.onSubmissionWasMade()
+                analytics.onSubmissionWasMade()
+            }
         }
     }
 
     fun retrySubmission() {
         submission = null
-        card.adapter.setEnabled(true)
+        card.adapter.isEnabled  = true
     }
 
     private fun onSubmissionLoaded(submissionResponse: SubmissionResponse) {
@@ -224,7 +225,7 @@ class CardPresenter(val card: Card, private val listener: AdaptiveReactionListen
     private fun onError(error: Throwable) {
         isLoading = false
         this.error = error
-        card.adapter.setEnabled(true)
+        card.adapter.isEnabled = true
         if (error is HttpException) {
             view?.onSubmissionRequestError()
         } else {
