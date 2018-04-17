@@ -69,10 +69,6 @@
 
         <activity
             android:theme="@style/AppTheme.NoActionBar"
-            android:name=".ui.activity.EditProfileActivity" />
-
-        <activity
-            android:theme="@style/AppTheme.NoActionBar"
             android:name=".ui.activity.RegisterActivity" />
 
         <receiver
