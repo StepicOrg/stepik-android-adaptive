@@ -26,6 +26,7 @@ interface RecommendationsView {
     fun showNewLevelDialog(level: Long)
     fun showRateAppDialog()
     fun showGamificationDescriptionScreen()
+    fun showEmptyAuthScreen()
     fun showStreakRestoreDialog(streak: Long, withTooltip: Boolean = false)
     fun hideStreakRestoreDialog()
 

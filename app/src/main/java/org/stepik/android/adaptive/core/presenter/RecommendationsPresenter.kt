@@ -47,6 +47,7 @@ constructor(
     companion object {
         private const val MIN_STREAK_TO_OFFER_TO_BUY = 7
         private const val LEVEL_TO_SHOW_GAMIFICATION_DESCRIPTION = 2
+        private const val LEVEL_TO_SHOW_EMPTY_AUTH_SCREEN = 6
         private const val LEVEL_TOO_HIGH_TO_WAIT = 10
         private const val MIN_EXP_TO_OFFER_PACKS = 50
     }
@@ -125,11 +126,24 @@ constructor(
                     (isNewLevelGained && level >= LEVEL_TO_SHOW_GAMIFICATION_DESCRIPTION || level >= LEVEL_TOO_HIGH_TO_WAIT)
                     && !sharedPreferenceHelper.isGamificationDescriptionWasShown
 
-            if (shouldShowGamificationDescription) {
-                sharedPreferenceHelper.isGamificationDescriptionWasShown = true
-                view?.showGamificationDescriptionScreen()
-            } else if (isNewLevelGained) {
-                view?.showNewLevelDialog(level)
+            val shouldShowEmptyAuthScreen = (isNewLevelGained && level >= LEVEL_TO_SHOW_EMPTY_AUTH_SCREEN)
+                    && !sharedPreferenceHelper.isEmptyAuthScreenWasShown
+
+            when {
+                shouldShowGamificationDescription -> {
+                    sharedPreferenceHelper.isGamificationDescriptionWasShown = true
+                    view?.showGamificationDescriptionScreen()
+                }
+                shouldShowEmptyAuthScreen -> compositeDisposable addDisposable sharedPreferenceHelper.isFakeUser()
+                        .subscribeOn(backgroundScheduler)
+                        .observeOn(mainScheduler)
+                        .subscribe { isFake ->
+                            sharedPreferenceHelper.isEmptyAuthScreenWasShown = true
+                            if (isFake) {
+                                view?.showEmptyAuthScreen()
+                            }
+                        }
+                isNewLevelGained -> view?.showNewLevelDialog(level)
             }
         }
 
