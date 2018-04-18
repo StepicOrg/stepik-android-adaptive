@@ -68,7 +68,7 @@ class ProfileFragment: BasePresenterFragment<ProfilePresenter, ProfileView>(), P
             EditPasswordDialogFragment().show(childFragmentManager, EDIT_EMAIL_PASSWORD)
 
     override fun setState(state: ProfileView.State) {
-        (view as? ViewGroup)?.hideAllChildren()
+        profileContainer.hideAllChildren()
         when(state) {
             is ProfileView.State.EmptyAuth -> {
                 emptyAuth.changeVisibillity(true)

@@ -7,7 +7,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:visibility="gone"
-    app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:visibility="visible">
 
         <FrameLayout
@@ -31,7 +30,7 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="8dp"
                 android:layout_weight="1"
-                android:theme="@style/AppTheme.WhiteButton"
+                android:background="@drawable/placeholder_button_background_selector"
                 android:textColor="@color/colorDarkGrayText"/>
 
             <android.support.v7.widget.AppCompatButton
@@ -41,7 +40,7 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="8dp"
                 android:layout_weight="1"
-                android:theme="@style/AppTheme.WhiteButton"
+                android:background="@drawable/placeholder_button_background_selector"
                 android:textColor="@color/colorDarkGrayText"/>
         </LinearLayout>
 </LinearLayout>
