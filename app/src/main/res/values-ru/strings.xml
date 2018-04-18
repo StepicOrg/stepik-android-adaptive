@@ -19,7 +19,7 @@
     <string name="sign_in_title"><![CDATA[<b>Войти</b> с e-mail]]></string>
     <string name="sign_up">Регистрация</string>
     <string name="sign_up_title"><![CDATA[<b>Регистрация</b> с e-mail]]></string>
-    <string name="sign_later">Позже</string>
+    <string name="sign_later">Не сейчас</string>
     <string name="continue_with">Или авторизоваться через</string>
     <string name="create_account">Регистрация</string>
     <string name="remind_password">Вспомнить пароль</string>
