@@ -13,14 +13,16 @@
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/bg_empty_auth">
+            android:background="@drawable/bg_empty_auth_rounded"
+            android:layout_margin="16dp">
             <include layout="@layout/header_empty_auth" />
         </FrameLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="8dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
             android:orientation="horizontal">
             <android.support.v7.widget.AppCompatButton
                 android:id="@+id/signIn"
