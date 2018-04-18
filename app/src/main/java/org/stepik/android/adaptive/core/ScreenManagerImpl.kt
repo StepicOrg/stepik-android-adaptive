@@ -28,6 +28,12 @@ constructor(
         context.startActivity(intent)
     }
 
+    override fun showEmptyAuthScreen() {
+        val intent = Intent(context, EmptyAuthActivity::class.java)
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP)
+        context.startActivity(intent)
+    }
+
     override fun showImage(context: Context, path: String) {
         val intent = Intent(context, PhotoViewActivity::class.java)
         intent.putExtra(PhotoViewActivity.PATH_KEY, path)
