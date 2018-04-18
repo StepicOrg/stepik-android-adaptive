@@ -28,6 +28,9 @@ class SplashActivity : AppCompatActivity() {
     lateinit var firebaseRemoteConfig: FirebaseRemoteConfig
 
     @Inject
+    lateinit var screenManager: ScreenManager
+
+    @Inject
     @field:MainScheduler
     lateinit var mainScheduler: Scheduler
 
@@ -49,9 +52,9 @@ class SplashActivity : AppCompatActivity() {
                 .observeOn(mainScheduler)
                 .subscribe({
                     if (it.first != 0L && it.second) {
-                        ScreenManager.getInstance().startStudy()
+                        screenManager.startStudy()
                     } else {
-                        ScreenManager.getInstance().showOnboardingScreen()
+                        screenManager.showOnboardingScreen()
                     }
                 })
     }

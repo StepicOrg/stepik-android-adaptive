@@ -14,6 +14,7 @@ import org.stepik.android.adaptive.di.study.StudyComponent
 import org.stepik.android.adaptive.receivers.BootCompletedReceiver
 import org.stepik.android.adaptive.receivers.NotificationsReceiver
 import org.stepik.android.adaptive.ui.activity.SplashActivity
+import org.stepik.android.adaptive.ui.adapter.QuizCardViewHolder
 import org.stepik.android.adaptive.ui.dialog.*
 
 @AppSingleton
@@ -45,6 +46,8 @@ interface AppCoreComponent {
     fun inject(dialog: InventoryDialog)
     fun inject(dialog: RateAppDialog)
     fun inject(dialog: LogoutDialog)
+
+    fun inject(viewHolder: QuizCardViewHolder)
 
     fun inject(activity: SplashActivity)
 

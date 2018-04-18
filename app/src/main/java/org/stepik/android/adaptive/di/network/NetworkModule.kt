@@ -2,44 +2,40 @@ package org.stepik.android.adaptive.di.network
 
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
+import dagger.Binds
 import dagger.Module
 import dagger.Provides
-import okhttp3.OkHttpClient
-import okhttp3.logging.HttpLoggingInterceptor
 import org.stepik.android.adaptive.api.StepikService
 import org.stepik.android.adaptive.api.auth.AuthInterceptor
 import org.stepik.android.adaptive.configuration.Config
 import org.stepik.android.adaptive.data.model.DatasetWrapper
+import org.stepik.android.adaptive.data.preference.AuthPreferences
+import org.stepik.android.adaptive.data.preference.SharedPreferenceHelper
 import org.stepik.android.adaptive.di.AppSingleton
 import org.stepik.android.adaptive.util.json.DatasetWrapperDeserializer
-import org.stepik.android.adaptive.util.setTimeoutsInSeconds
 
-@Module(includes = [AuthModule::class, RatingModule::class, RemoteStorageModule::class])
+@Module(includes = [AuthModule::class, ProfileModule::class, RatingModule::class, RemoteStorageModule::class])
 abstract class NetworkModule {
+
+    // AuthModule link
+    @Binds
+    @AppSingleton
+    abstract fun provideAuthPreferences(sharedPreferenceHelper: SharedPreferenceHelper): AuthPreferences
 
     @Module
     companion object {
         @Provides
         @AppSingleton
         @JvmStatic
-        internal fun provideStepikService(authInterceptor: AuthInterceptor, config: Config): StepikService {
-            val okHttpBuilder = OkHttpClient.Builder()
-            okHttpBuilder.addInterceptor(authInterceptor)
+        internal fun provideModelGson(): Gson = GsonBuilder()
+                .registerTypeAdapter(DatasetWrapper::class.java, DatasetWrapperDeserializer())
+                .create()
 
-            val logger = HttpLoggingInterceptor()
-            logger.level = HttpLoggingInterceptor.Level.BODY
-            okHttpBuilder.addInterceptor(logger)
-
-            val gson = GsonBuilder()
-                    .registerTypeAdapter(DatasetWrapper::class.java, DatasetWrapperDeserializer())
-                    .create()
-
-
-            okHttpBuilder.setTimeoutsInSeconds(NetworkHelper.TIMEOUT_IN_SECONDS)
-            val retrofit = NetworkHelper.createRetrofit(okHttpBuilder.build(), config.host, gson)
-
-            return retrofit.create(StepikService::class.java)
-        }
+        @Provides
+        @AppSingleton
+        @JvmStatic
+        internal fun provideStepikService(authInterceptor: AuthInterceptor, config: Config, gson: Gson): StepikService =
+                NetworkHelper.createServiceWithAuth(authInterceptor, config.host, gson)
     }
 
 }

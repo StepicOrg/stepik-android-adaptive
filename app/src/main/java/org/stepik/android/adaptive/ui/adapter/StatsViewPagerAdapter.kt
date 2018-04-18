@@ -5,14 +5,12 @@ import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentStatePagerAdapter
 import org.stepik.android.adaptive.R
 import org.stepik.android.adaptive.configuration.Config
-import org.stepik.android.adaptive.ui.fragment.AchievementsFragment
-import org.stepik.android.adaptive.ui.fragment.BookmarksFragment
-import org.stepik.android.adaptive.ui.fragment.ProgressFragment
-import org.stepik.android.adaptive.ui.fragment.RatingFragment
+import org.stepik.android.adaptive.ui.fragment.*
 
 
 class StatsViewPagerAdapter(fm: FragmentManager, context: Context, config: Config) : FragmentStatePagerAdapter(fm) {
     private val fragments = mutableListOf(
+            { ProfileFragment() }      to context.getString(R.string.profile),
             { ProgressFragment() }     to context.getString(R.string.progress),
             { AchievementsFragment() } to context.getString(R.string.achievements),
             { RatingFragment() }       to context.getString(R.string.rating)
@@ -20,7 +18,7 @@ class StatsViewPagerAdapter(fm: FragmentManager, context: Context, config: Confi
 
     init {
         if (config.isBookmarksSupported) {
-            fragments.add(2, { BookmarksFragment() } to context.getString(R.string.bookmarks))
+            fragments.add(3, { BookmarksFragment() } to context.getString(R.string.bookmarks))
         }
     }
 

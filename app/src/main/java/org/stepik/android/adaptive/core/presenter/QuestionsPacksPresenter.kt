@@ -97,7 +97,7 @@ constructor(
             view?.hideProgress()
         })
 
-    private fun consumeIfNotFake(observable: Observable<Purchase>) = Single.fromCallable(sharedPreferenceHelper::isFakeUser).flatMap { isFake ->
+    private fun consumeIfNotFake(observable: Observable<Purchase>) = sharedPreferenceHelper.isFakeUser().flatMap { isFake ->
         if (isFake) {
             observable.map { it.sku }.toList()
         } else {

@@ -14,15 +14,22 @@ import org.stepik.android.adaptive.ui.view.SwipeableLayout
 import org.stepik.android.adaptive.util.HtmlUtil
 import android.view.ViewGroup
 import android.webkit.WebSettings
+import org.stepik.android.adaptive.App
 import org.stepik.android.adaptive.R
 import org.stepik.android.adaptive.core.ScreenManager
 import org.stepik.android.adaptive.ui.DefaultWebViewClient
 import org.stepik.android.adaptive.ui.adapter.attempts.AttemptAnswerAdapter
 import org.stepik.android.adaptive.ui.view.container.ContainerView
 import org.stepik.android.adaptive.util.changeVisibillity
+import javax.inject.Inject
 
 class QuizCardViewHolder(val binding: QuizCardViewBinding) : ContainerView.ViewHolder(binding.root), CardView {
+    @Inject
+    lateinit var screenManager: ScreenManager
+
     init {
+        App.component().inject(this)
+
         val settings = binding.question.settings
         settings.allowContentAccess = false
         settings.loadWithOverviewMode = true
@@ -31,7 +38,7 @@ class QuizCardViewHolder(val binding: QuizCardViewBinding) : ContainerView.ViewH
         settings.javaScriptEnabled = true
 
         binding.question.webViewClient = DefaultWebViewClient(null) { _, _ -> onCardLoaded() }
-        binding.question.setOnWebViewClickListener { path -> ScreenManager.showImage(binding.root.context, path) }
+        binding.question.setOnWebViewClickListener { path -> screenManager.showImage(binding.root.context, path) }
         binding.question.setLayerType(View.LAYER_TYPE_SOFTWARE, null)
 
         binding.next.setOnClickListener { binding.container.swipeDown() }

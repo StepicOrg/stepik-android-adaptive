@@ -41,6 +41,14 @@ constructor(context: Context) {
         }
     }
 
+    fun logEventWithName(eventName: String, name: String?) {
+        val bundle = Bundle()
+        if (name != null) {
+            bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, name)
+        }
+        logEvent(eventName, bundle)
+    }
+
     fun logEventWithLongParam(event: String, param: String, value: Long) {
         val bundle = Bundle()
         bundle.putLong(param, value)
@@ -213,5 +221,32 @@ constructor(context: Context) {
         const val EVENT_ON_BOOKMARK_REMOVED = "bookmark_removed"
 
         const val EVENT_ON_GAMIFICATION_DESCRIPTION_SHOWN = "gamification_description_shown"
+    }
+
+    object Profile {
+        const val ON_CHANGE_NAME = "profile_change_name"
+        const val ON_CHANGE_EMAIL = "profile_change_email"
+        const val ON_CHANGE_PASS = "profile_change_pass"
+
+        const val ON_NAME_CHANGED = "profile_name_changed"
+        const val ON_EMAIL_CHANGED = "profile_email_changed"
+        const val ON_PASS_CHANGED = "profile_pass_changed"
+    }
+
+    object Registration {
+        const val SUCCESS_REGISTER = "success register"
+        const val ERROR = "registration_error"
+        const val SHOW_REGISTRATION_SCREEN = "show_registration_screen"
+        const val SHOW_REGISTRATION_SCREEN_FROM_PROFILE = "show_registration_screen_from_profile"
+    }
+
+    object Login {
+        const val FAIL_LOGIN = "fail_login"
+        const val SUCCESS_LOGIN = "success login"
+        const val SUCCESS_LOGIN_WITH_PASSWORD = "success login with password"
+        const val SHOW_LOGIN_SCREEN = "show_login_screen"
+        const val SHOW_LOGIN_SCREEN_FROM_PROFILE = "show_login_screen_from_profile"
+        const val AUTH_SKIPPED = "auth_skipped"
+        const val SHOW_EMPTY_AUTH_SCREEN = "show_empty_auth_screen"
     }
 }

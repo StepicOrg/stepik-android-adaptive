@@ -39,6 +39,9 @@ android {
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
+        debug {
+            testCoverageEnabled true
+        }
     }
     dataBinding {
         enabled = true
@@ -90,6 +93,7 @@ dependencies {
 
     implementation libraries.rxAndroid
     implementation libraries.rxJava2
+    implementation libraries.rxKotlin
 
     implementation libraries.gson
     implementation libraries.retrofit
@@ -152,9 +156,7 @@ dependencies {
         exclude group: 'com.android.support'
     }
 
-    kapt libraries.databinding
-
-    compile fileTree(include: ['*.jar'], dir: 'libs')
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
 }
 apply plugin: 'com.google.gms.google-services'
 repositories {
