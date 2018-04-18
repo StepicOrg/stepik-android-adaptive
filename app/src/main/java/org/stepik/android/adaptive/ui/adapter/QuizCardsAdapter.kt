@@ -80,4 +80,9 @@ open class QuizCardsAdapter(
     override fun poll() =
             presenters.removeAt(0).destroy()
 
+    fun clear() {
+        presenters.clear()
+        onDataSetChanged()
+    }
+
 }
