@@ -9,6 +9,7 @@ import kotlinx.android.synthetic.main.header_empty_auth.*
 import org.stepik.android.adaptive.App
 import org.stepik.android.adaptive.R
 import org.stepik.android.adaptive.core.ScreenManager
+import org.stepik.android.adaptive.util.fromHtmlCompat
 import javax.inject.Inject
 
 class EmptyAuthActivity: AppCompatActivity() {
@@ -19,6 +20,8 @@ class EmptyAuthActivity: AppCompatActivity() {
         super.onCreate(savedInstanceState)
         App.componentManager().loginComponent.inject(this)
         setContentView(R.layout.activity_empty_auth)
+
+        description.text = fromHtmlCompat(getString(R.string.empty_auth_description))
 
         close.setOnClickListener { finish() }
         signLater.setOnClickListener { finish() }

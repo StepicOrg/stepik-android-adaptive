@@ -21,6 +21,7 @@ import org.stepik.android.adaptive.ui.dialog.profile.EditEmailDialogFragment
 import org.stepik.android.adaptive.ui.dialog.profile.EditNameDialogFragment
 import org.stepik.android.adaptive.ui.dialog.profile.EditPasswordDialogFragment
 import org.stepik.android.adaptive.util.changeVisibillity
+import org.stepik.android.adaptive.util.fromHtmlCompat
 import org.stepik.android.adaptive.util.hideAllChildren
 import javax.inject.Inject
 import javax.inject.Provider
@@ -52,6 +53,8 @@ class ProfileFragment: BasePresenterFragment<ProfilePresenter, ProfileView>(), P
         signIn.setOnClickListener { startActivityForResult(Intent(context, LoginActivity::class.java), LoginActivity.REQUEST_CODE) }
         signUp.setOnClickListener { startActivityForResult(Intent(context, RegisterActivity::class.java), RegisterActivity.REQUEST_CODE) }
         close.changeVisibillity(false)
+
+        description.text = fromHtmlCompat(getString(R.string.empty_auth_description))
 
         changeName.setOnClickListener { showEditNameDialog() }
         changeEmail.setOnClickListener { showEditEmailDialog() }

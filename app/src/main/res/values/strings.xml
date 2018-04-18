@@ -188,5 +188,5 @@
 
     <string name="empty_auth_title" translatable="false">It\'s You!</string>
     <string name="empty_auth_subtitle">Complete auth to study with comfort</string>
-    <string name="empty_auth_description">Authorized account allows You to sync Your progress between devices</string>
+    <string name="empty_auth_description"><![CDATA[Authorized account allows You to <b>sync progress and purchases</b> between devices and display <b>Your name in leaderboards</b>]]></string>
 </resources>
