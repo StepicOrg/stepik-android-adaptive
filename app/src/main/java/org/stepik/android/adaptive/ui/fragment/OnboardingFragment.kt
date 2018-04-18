@@ -24,7 +24,6 @@ import org.stepik.android.adaptive.data.model.*
 import org.stepik.android.adaptive.databinding.FragmentRecommendationsBinding
 import org.stepik.android.adaptive.di.qualifiers.BackgroundScheduler
 import org.stepik.android.adaptive.di.qualifiers.MainScheduler
-import org.stepik.android.adaptive.ui.activity.StudyActivity
 import org.stepik.android.adaptive.ui.adapter.OnboardingQuizCardsAdapter
 import org.stepik.android.adaptive.gamification.achievements.AchievementManager
 import org.stepik.android.adaptive.util.addDisposable
@@ -176,10 +175,9 @@ class OnboardingFragment : Fragment(), AuthView {
                     .subscribeOn(backgroundScheduler)
                     .observeOn(mainScheduler)
                     .subscribe { isFake ->
+                        screenManager.startStudy()
                         if (isFake) {
-                            screenManager.showEmptyAuthScreen()
-                        } else {
-                            screenManager.startStudy()
+                            screenManager.showEmptyAuthScreen(context)
                         }
                     }
         }

@@ -1,6 +1,7 @@
 package org.stepik.android.adaptive.core
 
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 
@@ -28,9 +29,8 @@ constructor(
         context.startActivity(intent)
     }
 
-    override fun showEmptyAuthScreen() {
+    override fun showEmptyAuthScreen(context: Context) {
         val intent = Intent(context, EmptyAuthActivity::class.java)
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP)
         context.startActivity(intent)
     }
 
@@ -56,5 +56,13 @@ constructor(
         analytics.logEvent(Analytics.EVENT_ON_GAMIFICATION_DESCRIPTION_SHOWN)
         val intent = Intent(context, DescriptionActivity::class.java)
         context.startActivity(intent)
+    }
+
+    override fun showLoginScreen(activity: Activity) {
+        activity.startActivityForResult(Intent(activity, LoginActivity::class.java), LoginActivity.REQUEST_CODE)
+    }
+
+    override fun showRegisterScreen(activity: Activity) {
+        activity.startActivityForResult(Intent(activity, RegisterActivity::class.java), RegisterActivity.REQUEST_CODE)
     }
 }
