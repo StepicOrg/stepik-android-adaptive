@@ -16,6 +16,7 @@ import org.stepik.android.adaptive.data.db.DataBaseMgr
 import org.stepik.android.adaptive.data.model.*
 import org.stepik.android.adaptive.di.qualifiers.BackgroundScheduler
 import org.stepik.android.adaptive.di.qualifiers.MainScheduler
+import org.stepik.android.adaptive.ui.adapter.attempts.ChoiceQuizAnswersAdapter
 import org.stepik.android.adaptive.ui.listener.AdaptiveReactionListener
 import org.stepik.android.adaptive.ui.listener.AnswerListener
 import org.stepik.android.adaptive.util.HtmlUtil
@@ -110,7 +111,7 @@ class CardPresenter(val card: Card, private val listener: AdaptiveReactionListen
 
     private fun createBookmark(): Bookmark {
         val definition = if (card.isCorrect) {
-            card.adapter.lastSelectedAnswerText ?: String()
+            (card.adapter as? ChoiceQuizAnswersAdapter)?.lastSelectedAnswerText ?: String()
         } else {
             String()
         }

@@ -17,6 +17,7 @@ import android.webkit.WebSettings
 import org.stepik.android.adaptive.R
 import org.stepik.android.adaptive.core.ScreenManager
 import org.stepik.android.adaptive.ui.DefaultWebViewClient
+import org.stepik.android.adaptive.ui.adapter.attempts.AttemptAnswerAdapter
 import org.stepik.android.adaptive.ui.view.container.ContainerView
 import org.stepik.android.adaptive.util.changeVisibillity
 
@@ -62,7 +63,7 @@ class QuizCardViewHolder(val binding: QuizCardViewBinding) : ContainerView.ViewH
                 onSubmissionLoading()
             } else {
                 binding.submit.visibility = View.VISIBLE
-                (binding.answers.adapter as AttemptAnswersAdapter).isEnabled = true
+                (binding.answers.adapter as AttemptAnswerAdapter).isEnabled = true
             }
         }
 
@@ -106,7 +107,7 @@ class QuizCardViewHolder(val binding: QuizCardViewBinding) : ContainerView.ViewH
         HtmlUtil.setCardWebViewHtml(binding.question, html)
     }
 
-    override fun setAnswerAdapter(adapter: AttemptAnswersAdapter) {
+    override fun setAnswerAdapter(adapter: AttemptAnswerAdapter<*>) {
         binding.answers.adapter = adapter
         adapter.submitButton = binding.submit
         adapter.isEnabled = false

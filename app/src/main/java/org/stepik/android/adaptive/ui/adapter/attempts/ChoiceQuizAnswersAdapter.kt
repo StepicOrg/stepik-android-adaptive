@@ -1,4 +1,4 @@
-package org.stepik.android.adaptive.ui.adapter
+package org.stepik.android.adaptive.ui.adapter.attempts
 
 import android.databinding.DataBindingUtil
 import android.support.annotation.DrawableRes
@@ -6,32 +6,23 @@ import android.support.v4.content.ContextCompat
 import android.support.v4.graphics.drawable.DrawableCompat
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import android.widget.Button
 import org.stepik.android.adaptive.R
 import org.stepik.android.adaptive.data.model.Attempt
 import org.stepik.android.adaptive.data.model.Reply
 import org.stepik.android.adaptive.data.model.Submission
 import org.stepik.android.adaptive.databinding.ItemAnswerBinding
-import org.stepik.android.adaptive.ui.view.container.ContainerAdapter
 import org.stepik.android.adaptive.ui.view.container.ContainerView
 
-class AttemptAnswersAdapter : ContainerAdapter<AttemptAnswersAdapter.AttemptAnswerViewHolder>() {
+class ChoiceQuizAnswersAdapter : AttemptAnswerAdapter<ChoiceQuizAnswersAdapter.ChoiceQuizViewHolder>() {
     private var state: AdapterState? = null
 
     private var lastSelection = -1
     private var selectedCount = 0
 
-    var isEnabled = true
-    var submitButton: Button? = null
-        set(value) {
-            field = value
-            refreshSubmitButton()
-        }
-
     val lastSelectedAnswerText: String?
         get() = state?.options?.getOrNull(lastSelection)
 
-    fun setAttempt(attempt: Attempt?) {
+    override fun setAttempt(attempt: Attempt?) {
         state = attempt?.dataset?.options?.let { options ->
             AdapterState(attempt, options, BooleanArray(options.size))
         }
@@ -41,11 +32,11 @@ class AttemptAnswersAdapter : ContainerAdapter<AttemptAnswersAdapter.AttemptAnsw
         onDataSetChanged()
     }
 
-    fun createSubmission(): Submission? = state?.let { (attempt, _, selection) ->
-        Submission(Reply(selection), attempt.id)
+    override fun createSubmission(): Submission? = state?.let { (attempt, _, selection) ->
+        Submission(Reply(choices = selection), attempt.id)
     }
 
-    private fun refreshSubmitButton() {
+    override fun refreshSubmitButton() {
         submitButton?.isEnabled = selectedCount > 0
     }
 
@@ -70,10 +61,10 @@ class AttemptAnswersAdapter : ContainerAdapter<AttemptAnswersAdapter.AttemptAnsw
         }
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup): AttemptAnswerViewHolder =
-            AttemptAnswerViewHolder(DataBindingUtil.inflate(LayoutInflater.from(parent.context), R.layout.item_answer, parent, false))
+    override fun onCreateViewHolder(parent: ViewGroup): ChoiceQuizViewHolder =
+            ChoiceQuizViewHolder(DataBindingUtil.inflate(LayoutInflater.from(parent.context), R.layout.item_answer, parent, false))
 
-    override fun onBindViewHolder(holder: AttemptAnswerViewHolder, pos: Int) {
+    override fun onBindViewHolder(holder: ChoiceQuizViewHolder, pos: Int) {
         state?.let { (attempt, options, selection) ->
             holder.binding.itemAnswerText.text = options[pos]
 
@@ -98,11 +89,7 @@ class AttemptAnswersAdapter : ContainerAdapter<AttemptAnswersAdapter.AttemptAnsw
     override fun getItemCount() =
             state?.options?.size ?: 0
 
-    fun clear() {
-        setAttempt(null)
-    }
-
-    class AttemptAnswerViewHolder(val binding: ItemAnswerBinding) : ContainerView.ViewHolder(binding.root)
+    class ChoiceQuizViewHolder(val binding: ItemAnswerBinding) : ContainerView.ViewHolder(binding.root)
 
     private data class AdapterState(
             val attempt: Attempt,

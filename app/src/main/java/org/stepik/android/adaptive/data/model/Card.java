@@ -5,7 +5,8 @@ import org.stepik.android.adaptive.api.Api;
 import org.stepik.android.adaptive.api.AttemptResponse;
 import org.stepik.android.adaptive.di.qualifiers.BackgroundScheduler;
 import org.stepik.android.adaptive.di.qualifiers.MainScheduler;
-import org.stepik.android.adaptive.ui.adapter.AttemptAnswersAdapter;
+import org.stepik.android.adaptive.resolvers.StepTypeResolver;
+import org.stepik.android.adaptive.ui.adapter.attempts.AttemptAnswerAdapter;
 
 import javax.inject.Inject;
 
@@ -36,7 +37,7 @@ public final class Card extends Observable<Card> {
     private Attempt attempt;
     private Disposable attemptDisposable;
 
-    private final AttemptAnswersAdapter adapter = new AttemptAnswersAdapter();
+    private AttemptAnswerAdapter adapter;
 
     private final CompositeDisposable compositeDisposable = new CompositeDisposable();
 
@@ -48,6 +49,9 @@ public final class Card extends Observable<Card> {
 
     @Inject
     public Api api;
+
+    @Inject
+    public StepTypeResolver stepTypeResolver;
 
     @Inject
     @MainScheduler
@@ -63,6 +67,7 @@ public final class Card extends Observable<Card> {
         this.lesson = lesson;
         this.step = step;
         this.attempt = attempt;
+        adapter = stepTypeResolver.getAttemptAdapter(step);
         adapter.setAttempt(attempt);
     }
 
@@ -101,6 +106,7 @@ public final class Card extends Observable<Card> {
     private void setStep(Step step) {
         if (step != null) {
             this.step = step;
+            this.adapter = stepTypeResolver.getAttemptAdapter(step);
             if (attemptDisposable == null || (attemptDisposable.isDisposed() && attempt == null)) {
                 attemptDisposable = Observable.concat(
                         api.getAttempts(step.getId()),
@@ -150,6 +156,7 @@ public final class Card extends Observable<Card> {
 
     private void onError(final Throwable error) {
         this.error = error;
+        error.printStackTrace();
         notifyDataChanged();
     }
 
@@ -174,7 +181,9 @@ public final class Card extends Observable<Card> {
         if (attemptDisposable != null) attemptDisposable.dispose();
         compositeDisposable.dispose();
         observer = null;
-        adapter.clear();
+        if (adapter != null) {
+            adapter.clear();
+        }
     }
 
     @Override
@@ -192,7 +201,7 @@ public final class Card extends Observable<Card> {
         return step;
     }
 
-    public AttemptAnswersAdapter getAdapter() {
+    public AttemptAnswerAdapter getAdapter() {
         return adapter;
     }
 
