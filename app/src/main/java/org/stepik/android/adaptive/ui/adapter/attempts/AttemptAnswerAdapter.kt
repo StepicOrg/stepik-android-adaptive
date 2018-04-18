@@ -8,6 +8,11 @@ import org.stepik.android.adaptive.ui.view.container.ContainerView
 
 abstract class AttemptAnswerAdapter<VH : ContainerView.ViewHolder>: ContainerAdapter<VH>() {
     var isEnabled = true
+        set(value) {
+            field = value
+            onRebind()
+        }
+
     var submitButton: Button? = null
         set(value) {
             field = value

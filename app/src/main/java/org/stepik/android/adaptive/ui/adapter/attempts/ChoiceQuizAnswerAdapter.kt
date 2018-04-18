@@ -13,7 +13,7 @@ import org.stepik.android.adaptive.data.model.Submission
 import org.stepik.android.adaptive.databinding.ItemAnswerBinding
 import org.stepik.android.adaptive.ui.view.container.ContainerView
 
-class ChoiceQuizAnswersAdapter : AttemptAnswerAdapter<ChoiceQuizAnswersAdapter.ChoiceQuizViewHolder>() {
+class ChoiceQuizAnswerAdapter : AttemptAnswerAdapter<ChoiceQuizAnswerAdapter.ChoiceQuizViewHolder>() {
     private var state: AdapterState? = null
 
     private var lastSelection = -1
