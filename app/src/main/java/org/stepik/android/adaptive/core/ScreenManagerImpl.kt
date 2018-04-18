@@ -30,6 +30,7 @@ constructor(
     }
 
     override fun showEmptyAuthScreen(context: Context) {
+        analytics.logEvent(Analytics.Login.SHOW_EMPTY_AUTH_SCREEN)
         val intent = Intent(context, EmptyAuthActivity::class.java)
         context.startActivity(intent)
     }
@@ -59,10 +60,12 @@ constructor(
     }
 
     override fun showLoginScreen(activity: Activity) {
+        analytics.logEvent(Analytics.Login.SHOW_LOGIN_SCREEN)
         activity.startActivityForResult(Intent(activity, LoginActivity::class.java), LoginActivity.REQUEST_CODE)
     }
 
     override fun showRegisterScreen(activity: Activity) {
+        analytics.logEvent(Analytics.Registration.SHOW_REGISTRATION_SCREEN)
         activity.startActivityForResult(Intent(activity, RegisterActivity::class.java), RegisterActivity.REQUEST_CODE)
     }
 }
