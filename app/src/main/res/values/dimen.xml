@@ -41,4 +41,6 @@
     <dimen name="auth_button_radius">32dp</dimen>
 
     <dimen name="borderless_text_button_text_size">16sp</dimen>
+    
+    <dimen name="placeholder_button_radius">4dp</dimen>
 </resources>

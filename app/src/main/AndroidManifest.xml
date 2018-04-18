@@ -69,11 +69,11 @@
 
         <activity
             android:theme="@style/AppTheme.NoActionBar"
-            android:name=".ui.activity.EditProfileActivity" />
+            android:name=".ui.activity.RegisterActivity" />
 
         <activity
-            android:theme="@style/AppTheme.NoActionBar"
-            android:name=".ui.activity.RegisterActivity" />
+            android:theme="@style/AppTheme.NoActionBar.EmptyAuth"
+            android:name=".ui.activity.EmptyAuthActivity" />
 
         <receiver
             android:name="org.stepik.android.adaptive.receivers.BootCompletedReceiver"

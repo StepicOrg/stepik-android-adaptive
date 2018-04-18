@@ -115,8 +115,8 @@ constructor(
         sharedPreferenceHelper.saveLong(STREAK_KEY, 0)
     }
 
-    fun reset() {
+    fun reset(): Completable = Completable.fromAction {
         sharedPreferenceHelper.remove(EXP_KEY)
         sharedPreferenceHelper.remove(STREAK_KEY)
-    }
+    } then dataBaseMgr.resetExp()
 }

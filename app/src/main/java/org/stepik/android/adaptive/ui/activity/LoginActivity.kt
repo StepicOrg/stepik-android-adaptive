@@ -136,12 +136,8 @@ class LoginActivity : BasePresenterActivity<AuthPresenter, AuthView>(), AuthView
     }
 
     override fun onSuccess() {
-        if (callingActivity == null) {
-            screenManager.startStudy()
-        } else {
-            setResult(RESULT_OK)
-            finish()
-        }
+        setResult(RESULT_OK)
+        finish()
     }
 
     override fun onError(authError: AuthError) {

@@ -1,6 +1,5 @@
 package org.stepik.android.adaptive.ui.fragment
 
-import android.content.Intent
 import android.os.Bundle
 import android.support.annotation.StringRes
 import android.support.v4.app.Fragment
@@ -12,9 +11,11 @@ import android.view.animation.DecelerateInterpolator
 import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.Scheduler
+import io.reactivex.disposables.CompositeDisposable
 import org.stepik.android.adaptive.App
 import org.stepik.android.adaptive.R
 import org.stepik.android.adaptive.api.auth.AuthError
+import org.stepik.android.adaptive.core.ScreenManager
 import org.stepik.android.adaptive.core.presenter.AuthPresenter
 import org.stepik.android.adaptive.core.presenter.contracts.AuthView
 import org.stepik.android.adaptive.data.Analytics
@@ -23,9 +24,9 @@ import org.stepik.android.adaptive.data.model.*
 import org.stepik.android.adaptive.databinding.FragmentRecommendationsBinding
 import org.stepik.android.adaptive.di.qualifiers.BackgroundScheduler
 import org.stepik.android.adaptive.di.qualifiers.MainScheduler
-import org.stepik.android.adaptive.ui.activity.StudyActivity
 import org.stepik.android.adaptive.ui.adapter.OnboardingQuizCardsAdapter
 import org.stepik.android.adaptive.gamification.achievements.AchievementManager
+import org.stepik.android.adaptive.util.addDisposable
 import javax.inject.Inject
 
 class OnboardingFragment : Fragment(), AuthView {
@@ -35,6 +36,8 @@ class OnboardingFragment : Fragment(), AuthView {
 
     private lateinit var binding : FragmentRecommendationsBinding
     private var completed = 0
+
+    private val disposable = CompositeDisposable()
 
     @Inject
     lateinit var achievementManager: AchievementManager
@@ -56,6 +59,9 @@ class OnboardingFragment : Fragment(), AuthView {
     @Inject
     lateinit var sharedPreferenceHelper: SharedPreferenceHelper
 
+    @Inject
+    lateinit var screenManager: ScreenManager
+
     private val adapter = OnboardingQuizCardsAdapter {
         updateToolbar(true)
         if (it == 0) Completable.fromAction {
@@ -75,7 +81,7 @@ class OnboardingFragment : Fragment(), AuthView {
         initOnboardingCards()
         presenter.attachView(this)
 
-        Observable.fromCallable(sharedPreferenceHelper::authResponseDeadline)
+        disposable addDisposable Observable.fromCallable(sharedPreferenceHelper::authResponseDeadline)
                 .observeOn(mainScheduler)
                 .subscribe {
                     if(it == 0L)
@@ -139,6 +145,7 @@ class OnboardingFragment : Fragment(), AuthView {
     }
 
     override fun onDestroy() {
+        disposable.dispose()
         presenter.detachView(this)
         super.onDestroy()
     }
@@ -164,8 +171,15 @@ class OnboardingFragment : Fragment(), AuthView {
     private fun onComplete() {
         if (completed == 2) {
             analytics.onBoardingFinished()
-            startActivity(Intent(context, StudyActivity::class.java))
-            activity.finish()
+            disposable addDisposable sharedPreferenceHelper.isFakeUser()
+                    .subscribeOn(backgroundScheduler)
+                    .observeOn(mainScheduler)
+                    .subscribe { isFake ->
+                        screenManager.startStudy()
+                        if (isFake) {
+                            screenManager.showEmptyAuthScreen(context)
+                        }
+                    }
         }
     }
 

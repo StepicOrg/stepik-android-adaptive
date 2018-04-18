@@ -15,6 +15,10 @@
 
     <style name="AppTheme.NoActionBar.Splash" parent="AppTheme.NoActionBar" />
 
+    <style name="AppTheme.NoActionBar.EmptyAuth" parent="AppTheme.NoActionBar">
+        <item name="android:windowBackground">@drawable/bg_empty_auth</item>
+    </style>
+
     <style name="AppTheme.NoActionBar.Dark" parent="AppTheme.NoActionBar">
         <item name="android:windowBackground">@android:color/black</item>
     </style>

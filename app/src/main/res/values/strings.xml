@@ -19,7 +19,7 @@
     <string name="sign_in_title"><![CDATA[<b>Sign In</b> with e-mail]]></string>
     <string name="sign_up">Sign Up</string>
     <string name="sign_up_title"><![CDATA[<b>Sign Up</b> with e-mail]]></string>
-    <string name="sign_later">Sign Later</string>
+    <string name="sign_later">Not now</string>
     <string name="continue_with">Or continue with</string>
     <string name="create_account">Create account</string>
     <string name="remind_password">Forgot password</string>
@@ -185,4 +185,8 @@
 
     <string name="password_old">Old password</string>
     <string name="password_new">New password</string>
+
+    <string name="empty_auth_title" translatable="false">It\'s You!</string>
+    <string name="empty_auth_subtitle">Complete auth to study with comfort</string>
+    <string name="empty_auth_description"><![CDATA[Authorized account allows you to <b>sync progress and purchases</b> between devices and display <b>your name in leaderboards</b>]]></string>
 </resources>

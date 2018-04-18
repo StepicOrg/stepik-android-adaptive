@@ -219,6 +219,9 @@ class RecommendationsFragment : BasePresenterFragment<RecommendationsPresenter, 
     override fun showGamificationDescriptionScreen() =
             screenManager.showGamificationDescription(context)
 
+    override fun showEmptyAuthScreen() =
+            screenManager.showEmptyAuthScreen(context)
+
     override fun showStreakRestoreDialog(streak: Long, withTooltip: Boolean) {
         refreshStreakRestoreDialog()
         streakToRestore = streak

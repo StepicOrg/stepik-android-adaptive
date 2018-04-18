@@ -1,97 +1,122 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <ImageView
-        android:id="@+id/profileIcon"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:layout_marginBottom="24dp"
-        app:srcCompat="@drawable/ic_user"
-        app:layout_constraintBottom_toTopOf="@+id/profileName"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
+    <FrameLayout
+        android:id="@+id/profileInfo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_chainStyle="packed" />
-
-    <TextView
-        android:id="@+id/profileName"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:fontFamily="sans-serif-medium"
-        android:gravity="center"
-        android:textColor="@color/colorDarkGrayText"
-        android:textSize="22sp"
-        app:layout_constraintBottom_toTopOf="@+id/profileMail"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/profileIcon"
-        tools:text="Jack White" />
+        app:layout_constraintEnd_toEndOf="parent"
+        android:background="@drawable/bg_empty_auth_rounded"
+        android:layout_margin="16dp">
 
-    <TextView
-        android:id="@+id/profileMail"
-        android:layout_width="match_parent"
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="40dp"
+            android:gravity="center_horizontal"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/profileName"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:fontFamily="sans-serif-black"
+                android:gravity="center"
+                android:textColor="@android:color/white"
+                android:textSize="36sp"
+                tools:text="Jack White" />
+
+            <View
+                android:id="@+id/stroke"
+                android:layout_width="60dp"
+                android:layout_height="1dp"
+                android:layout_marginTop="24dp"
+                android:background="@color/colorSemiTransparentWhite" />
+
+            <TextView
+                android:id="@+id/profileMail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:textColor="@color/colorSemiTransparentWhite"
+                android:textSize="16sp"
+                android:lineSpacingMultiplier="1.2"
+                android:gravity="center"
+                tools:text="jack.white@white.com"
+                android:fontFamily="sans-serif-light" />
+
+        </LinearLayout>
+
+    </FrameLayout>
+
+    <android.support.constraint.Guideline
+        android:id="@+id/centerGuideline"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:gravity="center"
-        android:textSize="12sp"
-        app:layout_constraintBottom_toTopOf="@+id/changeName"
-        app:layout_constraintTop_toBottomOf="@+id/profileName"
-        tools:text="jack.white@white.com" />
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.5" />
+
+    <android.support.constraint.Guideline
+        android:id="@+id/leftGuideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.25" />
+
+    <android.support.constraint.Guideline
+        android:id="@+id/rightGuideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.75" />
 
     <Button
         android:id="@+id/changeName"
-        style="@style/Widget.AppCompat.Button.Borderless"
-        android:layout_width="wrap_content"
+        android:background="@drawable/placeholder_button_background_selector"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="48dp"
+        android:layout_marginTop="16dp"
         android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
+        android:layout_marginStart="24dp"
         android:text="@string/profile_change_name"
-        android:textColor="@color/borderless_button_text_color"
-        app:layout_constraintBottom_toTopOf="@+id/changeEmail"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
+        android:textColor="@color/colorDarkGrayText"
+        app:layout_constraintEnd_toStartOf="@+id/centerGuideline"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/profileMail" />
+        app:layout_constraintTop_toBottomOf="@+id/profileInfo" />
 
     <Button
         android:id="@+id/changeEmail"
-        style="@style/Widget.AppCompat.Button.Borderless"
-        android:layout_width="wrap_content"
-        android:layout_height="46dp"
-        android:layout_marginEnd="8dp"
+        android:background="@drawable/placeholder_button_background_selector"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="24dp"
+        android:layout_marginTop="16dp"
         android:layout_marginStart="8dp"
         android:text="@string/profile_change_email"
-        android:textColor="@color/borderless_button_text_color"
-        app:layout_constraintBottom_toTopOf="@+id/changePassword"
+        android:textColor="@color/colorDarkGrayText"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/changeName" />
+        app:layout_constraintStart_toEndOf="@+id/centerGuideline"
+        app:layout_constraintTop_toBottomOf="@+id/profileInfo" />
 
     <Button
         android:id="@+id/changePassword"
-        style="@style/Widget.AppCompat.Button.Borderless"
-        android:layout_width="wrap_content"
+        android:background="@drawable/placeholder_button_background_selector"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
+        android:layout_margin="16dp"
         android:text="@string/profile_change_password"
-        android:textColor="@color/borderless_button_text_color"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/changeEmail" />
+        android:textColor="@color/colorDarkGrayText"
+        app:layout_constraintVertical_bias="0"
+        app:layout_constraintEnd_toStartOf="@id/rightGuideline"
+        app:layout_constraintStart_toEndOf="@id/leftGuideline"
+        app:layout_constraintTop_toBottomOf="@+id/changeEmail"
+        app:layout_constraintBottom_toBottomOf="parent"/>
 
 </android.support.constraint.ConstraintLayout>

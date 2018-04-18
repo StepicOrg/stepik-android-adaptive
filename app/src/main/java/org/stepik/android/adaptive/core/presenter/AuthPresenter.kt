@@ -15,6 +15,7 @@ import org.stepik.android.adaptive.data.model.AccountCredentials
 import org.stepik.android.adaptive.data.preference.ProfilePreferences
 import org.stepik.android.adaptive.di.qualifiers.BackgroundScheduler
 import org.stepik.android.adaptive.di.qualifiers.MainScheduler
+import org.stepik.android.adaptive.gamification.ExpManager
 import org.stepik.android.adaptive.util.RxOptional
 import org.stepik.android.adaptive.util.addDisposable
 import org.stepik.android.adaptive.util.then
@@ -31,6 +32,7 @@ constructor(
         private val analytics: Analytics,
 
         private val questionsPacksManager: QuestionsPacksManager,
+        private val expManager: ExpManager,
 
         @BackgroundScheduler
         private val backgroundScheduler: Scheduler,
@@ -58,7 +60,11 @@ constructor(
         view?.onLoading()
 
         disposable addDisposable loginRx(login, password).andThen(onLoginRx())
-                .doOnComplete { profilePreferences.removeFakeUser() } // we auth as normal user and can remove fake credentials
+                .doOnComplete {
+                    profilePreferences.removeFakeUser() // we auth as normal user and can remove fake credentials
+                    analytics.logEvent(Analytics.Login.SUCCESS_LOGIN_WITH_PASSWORD)
+                }
+                .andThen(expManager.reset()) // reset rating from previous account
                 .subscribeOn(backgroundScheduler)
                 .observeOn(mainScheduler)
                 .subscribe(this::onSuccess, this::handleLoginError)
@@ -104,13 +110,17 @@ constructor(
     private fun onLoginRx(): Completable = api
             .joinCourse(questionsPacksManager.currentCourseId)
             .andThen(profileRepository.fetchProfileWithEmailAddresses())
-            .doOnSuccess { profilePreferences.profile = it }
+            .doOnSuccess {
+                profilePreferences.profile = it
+                analytics.logEvent(Analytics.Login.SUCCESS_LOGIN)
+            }
             .flatMapCompletable {
                 it.subscribedForMail = false
                 profileRepository.updateProfile(it)
             }
 
     private fun onError(authError: AuthError) {
+        analytics.logEventWithName(Analytics.Login.FAIL_LOGIN, authError.name)
         view?.onError(authError)
     }
 

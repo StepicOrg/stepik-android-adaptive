@@ -72,6 +72,7 @@ constructor(context: Context): SharedPreferenceProvider, AuthPreferences, Profil
     val isQuestionsPacksTooltipWasShown: Boolean by preference(IS_QUESTIONS_PACKS_TOOLTIP_WAS_SHOWN)
 
     var isGamificationDescriptionWasShown: Boolean by preference(IS_PACKS_FOR_LEVELS_WINDOW_WAS_SHOWN)
+    var isEmptyAuthScreenWasShown        : Boolean by preference(IS_EMPTY_AUTH_SCREEN_WAS_SHOWN)
 
     override var isAuthTokenSocial:      Boolean by preference(IS_OAUTH_TOKEN_SOCIAL)
     var isNotFirstTime:                  Boolean by preference(NOT_FIRST_TIME)
@@ -160,6 +161,7 @@ constructor(context: Context): SharedPreferenceProvider, AuthPreferences, Profil
         private const val IS_QUESTIONS_PACKS_TOOLTIP_WAS_SHOWN = "is_questions_packs_tooltip_was_shown"
 
         private const val IS_PACKS_FOR_LEVELS_WINDOW_WAS_SHOWN = "is_packs_for_levels_window_was_shown"
+        private const val IS_EMPTY_AUTH_SCREEN_WAS_SHOWN = "is_empty_auth_screen_was_shown"
 
         private const val QUESTIONS_PACK_INDEX = "questions_pack_index"
 

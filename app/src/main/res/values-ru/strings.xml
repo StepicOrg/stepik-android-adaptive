@@ -15,11 +15,11 @@
     <string name="wrong">НЕВЕРНО</string>
     <string name="logout_dialog">Вы уверены, что хотите выйти из текущего профиля?</string>
     <string name="password">Пароль</string>
-    <string name="sign_in">Войти</string>
+    <string name="sign_in">Вход</string>
     <string name="sign_in_title"><![CDATA[<b>Войти</b> с e-mail]]></string>
     <string name="sign_up">Регистрация</string>
     <string name="sign_up_title"><![CDATA[<b>Регистрация</b> с e-mail]]></string>
-    <string name="sign_later">Позже</string>
+    <string name="sign_later">Не сейчас</string>
     <string name="continue_with">Или авторизоваться через</string>
     <string name="create_account">Регистрация</string>
     <string name="remind_password">Вспомнить пароль</string>
@@ -175,4 +175,7 @@
 
     <string name="password_old">Old password</string>
     <string name="password_new">New password</string>
+
+    <string name="empty_auth_subtitle">Пройдите авторизацию для более удобного обучения</string>
+    <string name="empty_auth_description"><![CDATA[Авторизованный аккаунт позволит <b>синхронизировать прогресс и покупки</b> с другими устройствами, а также отображать <b>Ваше имя в таблице лидеров</b>]]></string>
 </resources>

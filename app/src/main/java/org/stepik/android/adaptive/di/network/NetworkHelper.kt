@@ -28,11 +28,6 @@ object NetworkHelper {
         val retrofit = cache.getOrPut(host) {
             val okHttpBuilder = OkHttpClient.Builder()
             okHttpBuilder.addInterceptor(authInterceptor)
-
-            val logger = HttpLoggingInterceptor()
-            logger.level = HttpLoggingInterceptor.Level.BODY
-            okHttpBuilder.addInterceptor(logger)
-
             okHttpBuilder.setTimeoutsInSeconds(NetworkHelper.TIMEOUT_IN_SECONDS)
             NetworkHelper.createRetrofit(okHttpBuilder.build(), host)
         }

@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import kotlinx.android.synthetic.main.empty_auth.*
+import kotlinx.android.synthetic.main.header_empty_auth.*
 import kotlinx.android.synthetic.main.fragment_profile.*
 import kotlinx.android.synthetic.main.view_profile.*
 import org.stepik.android.adaptive.App
@@ -14,12 +15,14 @@ import org.stepik.android.adaptive.core.ScreenManager
 import org.stepik.android.adaptive.core.presenter.BasePresenterFragment
 import org.stepik.android.adaptive.core.presenter.ProfilePresenter
 import org.stepik.android.adaptive.core.presenter.contracts.ProfileView
+import org.stepik.android.adaptive.data.Analytics
 import org.stepik.android.adaptive.ui.activity.LoginActivity
 import org.stepik.android.adaptive.ui.activity.RegisterActivity
 import org.stepik.android.adaptive.ui.dialog.profile.EditEmailDialogFragment
 import org.stepik.android.adaptive.ui.dialog.profile.EditNameDialogFragment
 import org.stepik.android.adaptive.ui.dialog.profile.EditPasswordDialogFragment
 import org.stepik.android.adaptive.util.changeVisibillity
+import org.stepik.android.adaptive.util.fromHtmlCompat
 import org.stepik.android.adaptive.util.hideAllChildren
 import javax.inject.Inject
 import javax.inject.Provider
@@ -39,6 +42,9 @@ class ProfileFragment: BasePresenterFragment<ProfilePresenter, ProfileView>(), P
     @Inject
     lateinit var screenManager: ScreenManager
 
+    @Inject
+    lateinit var analytics: Analytics
+
     override fun injectComponent() {
         App.componentManager()
                 .statsComponent.inject(this)
@@ -48,13 +54,30 @@ class ProfileFragment: BasePresenterFragment<ProfilePresenter, ProfileView>(), P
             inflater.inflate(R.layout.fragment_profile, container, false)
 
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
-        signIn.setOnClickListener { startActivityForResult(Intent(context, LoginActivity::class.java), LoginActivity.REQUEST_CODE) }
-        signUp.setOnClickListener { startActivityForResult(Intent(context, RegisterActivity::class.java), RegisterActivity.REQUEST_CODE) }
-        signLater.changeVisibillity(false)
+        signIn.setOnClickListener {
+            startActivityForResult(Intent(context, LoginActivity::class.java), LoginActivity.REQUEST_CODE)
+            analytics.logEvent(Analytics.Login.SHOW_LOGIN_SCREEN_FROM_PROFILE)
+        }
+        signUp.setOnClickListener {
+            startActivityForResult(Intent(context, RegisterActivity::class.java), RegisterActivity.REQUEST_CODE)
+            analytics.logEvent(Analytics.Registration.SHOW_REGISTRATION_SCREEN_FROM_PROFILE)
+        }
+        close.changeVisibillity(false)
 
-        changeName.setOnClickListener { showEditNameDialog() }
-        changeEmail.setOnClickListener { showEditEmailDialog() }
-        changePassword.setOnClickListener { showEditPasswordDialog() }
+        description.text = fromHtmlCompat(getString(R.string.empty_auth_description))
+
+        changeName.setOnClickListener {
+            analytics.logEvent(Analytics.Profile.ON_CHANGE_NAME)
+            showEditNameDialog()
+        }
+        changeEmail.setOnClickListener {
+            analytics.logEvent(Analytics.Profile.ON_CHANGE_EMAIL)
+            showEditEmailDialog()
+        }
+        changePassword.setOnClickListener {
+            analytics.logEvent(Analytics.Profile.ON_CHANGE_PASS)
+            showEditPasswordDialog()
+        }
     }
 
     private fun showEditNameDialog() =
@@ -67,7 +90,7 @@ class ProfileFragment: BasePresenterFragment<ProfilePresenter, ProfileView>(), P
             EditPasswordDialogFragment().show(childFragmentManager, EDIT_EMAIL_PASSWORD)
 
     override fun setState(state: ProfileView.State) {
-        (view as? ViewGroup)?.hideAllChildren()
+        profileContainer.hideAllChildren()
         when(state) {
             is ProfileView.State.EmptyAuth -> {
                 emptyAuth.changeVisibillity(true)

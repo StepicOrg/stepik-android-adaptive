@@ -6,6 +6,7 @@ import io.reactivex.disposables.CompositeDisposable
 import org.stepik.android.adaptive.api.profile.ProfileRepository
 import org.stepik.android.adaptive.api.profile.model.ProfileCompositeError
 import org.stepik.android.adaptive.core.presenter.contracts.RegisterView
+import org.stepik.android.adaptive.data.Analytics
 import org.stepik.android.adaptive.data.preference.ProfilePreferences
 import org.stepik.android.adaptive.di.AppSingleton
 import org.stepik.android.adaptive.di.qualifiers.BackgroundScheduler
@@ -26,7 +27,8 @@ constructor(
         @BackgroundScheduler
         private val backgroundScheduler: Scheduler,
         @MainScheduler
-        private val mainScheduler: Scheduler
+        private val mainScheduler: Scheduler,
+        private val analytics: Analytics
 ): PresenterBase<RegisterView>() {
     private val compositeDisposable = CompositeDisposable()
     private val gson = Gson()
@@ -66,6 +68,7 @@ constructor(
             profilePreferences.removeFakeUser()
         }.subscribe({
             state = RegisterView.State.Success
+            analytics.logEvent(Analytics.Registration.SUCCESS_REGISTER)
         }, {
             state = if (it is HttpException) {
                 val error = gson.fromJson(it.response()?.errorBody()?.string(), ProfileCompositeError::class.java)
@@ -78,6 +81,7 @@ constructor(
             } else {
                 RegisterView.State.NetworkError
             }
+            analytics.logEventWithName(Analytics.Registration.ERROR, it?.message ?: "")
         })
     }
 

@@ -153,12 +153,8 @@ class RegisterActivity: BasePresenterActivity<RegisterPresenter, RegisterView>()
     }
 
     private fun onSuccess() {
-        if (callingActivity == null) {
-            screenManager.startStudy()
-        } else {
-            setResult(RESULT_OK)
-            finish()
-        }
+        setResult(RESULT_OK)
+        finish()
     }
 
     private fun setSignUpButtonState() {
