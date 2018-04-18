@@ -5,6 +5,7 @@ import android.content.SharedPreferences
 import android.preference.PreferenceManager
 
 import com.google.gson.Gson
+import io.reactivex.Single
 import org.joda.time.DateTime
 import org.joda.time.DateTimeZone
 import org.stepik.android.adaptive.api.auth.OAuthResponse
@@ -12,7 +13,6 @@ import org.stepik.android.adaptive.data.model.AccountCredentials
 import org.stepik.android.adaptive.data.model.Profile
 import org.stepik.android.adaptive.content.questions.QuestionsPack
 import org.stepik.android.adaptive.di.AppSingleton
-import org.stepik.android.adaptive.util.RxOptional
 import javax.inject.Inject
 
 @AppSingleton
@@ -60,14 +60,19 @@ constructor(context: Context): SharedPreferenceProvider, AuthPreferences, Profil
         get() = getLong(PROFILE_ID)
         private set(value) = saveLong(PROFILE_ID, value)
 
-    val fakeUser: RxOptional<AccountCredentials>
-        get() = RxOptional(getString(FAKE_USER)).map { gson.fromJson(it, AccountCredentials::class.java) }
+    override var fakeUser: AccountCredentials?
+        get() = getString(FAKE_USER)?.let { gson.fromJson(it, AccountCredentials::class.java) }
+        set(value) {
+            val json = value?.let { gson.toJson(it) }
+            saveString(FAKE_USER, json)
+        }
 
     val isStreakRestoreTooltipWasShown:  Boolean by preference(IS_STREAK_RESTORE_TOOLTIP_WAS_SHOWN)
     val isPaidContentTooltipWasShown:    Boolean by preference(IS_PAID_CONTENT_TOOLTIP_WAS_SHOWN)
     val isQuestionsPacksTooltipWasShown: Boolean by preference(IS_QUESTIONS_PACKS_TOOLTIP_WAS_SHOWN)
 
     var isGamificationDescriptionWasShown: Boolean by preference(IS_PACKS_FOR_LEVELS_WINDOW_WAS_SHOWN)
+    var isEmptyAuthScreenWasShown        : Boolean by preference(IS_EMPTY_AUTH_SCREEN_WAS_SHOWN)
 
     override var isAuthTokenSocial:      Boolean by preference(IS_OAUTH_TOKEN_SOCIAL)
     var isNotFirstTime:                  Boolean by preference(NOT_FIRST_TIME)
@@ -82,16 +87,11 @@ constructor(context: Context): SharedPreferenceProvider, AuthPreferences, Profil
         remove(OAUTH_RESPONSE_DEADLINE)
     }
 
-    fun isFakeUser(): Boolean =
-            sharedPreferences.contains(FAKE_USER)
+    override fun isFakeUser(): Single<Boolean> =
+            Single.fromCallable { sharedPreferences.contains(FAKE_USER) }
 
-    fun removeFakeUser() {
+    override fun removeFakeUser() {
         remove(FAKE_USER)
-    }
-
-    fun saveFakeUser(credentials: AccountCredentials) {
-        val json = gson.toJson(credentials)
-        saveString(FAKE_USER, json)
     }
 
     fun afterStreakRestoreTooltipWasShown() {
@@ -121,7 +121,7 @@ constructor(context: Context): SharedPreferenceProvider, AuthPreferences, Profil
         sharedPreferences[name] = data
     }
 
-    private fun saveString(name: String, data: String) {
+    private fun saveString(name: String, data: String?) {
         sharedPreferences[name] = data
     }
 
@@ -161,6 +161,7 @@ constructor(context: Context): SharedPreferenceProvider, AuthPreferences, Profil
         private const val IS_QUESTIONS_PACKS_TOOLTIP_WAS_SHOWN = "is_questions_packs_tooltip_was_shown"
 
         private const val IS_PACKS_FOR_LEVELS_WINDOW_WAS_SHOWN = "is_packs_for_levels_window_was_shown"
+        private const val IS_EMPTY_AUTH_SCREEN_WAS_SHOWN = "is_empty_auth_screen_was_shown"
 
         private const val QUESTIONS_PACK_INDEX = "questions_pack_index"
 

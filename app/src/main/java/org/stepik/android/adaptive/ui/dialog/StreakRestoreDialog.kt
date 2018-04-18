@@ -6,10 +6,11 @@ import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.DialogFragment
 import android.support.v7.app.AlertDialog
+import kotlinx.android.synthetic.main.dialog_streak_restore.view.*
+import kotlinx.android.synthetic.main.item_inventory.view.*
 import org.stepik.android.adaptive.App
 import org.stepik.android.adaptive.R
 import org.stepik.android.adaptive.data.Analytics
-import org.stepik.android.adaptive.databinding.DialogStreakRestoreBinding
 import org.stepik.android.adaptive.ui.fragment.RecommendationsFragment
 import org.stepik.android.adaptive.gamification.InventoryManager
 import javax.inject.Inject
@@ -25,8 +26,6 @@ class StreakRestoreDialog : DialogFragment() {
             return dialog
         }
     }
-
-    private lateinit var binding : DialogStreakRestoreBinding
 
     @Inject
     lateinit var inventoryManager: InventoryManager
@@ -46,24 +45,24 @@ class StreakRestoreDialog : DialogFragment() {
         }
 
         val alertDialogBuilder = AlertDialog.Builder(context, R.style.ExpLevelDialogTheme)
-        binding = DialogStreakRestoreBinding.inflate(activity.layoutInflater, null, false)
+        val root = activity.layoutInflater.inflate(R.layout.dialog_streak_restore, null, false)
 
-        binding.ticketItem.counter.text = getString(R.string.amount, inventoryManager.getItemsCount(InventoryManager.Item.Ticket))
+        root.ticketItem.counter.text = getString(R.string.amount, inventoryManager.getItemsCount(InventoryManager.Item.Ticket))
 
-        binding.useCouponButton.setOnClickListener {
+        root.useCouponButton.setOnClickListener {
             if (inventoryManager.useItem(InventoryManager.Item.Ticket)) {
-                binding.ticketItem.counter.text = getString(R.string.amount, inventoryManager.getItemsCount(InventoryManager.Item.Ticket))
+                root.ticketItem.counter.text = getString(R.string.amount, inventoryManager.getItemsCount(InventoryManager.Item.Ticket))
                 onStreakRestore()
             }
             dismiss()
         }
 
-        binding.cancelButton.setOnClickListener {
+        root.cancelButton.setOnClickListener {
             analytics.onStreakRestoreCanceled(arguments?.getLong(STREAK_KEY) ?: 0)
             dismiss()
         }
 
-        alertDialogBuilder.setView(binding.root)
+        alertDialogBuilder.setView(root)
 
         return alertDialogBuilder.create()
     }

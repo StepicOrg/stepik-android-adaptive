@@ -15,19 +15,21 @@
     <string name="wrong">НЕВЕРНО</string>
     <string name="logout_dialog">Вы уверены, что хотите выйти из текущего профиля?</string>
     <string name="password">Пароль</string>
-    <string name="sign_in">Войти</string>
+    <string name="sign_in">Вход</string>
+    <string name="sign_in_title"><![CDATA[<b>Войти</b> с e-mail]]></string>
     <string name="sign_up">Регистрация</string>
+    <string name="sign_up_title"><![CDATA[<b>Регистрация</b> с e-mail]]></string>
+    <string name="sign_later">Не сейчас</string>
     <string name="continue_with">Или авторизоваться через</string>
     <string name="create_account">Регистрация</string>
     <string name="remind_password">Вспомнить пароль</string>
+
+    <string name="name">Имя</string>
     <string name="first_name">Имя</string>
     <string name="second_name">Фамилия</string>
-    <string name="auth_error">Ошибка авторизации</string>
-    <string name="auth_error_empty_email">Введите корректный E-mail</string>
-    <string name="auth_error_empty_password">Введите пароль</string>
+
     <string name="processing_your_request">Обработка запроса</string>
     <string name="loading_message">Пожалуйста, подождите…</string>
-    <string name="auth">Авторизация</string>
     <string name="remind_password_success">Мы отправили вам письмо</string>
     <string name="open">Открыть</string>
     <string name="close">Закрыть</string>
@@ -38,7 +40,7 @@
     <string name="required_field">Обязательное поле</string>
     <string name="terms_message_launch"><a href="https://stepik.org/page/terms/?from_mobile_app=true">Условия использования</a> и <a href="https://stepik.org/page/privacy/?from_mobile_app=true">Политика конфиденциальности</a></string>
     <string name="terms_message_login">Входя в приложение, Вы соглашаетесь с <a href="https://stepik.org/page/terms/?from_mobile_app=true">Условиями использования</a> и <a href="https://stepik.org/page/privacy/?from_mobile_app=true">Политикой конфиденциальности</a></string>
-    <string name="terms_message_register">Регистрируясь, Вы соглашаетесь с <a href="https://stepik.org/page/terms/?from_mobile_app=true">Условиями использования</a> и <a href="https://stepik.org/page/privacy/?from_mobile_app=true">Политикой конфиденциальности</a></string>
+    <string name="terms_message_register"><![CDATA[Регистрируясь, Вы соглашаетесь с <a href="https://stepik.org/page/terms/?from_mobile_app=true">Условиями использования</a> и <a href="https://stepik.org/page/privacy/?from_mobile_app=true">Политикой конфиденциальности</a>]]></string>
     <string name="register_error">При регистрации возникла ошибка</string>
     <string name="retry">Попробовать снова</string>
     <string name="onboarding_card_title_1">Добро пожаловать</string>
@@ -159,4 +161,21 @@
     <string name="description_packs_title">Бесплатные наборы вопросов</string>
     <string name="description_packs_description"><![CDATA[При наборе необходимого <font color="#0092E4">уровня</font> вам будут открываться новые <font color="#0092E4">наборы вопросов</font>, например Adjectives или Verbs]]></string>
     <string name="description_packs_button">@string/questions_packs</string>
+
+    <string name="profile">Профиль</string>
+
+    <string name="auth_error_empty_email">Введите корректный E-mail</string>
+    <string name="auth_error_connectivity">@string/connectivity_error</string>
+    <string name="auth_error_email_password_invalid">E-mail адрес/пароль неверны</string>
+    <string name="auth_error_too_many_attempts">Слишком много неверных попыток. Попробуйте позже</string>
+
+    <string name="profile_change_name">Изменить имя</string>
+    <string name="profile_change_email">Изменить email</string>
+    <string name="profile_change_password">Изменить пароль</string>
+
+    <string name="password_old">Old password</string>
+    <string name="password_new">New password</string>
+
+    <string name="empty_auth_subtitle">Пройдите авторизацию для более удобного обучения</string>
+    <string name="empty_auth_description"><![CDATA[Авторизованный аккаунт позволит <b>синхронизировать прогресс и покупки</b> с другими устройствами, а также отображать <b>Ваше имя в таблице лидеров</b>]]></string>
 </resources>

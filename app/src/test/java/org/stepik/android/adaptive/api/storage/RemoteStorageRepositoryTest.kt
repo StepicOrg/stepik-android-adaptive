@@ -7,7 +7,6 @@ import okhttp3.OkHttpClient
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
 import org.junit.Test
-import org.stepik.android.adaptive.api.StepikService
 import org.stepik.android.adaptive.configuration.Config
 import org.stepik.android.adaptive.data.preference.ProfilePreferences
 import org.stepik.android.adaptive.di.network.NetworkHelper
@@ -28,7 +27,7 @@ class RemoteStorageRepositoryTest {
         whenever(profilePreferences.profileId) doReturn profileId
 
         val okHttpClient = OkHttpClient.Builder().build()
-        val stepikService = NetworkHelper.createRetrofit(okHttpClient, base).create(StepikService::class.java)
+        val remoteStorageService = NetworkHelper.createRetrofit(okHttpClient, base).create(RemoteStorageService::class.java)
 
         val packsIds = listOf("pro", "full")
         packsIds.forEachIndexed { i, packId ->
@@ -56,7 +55,7 @@ class RemoteStorageRepositoryTest {
         }
 
 
-        val remoteStorageRepository: RemoteStorageRepository = RemoteStorageRepositoryImpl(config, stepikService, profilePreferences)
+        val remoteStorageRepository: RemoteStorageRepository = RemoteStorageRepositoryImpl(config, remoteStorageService, profilePreferences)
 
         remoteStorageRepository.getQuestionsPacks()
                 .test()

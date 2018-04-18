@@ -23,14 +23,7 @@ abstract class RatingModule {
         @Provides
         @AppSingleton
         @JvmStatic
-        internal fun provideRatingService(authInterceptor: AuthInterceptor, config: Config): RatingService {
-            val okHttpBuilder = OkHttpClient.Builder()
-            okHttpBuilder.addInterceptor(authInterceptor)
-
-            okHttpBuilder.setTimeoutsInSeconds(NetworkHelper.TIMEOUT_IN_SECONDS)
-            val retrofit = NetworkHelper.createRetrofit(okHttpBuilder.build(), config.ratingHost)
-
-            return retrofit.create(RatingService::class.java)
-        }
+        internal fun provideRatingService(authInterceptor: AuthInterceptor, config: Config): RatingService =
+                NetworkHelper.createServiceWithAuth(authInterceptor, config.ratingHost)
     }
 }

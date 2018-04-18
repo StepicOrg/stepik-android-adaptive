@@ -1,9 +1,8 @@
 package org.stepik.android.adaptive.api.auth
 
+import io.reactivex.Completable
 import io.reactivex.Single
-import org.stepik.android.adaptive.api.RegistrationResponse
 import org.stepik.android.adaptive.data.model.RegistrationUser
-import retrofit2.Response
 
 interface AuthRepository {
 
@@ -12,6 +11,6 @@ interface AuthRepository {
 
     fun authWithCode(code: String): Single<OAuthResponse>
 
-    fun createAccount(credentials: RegistrationUser): Single<Response<RegistrationResponse>>
+    fun createAccount(credentials: RegistrationUser): Completable
 
 }

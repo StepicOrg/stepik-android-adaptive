@@ -6,6 +6,7 @@ import dagger.Module
 import dagger.Provides
 import okhttp3.Credentials
 import okhttp3.OkHttpClient
+import okhttp3.Protocol
 import org.stepik.android.adaptive.api.auth.*
 import org.stepik.android.adaptive.configuration.Config
 import org.stepik.android.adaptive.data.preference.SharedPreferenceHelper
@@ -27,10 +28,6 @@ abstract class AuthModule {
     @Binds
     @AppSingleton
     abstract fun provideAuthRepository(authRepositoryImpl: AuthRepositoryImpl): AuthRepository
-
-    @Binds
-    @AppSingleton
-    abstract fun provideAuthPreferences(sharedPreferenceHelper: SharedPreferenceHelper): AuthPreferences
 
     @Module
     companion object {
@@ -98,6 +95,7 @@ abstract class AuthModule {
             okHttpBuilder.addInterceptor { chain ->
                 chain.proceed(chain.addUserAgent(userAgent).newBuilder().header(AppConstants.authorizationHeaderName, credentials).build())
             }
+            okHttpBuilder.protocols(listOf(Protocol.HTTP_1_1))
             okHttpBuilder.setTimeoutsInSeconds(NetworkHelper.TIMEOUT_IN_SECONDS)
 
             val retrofit = NetworkHelper.createRetrofit(okHttpBuilder.build(), host)
