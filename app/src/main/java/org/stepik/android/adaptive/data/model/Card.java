@@ -156,7 +156,6 @@ public final class Card extends Observable<Card> {
 
     private void onError(final Throwable error) {
         this.error = error;
-        error.printStackTrace();
         notifyDataChanged();
     }
 

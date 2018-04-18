@@ -180,7 +180,7 @@ class OnboardingFragment : Fragment(), LoginView {
     }
 
     private fun createMockCard(id: Long, @StringRes title_id: Int, @StringRes question_id: Int) : Card =
-            Card(id, Lesson(getString(title_id)), Step(Block(getString(question_id))), Attempt(Dataset(listOf(), false)))
+            Card(id, Lesson(getString(title_id)), Step(Block(getString(question_id))), Attempt(0, 0, datasetWrapper = DatasetWrapper(Dataset(listOf(), false))))
 
 
     private fun createMockAccount() {

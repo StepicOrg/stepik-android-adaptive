@@ -23,7 +23,7 @@ class ChoiceQuizAnswersAdapter : AttemptAnswerAdapter<ChoiceQuizAnswersAdapter.C
         get() = state?.options?.getOrNull(lastSelection)
 
     override fun setAttempt(attempt: Attempt?) {
-        state = attempt?.dataset?.options?.let { options ->
+        state = attempt?.getDataset()?.options?.let { options ->
             AdapterState(attempt, options, BooleanArray(options.size))
         }
 
@@ -43,7 +43,7 @@ class ChoiceQuizAnswersAdapter : AttemptAnswerAdapter<ChoiceQuizAnswersAdapter.C
     private fun select(pos: Int) {
         if (!isEnabled) return
         state?.let { (attempt, _, selection) ->
-            if (attempt.dataset.is_multiple_choice) {
+            if (attempt.getDataset()?.is_multiple_choice == true) {
                 selectedCount += if (selection[pos]) -1 else 1
                 selection[pos] = !selection[pos]
             } else {
@@ -71,7 +71,7 @@ class ChoiceQuizAnswersAdapter : AttemptAnswerAdapter<ChoiceQuizAnswersAdapter.C
             val context = holder.binding.root.context
 
             @DrawableRes
-            val selectionImageDrawableId = if (attempt.dataset.is_multiple_choice) {
+            val selectionImageDrawableId = if (attempt.getDataset()?.is_multiple_choice == true) {
                 if (selection[pos]) R.drawable.ic_check_box_filled else R.drawable.ic_check_box
             } else {
                 if (selection[pos]) R.drawable.ic_radio_button_filled else R.drawable.ic_radio_button
