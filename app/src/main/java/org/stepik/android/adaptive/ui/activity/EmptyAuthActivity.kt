@@ -35,6 +35,7 @@ class EmptyAuthActivity: AppCompatActivity() {
 
     private fun skipAuth() {
         analytics.logEvent(Analytics.Login.AUTH_SKIPPED)
+        finish()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
