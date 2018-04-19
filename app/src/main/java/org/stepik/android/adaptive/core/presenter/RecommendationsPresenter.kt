@@ -42,7 +42,7 @@ constructor(
         private val expManager: ExpManager,
         private val inventoryManager: InventoryManager,
         private val rateAppManager: RateAppManager,
-        questionsPacksManager: QuestionsPacksManager
+        private val questionsPacksManager: QuestionsPacksManager
 ): PresenterBase<RecommendationsView>(), AnswerListener {
     companion object {
         private const val MIN_STREAK_TO_OFFER_TO_BUY = 7
@@ -68,12 +68,30 @@ constructor(
 
     private var exp = 0L
 
+    private var currentCourseId: Long = 0
+    private var currentProfileId: Long = 0
+
     init {
-        createReaction(0, RecommendationReaction.Reaction.INTERESTING)
+        restartRecommendationsIfNeeded()
         inventoryManager.starterPack()
         localReminder.resolveDailyRemind()
 
         fetchExp()
+    }
+
+    private fun restartRecommendationsIfNeeded() {
+        val courseId = questionsPacksManager.currentCourseId
+        val profileId = sharedPreferenceHelper.profileId
+        if (currentCourseId != courseId || currentProfileId != profileId) {
+            cardDisposable?.dispose()
+            cards.clear()
+            adapter.clear()
+
+            currentCourseId = courseId
+            currentProfileId = profileId
+
+            createReaction(0, RecommendationReaction.Reaction.INTERESTING)
+        }
     }
 
     private fun fetchExp() {
@@ -104,6 +122,7 @@ constructor(
         if (isCourseCompleted) {
             view.onCourseCompleted()
         } else {
+            restartRecommendationsIfNeeded()
             resubscribe()
             error?.let(this::onError)
         }

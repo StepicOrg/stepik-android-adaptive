@@ -2,14 +2,18 @@ package org.stepik.android.adaptive.core.presenter
 
 import io.reactivex.BackpressureStrategy
 import io.reactivex.Scheduler
+import io.reactivex.Single
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.functions.BiFunction
+import io.reactivex.rxkotlin.subscribeBy
+import io.reactivex.rxkotlin.zipWith
 import io.reactivex.subjects.PublishSubject
 import org.stepik.android.adaptive.api.rating.RatingRepository
+import org.stepik.android.adaptive.api.user.UserRepository
 import org.stepik.android.adaptive.core.presenter.contracts.RatingView
-import org.stepik.android.adaptive.data.preference.SharedPreferenceHelper
 import org.stepik.android.adaptive.data.db.DataBaseMgr
 import org.stepik.android.adaptive.data.model.RatingItem
+import org.stepik.android.adaptive.data.preference.ProfilePreferences
 import org.stepik.android.adaptive.di.qualifiers.BackgroundScheduler
 import org.stepik.android.adaptive.di.qualifiers.MainScheduler
 import org.stepik.android.adaptive.ui.adapter.RatingAdapter
@@ -23,7 +27,8 @@ class RatingPresenter
 @Inject
 constructor(
         private val ratingRepository: RatingRepository,
-        private val sharedPreferenceHelper: SharedPreferenceHelper,
+        private val userRepository: UserRepository,
+        private val profilePreferences: ProfilePreferences,
         @BackgroundScheduler
         private val backgroundScheduler: Scheduler,
         @MainScheduler
@@ -38,7 +43,7 @@ constructor(
         private val RATING_PERIODS = arrayOf(1, 7, 0)
     }
 
-    private val adapters = RATING_PERIODS.map { RatingAdapter(sharedPreferenceHelper.profileId) }
+    private val adapters = RATING_PERIODS.map { RatingAdapter(profilePreferences.profileId) }
 
     private val compositeDisposable = CompositeDisposable()
     private val retrySubject = PublishSubject.create<Int>()
@@ -63,27 +68,30 @@ constructor(
     private fun initRatingPeriods() {
         val first = BiFunction<Throwable, Int, Throwable> { a, _ -> a }
         RATING_PERIODS.forEachIndexed { pos, period ->
-            compositeDisposable addDisposable ratingRepository.getRatingTable(ITEMS_PER_PAGE, period)
+            compositeDisposable addDisposable resolveUsers(ratingRepository.getRatingTable(ITEMS_PER_PAGE, period))
                     .subscribeOn(backgroundScheduler)
                     .observeOn(mainScheduler)
                     .doOnError(this::onError)
                     .retryWhen { it.zipWith(retrySubject.toFlowable(BackpressureStrategy.BUFFER), first) }
-                    .subscribe({
-                        adapters[pos].set(prepareRatingItems(it))
+                    .subscribeBy(this::onError) {
+                        adapters[pos].set(it)
                         periodsLoaded++
                         onLoadComplete()
-                    }, this::onError)
+                    }
         }
     }
 
-    private fun prepareRatingItems(data: List<RatingItem>) =
-            data.mapIndexed { index, (rank, _, exp, user) ->
-                RatingItem(
-                        if (rank == 0) index + 1 else rank,
-                        ratingNamesGenerator.getName(user),
-                        exp,
-                        user
-                )
+    private fun resolveUsers(single: Single<List<RatingItem>>): Single<List<RatingItem>> =
+            single.flatMap {
+                val userIds = it.filter{ it.isNotFake }.map { it.user }.toLongArray()
+                userRepository.getUsers(userIds).zipWith(Single.just(it))
+            }.map { (users, items) ->
+                items.mapIndexed { index, item ->
+                    val user = users.find { it.id == item.user }
+                    val name = user?.fullName ?: ratingNamesGenerator.getName(item.user)
+
+                    item.copy(rank = if (item.rank == 0) index + 1 else item.rank, name = name)
+                }
             }
 
 
