@@ -44,7 +44,7 @@
             android:name="org.stepik.android.adaptive.ui.activity.IntroActivity" />
 
         <activity
-            android:theme="@style/AppTheme.NoActionBar.Dark"
+            android:theme="@style/AppTheme.NoActionBar.PhotoView"
             android:name="org.stepik.android.adaptive.ui.activity.PhotoViewActivity"/>
 
         <activity

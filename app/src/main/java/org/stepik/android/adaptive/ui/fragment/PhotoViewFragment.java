@@ -5,6 +5,8 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
@@ -100,7 +102,10 @@ public class PhotoViewFragment extends Fragment {
             supportActionBar.setDisplayShowHomeEnabled(true);
             supportActionBar.setHomeButtonEnabled(true);
             supportActionBar.setDisplayHomeAsUpEnabled(true);
-            supportActionBar.setHomeAsUpIndicator(R.drawable.ic_close_white_24dp);
+
+            Drawable drawable = ContextCompat.getDrawable(getContext(), R.drawable.ic_close_white_24dp);
+            DrawableCompat.setTint(drawable, ContextCompat.getColor(getContext(), R.color.photo_view_home_indicator_color));
+            supportActionBar.setHomeAsUpIndicator(drawable);
         }
     }
 
