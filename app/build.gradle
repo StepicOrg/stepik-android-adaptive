@@ -77,6 +77,10 @@ android {
             applicationIdSuffix  '.toefl3124'
             dimension "course"
         }
+        ege8290 {
+            applicationIdSuffix  '.ege8290'
+            dimension "course"
+        }
     }
 
     packagingOptions {
