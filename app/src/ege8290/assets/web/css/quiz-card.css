@@ -14,11 +14,23 @@ body {
 }
 
 .main {
+    width: 100%;
     padding: 8px;
+    box-sizing: border-box;
+}
+
+pre {
+    max-width: 100%;
+    white-space: pre-wrap;
+    overflow-wrap: break-word;
+}
+
+.main * {
+    max-width: 100%;
 }
 
 p > img {
-    width: 100%;
+    max-width: 100%;
     box-sizing: border-box;
 }
 
@@ -26,13 +38,7 @@ p {
     width: 100%;
     box-sizing: border-box;
     padding: 16px;
-}
-
-@supports(width: calc(100% + 32px)) {
-    p > img {
-        margin: -16px;
-        width: calc(100% + 32px);
-    }
+    font-weight: 400;
 }
 
 .center {
