@@ -24,6 +24,8 @@ import org.stepik.android.adaptive.core.events.Client
 import org.stepik.android.adaptive.core.events.ClientImpl
 import org.stepik.android.adaptive.core.events.ListenerContainer
 import org.stepik.android.adaptive.core.events.ListenerContainerImpl
+import org.stepik.android.adaptive.data.Analytics
+import org.stepik.android.adaptive.data.AnalyticsImpl
 import org.stepik.android.adaptive.data.preference.ProfilePreferences
 import org.stepik.android.adaptive.data.preference.SharedPreferenceHelper
 import org.stepik.android.adaptive.di.qualifiers.BackgroundScheduler
@@ -54,6 +56,9 @@ abstract class AppCoreModule {
     @Binds
     @AppSingleton
     abstract fun provideScreenManager(screenManagerImpl: ScreenManagerImpl): ScreenManager
+
+    @Binds
+    abstract fun provideAnalytics(analyticsImpl: AnalyticsImpl): Analytics
 
     @Module
     companion object {
