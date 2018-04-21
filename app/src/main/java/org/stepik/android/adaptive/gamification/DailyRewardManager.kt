@@ -2,7 +2,7 @@ package org.stepik.android.adaptive.gamification
 
 import org.joda.time.DateTime
 import org.joda.time.Days
-import org.stepik.android.adaptive.data.SharedPreferenceHelper
+import org.stepik.android.adaptive.data.preference.SharedPreferenceHelper
 import org.stepik.android.adaptive.di.AppSingleton
 import org.stepik.android.adaptive.gamification.achievements.AchievementEventPoster
 import org.stepik.android.adaptive.gamification.achievements.AchievementManager

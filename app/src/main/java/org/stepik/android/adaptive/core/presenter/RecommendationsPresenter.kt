@@ -7,8 +7,9 @@ import io.reactivex.functions.BiFunction
 import io.reactivex.subjects.PublishSubject
 import org.stepik.android.adaptive.api.Api
 import org.stepik.android.adaptive.api.RecommendationsResponse
+import org.stepik.android.adaptive.content.questions.QuestionsPacksManager
 import org.stepik.android.adaptive.core.presenter.contracts.RecommendationsView
-import org.stepik.android.adaptive.data.SharedPreferenceHelper
+import org.stepik.android.adaptive.data.preference.SharedPreferenceHelper
 import org.stepik.android.adaptive.data.model.Card
 import org.stepik.android.adaptive.data.model.RecommendationReaction
 import org.stepik.android.adaptive.di.qualifiers.BackgroundScheduler
@@ -40,11 +41,13 @@ constructor(
         private val dailyRewardManager: DailyRewardManager,
         private val expManager: ExpManager,
         private val inventoryManager: InventoryManager,
-        private val rateAppManager: RateAppManager
+        private val rateAppManager: RateAppManager,
+        private val questionsPacksManager: QuestionsPacksManager
 ): PresenterBase<RecommendationsView>(), AnswerListener {
     companion object {
         private const val MIN_STREAK_TO_OFFER_TO_BUY = 7
         private const val LEVEL_TO_SHOW_GAMIFICATION_DESCRIPTION = 2
+        private const val LEVEL_TO_SHOW_EMPTY_AUTH_SCREEN = 6
         private const val LEVEL_TOO_HIGH_TO_WAIT = 10
         private const val MIN_EXP_TO_OFFER_PACKS = 50
     }
@@ -61,11 +64,44 @@ constructor(
 
     private var isCourseCompleted = false
 
+    private val isQuestionsPacksSupported = questionsPacksManager.isQuestionsPacksSupported
+
+    private var exp = 0L
+
+    private var currentCourseId: Long = 0
+    private var currentProfileId: Long = 0
 
     init {
-        createReaction(0, RecommendationReaction.Reaction.INTERESTING)
+        restartRecommendationsIfNeeded()
         inventoryManager.starterPack()
         localReminder.resolveDailyRemind()
+
+        fetchExp()
+    }
+
+    private fun restartRecommendationsIfNeeded() {
+        val courseId = questionsPacksManager.currentCourseId
+        val profileId = sharedPreferenceHelper.profileId
+        if (currentCourseId != courseId || currentProfileId != profileId) {
+            cardDisposable?.dispose()
+            cards.clear()
+            adapter.clear()
+
+            currentCourseId = courseId
+            currentProfileId = profileId
+
+            createReaction(0, RecommendationReaction.Reaction.INTERESTING)
+        }
+    }
+
+    private fun fetchExp() {
+        compositeDisposable addDisposable expManager.fetchExp()
+                .observeOn(mainScheduler)
+                .subscribeOn(backgroundScheduler)
+                .subscribe {
+                    exp = it
+                    updateExp()
+                }
     }
 
     private fun resolveDailyReward() {
@@ -77,6 +113,8 @@ constructor(
     override fun attachView(view: RecommendationsView) {
         super.attachView(view)
         resolveDailyReward()
+
+        fetchExp()
         updateExp()
 
         view.onLoading()
@@ -84,6 +122,7 @@ constructor(
         if (isCourseCompleted) {
             view.onCourseCompleted()
         } else {
+            restartRecommendationsIfNeeded()
             resubscribe()
             error?.let(this::onError)
         }
@@ -91,7 +130,7 @@ constructor(
         view.onAdapter(adapter)
     }
 
-    private fun updateExp(exp: Long = expManager.exp, streak: Long = 0, showLevelDialog: Boolean = false) {
+    private fun updateExp(streak: Long = 0, showLevelDialog: Boolean = false) {
         val level = expManager.getCurrentLevel(exp)
 
         val prev = expManager.getNextLevelExp(level - 1)
@@ -102,15 +141,28 @@ constructor(
         if (showLevelDialog) {
             val isNewLevelGained = level != expManager.getCurrentLevel(exp - streak)
 
-            val shouldShowGamificationDescription =
+            val shouldShowGamificationDescription = isQuestionsPacksSupported &&
                     (isNewLevelGained && level >= LEVEL_TO_SHOW_GAMIFICATION_DESCRIPTION || level >= LEVEL_TOO_HIGH_TO_WAIT)
                     && !sharedPreferenceHelper.isGamificationDescriptionWasShown
 
-            if (shouldShowGamificationDescription) {
-                sharedPreferenceHelper.isGamificationDescriptionWasShown = true
-                view?.showGamificationDescriptionScreen()
-            } else if (isNewLevelGained) {
-                view?.showNewLevelDialog(level)
+            val shouldShowEmptyAuthScreen = (isNewLevelGained && level >= LEVEL_TO_SHOW_EMPTY_AUTH_SCREEN)
+                    && !sharedPreferenceHelper.isEmptyAuthScreenWasShown
+
+            when {
+                shouldShowGamificationDescription -> {
+                    sharedPreferenceHelper.isGamificationDescriptionWasShown = true
+                    view?.showGamificationDescriptionScreen()
+                }
+                shouldShowEmptyAuthScreen -> compositeDisposable addDisposable sharedPreferenceHelper.isFakeUser()
+                        .subscribeOn(backgroundScheduler)
+                        .observeOn(mainScheduler)
+                        .subscribe { isFake ->
+                            sharedPreferenceHelper.isEmptyAuthScreenWasShown = true
+                            if (isFake) {
+                                view?.showEmptyAuthScreen()
+                            }
+                        }
+                isNewLevelGained -> view?.showNewLevelDialog(level)
             }
         }
 
@@ -132,7 +184,8 @@ constructor(
         val streak = expManager.incStreak()
 
         view?.onStreak(streak)
-        updateExp(expManager.changeExp(streak, submissionId), streak, true)
+        exp = expManager.changeExp(streak, submissionId)
+        updateExp(streak, true)
 
         if (rateAppManager.onEngagement()) {
             view?.showRateAppDialog()

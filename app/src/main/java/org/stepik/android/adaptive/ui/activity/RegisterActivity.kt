@@ -1,36 +1,33 @@
 package org.stepik.android.adaptive.ui.activity
 
-import android.databinding.DataBindingUtil
 import android.os.Bundle
-import android.support.design.widget.Snackbar
-import android.support.design.widget.TextInputLayout
+import android.text.Editable
+import android.text.TextWatcher
 import android.text.method.LinkMovementMethod
-import android.view.MenuItem
-import android.view.View
-import com.google.gson.Gson
+import android.view.inputmethod.EditorInfo
+import kotlinx.android.synthetic.main.activity_register.*
 import org.stepik.android.adaptive.App
 import org.stepik.android.adaptive.R
-import org.stepik.android.adaptive.Util
-import org.stepik.android.adaptive.api.RegistrationResponse
 import org.stepik.android.adaptive.core.ScreenManager
 import org.stepik.android.adaptive.core.presenter.BasePresenterActivity
-import org.stepik.android.adaptive.core.presenter.LoginPresenter
-import org.stepik.android.adaptive.core.presenter.contracts.LoginView
-import org.stepik.android.adaptive.data.model.AccountCredentials
-import org.stepik.android.adaptive.databinding.ActivityRegisterBinding
-import org.stepik.android.adaptive.util.ValidateUtil
+import org.stepik.android.adaptive.core.presenter.RegisterPresenter
+import org.stepik.android.adaptive.core.presenter.contracts.RegisterView
+import org.stepik.android.adaptive.util.*
 import javax.inject.Inject
 import javax.inject.Provider
 
-class RegisterActivity : BasePresenterActivity<LoginPresenter, LoginView>(), LoginView {
-    private companion object {
+class RegisterActivity: BasePresenterActivity<RegisterPresenter, RegisterView>(), RegisterView {
+    companion object {
         private const val PROGRESS = "register_progress"
+
+        const val REQUEST_CODE = 520
     }
 
-    private lateinit var binding : ActivityRegisterBinding
+    @Inject
+    lateinit var registerPresenterProvider: Provider<RegisterPresenter>
 
     @Inject
-    lateinit var loginPresenterProvider: Provider<LoginPresenter>
+    lateinit var screenManager: ScreenManager
 
     override fun injectComponent() {
         App.componentManager().loginComponent.inject(this)
@@ -38,38 +35,130 @@ class RegisterActivity : BasePresenterActivity<LoginPresenter, LoginView>(), Log
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_register)
+        setContentView(R.layout.activity_register)
 
-        setSupportActionBar(binding.registerActivityToolbar)
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        supportActionBar?.setDisplayShowTitleEnabled(false)
+        signUpText.text = fromHtmlCompat(getString(R.string.sign_up_title))
 
-        val focusChangeListener = View.OnFocusChangeListener { v, hasFocus ->
-            if (hasFocus) when(v.id) {
-                R.id.register_activity_first_name   -> binding.registerActivityFirstNameWrapper.isErrorEnabled  = false
-                R.id.register_activity_second_name  -> binding.registerActivitySecondNameWrapper.isErrorEnabled = false
-                R.id.register_activity_email        -> binding.registerActivityEmailWrapper.isErrorEnabled      = false
-                R.id.register_activity_password     -> binding.registerActivityPasswordWrapper.isErrorEnabled   = false
+        termsPrivacyRegisterTextView.movementMethod = LinkMovementMethod.getInstance()
+        termsPrivacyRegisterTextView.text = fromHtmlCompat(getString(R.string.terms_message_register)).stripUnderlinesFromLinks()
+
+        val formWatcher = object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {            }
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+
+            override fun afterTextChanged(s: Editable?) {
+                onClearError()
+                setSignUpButtonState()
             }
         }
 
-        binding.registerActivityFirstName.onFocusChangeListener = focusChangeListener
-        binding.registerActivitySecondName.onFocusChangeListener = focusChangeListener
-        binding.registerActivityEmail.onFocusChangeListener = focusChangeListener
-        binding.registerActivityPassword.onFocusChangeListener = focusChangeListener
+        firstNameField.addTextChangedListener(formWatcher)
+        secondNameField.addTextChangedListener(formWatcher)
+        emailField.addTextChangedListener(formWatcher)
+        passwordField.addTextChangedListener(formWatcher)
 
-        binding.registerActivityCreateAccount.setOnClickListener { createAccount() }
+        firstNameField.setOnEditorActionListener { _, actionId, _ ->
+            if (actionId == EditorInfo.IME_ACTION_NEXT) {
+                secondNameField.requestFocus()
+                true
+            } else {
+                false
+            }
+        }
 
-        binding.registerActivityTerms.movementMethod = LinkMovementMethod.getInstance()
+        secondNameField.setOnEditorActionListener { _, actionId, _ ->
+            if (actionId == EditorInfo.IME_ACTION_NEXT) {
+                emailField.requestFocus()
+                true
+            } else {
+                false
+            }
+        }
+
+        emailField.setOnEditorActionListener { _, actionId, _ ->
+            if (actionId == EditorInfo.IME_ACTION_NEXT) {
+                passwordField.requestFocus()
+                true
+            } else {
+                false
+            }
+        }
+
+        registerView.requestFocus()
+
+        setOnKeyboardOpenListener(root_view, {
+            signUpText.changeVisibillity(false)
+        }, {
+            signUpText.changeVisibillity(true)
+        })
+
+        close.setOnClickListener { finish() }
+
+        signUpButton.setOnClickListener { register() }
+        setSignUpButtonState()
     }
 
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        if ((item?.itemId ?: -1) == android.R.id.home) {
-            Util.hideSoftKeyboard(this)
-            onBackPressed()
-            return true
+    private fun register() {
+        hideSoftKeyboard()
+
+        val firstName = firstNameField.text.toString().trim()
+        val lastName = secondNameField.text.toString().trim()
+
+        val email = emailField.text.toString().trim()
+        val password = passwordField.text.toString()
+
+        presenter?.register(firstName, lastName, email, password)
+    }
+
+    override fun setState(state: RegisterView.State) = when (state) {
+        is RegisterView.State.Idle -> {
+            // reset view state
         }
-        return super.onOptionsItemSelected(item)
+
+        is RegisterView.State.Loading ->
+            showProgressDialogFragment(PROGRESS, getString(R.string.sign_up), getString(R.string.processing_your_request))
+
+        is RegisterView.State.NetworkError ->
+            onError(getString(R.string.connectivity_error))
+
+        is RegisterView.State.EmptyEmailError ->
+            onChangesNeededError(getString(R.string.auth_error_empty_email))
+
+        is RegisterView.State.Error ->
+            onChangesNeededError(state.message)
+
+        is RegisterView.State.Success -> {
+            hideProgressDialogFragment(PROGRESS)
+            onSuccess()
+        }
+    }
+
+    private fun onChangesNeededError(message: String) {
+        signUpButton.isEnabled = false
+        onError(message)
+    }
+
+    private fun onError(message: String) {
+        hideProgressDialogFragment(PROGRESS)
+
+        registerForm.isEnabled = false
+        registerErrorMessage.text = message
+        registerErrorMessage.changeVisibillity(true)
+    }
+
+    private fun onClearError() {
+        signUpButton.isEnabled = true
+        registerForm.isEnabled = true
+        registerErrorMessage.changeVisibillity(false)
+    }
+
+    private fun onSuccess() {
+        setResult(RESULT_OK)
+        finish()
+    }
+
+    private fun setSignUpButtonState() {
+        signUpButton.isEnabled = emailField.text.isNotBlank() && firstNameField.text.isNotBlank() && passwordField.text.isNotBlank()
     }
 
     override fun onStart() {
@@ -79,63 +168,10 @@ class RegisterActivity : BasePresenterActivity<LoginPresenter, LoginView>(), Log
 
     override fun onStop() {
         presenter?.detachView(this)
+        hideProgressDialogFragment(PROGRESS)
         super.onStop()
     }
 
-    override fun onDestroy() {
-        binding.unbind()
-        super.onDestroy()
-    }
-
-    private fun createAccount() {
-        val firstName = binding.registerActivityFirstName.text.toString().trim()
-        val secondName = binding.registerActivitySecondName.text.toString().trim()
-        val email = binding.registerActivityEmail.text.toString().trim()
-        val password = binding.registerActivityPassword.text.toString()
-
-        var isOk = true
-
-        isOk = isOk && ValidateUtil.validateRequiredField(binding.registerActivityFirstNameWrapper, binding.registerActivityFirstName)
-        isOk = isOk && ValidateUtil.validateRequiredField(binding.registerActivitySecondNameWrapper, binding.registerActivitySecondName)
-        isOk = isOk && ValidateUtil.validateEmail(binding.registerActivityEmailWrapper, binding.registerActivityEmail)
-        isOk = isOk && ValidateUtil.validatePassword(binding.registerActivityPasswordWrapper, binding.registerActivityPassword)
-
-        if (isOk) {
-            presenter?.createAccount(AccountCredentials(firstName, secondName, email, password))
-        }
-    }
-
-    override fun onSuccess() {
-        ScreenManager.getInstance().startStudy()
-    }
-
-    override fun onNetworkError() {
-        hideProgressDialogFragment(PROGRESS)
-        Snackbar.make(binding.root, R.string.register_error, Snackbar.LENGTH_LONG).show()
-    }
-
-    override fun onError(errorBody: String) {
-        hideProgressDialogFragment(PROGRESS)
-
-        try {
-            val error = Gson().fromJson(errorBody, RegistrationResponse::class.java)
-            onFieldError(error.first_name, binding.registerActivityFirstNameWrapper)
-            onFieldError(error.last_name, binding.registerActivitySecondNameWrapper)
-            onFieldError(error.email, binding.registerActivityEmailWrapper)
-            onFieldError(error.password, binding.registerActivityPasswordWrapper)
-        } catch (e: Exception) {}
-    }
-
-    private fun onFieldError(msg: Array<String>?, wrapper: TextInputLayout) {
-        val error = msg?.joinToString(" ") ?: ""
-        if (error.isNotBlank()) {
-            wrapper.error = error
-        }
-    }
-
-    override fun onLoading() {
-        showProgressDialogFragment(PROGRESS, getString(R.string.sign_up), getString(R.string.processing_your_request))
-    }
-
-    override fun getPresenterProvider() = loginPresenterProvider
+    override fun getPresenterProvider()
+            = registerPresenterProvider
 }

@@ -39,6 +39,11 @@ android {
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
+        debug {
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro', 'proguard-rules-dev.pro'
+            testCoverageEnabled true
+        }
     }
     dataBinding {
         enabled = true
@@ -74,6 +79,10 @@ android {
             applicationIdSuffix  '.toefl3124'
             dimension "course"
         }
+        ege8290 {
+            applicationIdSuffix  '.ege8290'
+            dimension "course"
+        }
     }
 
     packagingOptions {
@@ -90,6 +99,7 @@ dependencies {
 
     implementation libraries.rxAndroid
     implementation libraries.rxJava2
+    implementation libraries.rxKotlin
 
     implementation libraries.gson
     implementation libraries.retrofit
@@ -134,6 +144,9 @@ dependencies {
     testImplementation libraries.robolectric
     testImplementation libraries.mockitoCore
     testImplementation libraries.hamcrest
+    testImplementation libraries.retrofitMock
+    testImplementation libraries.mockwebserver
+    testImplementation libraries.mockitoKt
 
     androidTestImplementation(libraries.supportTestRunner) {
         exclude group: 'com.android.support'
@@ -149,9 +162,7 @@ dependencies {
         exclude group: 'com.android.support'
     }
 
-    kapt libraries.databinding
-
-    compile fileTree(include: ['*.jar'], dir: 'libs')
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
 }
 apply plugin: 'com.google.gms.google-services'
 repositories {

@@ -1,38 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout
+<android.support.design.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
-    <android.support.design.widget.CoordinatorLayout
-        android:id="@+id/coordinator"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/coordinator"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true">
+    <android.support.design.widget.AppBarLayout
+        android:id="@+id/appBar"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:fitsSystemWindows="true">
-        <android.support.design.widget.AppBarLayout
-            android:id="@+id/app_bar"
+        android:layout_height="wrap_content"
+        android:background="@android:color/transparent"
+        android:elevation="0dp"
+        app:elevation="0dp">
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@android:color/transparent"
-            android:elevation="0dp"
-            app:elevation="0dp">
-            <android.support.v7.widget.Toolbar
-                android:id="@+id/toolbar"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:layout_scrollFlags="scroll|enterAlways|snap"
-                app:theme="@style/AppTheme.ActionBarTheme" />
-            <android.support.design.widget.TabLayout
-                android:id="@+id/tab_layout"
-                app:tabMode="scrollable"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:minHeight="?attr/actionBarSize"
-                app:tabIndicatorHeight="1dp"/>
-            <include layout="@layout/stroke"/>
-        </android.support.design.widget.AppBarLayout>
-        <android.support.v4.view.ViewPager
-            android:id="@+id/pager"
+            app:layout_scrollFlags="scroll|enterAlways|snap"
+            app:theme="@style/AppTheme.ActionBarTheme" />
+        <android.support.design.widget.TabLayout
+            android:id="@+id/tabLayout"
+            app:tabMode="scrollable"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
-    </android.support.design.widget.CoordinatorLayout>
-</layout>
+            android:layout_height="wrap_content"
+            android:minHeight="?attr/actionBarSize"
+            app:tabIndicatorHeight="1dp"/>
+        <include layout="@layout/stroke"/>
+    </android.support.design.widget.AppBarLayout>
+    <android.support.v4.view.ViewPager
+        android:id="@+id/pager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
+</android.support.design.widget.CoordinatorLayout>

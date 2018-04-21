@@ -2,6 +2,7 @@ package org.stepik.android.adaptive.di
 
 import android.content.Context
 import android.content.pm.PackageManager
+import android.webkit.CookieManager
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings
 import dagger.Binds
@@ -14,10 +15,19 @@ import org.solovyev.android.checkout.Billing
 import org.stepik.android.adaptive.BuildConfig
 import org.stepik.android.adaptive.R
 import org.stepik.android.adaptive.configuration.Config
+import org.stepik.android.adaptive.configuration.ConfigImpl
+import org.stepik.android.adaptive.core.LogoutHelper
+import org.stepik.android.adaptive.core.LogoutHelperImpl
+import org.stepik.android.adaptive.core.ScreenManager
+import org.stepik.android.adaptive.core.ScreenManagerImpl
 import org.stepik.android.adaptive.core.events.Client
 import org.stepik.android.adaptive.core.events.ClientImpl
 import org.stepik.android.adaptive.core.events.ListenerContainer
 import org.stepik.android.adaptive.core.events.ListenerContainerImpl
+import org.stepik.android.adaptive.data.Analytics
+import org.stepik.android.adaptive.data.AnalyticsImpl
+import org.stepik.android.adaptive.data.preference.ProfilePreferences
+import org.stepik.android.adaptive.data.preference.SharedPreferenceHelper
 import org.stepik.android.adaptive.di.qualifiers.BackgroundScheduler
 import org.stepik.android.adaptive.di.qualifiers.MainScheduler
 import org.stepik.android.adaptive.gamification.achievements.AchievementEventListener
@@ -35,6 +45,21 @@ abstract class AppCoreModule {
     @AppSingleton
     abstract fun provideAchievementEventListenerContainer(container: ListenerContainerImpl<AchievementEventListener>): ListenerContainer<AchievementEventListener>
 
+    @Binds
+    @AppSingleton
+    abstract fun provideAuthRepository(sharedPreferenceHelper: SharedPreferenceHelper): ProfilePreferences
+
+    @Binds
+    @AppSingleton
+    abstract fun provideLogoutHelper(logoutHelperImpl: LogoutHelperImpl): LogoutHelper
+
+    @Binds
+    @AppSingleton
+    abstract fun provideScreenManager(screenManagerImpl: ScreenManagerImpl): ScreenManager
+
+    @Binds
+    abstract fun provideAnalytics(analyticsImpl: AnalyticsImpl): Analytics
+
     @Module
     companion object {
         @Provides
@@ -50,7 +75,7 @@ abstract class AppCoreModule {
         @Provides
         @AppSingleton
         @JvmStatic
-        internal fun provideConfig(configFactory: Config.ConfigFactory): Config =
+        internal fun provideConfig(configFactory: ConfigImpl.ConfigFactory): Config =
                 configFactory.create()
 
         @JvmStatic
@@ -86,6 +111,11 @@ abstract class AppCoreModule {
                 } catch (e: PackageManager.NameNotFoundException) {
                     ""
                 }
-    
+
+        @JvmStatic
+        @Provides
+        @AppSingleton
+        internal fun provideCookieManager(): CookieManager = CookieManager.getInstance()
+
     }
 }

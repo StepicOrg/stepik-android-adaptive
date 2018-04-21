@@ -1,6 +1,5 @@
 package org.stepik.android.adaptive.ui.fragment
 
-import android.content.Intent
 import android.os.Bundle
 import android.support.annotation.StringRes
 import android.support.v4.app.Fragment
@@ -12,28 +11,33 @@ import android.view.animation.DecelerateInterpolator
 import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.Scheduler
+import io.reactivex.disposables.CompositeDisposable
 import org.stepik.android.adaptive.App
 import org.stepik.android.adaptive.R
-import org.stepik.android.adaptive.core.presenter.LoginPresenter
-import org.stepik.android.adaptive.core.presenter.contracts.LoginView
+import org.stepik.android.adaptive.api.auth.AuthError
+import org.stepik.android.adaptive.core.ScreenManager
+import org.stepik.android.adaptive.core.presenter.AuthPresenter
+import org.stepik.android.adaptive.core.presenter.contracts.AuthView
 import org.stepik.android.adaptive.data.Analytics
-import org.stepik.android.adaptive.data.SharedPreferenceHelper
+import org.stepik.android.adaptive.data.preference.SharedPreferenceHelper
 import org.stepik.android.adaptive.data.model.*
 import org.stepik.android.adaptive.databinding.FragmentRecommendationsBinding
 import org.stepik.android.adaptive.di.qualifiers.BackgroundScheduler
 import org.stepik.android.adaptive.di.qualifiers.MainScheduler
-import org.stepik.android.adaptive.ui.activity.StudyActivity
 import org.stepik.android.adaptive.ui.adapter.OnboardingQuizCardsAdapter
 import org.stepik.android.adaptive.gamification.achievements.AchievementManager
+import org.stepik.android.adaptive.util.addDisposable
 import javax.inject.Inject
 
-class OnboardingFragment : Fragment(), LoginView {
+class OnboardingFragment : Fragment(), AuthView {
     companion object {
         private const val ONBOARDING_CARDS_COUNT = 4
     }
 
     private lateinit var binding : FragmentRecommendationsBinding
     private var completed = 0
+
+    private val disposable = CompositeDisposable()
 
     @Inject
     lateinit var achievementManager: AchievementManager
@@ -50,10 +54,13 @@ class OnboardingFragment : Fragment(), LoginView {
     lateinit var backgroundScheduler: Scheduler
 
     @Inject
-    lateinit var presenter: LoginPresenter
+    lateinit var presenter: AuthPresenter
 
     @Inject
     lateinit var sharedPreferenceHelper: SharedPreferenceHelper
+
+    @Inject
+    lateinit var screenManager: ScreenManager
 
     private val adapter = OnboardingQuizCardsAdapter {
         updateToolbar(true)
@@ -74,7 +81,7 @@ class OnboardingFragment : Fragment(), LoginView {
         initOnboardingCards()
         presenter.attachView(this)
 
-        Observable.fromCallable(sharedPreferenceHelper::authResponseDeadline)
+        disposable addDisposable Observable.fromCallable(sharedPreferenceHelper::authResponseDeadline)
                 .observeOn(mainScheduler)
                 .subscribe {
                     if(it == 0L)
@@ -84,7 +91,7 @@ class OnboardingFragment : Fragment(), LoginView {
                 }
     }
 
-    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         binding = FragmentRecommendationsBinding.inflate(inflater, container, false)
         (activity as AppCompatActivity).setSupportActionBar(binding.toolbar)
 
@@ -138,6 +145,7 @@ class OnboardingFragment : Fragment(), LoginView {
     }
 
     override fun onDestroy() {
+        disposable.dispose()
         presenter.detachView(this)
         super.onDestroy()
     }
@@ -147,15 +155,11 @@ class OnboardingFragment : Fragment(), LoginView {
         onComplete()
     }
 
-    override fun onNetworkError() {
+    override fun onError(authError: AuthError) {
         binding.error.visibility = View.VISIBLE
 
         binding.progress.visibility = View.GONE
         binding.cardsContainer.visibility = View.GONE
-    }
-
-    override fun onError(errorBody: String) {
-        onNetworkError()
     }
 
     override fun onLoading() {
@@ -167,8 +171,15 @@ class OnboardingFragment : Fragment(), LoginView {
     private fun onComplete() {
         if (completed == 2) {
             analytics.onBoardingFinished()
-            startActivity(Intent(this@OnboardingFragment.context, StudyActivity::class.java))
-            this@OnboardingFragment.activity.finish()
+            disposable addDisposable sharedPreferenceHelper.isFakeUser()
+                    .subscribeOn(backgroundScheduler)
+                    .observeOn(mainScheduler)
+                    .subscribe { isFake ->
+                        screenManager.startStudy()
+                        if (isFake) {
+                            screenManager.showEmptyAuthScreen(context)
+                        }
+                    }
         }
     }
 
@@ -180,20 +191,10 @@ class OnboardingFragment : Fragment(), LoginView {
     }
 
     private fun createMockCard(id: Long, @StringRes title_id: Int, @StringRes question_id: Int) : Card =
-            Card(id, Lesson(getString(title_id)), Step(Block(getString(question_id))), Attempt(Dataset(listOf(), false)))
+            Card(id, Lesson(getString(title_id)), Step(Block(getString(question_id))), Attempt(0, 0, datasetWrapper = DatasetWrapper(Dataset(listOf(), false))))
 
 
     private fun createMockAccount() {
-        Observable.fromCallable(sharedPreferenceHelper::fakeUser)
-                .observeOn(mainScheduler)
-                .subscribeOn(backgroundScheduler)
-                .subscribe {
-                    if (it.value != null) {
-                        // we got here if on some reason server returns us 401, so we try to re-login with existing fake account
-                        presenter.authWithLoginPassword(it.value.login, it.value.password, true)
-                    } else {
-                        presenter.createFakeUser()
-                    }
-                }
+        presenter.authFakeUser()
     }
 }

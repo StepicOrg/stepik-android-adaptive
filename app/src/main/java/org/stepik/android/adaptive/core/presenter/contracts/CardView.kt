@@ -1,7 +1,7 @@
 package org.stepik.android.adaptive.core.presenter.contracts
 
 import org.stepik.android.adaptive.data.model.Submission
-import org.stepik.android.adaptive.ui.adapter.AttemptAnswersAdapter
+import org.stepik.android.adaptive.ui.adapter.attempts.AttemptAnswerAdapter
 
 interface CardView {
     fun setSubmission(submission: Submission, animate: Boolean)
@@ -12,5 +12,5 @@ interface CardView {
     fun setBookmarkState(isBookmarked: Boolean)
     fun setTitle(title: String)
     fun setQuestion(html: String)
-    fun setAnswerAdapter(adapter: AttemptAnswersAdapter)
+    fun setAnswerAdapter(adapter: AttemptAnswerAdapter<*>)
 }

@@ -16,18 +16,20 @@
     <string name="email" translatable="false">E-mail</string>
     <string name="password">Password</string>
     <string name="sign_in">Sign In</string>
+    <string name="sign_in_title"><![CDATA[<b>Sign In</b> with e-mail]]></string>
     <string name="sign_up">Sign Up</string>
+    <string name="sign_up_title"><![CDATA[<b>Sign Up</b> with e-mail]]></string>
+    <string name="sign_later">Not now</string>
     <string name="continue_with">Or continue with</string>
     <string name="create_account">Create account</string>
     <string name="remind_password">Forgot password</string>
+
+    <string name="name">Name</string>
     <string name="first_name">First name</string>
     <string name="second_name">Second name</string>
-    <string name="auth_error">Authorization error</string>
-    <string name="auth_error_empty_email">Enter valid email address</string>
-    <string name="auth_error_empty_password">Enter the password</string>
+
     <string name="processing_your_request">Processing your request</string>
     <string name="loading_message">Please wait…</string>
-    <string name="auth">Authorization</string>
     <integer name="com_vk_sdk_AppId" translatable="false">6018407</integer>
     <string name="remind_password_success">We sent you a letter</string>
     <string name="open">Open</string>
@@ -37,7 +39,7 @@
     <string name="try_again">Try again</string>
     <string name="wrong_retry">Retry</string>
     <string name="required_field">Required field</string>
-    <string name="terms_message_register">By signing up, you agree to our <a href="https://stepik.org/page/terms/?from_mobile_app=true">Terms</a> and <a href="https://stepik.org/page/privacy/?from_mobile_app=true">Privacy Policy</a></string>
+    <string name="terms_message_register"><![CDATA[By signing up, you agree to our <a href="https://stepik.org/page/terms/?from_mobile_app=true">Terms</a> and <a href="https://stepik.org/page/privacy/?from_mobile_app=true">Privacy Policy</a>]]></string>
     <string name="terms_message_login">By signing in, you agree to our <a href="https://stepik.org/page/terms/?from_mobile_app=true">Terms of Service</a> and <a href="https://stepik.org/page/privacy/?from_mobile_app=true">Privacy Policy</a></string>
     <string name="terms_message_launch"><a href="https://stepik.org/page/terms/?from_mobile_app=true">Terms of Service</a> and <a href="https://stepik.org/page/privacy/?from_mobile_app=true">Privacy Policy</a></string>
     <string name="register_error">Registration error</string>
@@ -169,4 +171,26 @@
     <string name="description_packs_title">Free questions packs</string>
     <string name="description_packs_description"><![CDATA[When the required <font color="#0092E4">level</font> is reached you will receive free <font color="#0092E4">questions packs</font> like Adjectives or Verbs packs]]></string>
     <string name="description_packs_button">@string/questions_packs</string>
+
+    <!-- Quiz types -->
+    <string name="open_web_to_solve">Open the web version to solve</string>
+    <string name="quiz_type_not_supported">Quiz type not supported</string>
+    <string name="quiz_type_string_hint">Type your answer</string>
+
+    <string name="auth_error_empty_email">Enter valid email address</string>
+    <string name="auth_error_connectivity">@string/connectivity_error</string>
+    <string name="auth_error_email_password_invalid">Login/password was incorrect</string>
+    <string name="auth_error_too_many_attempts">Too many attempts. Please try later.</string>
+
+    <string name="profile">Profile</string>
+    <string name="profile_change_name">Change name</string>
+    <string name="profile_change_email">Change email</string>
+    <string name="profile_change_password">Change password</string>
+
+    <string name="password_old">Old password</string>
+    <string name="password_new">New password</string>
+
+    <string name="empty_auth_title" translatable="false">It\'s You!</string>
+    <string name="empty_auth_subtitle">Complete auth to study with comfort</string>
+    <string name="empty_auth_description"><![CDATA[Authorized account allows you to <b>sync progress and purchases</b> between devices and display <b>your name in leaderboards</b>]]></string>
 </resources>

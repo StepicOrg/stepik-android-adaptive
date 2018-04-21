@@ -19,9 +19,13 @@ public class ValidateUtil {
         return valid;
     }
 
+    public static boolean isEmailValid(final String email) {
+        return !TextUtils.isEmpty(email) && android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches();
+    }
+
     public static boolean validateEmail(final TextInputLayout layout, final TextInputEditText editText) {
         final String email = editText.getText().toString().trim();
-        final boolean valid = !TextUtils.isEmpty(email) && android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches();
+        final boolean valid = isEmailValid(email);
         if (valid) {
             layout.setErrorEnabled(false);
         } else {

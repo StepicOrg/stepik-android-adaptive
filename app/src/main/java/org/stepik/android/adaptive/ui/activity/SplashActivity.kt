@@ -11,7 +11,7 @@ import io.reactivex.functions.BiFunction
 import org.stepik.android.adaptive.App
 import org.stepik.android.adaptive.R
 import org.stepik.android.adaptive.core.ScreenManager
-import org.stepik.android.adaptive.data.SharedPreferenceHelper
+import org.stepik.android.adaptive.data.preference.SharedPreferenceHelper
 import org.stepik.android.adaptive.di.qualifiers.BackgroundScheduler
 import org.stepik.android.adaptive.di.qualifiers.MainScheduler
 import java.util.concurrent.TimeUnit
@@ -26,6 +26,9 @@ class SplashActivity : AppCompatActivity() {
 
     @Inject
     lateinit var firebaseRemoteConfig: FirebaseRemoteConfig
+
+    @Inject
+    lateinit var screenManager: ScreenManager
 
     @Inject
     @field:MainScheduler
@@ -49,9 +52,9 @@ class SplashActivity : AppCompatActivity() {
                 .observeOn(mainScheduler)
                 .subscribe({
                     if (it.first != 0L && it.second) {
-                        ScreenManager.getInstance().startStudy()
+                        screenManager.startStudy()
                     } else {
-                        ScreenManager.getInstance().showOnboardingScreen()
+                        screenManager.showOnboardingScreen()
                     }
                 })
     }

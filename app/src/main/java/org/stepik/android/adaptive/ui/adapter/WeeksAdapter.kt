@@ -13,6 +13,7 @@ import org.stepik.android.adaptive.R
 import org.stepik.android.adaptive.data.model.WeekProgress
 import org.stepik.android.adaptive.databinding.HeaderStatsBinding
 import org.stepik.android.adaptive.databinding.ItemWeekBinding
+import org.stepik.android.adaptive.util.defaultLocale
 import java.util.*
 
 
@@ -63,8 +64,8 @@ class WeeksAdapter : RecyclerView.Adapter<WeeksAdapter.StatsViewHolder>() {
             when (it) {
                 is StatsViewHolder.WeekViewHolder -> {
                     it.binding.total.text = weeks[p - 1].total.toString()
-                    it.binding.start.text = weeks[p - 1].start.toString(DATE_FORMAT, Resources.getSystem().configuration.locale)
-                    it.binding.end.text = weeks[p - 1].end.toString(DATE_FORMAT, Resources.getSystem().configuration.locale)
+                    it.binding.start.text = weeks[p - 1].start.toString(DATE_FORMAT, Resources.getSystem().configuration.defaultLocale)
+                    it.binding.end.text = weeks[p - 1].end.toString(DATE_FORMAT, Resources.getSystem().configuration.defaultLocale)
                 }
                 is StatsViewHolder.StatsHeaderViewHolder -> {
                     val binding = it.binding

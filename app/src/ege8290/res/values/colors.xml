@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorAccent">#72A7A3</color>
+    <color name="colorAccentDarker">#41848F</color>
+
+    <color name="photo_view_home_indicator_color">@color/colorPrimaryDark</color>
+</resources>

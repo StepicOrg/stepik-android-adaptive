@@ -1,34 +1,43 @@
 package org.stepik.android.adaptive.ui.activity
 
-import android.databinding.DataBindingUtil
 import android.os.Bundle
-import android.support.design.widget.Snackbar
-import android.text.method.LinkMovementMethod
+import android.support.annotation.StringRes
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.MenuItem
 import android.view.View
+import android.view.inputmethod.EditorInfo
+import kotlinx.android.synthetic.main.activity_login.*
 import org.stepik.android.adaptive.App
 import org.stepik.android.adaptive.R
-import org.stepik.android.adaptive.Util
+import org.stepik.android.adaptive.api.auth.AuthError
 import org.stepik.android.adaptive.core.ScreenManager
 import org.stepik.android.adaptive.core.presenter.BasePresenterActivity
-import org.stepik.android.adaptive.core.presenter.LoginPresenter
-import org.stepik.android.adaptive.core.presenter.contracts.LoginView
-import org.stepik.android.adaptive.databinding.ActivityLoginBinding
+import org.stepik.android.adaptive.core.presenter.AuthPresenter
+import org.stepik.android.adaptive.core.presenter.contracts.AuthView
 import org.stepik.android.adaptive.ui.dialog.RemindPasswordDialog
-import org.stepik.android.adaptive.util.ValidateUtil
+import org.stepik.android.adaptive.util.changeVisibillity
+import org.stepik.android.adaptive.util.fromHtmlCompat
+import org.stepik.android.adaptive.util.hideSoftKeyboard
+import org.stepik.android.adaptive.util.setOnKeyboardOpenListener
 import javax.inject.Inject
 import javax.inject.Provider
 
-class LoginActivity : BasePresenterActivity<LoginPresenter, LoginView>(), LoginView {
-    private companion object {
+class LoginActivity : BasePresenterActivity<AuthPresenter, AuthView>(), AuthView {
+    companion object {
         private const val PROGRESS = "login_progress"
         private const val REMIND_PASSWORD_DIALOG = "remind_password_dialog"
+
+        private const val EMAIL_KEY = "email"
+
+        const val REQUEST_CODE = 788
     }
 
-    private lateinit var binding: ActivityLoginBinding
+    @Inject
+    lateinit var screenManager: ScreenManager
 
     @Inject
-    lateinit var loginPresenterProvider: Provider<LoginPresenter>
+    lateinit var authPresenterProvider: Provider<AuthPresenter>
 
     override fun injectComponent() {
         App.componentManager().loginComponent.inject(this)
@@ -36,34 +45,67 @@ class LoginActivity : BasePresenterActivity<LoginPresenter, LoginView>(), LoginV
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_login)
+        setContentView(R.layout.activity_login)
 
-        setSupportActionBar(binding.loginActivityToolbar)
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        supportActionBar?.setDisplayShowTitleEnabled(false)
+        signInText.text = fromHtmlCompat(getString(R.string.sign_in_title))
 
-        val focusChangeListener = View.OnFocusChangeListener { v, hasFocus ->
-            if (hasFocus) when(v.id) {
-                R.id.login_activity_email        -> binding.loginActivityEmailWrapper.isErrorEnabled      = false
-                R.id.login_activity_password     -> binding.loginActivityPasswordWrapper.isErrorEnabled   = false
+        val errorTextWatcher = object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                onClearLoginError()
             }
+
+            override fun afterTextChanged(s: Editable?) {}
+        }
+        loginField.addTextChangedListener(errorTextWatcher)
+        passwordField.addTextChangedListener(errorTextWatcher)
+
+        loginField.setOnEditorActionListener { _, actionId, _ ->
+            var handled = false
+            if (actionId == EditorInfo.IME_ACTION_NEXT) {
+                passwordField.requestFocus()
+                handled = true
+            }
+            handled
         }
 
-        binding.loginActivityEmail.onFocusChangeListener = focusChangeListener
-        binding.loginActivityPassword.onFocusChangeListener = focusChangeListener
+        passwordField.setOnEditorActionListener { _, actionId, _ ->
+            var handled = false
+            if (actionId == EditorInfo.IME_ACTION_SEND) {
+                tryLogin()
+                handled = true
+            }
+            handled
+        }
 
-        binding.loginActivityTerms.movementMethod = LinkMovementMethod.getInstance()
+        loginRootView.requestFocus()
 
-        binding.loginActivitySignIn.setOnClickListener { authWithLoginPassword() }
+        if (savedInstanceState == null && intent.hasExtra(EMAIL_KEY)) {
+            loginField.setText(intent.getStringExtra(EMAIL_KEY))
+            passwordField.requestFocus()
+        }
 
-        binding.loginActivityRemindPassword.setOnClickListener {
+        loginButton.setOnClickListener {
+            tryLogin()
+        }
+
+        remindPasswordButton.setOnClickListener {
             RemindPasswordDialog().show(supportFragmentManager, REMIND_PASSWORD_DIALOG)
         }
+
+        setOnKeyboardOpenListener(
+                root_view,
+                onKeyboardShown = { signInText.changeVisibillity(false) },
+                onKeyboardHidden = { signInText.changeVisibillity(true) }
+        )
+
+        close.setOnClickListener { finish() }
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         if ((item?.itemId ?: -1) == android.R.id.home) {
-            Util.hideSoftKeyboard(this)
+            hideSoftKeyboard()
             onBackPressed()
             return true
         }
@@ -80,42 +122,44 @@ class LoginActivity : BasePresenterActivity<LoginPresenter, LoginView>(), LoginV
         super.onStop()
     }
 
-    override fun onDestroy() {
-        binding.unbind()
-        super.onDestroy()
+    private fun onClearLoginError() {
+        loginButton.isEnabled = true
+        authForm.isEnabled = true
+        loginErrorMessage.visibility = View.GONE
     }
 
-    fun authWithLoginPassword() {
-        val email = binding.loginActivityEmail.text.toString().trim()
-        val password = binding.loginActivityPassword.text.toString()
+    private fun tryLogin() {
+        val login = loginField.text.toString()
+        val password = passwordField.text.toString()
 
-        var isOk = true
-
-        isOk = isOk && ValidateUtil.validateEmail(binding.loginActivityEmailWrapper, binding.loginActivityEmail)
-        isOk = isOk && ValidateUtil.validatePassword(binding.loginActivityPasswordWrapper, binding.loginActivityPassword)
-
-        if (isOk) {
-            presenter?.authWithLoginPassword(email, password)
-        }
+        presenter?.authWithLoginPassword(login, password)
     }
-
 
     override fun onSuccess() {
-        ScreenManager.getInstance().startStudy()
+        setResult(RESULT_OK)
+        finish()
     }
 
-    override fun onNetworkError() {
+    override fun onError(authError: AuthError) {
+        @StringRes val messageResId = when (authError) {
+            AuthError.ConnectionProblem     -> R.string.auth_error_connectivity
+            AuthError.EmailPasswordInvalid  -> R.string.auth_error_email_password_invalid
+            AuthError.TooManyAttempts       -> R.string.auth_error_too_many_attempts
+        }
+
+        if (authError == AuthError.EmailPasswordInvalid) {
+            authForm.isEnabled = false
+            loginButton.isEnabled = false
+        }
+
+        loginErrorMessage.setText(messageResId)
+        loginErrorMessage.changeVisibillity(true)
+
         hideProgressDialogFragment(PROGRESS)
-        Snackbar.make(binding.root, R.string.auth_error, Snackbar.LENGTH_LONG).show()
     }
 
-    override fun onError(errorBody: String) {
-        hideProgressDialogFragment(PROGRESS)
-    }
-
-    override fun onLoading() {
+    override fun onLoading() =
         showProgressDialogFragment(PROGRESS, getString(R.string.sign_in), getString(R.string.processing_your_request))
-    }
 
-    override fun getPresenterProvider() = loginPresenterProvider
+    override fun getPresenterProvider() = authPresenterProvider
 }

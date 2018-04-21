@@ -11,11 +11,12 @@ import org.stepik.android.adaptive.configuration.Config
 import org.stepik.android.adaptive.content.questions.QuestionsPacksManager
 import org.stepik.android.adaptive.core.presenter.contracts.CardView
 import org.stepik.android.adaptive.data.Analytics
-import org.stepik.android.adaptive.data.SharedPreferenceHelper
+import org.stepik.android.adaptive.data.preference.SharedPreferenceHelper
 import org.stepik.android.adaptive.data.db.DataBaseMgr
 import org.stepik.android.adaptive.data.model.*
 import org.stepik.android.adaptive.di.qualifiers.BackgroundScheduler
 import org.stepik.android.adaptive.di.qualifiers.MainScheduler
+import org.stepik.android.adaptive.ui.adapter.attempts.ChoiceQuizAnswerAdapter
 import org.stepik.android.adaptive.ui.listener.AdaptiveReactionListener
 import org.stepik.android.adaptive.ui.listener.AnswerListener
 import org.stepik.android.adaptive.util.HtmlUtil
@@ -101,7 +102,7 @@ class CardPresenter(val card: Card, private val listener: AdaptiveReactionListen
                 }, {})
 
     private fun resolveBookmarkState() {
-        if (card.lessonId != Card.MOCK_LESSON_ID) { // do not show bookmark button for mock cards
+        if (card.lessonId != Card.MOCK_LESSON_ID && config.isBookmarksSupported) { // do not show bookmark button for mock cards and unsupported flavours
             isBookmarked?.let { isBookmarked ->
                 view?.setBookmarkState(isBookmarked)
             }
@@ -110,7 +111,7 @@ class CardPresenter(val card: Card, private val listener: AdaptiveReactionListen
 
     private fun createBookmark(): Bookmark {
         val definition = if (card.isCorrect) {
-            card.adapter.lastSelectedAnswerText ?: String()
+            (card.adapter as? ChoiceQuizAnswerAdapter)?.lastSelectedAnswerText ?: String()
         } else {
             String()
         }
@@ -174,25 +175,26 @@ class CardPresenter(val card: Card, private val listener: AdaptiveReactionListen
 
     fun createSubmission() {
         if (disposable == null || disposable?.isDisposed != false) {
-            card.adapter.setEnabled(false)
-            view?.onSubmissionLoading()
-            isLoading = true
-            error = null
+            card.adapter.createSubmission()?.let { submission ->
+                card.adapter.isEnabled = false
+                view?.onSubmissionLoading()
+                isLoading = true
+                error = null
 
-            val submission = card.adapter.submission
-            disposable = api.createSubmission(submission)
-                    .andThen(api.getSubmissions(submission.attempt))
-                    .subscribeOn(backgroundScheduler)
-                    .observeOn(mainScheduler)
-                    .subscribe(this::onSubmissionLoaded, this::onError)
+                disposable = api.createSubmission(submission)
+                        .andThen(api.getSubmissions(submission.attempt))
+                        .subscribeOn(backgroundScheduler)
+                        .observeOn(mainScheduler)
+                        .subscribe(this::onSubmissionLoaded, this::onError)
 
-            analytics.onSubmissionWasMade()
+                analytics.onSubmissionWasMade()
+            }
         }
     }
 
     fun retrySubmission() {
         submission = null
-        card.adapter.setEnabled(true)
+        card.adapter.isEnabled  = true
     }
 
     private fun onSubmissionLoaded(submissionResponse: SubmissionResponse) {
@@ -224,7 +226,7 @@ class CardPresenter(val card: Card, private val listener: AdaptiveReactionListen
     private fun onError(error: Throwable) {
         isLoading = false
         this.error = error
-        card.adapter.setEnabled(true)
+        card.adapter.isEnabled = true
         if (error is HttpException) {
             view?.onSubmissionRequestError()
         } else {
