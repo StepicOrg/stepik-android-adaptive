@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">English Vocabulary</string>
+    <string name="app_name">TOEFL, IELTS, CAE: Vocabulary</string>
     <string name="onboarding_card_question_1"><![CDATA[
         <div class="center">
             <div class="padding-box">
@@ -8,7 +8,7 @@
             </div>
             <h3>English vocabulary</h3>
         </div>
-        <p>Welcome to adaptive English Vocabulary course. During this course you\'ll receive tasks depending on your answers and reactions. Let\'s look how is it work.</p>
+        <p>Welcome to adaptive TOEFL, IELTS, CAE: Vocabulary course. During this course you\'ll receive tasks depending on your answers and reactions. Let\'s look how is it work.</p>
     ]]></string>
     <string name="questions_count"><![CDATA[<b>Words:</b> %d]]></string>
 </resources>
