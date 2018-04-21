@@ -11,6 +11,7 @@ import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 import org.stepik.android.adaptive.api.profile.ProfileRepository
 import org.stepik.android.adaptive.core.presenter.contracts.RegisterView
+import org.stepik.android.adaptive.data.Analytics
 import org.stepik.android.adaptive.data.model.AccountCredentials
 import org.stepik.android.adaptive.data.model.Profile
 import org.stepik.android.adaptive.data.preference.ProfilePreferences
@@ -30,8 +31,12 @@ class RegisterPresenterTest {
     private lateinit var newCredentials: AccountCredentials
     private lateinit var oldCredentials: AccountCredentials
 
+    private lateinit var analytics: Analytics
+
     @Before
     fun prepare() {
+        analytics = mock()
+
         registerView = mock()
         profileRepository = mock()
         profilePreferences = mock()
@@ -45,13 +50,14 @@ class RegisterPresenterTest {
     fun successfulRegistrationTest() {
         val profile = Profile(id = 123)
         whenever(profileRepository.fetchProfile()) doReturn Single.just(profile)
+        whenever(profileRepository.fetchProfileWithEmailAddresses()) doReturn Single.just(profile)
         whenever(profileRepository.updateProfile(any())) doReturn Completable.complete()
         whenever(profileRepository.updateEmail(any())) doReturn Completable.complete()
         whenever(profileRepository.updatePassword(any(), any(), any())) doReturn Completable.complete()
 
         whenever(profilePreferences.fakeUser) doReturn oldCredentials
 
-        val presenter = RegisterPresenter(profileRepository, profilePreferences, testScheduler, testScheduler)
+        val presenter = RegisterPresenter(profileRepository, profilePreferences, testScheduler, testScheduler, analytics)
         presenter.attachView(registerView)
         verify(registerView).setState(RegisterView.State.Idle)
 
@@ -60,6 +66,7 @@ class RegisterPresenterTest {
 
         verify(registerView).setState(RegisterView.State.Loading)
         verify(profileRepository).fetchProfile()
+        verify(profileRepository).fetchProfileWithEmailAddresses()
         verify(profileRepository).updateProfile(argThat {
             this.firstName == newCredentials.firstName && this.lastName == newCredentials.lastName
         })
@@ -80,7 +87,7 @@ class RegisterPresenterTest {
     fun failOnProfileFetch() {
         whenever(profileRepository.fetchProfile()) doReturn Single.error(SocketException())
 
-        val presenter = RegisterPresenter(profileRepository, profilePreferences, testScheduler, testScheduler)
+        val presenter = RegisterPresenter(profileRepository, profilePreferences, testScheduler, testScheduler, analytics)
         presenter.attachView(registerView)
         verify(registerView).setState(RegisterView.State.Idle)
 
@@ -102,7 +109,7 @@ class RegisterPresenterTest {
         whenever(profileRepository.fetchProfile()) doReturn Single.just(profile)
         whenever(profileRepository.updateProfile(any())) doReturn Completable.error(SocketException())
 
-        val presenter = RegisterPresenter(profileRepository, profilePreferences, testScheduler, testScheduler)
+        val presenter = RegisterPresenter(profileRepository, profilePreferences, testScheduler, testScheduler, analytics)
         presenter.attachView(registerView)
         verify(registerView).setState(RegisterView.State.Idle)
 
@@ -127,7 +134,7 @@ class RegisterPresenterTest {
         whenever(profileRepository.updateProfile(any())) doReturn Completable.complete()
         whenever(profileRepository.updateEmail(any()))doReturn Completable.error(SocketException())
 
-        val presenter = RegisterPresenter(profileRepository, profilePreferences, testScheduler, testScheduler)
+        val presenter = RegisterPresenter(profileRepository, profilePreferences, testScheduler, testScheduler, analytics)
         presenter.attachView(registerView)
         verify(registerView).setState(RegisterView.State.Idle)
 
@@ -136,10 +143,10 @@ class RegisterPresenterTest {
         verify(registerView).setState(RegisterView.State.Loading)
 
         verify(profileRepository).fetchProfile()
+        verify(profileRepository).fetchProfileWithEmailAddresses()
         verify(profileRepository).updateProfile(argThat {
             this.firstName == newCredentials.firstName && this.lastName == newCredentials.lastName
         })
-        verify(profilePreferences)::profile.set(profile)
         verify(profileRepository).updateEmail(newCredentials.login)
         verify(registerView).setState(RegisterView.State.NetworkError)
 
@@ -152,13 +159,14 @@ class RegisterPresenterTest {
     fun failOnPasswordUpdate() {
         val profile = Profile(id = 123)
         whenever(profileRepository.fetchProfile()) doReturn Single.just(profile)
+        whenever(profileRepository.fetchProfileWithEmailAddresses()) doReturn Single.just(profile)
         whenever(profileRepository.updateProfile(any())) doReturn Completable.complete()
         whenever(profileRepository.updateEmail(any())) doReturn Completable.complete()
         whenever(profileRepository.updatePassword(any(), any(), any())) doReturn Completable.error(SocketException())
 
         whenever(profilePreferences.fakeUser) doReturn oldCredentials
 
-        val presenter = RegisterPresenter(profileRepository, profilePreferences, testScheduler, testScheduler)
+        val presenter = RegisterPresenter(profileRepository, profilePreferences, testScheduler, testScheduler, analytics)
         presenter.attachView(registerView)
         verify(registerView).setState(RegisterView.State.Idle)
 
@@ -167,6 +175,7 @@ class RegisterPresenterTest {
         verify(registerView).setState(RegisterView.State.Loading)
 
         verify(profileRepository).fetchProfile()
+        verify(profileRepository).fetchProfileWithEmailAddresses()
         verify(profileRepository).updateProfile(argThat {
             this.firstName == newCredentials.firstName && this.lastName == newCredentials.lastName
         })
