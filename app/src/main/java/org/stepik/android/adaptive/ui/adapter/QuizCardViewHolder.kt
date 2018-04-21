@@ -16,8 +16,10 @@ import android.view.ViewGroup
 import android.webkit.WebSettings
 import org.stepik.android.adaptive.App
 import org.stepik.android.adaptive.R
+import org.stepik.android.adaptive.configuration.Config
 import org.stepik.android.adaptive.core.ScreenManager
 import org.stepik.android.adaptive.ui.DefaultWebViewClient
+import org.stepik.android.adaptive.ui.adapter.attempts.AttemptAnswerAdapter
 import org.stepik.android.adaptive.ui.view.container.ContainerView
 import org.stepik.android.adaptive.util.changeVisibillity
 import javax.inject.Inject
@@ -25,6 +27,9 @@ import javax.inject.Inject
 class QuizCardViewHolder(val binding: QuizCardViewBinding) : ContainerView.ViewHolder(binding.root), CardView {
     @Inject
     lateinit var screenManager: ScreenManager
+
+    @Inject
+    lateinit var config: Config
 
     init {
         App.component().inject(this)
@@ -38,7 +43,13 @@ class QuizCardViewHolder(val binding: QuizCardViewBinding) : ContainerView.ViewH
 
         binding.question.webViewClient = DefaultWebViewClient(null) { _, _ -> onCardLoaded() }
         binding.question.setOnWebViewClickListener { path -> screenManager.showImage(binding.root.context, path) }
-        binding.question.setLayerType(View.LAYER_TYPE_SOFTWARE, null)
+
+        val webViewLayerType = if (config.shouldDisableHardwareAcceleration) {
+            View.LAYER_TYPE_NONE
+        } else {
+            View.LAYER_TYPE_SOFTWARE
+        }
+        binding.question.setLayerType(webViewLayerType, null)
 
         binding.next.setOnClickListener { binding.container.swipeDown() }
         binding.submit.setOnClickListener { presenter?.createSubmission() }
@@ -69,7 +80,7 @@ class QuizCardViewHolder(val binding: QuizCardViewBinding) : ContainerView.ViewH
                 onSubmissionLoading()
             } else {
                 binding.submit.visibility = View.VISIBLE
-                (binding.answers.adapter as AttemptAnswersAdapter).setEnabled(true)
+                (binding.answers.adapter as AttemptAnswerAdapter).isEnabled = true
             }
         }
 
@@ -113,10 +124,10 @@ class QuizCardViewHolder(val binding: QuizCardViewBinding) : ContainerView.ViewH
         HtmlUtil.setCardWebViewHtml(binding.question, html)
     }
 
-    override fun setAnswerAdapter(adapter: AttemptAnswersAdapter) {
+    override fun setAnswerAdapter(adapter: AttemptAnswerAdapter<*>) {
         binding.answers.adapter = adapter
-        adapter.setSubmitButton(binding.submit)
-        adapter.setEnabled(false)
+        adapter.submitButton = binding.submit
+        adapter.isEnabled = false
 
         binding.submit.visibility = View.GONE
     }

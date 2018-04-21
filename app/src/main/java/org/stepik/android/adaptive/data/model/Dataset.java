@@ -10,6 +10,11 @@ public final class Dataset {
         this.is_multiple_choice = is_multiple_choice;
     }
 
+    public Dataset(String string) {
+        this.string = string;
+    }
+
+    private String string;
     private List<String> options;
     private boolean is_multiple_choice;
 

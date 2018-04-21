@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<EditText
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:hint="@string/quiz_type_string_hint"
+    android:imeOptions="flagNoFullscreen"
+    android:inputType="textMultiLine|textCapSentences"
+    android:maxLines="9000"
+    android:layout_margin="8dp"
+    android:scrollbars="none" />

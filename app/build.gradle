@@ -40,6 +40,8 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
         debug {
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro', 'proguard-rules-dev.pro'
             testCoverageEnabled true
         }
     }
@@ -75,6 +77,10 @@ android {
         }
         toefl3124 {
             applicationIdSuffix  '.toefl3124'
+            dimension "course"
+        }
+        ege8290 {
+            applicationIdSuffix  '.ege8290'
             dimension "course"
         }
     }

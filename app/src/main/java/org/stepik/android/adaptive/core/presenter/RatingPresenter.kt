@@ -84,7 +84,11 @@ constructor(
     private fun resolveUsers(single: Single<List<RatingItem>>): Single<List<RatingItem>> =
             single.flatMap {
                 val userIds = it.filter{ it.isNotFake }.map { it.user }.toLongArray()
-                userRepository.getUsers(userIds).zipWith(Single.just(it))
+                if (userIds.isEmpty()) {
+                    Single.just(emptyList())
+                } else {
+                    userRepository.getUsers(userIds)
+                }.zipWith(Single.just(it))
             }.map { (users, items) ->
                 items.mapIndexed { index, item ->
                     val user = users.find { it.id == item.user }

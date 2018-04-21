@@ -172,13 +172,17 @@
     <string name="description_packs_description"><![CDATA[When the required <font color="#0092E4">level</font> is reached you will receive free <font color="#0092E4">questions packs</font> like Adjectives or Verbs packs]]></string>
     <string name="description_packs_button">@string/questions_packs</string>
 
-    <string name="profile">Profile</string>
+    <!-- Quiz types -->
+    <string name="open_web_to_solve">Open the web version to solve</string>
+    <string name="quiz_type_not_supported">Quiz type not supported</string>
+    <string name="quiz_type_string_hint">Type your answer</string>
 
     <string name="auth_error_empty_email">Enter valid email address</string>
     <string name="auth_error_connectivity">@string/connectivity_error</string>
     <string name="auth_error_email_password_invalid">Login/password was incorrect</string>
     <string name="auth_error_too_many_attempts">Too many attempts. Please try later.</string>
 
+    <string name="profile">Profile</string>
     <string name="profile_change_name">Change name</string>
     <string name="profile_change_email">Change email</string>
     <string name="profile_change_password">Change password</string>

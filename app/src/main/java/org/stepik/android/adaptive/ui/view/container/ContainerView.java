@@ -11,7 +11,7 @@ public interface ContainerView {
     void onRebind();
     void onRebind(int pos);
 
-    abstract class ViewHolder {
+    class ViewHolder {
         private final View view;
         private boolean attached = false;
 

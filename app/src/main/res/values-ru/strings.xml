@@ -162,13 +162,17 @@
     <string name="description_packs_description"><![CDATA[При наборе необходимого <font color="#0092E4">уровня</font> вам будут открываться новые <font color="#0092E4">наборы вопросов</font>, например Adjectives или Verbs]]></string>
     <string name="description_packs_button">@string/questions_packs</string>
 
-    <string name="profile">Профиль</string>
+    <!-- Quiz types -->
+    <string name="open_web_to_solve">Открыть задание в web-версии</string>
+    <string name="quiz_type_not_supported">Данный тип заданий не поддерживается</string>
+    <string name="quiz_type_string_hint">Ваш ответ</string>
 
     <string name="auth_error_empty_email">Введите корректный E-mail</string>
     <string name="auth_error_connectivity">@string/connectivity_error</string>
     <string name="auth_error_email_password_invalid">E-mail адрес/пароль неверны</string>
     <string name="auth_error_too_many_attempts">Слишком много неверных попыток. Попробуйте позже</string>
 
+    <string name="profile">Профиль</string>
     <string name="profile_change_name">Изменить имя</string>
     <string name="profile_change_email">Изменить email</string>
     <string name="profile_change_password">Изменить пароль</string>

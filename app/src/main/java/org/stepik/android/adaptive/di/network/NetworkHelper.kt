@@ -1,5 +1,6 @@
 package org.stepik.android.adaptive.di.network
 
+import com.google.gson.Gson
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import org.stepik.android.adaptive.api.auth.AuthInterceptor
@@ -12,25 +13,20 @@ object NetworkHelper {
     const val TIMEOUT_IN_SECONDS = 60L
 
     @JvmStatic
-    val cache = HashMap<String, Retrofit>()
-
-    @JvmStatic
-    fun createRetrofit(client: OkHttpClient, baseUrl: String): Retrofit = Retrofit.Builder()
+    fun createRetrofit(client: OkHttpClient, baseUrl: String, gson: Gson = Gson()): Retrofit = Retrofit.Builder()
             .baseUrl(baseUrl)
             .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-            .addConverterFactory(GsonConverterFactory.create())
+            .addConverterFactory(GsonConverterFactory.create(gson))
             .client(client)
             .build()
 
 
     @JvmStatic
-    inline fun <reified T> createServiceWithAuth(authInterceptor: AuthInterceptor, host: String): T {
-        val retrofit = cache.getOrPut(host) {
-            val okHttpBuilder = OkHttpClient.Builder()
-            okHttpBuilder.addInterceptor(authInterceptor)
-            okHttpBuilder.setTimeoutsInSeconds(NetworkHelper.TIMEOUT_IN_SECONDS)
-            NetworkHelper.createRetrofit(okHttpBuilder.build(), host)
-        }
+    inline fun <reified T> createServiceWithAuth(authInterceptor: AuthInterceptor, host: String, gson: Gson = Gson()): T {
+        val okHttpBuilder = OkHttpClient.Builder()
+        okHttpBuilder.addInterceptor(authInterceptor)
+        okHttpBuilder.setTimeoutsInSeconds(NetworkHelper.TIMEOUT_IN_SECONDS)
+        val retrofit = NetworkHelper.createRetrofit(okHttpBuilder.build(), host, gson)
 
         return retrofit.create(T::class.java)
     }

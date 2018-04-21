@@ -30,7 +30,9 @@ class ConfigImpl private constructor(
         @SerializedName("CODE_QUERY_PARAMETER")    override val codeQueryParameter: String,
         @SerializedName("APP_PUBLIC_LICENSE_KEY")  override val appPublicLicenseKey: String,
         @SerializedName("APP_METRICA_KEY")         override val appMetricaKey: String,
-        @SerializedName("IS_BOOKMARKS_SUPPORTED")  override val isBookmarksSupported: Boolean
+
+        @SerializedName("IS_BOOKMARKS_SUPPORTED")  override val isBookmarksSupported: Boolean,
+        @SerializedName("SHOULD_DISABLE_HARDWARE_ACCELERATION") override val shouldDisableHardwareAcceleration: Boolean
 ): Config {
     @AppSingleton
     class ConfigFactory
