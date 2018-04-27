@@ -1,13 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">ПДД 2017</string>
-    <string name="login_button">Войти через Stepik API</string>
     <string name="attempt_button">Решить</string>
     <string name="make_submission">Отправить</string>
-    <string name="menu">Меню</string>
     <string name="too_easy">ПРОСТО</string>
     <string name="too_hard">СЛОЖНО</string>
-    <string name="settings">Настройки</string>
     <string name="stats">Статистика</string>
     <string name="logout">Выход</string>
     <string name="correct">ВЕРНО</string>
@@ -20,28 +17,20 @@
     <string name="sign_up">Регистрация</string>
     <string name="sign_up_title"><![CDATA[<b>Регистрация</b> с e-mail]]></string>
     <string name="sign_later">Не сейчас</string>
-    <string name="continue_with">Или авторизоваться через</string>
-    <string name="create_account">Регистрация</string>
     <string name="remind_password">Вспомнить пароль</string>
 
-    <string name="name">Имя</string>
     <string name="first_name">Имя</string>
     <string name="second_name">Фамилия</string>
 
     <string name="processing_your_request">Обработка запроса</string>
     <string name="loading_message">Пожалуйста, подождите…</string>
     <string name="remind_password_success">Мы отправили вам письмо</string>
-    <string name="open">Открыть</string>
-    <string name="close">Закрыть</string>
     <string name="next">Дальше</string>
     <string name="course_completed">Поздравляем!\n\nВы успешно прошли курс!\n\n<a href="https://play.google.com/store/apps/details?id=org.stepic.droid">Найти другие курсы на Stepik</a></string>
     <string name="try_again">Попробовать снова</string>
     <string name="wrong_retry">Новая попытка</string>
     <string name="required_field">Обязательное поле</string>
-    <string name="terms_message_launch"><a href="https://stepik.org/page/terms/?from_mobile_app=true">Условия использования</a> и <a href="https://stepik.org/page/privacy/?from_mobile_app=true">Политика конфиденциальности</a></string>
-    <string name="terms_message_login">Входя в приложение, Вы соглашаетесь с <a href="https://stepik.org/page/terms/?from_mobile_app=true">Условиями использования</a> и <a href="https://stepik.org/page/privacy/?from_mobile_app=true">Политикой конфиденциальности</a></string>
     <string name="terms_message_register"><![CDATA[Регистрируясь, Вы соглашаетесь с <a href="https://stepik.org/page/terms/?from_mobile_app=true">Условиями использования</a> и <a href="https://stepik.org/page/privacy/?from_mobile_app=true">Политикой конфиденциальности</a>]]></string>
-    <string name="register_error">При регистрации возникла ошибка</string>
     <string name="retry">Попробовать снова</string>
     <string name="onboarding_card_title_1">Добро пожаловать</string>
     <string name="onboarding_card_question_1"><![CDATA[
@@ -85,7 +74,6 @@
     <string name="exp_title">Уровень <b>%d</b></string>
     <string name="exp_level_title">Новый уровень!</string>
     <string name="exp_subtitle">%d опыта до нового уровня</string>
-    <string name="onboarding_title">Вступление</string>
     <string name="rate_app_title">Оцените приложение</string>
     <string name="rate_app_message">Насколько вам нравится пользоваться этим приложением?</string>
     <string name="feedback_positive">Спасибо! Пожалуйста, оставьте ваш отзыв в Google Play.</string>

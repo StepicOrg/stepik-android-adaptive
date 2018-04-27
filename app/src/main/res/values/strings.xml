@@ -1,12 +1,9 @@
 <resources>
     <string name="app_name">PDD 2017</string>
-    <string name="login_button">Login with Stepik</string>
     <string name="attempt_button">Solve</string>
     <string name="make_submission">Submit</string>
-    <string name="menu">Menu</string>
     <string name="too_easy">EASY</string>
     <string name="too_hard">HARD</string>
-    <string name="settings">Settings</string>
     <string name="stats">Stats</string>
     <string name="logout">Logout</string>
     <string name="correct">CORRECT</string>
@@ -20,11 +17,8 @@
     <string name="sign_up">Sign Up</string>
     <string name="sign_up_title"><![CDATA[<b>Sign Up</b> with e-mail]]></string>
     <string name="sign_later">Not now</string>
-    <string name="continue_with">Or continue with</string>
-    <string name="create_account">Create account</string>
     <string name="remind_password">Forgot password</string>
 
-    <string name="name">Name</string>
     <string name="first_name">First name</string>
     <string name="second_name">Second name</string>
 
@@ -32,17 +26,12 @@
     <string name="loading_message">Please wait…</string>
     <integer name="com_vk_sdk_AppId" translatable="false">6018407</integer>
     <string name="remind_password_success">We sent you a letter</string>
-    <string name="open">Open</string>
-    <string name="close">Close</string>
     <string name="next">Next</string>
     <string name="course_completed">Congratulations!\n\nYou have successfully completed the course!\n\n<a href="https://play.google.com/store/apps/details?id=org.stepic.droid">Find courses on Stepik</a></string>
     <string name="try_again">Try again</string>
     <string name="wrong_retry">Retry</string>
     <string name="required_field">Required field</string>
     <string name="terms_message_register"><![CDATA[By signing up, you agree to our <a href="https://stepik.org/page/terms/?from_mobile_app=true">Terms</a> and <a href="https://stepik.org/page/privacy/?from_mobile_app=true">Privacy Policy</a>]]></string>
-    <string name="terms_message_login">By signing in, you agree to our <a href="https://stepik.org/page/terms/?from_mobile_app=true">Terms of Service</a> and <a href="https://stepik.org/page/privacy/?from_mobile_app=true">Privacy Policy</a></string>
-    <string name="terms_message_launch"><a href="https://stepik.org/page/terms/?from_mobile_app=true">Terms of Service</a> and <a href="https://stepik.org/page/privacy/?from_mobile_app=true">Privacy Policy</a></string>
-    <string name="register_error">Registration error</string>
     <string name="retry">Retry</string>
     <string name="facebook_app_id" translatable="false">100481807271297</string>
     <string name="onboarding_card_title_1">Welcome</string>
@@ -87,9 +76,7 @@
     <string name="exp_title">Level <b>%d</b></string>
     <string name="exp_level_title">New level!</string>
     <string name="exp_inc" translatable="false">+%d</string>
-    <string name="exp_current_progress" translatable="false">%d / %d</string>
     <string name="exp_subtitle">%d points until next level</string>
-    <string name="onboarding_title">Intro</string>
     <string name="rate_app_title">Rate app</string>
     <string name="rate_app_message">How much do you like this app?</string>
     <string name="google_play" translatable="false">Google Play</string>
