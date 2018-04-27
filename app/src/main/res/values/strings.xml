@@ -1,6 +1,5 @@
 <resources>
     <string name="app_name">PDD 2017</string>
-    <string name="attempt_button">Solve</string>
     <string name="make_submission">Submit</string>
     <string name="too_easy">EASY</string>
     <string name="too_hard">HARD</string>

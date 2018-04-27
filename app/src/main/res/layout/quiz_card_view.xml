@@ -67,15 +67,6 @@
                     android:paddingLeft="4dp"
                     android:paddingRight="4dp"
                     android:id="@+id/supplemental_actions">
-                    <Button
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        style="@style/Widget.AppCompat.Button.Borderless"
-                        android:textColor="@color/borderless_button_text_color"
-                        android:text="@string/attempt_button"
-                        android:id="@+id/solve"
-                        android:visibility="gone"
-                        android:layout_alignParentStart="true" />
 
                     <Button
                         android:layout_width="match_parent"

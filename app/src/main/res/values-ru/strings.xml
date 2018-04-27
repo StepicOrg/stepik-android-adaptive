@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">ПДД 2017</string>
-    <string name="attempt_button">Решить</string>
     <string name="make_submission">Отправить</string>
     <string name="too_easy">ПРОСТО</string>
     <string name="too_hard">СЛОЖНО</string>
