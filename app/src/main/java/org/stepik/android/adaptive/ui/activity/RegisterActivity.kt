@@ -168,7 +168,6 @@ class RegisterActivity: BasePresenterActivity<RegisterPresenter, RegisterView>()
 
     override fun onStop() {
         presenter?.detachView(this)
-        hideProgressDialogFragment(PROGRESS)
         super.onStop()
     }
 

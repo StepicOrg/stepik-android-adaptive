@@ -44,7 +44,9 @@ abstract class BasePresenterActivity<P : Presenter<V>, in V> : AppCompatActivity
     }
 
     protected fun showProgressDialogFragment(tag: String, title: String, msg: String) {
-        ProgressDialogFragment.newInstance(title, msg).show(supportFragmentManager, tag)
+        if (supportFragmentManager.findFragmentByTag(tag) == null) {
+            ProgressDialogFragment.newInstance(title, msg).show(supportFragmentManager, tag)
+        }
     }
     protected fun hideProgressDialogFragment(tag: String) {
         val dialog = supportFragmentManager.findFragmentByTag(tag)
