@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">PDD 2017</string>
+    <string name="app_name">PDD</string>
     <string name="login_button">Login with Stepik</string>
     <string name="attempt_button">Solve</string>
     <string name="make_submission">Submit</string>
@@ -51,7 +51,7 @@
             <div class="padding-box">
                 <img src="file:///android_asset/web/images/01.svg" />
             </div>
-            <h3>PDD 2017</h3>
+            <h3>PDD</h3>
         </div>
         <p>Welcome to adaptive PDD course. During this course you\'ll receive tasks depending on your answers and reactions. Let\'s look how is it work.</p>
     ]]></string>
