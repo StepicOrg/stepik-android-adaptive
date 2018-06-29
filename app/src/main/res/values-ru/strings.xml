@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">ПДД 2017</string>
+    <string name="app_name">ПДД</string>
     <string name="login_button">Войти через Stepik API</string>
     <string name="attempt_button">Решить</string>
     <string name="make_submission">Отправить</string>
@@ -49,7 +49,7 @@
             <div class="padding-box">
                 <img src="file:///android_asset/web/images/01.svg" />
             </div>
-            <h3>ПДД 2017</h3>
+            <h3>ПДД</h3>
         </div>
         <p>Добро пожаловать на адаптивный курс по ПДД. В этом курсе вопросы подбираются автоматически, адаптируясь к вашим ответам и реакциям. Давайте посмотрим как это работает.</p>
     ]]></string>
