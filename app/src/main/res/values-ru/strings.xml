@@ -182,4 +182,7 @@
 
     <string name="empty_auth_subtitle">Пройдите авторизацию для более удобного обучения</string>
     <string name="empty_auth_description"><![CDATA[Авторизованный аккаунт позволит <b>синхронизировать прогресс и покупки</b> с другими устройствами, а также отображать <b>Ваше имя в таблице лидеров</b>]]></string>
+
+    <string name="notification_channel_learning_name">Обучение</string>
+    <string name="notification_channel_learning_description">Уведомления о прогрессе в обучении</string>
 </resources>
