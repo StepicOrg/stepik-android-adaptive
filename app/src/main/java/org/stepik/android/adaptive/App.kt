@@ -9,6 +9,7 @@ import org.stepik.android.adaptive.di.AppCoreComponent
 import org.stepik.android.adaptive.di.ComponentManager
 import org.stepik.android.adaptive.di.DaggerAppCoreComponent
 import org.stepik.android.adaptive.di.storage.DaggerStorageComponent
+import org.stepik.android.adaptive.notifications.NotificationChannelInitializer
 import javax.inject.Inject
 
 class App : Application() {
@@ -42,6 +43,7 @@ class App : Application() {
         component.inject(this)
 
         initServices()
+        NotificationChannelInitializer.initNotificationChannel(this)
     }
 
     private fun initServices() {
