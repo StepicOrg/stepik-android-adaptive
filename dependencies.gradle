@@ -32,6 +32,7 @@ ext.versions = [
         firebaseMessaging    : '17.3.4',
 
         crashlytics          : '2.9.5@aar',
+        amplitude            : '2.20.0',
         appMetrica           : '3.2.2',
 
         facebook             : '4.17.0',
@@ -95,6 +96,7 @@ ext.libraries = [
         firebaseMessaging    : "com.google.firebase:firebase-messaging:$versions.firebaseMessaging",
 
         crashlytics          : "com.crashlytics.sdk.android:crashlytics:$versions.crashlytics",
+        amplitude            : "com.amplitude:android-sdk:$versions.amplitude",
         appMetrica           : "com.yandex.android:mobmetricalib:$versions.appMetrica",
 
         facebookSdk          : "com.facebook.android:facebook-android-sdk:$versions.facebook",
