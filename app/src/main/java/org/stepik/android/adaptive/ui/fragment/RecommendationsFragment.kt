@@ -22,6 +22,7 @@ import org.stepik.android.adaptive.core.ScreenManager
 import org.stepik.android.adaptive.core.presenter.BasePresenterFragment
 import org.stepik.android.adaptive.core.presenter.RecommendationsPresenter
 import org.stepik.android.adaptive.core.presenter.contracts.RecommendationsView
+import org.stepik.android.adaptive.data.analytics.AmplitudeAnalytics
 import org.stepik.android.adaptive.data.analytics.Analytics
 import org.stepik.android.adaptive.data.preference.SharedPreferenceHelper
 import org.stepik.android.adaptive.databinding.FragmentRecommendationsBinding
@@ -259,6 +260,7 @@ class RecommendationsFragment : BasePresenterFragment<RecommendationsPresenter, 
     override fun showQuestionsPacksTooltip() {
         if (isQuestionsPackSupported) {
             if (remoteConfig.getBoolean(RemoteConfig.QUESTIONS_PACKS_DIALOG_EXPERIMENT)) {
+                analytics.logAmplitudeEvent(AmplitudeAnalytics.QuestionPacks.POPUP_OPENED)
                 QuestionsPacksDialog.newInstance().show(childFragmentManager, QUESTIONS_PACKS_DIALOG_TAG)
             } else {
                 questionsPacksTooltip = PopupHelper.showPopupAnchoredToView(

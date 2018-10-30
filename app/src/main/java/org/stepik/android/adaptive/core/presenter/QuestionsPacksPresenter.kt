@@ -1,5 +1,6 @@
 package org.stepik.android.adaptive.core.presenter
 
+import android.util.Log
 import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.Scheduler

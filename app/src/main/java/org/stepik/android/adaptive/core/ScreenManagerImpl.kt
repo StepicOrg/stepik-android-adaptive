@@ -52,6 +52,7 @@ constructor(
 
     override fun showQuestionsPacksScreen(context: Context) {
         analytics.onQuestionsPacksOpened()
+        analytics.logAmplitudeEvent(AmplitudeAnalytics.QuestionPacks.SCREEN_OPENED)
         context.startActivity(Intent(context, QuestionsPacksActivity::class.java))
     }
 
