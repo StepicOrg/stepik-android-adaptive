@@ -12,7 +12,7 @@ interface Analytics {
 
     fun logEvent(name: String, bundle: Bundle? = null)
     fun logAmplitudeEvent(eventName: String, params: Map<String, Any?>? = null)
-    fun logAmplitudePurchase(sku: Sku, params: Map<String, Any?>? = null)
+    fun logAmplitudePurchase(revenueType: String, sku: Sku, params: Map<String, Any?>? = null)
 
     fun logEventWithName(eventName: String, name: String?)
     fun logEventWithLongParam(event: String, param: String, value: Long)

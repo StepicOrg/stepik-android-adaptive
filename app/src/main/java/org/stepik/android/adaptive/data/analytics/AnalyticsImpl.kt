@@ -79,12 +79,13 @@ constructor(
         amplitude.logEvent(eventName, params.toJsonObject())
     }
 
-    override fun logAmplitudePurchase(sku: Sku, params: Map<String, Any?>?) {
+    override fun logAmplitudePurchase(revenueType: String, sku: Sku, params: Map<String, Any?>?) {
         val price = contentPriceResolver.resolveSkuPrice(sku)
 
         amplitude.logRevenueV2(Revenue()
                 .setPrice(price)
                 .setQuantity(1)
+                .setRevenueType(revenueType)
                 .setProductId(sku.id.code)
                 .setEventProperties(params.toJsonObject()))
     }

@@ -126,7 +126,7 @@ constructor(
     private fun purchase(sku: Sku, pack: QuestionsPack) {
         analytics.logEvent(Analytics.EVENT_ON_QUESTIONS_PACK_PURCHASE_BUTTON_CLICKED)
         val purchaseObservable = checkout?.startPurchaseFlowRx(sku)?.doOnNext {
-            analytics.logAmplitudePurchase(sku, mapOf(
+            analytics.logAmplitudePurchase(AmplitudeAnalytics.QuestionPacks.PACK_PURCHASED, sku, mapOf(
                     AmplitudeAnalytics.QuestionPacks.PARAM_PACK_ID to pack.courseId,
                     AmplitudeAnalytics.QuestionPacks.PARAM_PACK_NAME to pack.id
             ))
