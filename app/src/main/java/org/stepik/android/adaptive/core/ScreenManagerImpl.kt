@@ -57,6 +57,7 @@ constructor(
 
     override fun showGamificationDescription(context: Context) {
         analytics.logEvent(Analytics.EVENT_ON_GAMIFICATION_DESCRIPTION_SHOWN)
+        analytics.logAmplitudeEvent(AmplitudeAnalytics.GamificationDescription.SCREEN_OPENED)
         val intent = Intent(context, DescriptionActivity::class.java)
         context.startActivity(intent)
     }

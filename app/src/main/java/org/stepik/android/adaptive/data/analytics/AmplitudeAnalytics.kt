@@ -57,6 +57,12 @@ object AmplitudeAnalytics {
         }
     }
 
+    object GamificationDescription {
+        const val SCREEN_OPENED = "GamificationDescriptionScreen popup opened"
+        const val MY_STATS_CLICKED = "GamificationDescriptionScreen popup my stats pressed"
+        const val QUESTIONS_PACKS_CLICKED = "GamificationDescriptionScreen popup question packs pressed"
+    }
+
     object QuestionPacks {
         const val SCREEN_OPENED = "Question packs screen opened"
         const val POPUP_OPENED = "Question packs popup opened"
