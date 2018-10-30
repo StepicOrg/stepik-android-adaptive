@@ -4,6 +4,7 @@ package org.stepik.android.adaptive.core
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import org.stepik.android.adaptive.data.analytics.AmplitudeAnalytics
 
 import org.stepik.android.adaptive.data.analytics.Analytics
 import org.stepik.android.adaptive.di.AppSingleton
@@ -31,6 +32,7 @@ constructor(
 
     override fun showEmptyAuthScreen(context: Context) {
         analytics.logEvent(Analytics.Login.SHOW_EMPTY_AUTH_SCREEN)
+        analytics.logAmplitudeEvent(AmplitudeAnalytics.Auth.AUTH_POPUP_OPENED)
         val intent = Intent(context, EmptyAuthActivity::class.java)
         context.startActivity(intent)
     }
