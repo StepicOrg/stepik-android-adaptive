@@ -65,12 +65,19 @@ class OnboardingFragment : Fragment(), AuthView {
 
     private val adapter = OnboardingQuizCardsAdapter {
         updateToolbar(true)
-        if (it == 0) Completable.fromAction {
-            sharedPreferenceHelper.isNotFirstTime = true
-            achievementManager.onEvent(AchievementManager.Event.ONBOARDING, 1)
+
+        if (it == 0) {
+            Completable
+                    .fromAction {
+                        sharedPreferenceHelper.isNotFirstTime = true
+                        achievementManager.onEvent(AchievementManager.Event.ONBOARDING, 1)
+                    }
+                    .observeOn(mainScheduler)
+                    .subscribe(this::onSuccess)
+        } else {
+            analytics.logAmplitudeEvent(AmplitudeAnalytics.Onboarding.SCREEN_OPENED,
+                    mapOf(AmplitudeAnalytics.Onboarding.PARAM_SCREEN to ONBOARDING_CARDS_COUNT - it + 1))
         }
-                .observeOn(mainScheduler)
-                .subscribe(this::onSuccess)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -81,6 +88,9 @@ class OnboardingFragment : Fragment(), AuthView {
         retainInstance = true
         initOnboardingCards()
         presenter.attachView(this)
+
+        analytics.logAmplitudeEvent(AmplitudeAnalytics.Onboarding.SCREEN_OPENED,
+                mapOf(AmplitudeAnalytics.Onboarding.PARAM_SCREEN to 1))
 
         disposable addDisposable Observable.fromCallable(sharedPreferenceHelper::authResponseDeadline)
                 .observeOn(mainScheduler)
@@ -172,6 +182,8 @@ class OnboardingFragment : Fragment(), AuthView {
     private fun onComplete() {
         if (completed == 2) {
             analytics.onBoardingFinished()
+            analytics.logAmplitudeEvent(AmplitudeAnalytics.Onboarding.COMPLETED)
+
             disposable addDisposable sharedPreferenceHelper.isFakeUser()
                     .subscribeOn(backgroundScheduler)
                     .observeOn(mainScheduler)
