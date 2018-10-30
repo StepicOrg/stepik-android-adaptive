@@ -9,7 +9,7 @@ import kotlinx.android.synthetic.main.header_empty_auth.*
 import org.stepik.android.adaptive.App
 import org.stepik.android.adaptive.R
 import org.stepik.android.adaptive.core.ScreenManager
-import org.stepik.android.adaptive.data.Analytics
+import org.stepik.android.adaptive.data.analytics.Analytics
 import org.stepik.android.adaptive.util.fromHtmlCompat
 import javax.inject.Inject
 

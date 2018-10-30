@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import kotlinx.android.synthetic.main.item_bookmark.view.*
 import org.stepik.android.adaptive.R
-import org.stepik.android.adaptive.data.Analytics
+import org.stepik.android.adaptive.data.analytics.Analytics
 import org.stepik.android.adaptive.data.model.Bookmark
 import org.stepik.android.adaptive.util.changeVisibillity
 

@@ -1,10 +1,16 @@
-package org.stepik.android.adaptive.data
+package org.stepik.android.adaptive.data.analytics
 
 import android.content.Context
 import android.os.Bundle
+import com.amplitude.api.Amplitude
+import com.amplitude.api.Identify
+import com.amplitude.api.Revenue
 
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.yandex.metrica.YandexMetrica
+import org.json.JSONObject
+import org.stepik.android.adaptive.App
+import org.stepik.android.adaptive.configuration.Config
 
 import org.stepik.android.adaptive.data.model.Step
 import org.stepik.android.adaptive.data.model.Submission
@@ -16,8 +22,19 @@ import javax.inject.Inject
 @AppSingleton
 class AnalyticsImpl
 @Inject
-constructor(context: Context) : Analytics {
+constructor(
+        context: Context,
+        config: Config
+) : Analytics {
     private val firebaseAnalytics = FirebaseAnalytics.getInstance(context)
+    private val amplitude = Amplitude.getInstance()
+            .initialize(context, config.amplitudeKey)
+            .enableForegroundTracking(App.app)
+
+    init {
+        amplitude.identify(Identify()
+                .set(AmplitudeAnalytics.Properties.APPLICATION_ID, context.packageName))
+    }
 
     override fun successLogin() {
         logEvent(EVENT_SUCCESS_LOGIN)
@@ -52,6 +69,20 @@ constructor(context: Context) : Analytics {
         val bundle = Bundle()
         bundle.putLong(param, value)
         logEvent(event, bundle)
+    }
+
+    override fun logAmplitudeEvent(eventName: String, params: Map<String, Any?>?) {
+        val properties = JSONObject()
+        params?.let {
+            for ((k, v) in it.entries) {
+                properties.put(k, v)
+            }
+        }
+        amplitude.logEvent(eventName, properties)
+    }
+
+    override fun logAmplitudeRevenue(revenue: Revenue) {
+        amplitude.logRevenueV2(revenue)
     }
 
     override fun reactionHard(lesson: Long) {

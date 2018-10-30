@@ -1,6 +1,7 @@
-package org.stepik.android.adaptive.data
+package org.stepik.android.adaptive.data.analytics
 
 import android.os.Bundle
+import com.amplitude.api.Revenue
 import org.stepik.android.adaptive.data.model.Step
 import org.stepik.android.adaptive.data.model.Submission
 
@@ -9,6 +10,8 @@ interface Analytics {
     fun onBoardingFinished()
 
     fun logEvent(name: String, bundle: Bundle? = null)
+    fun logAmplitudeEvent(eventName: String, params: Map<String, Any?>? = null)
+    fun logAmplitudeRevenue(revenue: Revenue)
 
     fun logEventWithName(eventName: String, name: String?)
     fun logEventWithLongParam(event: String, param: String, value: Long)

@@ -15,7 +15,7 @@ import org.stepik.android.adaptive.core.ScreenManager
 import org.stepik.android.adaptive.core.presenter.BasePresenterFragment
 import org.stepik.android.adaptive.core.presenter.ProfilePresenter
 import org.stepik.android.adaptive.core.presenter.contracts.ProfileView
-import org.stepik.android.adaptive.data.Analytics
+import org.stepik.android.adaptive.data.analytics.Analytics
 import org.stepik.android.adaptive.ui.activity.LoginActivity
 import org.stepik.android.adaptive.ui.activity.RegisterActivity
 import org.stepik.android.adaptive.ui.dialog.profile.EditEmailDialogFragment

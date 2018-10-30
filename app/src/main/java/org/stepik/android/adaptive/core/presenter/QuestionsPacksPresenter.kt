@@ -3,7 +3,6 @@ package org.stepik.android.adaptive.core.presenter
 import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.Scheduler
-import io.reactivex.Single
 import io.reactivex.disposables.CompositeDisposable
 import org.solovyev.android.checkout.*
 import org.stepik.android.adaptive.api.Api
@@ -11,7 +10,7 @@ import org.stepik.android.adaptive.api.storage.RemoteStorageRepository
 import org.stepik.android.adaptive.content.questions.QuestionsPacksManager
 import org.stepik.android.adaptive.content.questions.QuestionsPacksResolver
 import org.stepik.android.adaptive.core.presenter.contracts.QuestionsPacksView
-import org.stepik.android.adaptive.data.Analytics
+import org.stepik.android.adaptive.data.analytics.Analytics
 import org.stepik.android.adaptive.content.questions.QuestionsPack
 import org.stepik.android.adaptive.data.preference.SharedPreferenceHelper
 import org.stepik.android.adaptive.di.qualifiers.BackgroundScheduler

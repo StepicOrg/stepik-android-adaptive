@@ -18,7 +18,8 @@ import org.stepik.android.adaptive.api.auth.AuthError
 import org.stepik.android.adaptive.core.ScreenManager
 import org.stepik.android.adaptive.core.presenter.AuthPresenter
 import org.stepik.android.adaptive.core.presenter.contracts.AuthView
-import org.stepik.android.adaptive.data.Analytics
+import org.stepik.android.adaptive.data.analytics.AmplitudeAnalytics
+import org.stepik.android.adaptive.data.analytics.Analytics
 import org.stepik.android.adaptive.data.preference.SharedPreferenceHelper
 import org.stepik.android.adaptive.data.model.*
 import org.stepik.android.adaptive.databinding.FragmentRecommendationsBinding

@@ -15,7 +15,8 @@ import javax.inject.Inject
 
 class App : Application() {
     companion object {
-        private lateinit var app: App
+        lateinit var app: App
+            private set
 
         fun component() = app.component
         fun componentManager() = app.componentManager

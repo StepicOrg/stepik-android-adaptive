@@ -3,7 +3,7 @@ package org.stepik.android.adaptive.core.presenter
 import io.reactivex.Scheduler
 import io.reactivex.disposables.CompositeDisposable
 import org.stepik.android.adaptive.core.presenter.contracts.BookmarksView
-import org.stepik.android.adaptive.data.Analytics
+import org.stepik.android.adaptive.data.analytics.Analytics
 import org.stepik.android.adaptive.data.db.DataBaseMgr
 import org.stepik.android.adaptive.data.model.Bookmark
 import org.stepik.android.adaptive.di.qualifiers.BackgroundScheduler

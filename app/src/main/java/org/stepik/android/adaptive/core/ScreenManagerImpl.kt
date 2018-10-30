@@ -5,7 +5,7 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 
-import org.stepik.android.adaptive.data.Analytics
+import org.stepik.android.adaptive.data.analytics.Analytics
 import org.stepik.android.adaptive.di.AppSingleton
 import org.stepik.android.adaptive.ui.activity.*
 import javax.inject.Inject

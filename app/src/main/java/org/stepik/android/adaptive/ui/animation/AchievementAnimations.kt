@@ -14,7 +14,6 @@ import android.view.animation.AnticipateInterpolator
 import android.view.animation.OvershootInterpolator
 import org.stepik.android.adaptive.R
 import org.stepik.android.adaptive.core.ScreenManager
-import org.stepik.android.adaptive.data.Analytics
 import org.stepik.android.adaptive.data.model.Achievement
 import org.stepik.android.adaptive.databinding.PopupAchievementBinding
 import org.stepik.android.adaptive.ui.view.morphing.MorphingAnimation
