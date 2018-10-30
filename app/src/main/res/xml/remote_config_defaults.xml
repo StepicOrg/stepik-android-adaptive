@@ -12,4 +12,8 @@
         <key>exp_level_formula_experiment</key>
         <value>false</value>
     </entry>
+    <entry>
+        <key>in_app_prices_map</key>
+        <value>{}</value>
+    </entry>
 </defaultsMap>
