@@ -9,12 +9,14 @@ import com.amplitude.api.Revenue
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.yandex.metrica.YandexMetrica
 import org.json.JSONObject
+import org.solovyev.android.checkout.Sku
 import org.stepik.android.adaptive.App
 import org.stepik.android.adaptive.configuration.Config
 
 import org.stepik.android.adaptive.data.model.Step
 import org.stepik.android.adaptive.data.model.Submission
 import org.stepik.android.adaptive.di.AppSingleton
+import org.stepik.android.adaptive.resolvers.ContentPriceResolver
 
 import java.util.HashMap
 import javax.inject.Inject
@@ -24,7 +26,9 @@ class AnalyticsImpl
 @Inject
 constructor(
         context: Context,
-        config: Config
+        config: Config,
+
+        private val contentPriceResolver: ContentPriceResolver
 ) : Analytics {
     private val firebaseAnalytics = FirebaseAnalytics.getInstance(context)
     private val amplitude = Amplitude.getInstance()
@@ -72,17 +76,17 @@ constructor(
     }
 
     override fun logAmplitudeEvent(eventName: String, params: Map<String, Any?>?) {
-        val properties = JSONObject()
-        params?.let {
-            for ((k, v) in it.entries) {
-                properties.put(k, v)
-            }
-        }
-        amplitude.logEvent(eventName, properties)
+        amplitude.logEvent(eventName, params.toJsonObject())
     }
 
-    override fun logAmplitudeRevenue(revenue: Revenue) {
-        amplitude.logRevenueV2(revenue)
+    override fun logAmplitudePurchase(sku: Sku, params: Map<String, Any?>?) {
+        val price = contentPriceResolver.resolveSkuPrice(sku)
+
+        amplitude.logRevenueV2(Revenue()
+                .setPrice(price)
+                .setQuantity(1)
+                .setProductId(sku.id.code)
+                .setEventProperties(params.toJsonObject()))
     }
 
     override fun reactionHard(lesson: Long) {
@@ -191,6 +195,16 @@ constructor(
     }
 
     companion object {
+        private fun Map<String, Any?>?.toJsonObject(): JSONObject {
+            val properties = JSONObject()
+            this?.let {
+                for ((k, v) in it.entries) {
+                    properties.put(k, v)
+                }
+            }
+            return properties
+        }
+
         private const val EVENT_SUCCESS_LOGIN = "success_login"
         private const val EVENT_ONBOARDING_FINISHED = "onboarding_finished"
 
