@@ -224,6 +224,7 @@ class RecommendationsFragment : BasePresenterFragment<RecommendationsPresenter, 
             screenManager.showEmptyAuthScreen(context)
 
     override fun showStreakRestoreDialog(streak: Long, withTooltip: Boolean) {
+        analytics.logAmplitudeEvent(AmplitudeAnalytics.Tickets.WIDGET_OPENED)
         refreshStreakRestoreDialog()
         streakToRestore = streak
         CardsFragmentAnimations
@@ -280,6 +281,7 @@ class RecommendationsFragment : BasePresenterFragment<RecommendationsPresenter, 
 
     private fun openPaidContentList() {
         analytics.paidContentOpened()
+        analytics.logAmplitudeEvent(AmplitudeAnalytics.Tickets.SCREEN_OPENED)
         startActivityForResult(Intent(context, PaidInventoryItemsActivity::class.java), PAID_CONTENT_REQUEST_CODE)
     }
 

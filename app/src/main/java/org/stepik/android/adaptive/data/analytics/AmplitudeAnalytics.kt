@@ -75,8 +75,9 @@ object AmplitudeAnalytics {
     }
 
     object Tickets {
-        const val PURCHASE_POPUP_SHOWN = "Ticket purchase popup shown"
-        const val BANNER_SHOWN = "Ticket banner shown"
+        const val SCREEN_OPENED = "Ticket purchase screen opened"
+        const val WIDGET_OPENED = "Ticket use widget opened"
+
         const val TICKETS_PURCHASED = "Ticket purchased"
 
         const val PARAM_TICKETS_COUNT = "tickets_count"
