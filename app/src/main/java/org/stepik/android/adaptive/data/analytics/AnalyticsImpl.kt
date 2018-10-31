@@ -38,14 +38,8 @@ constructor(
     init {
         amplitude.identify(Identify()
                 .set(AmplitudeAnalytics.Properties.APPLICATION_ID, context.packageName))
-    }
 
-    override fun successLogin() {
-        logEvent(EVENT_SUCCESS_LOGIN)
-    }
-
-    override fun onBoardingFinished() {
-        logEvent(EVENT_ONBOARDING_FINISHED)
+        logAmplitudeEvent(AmplitudeAnalytics.Launch.SESSION_START)
     }
 
     override fun logEvent(name: String, bundle: Bundle?) {
@@ -88,6 +82,16 @@ constructor(
                 .setRevenueType(revenueType)
                 .setProductId(sku.id.code)
                 .setEventProperties(params.toJsonObject()))
+    }
+
+
+
+    override fun successLogin() {
+        logEvent(EVENT_SUCCESS_LOGIN)
+    }
+
+    override fun onBoardingFinished() {
+        logEvent(EVENT_ONBOARDING_FINISHED)
     }
 
     override fun reactionHard(lesson: Long) {

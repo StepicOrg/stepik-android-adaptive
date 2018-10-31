@@ -75,7 +75,8 @@ constructor(context: Context): SharedPreferenceProvider, AuthPreferences, Profil
     var isEmptyAuthScreenWasShown        : Boolean by preference(IS_EMPTY_AUTH_SCREEN_WAS_SHOWN)
 
     override var isAuthTokenSocial:      Boolean by preference(IS_OAUTH_TOKEN_SOCIAL)
-    var isNotFirstTime:                  Boolean by preference(NOT_FIRST_TIME)
+    var isNotFirstTime:                  Boolean by preference(NOT_FIRST_TIME) // isNotFirstTime determines is user completes onboarding
+    var isNotFirstSession:               Boolean by preference(NOT_FIRST_SESSION)
 
     var questionsPackIndex: Int by preference(QUESTIONS_PACK_INDEX)
 
@@ -154,6 +155,7 @@ constructor(context: Context): SharedPreferenceProvider, AuthPreferences, Profil
         private const val PROFILE_ID = "profile_id"
 
         private const val NOT_FIRST_TIME = "not_first_time"
+        private const val NOT_FIRST_SESSION = "not_first_session"
 
         private const val IS_STREAK_RESTORE_TOOLTIP_WAS_SHOWN = "is_streak_restore_tooltip_was_shown"
         private const val IS_PAID_CONTENT_TOOLTIP_WAS_SHOWN = "is_paid_content_tooltip_was_shown"
