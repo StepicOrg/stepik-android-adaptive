@@ -189,6 +189,9 @@ class CardPresenter(val card: Card, private val listener: AdaptiveReactionListen
                 error = null
 
                 disposable = api.createSubmission(submission)
+                        .doOnComplete {
+                            analytics.setSubmissionsCount(sharedPreferenceHelper.submissionCount++)
+                        }
                         .andThen(api.getSubmissions(submission.attempt))
                         .subscribeOn(backgroundScheduler)
                         .observeOn(mainScheduler)

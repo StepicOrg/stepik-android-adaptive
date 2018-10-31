@@ -112,6 +112,7 @@ constructor(
             .andThen(profileRepository.fetchProfileWithEmailAddresses())
             .doOnSuccess {
                 profilePreferences.profile = it
+                analytics.setUserId(it.id.toString())
                 analytics.logEvent(Analytics.Login.SUCCESS_LOGIN)
             }
             .flatMapCompletable {

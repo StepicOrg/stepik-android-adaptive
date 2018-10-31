@@ -77,6 +77,7 @@ constructor(context: Context): SharedPreferenceProvider, AuthPreferences, Profil
     override var isAuthTokenSocial:      Boolean by preference(IS_OAUTH_TOKEN_SOCIAL)
     var isNotFirstTime:                  Boolean by preference(NOT_FIRST_TIME) // isNotFirstTime determines is user completes onboarding
     var isNotFirstSession:               Boolean by preference(NOT_FIRST_SESSION)
+    var submissionCount:                 Int by preference(SUBMISSION_COUNT)
 
     var questionsPackIndex: Int by preference(QUESTIONS_PACK_INDEX)
 
@@ -170,6 +171,8 @@ constructor(context: Context): SharedPreferenceProvider, AuthPreferences, Profil
         private const val FAKE_USER = "fake_user"
 
         private const val QUESTIONS_PACK_VIEWED_PREFIX = "viewed_"
+
+        private const val SUBMISSION_COUNT = "submission_count"
     }
 
 }

@@ -36,7 +36,7 @@ class EmptyAuthActivity: AppCompatActivity() {
 
     private fun skipAuth() {
         analytics.logEvent(Analytics.Login.AUTH_SKIPPED)
-        analytics.logAmplitudeEvent(AmplitudeAnalytics.Auth.AUTH_SKIPED)
+        analytics.logAmplitudeEvent(AmplitudeAnalytics.Auth.AUTH_SKIPPED)
         finish()
     }
 

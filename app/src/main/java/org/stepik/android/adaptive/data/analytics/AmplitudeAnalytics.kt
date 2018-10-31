@@ -1,8 +1,11 @@
 package org.stepik.android.adaptive.data.analytics
 
 object AmplitudeAnalytics {
-
     object Properties {
+        const val STEPIK_ID = "stepik_id"
+        const val SUBMISSIONS_COUNT = "submissions_count"
+        const val LEVEL = "level"
+        const val EXP = "exp"
         const val APPLICATION_ID = "application_id"
     }
 
@@ -20,7 +23,7 @@ object AmplitudeAnalytics {
 
     object Auth {
         const val AUTH_POPUP_OPENED = "Auth screen popup opened"
-        const val AUTH_SKIPED = "Sign in not now pressed"
+        const val AUTH_SKIPPED = "Sign in not now pressed"
 
         const val LOGGED_ID = "Logged in"
         const val REGISTERED = "Registered"

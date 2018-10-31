@@ -84,7 +84,21 @@ constructor(
                 .setEventProperties(params.toJsonObject()))
     }
 
+    override fun setUserId(userId: String) {
+        amplitude.identify(Identify().set(AmplitudeAnalytics.Properties.STEPIK_ID, userId))
+    }
 
+    override fun setSubmissionsCount(submissionsCount: Int) {
+        amplitude.identify(Identify().set(AmplitudeAnalytics.Properties.SUBMISSIONS_COUNT, submissionsCount))
+    }
+
+    override fun setUserLevel(level: Long) {
+        amplitude.identify(Identify().set(AmplitudeAnalytics.Properties.LEVEL, level))
+    }
+
+    override fun setUserExp(exp: Long) {
+        amplitude.identify(Identify().set(AmplitudeAnalytics.Properties.EXP, exp))
+    }
 
     override fun successLogin() {
         logEvent(EVENT_SUCCESS_LOGIN)

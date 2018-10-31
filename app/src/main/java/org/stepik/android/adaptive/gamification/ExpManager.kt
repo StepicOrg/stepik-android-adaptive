@@ -67,6 +67,7 @@ constructor(
     fun changeExp(delta: Long, submissionId: Long): Long {
         val exp = sharedPreferenceHelper.changeLong(EXP_KEY, delta)
         analytics.onExpReached(exp - delta, delta)
+        analytics.setUserExp(exp)
 
         achievementEventPoster.onEvent(AchievementManager.Event.EXP, exp, true)
 
@@ -99,6 +100,7 @@ constructor(
             2 + (Math.log((exp / 5).toDouble()) / Math.log(2.0)).toLong()
         }
 
+        analytics.setUserLevel(level)
         achievementEventPoster.onEvent(AchievementManager.Event.LEVEL, level, true)
 
         return level
