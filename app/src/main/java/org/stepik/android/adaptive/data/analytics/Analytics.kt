@@ -1,18 +1,26 @@
-package org.stepik.android.adaptive.data
+package org.stepik.android.adaptive.data.analytics
 
 import android.os.Bundle
+import com.amplitude.api.Revenue
+import org.solovyev.android.checkout.Sku
 import org.stepik.android.adaptive.data.model.Step
 import org.stepik.android.adaptive.data.model.Submission
 
 interface Analytics {
-    fun successLogin()
-    fun onBoardingFinished()
-
     fun logEvent(name: String, bundle: Bundle? = null)
+    fun logAmplitudeEvent(eventName: String, params: Map<String, Any?>? = null)
+    fun logAmplitudePurchase(revenueType: String, sku: Sku, params: Map<String, Any?>? = null)
 
     fun logEventWithName(eventName: String, name: String?)
     fun logEventWithLongParam(event: String, param: String, value: Long)
 
+    fun setUserId(userId: String)
+    fun setSubmissionsCount(submissionsCount: Int)
+    fun setUserLevel(level: Long)
+    fun setUserExp(exp: Long)
+
+    fun successLogin()
+    fun onBoardingFinished()
     fun reactionHard(lesson: Long)
     fun reactionEasy(lesson: Long)
     fun reactionHardAfterCorrect(lesson: Long)

@@ -15,6 +15,8 @@ import org.stepik.android.adaptive.core.ScreenManager
 import org.stepik.android.adaptive.core.presenter.BasePresenterActivity
 import org.stepik.android.adaptive.core.presenter.AuthPresenter
 import org.stepik.android.adaptive.core.presenter.contracts.AuthView
+import org.stepik.android.adaptive.data.analytics.AmplitudeAnalytics
+import org.stepik.android.adaptive.data.analytics.Analytics
 import org.stepik.android.adaptive.ui.dialog.RemindPasswordDialog
 import org.stepik.android.adaptive.util.changeVisibillity
 import org.stepik.android.adaptive.util.fromHtmlCompat
@@ -32,6 +34,9 @@ class LoginActivity : BasePresenterActivity<AuthPresenter, AuthView>(), AuthView
 
         const val REQUEST_CODE = 788
     }
+
+    @Inject
+    lateinit var analytics: Analytics
 
     @Inject
     lateinit var screenManager: ScreenManager
@@ -137,6 +142,8 @@ class LoginActivity : BasePresenterActivity<AuthPresenter, AuthView>(), AuthView
 
     override fun onSuccess() {
         setResult(RESULT_OK)
+        analytics.logAmplitudeEvent(AmplitudeAnalytics.Auth.LOGGED_ID,
+                mapOf(AmplitudeAnalytics.Auth.PARAM_SOURCE to AmplitudeAnalytics.Auth.VALUE_SOURCE_EMAIL))
         finish()
     }
 

@@ -20,6 +20,7 @@ interface Config {
     val codeQueryParameter: String
     val appPublicLicenseKey: String
     val appMetricaKey: String
+    val amplitudeKey: String
 
     val isBookmarksSupported: Boolean
     val shouldDisableHardwareAcceleration: Boolean

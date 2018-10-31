@@ -11,7 +11,8 @@ import org.stepik.android.adaptive.App
 import org.stepik.android.adaptive.R
 import org.stepik.android.adaptive.content.questions.QuestionsPacksManager
 import org.stepik.android.adaptive.core.ScreenManager
-import org.stepik.android.adaptive.data.Analytics
+import org.stepik.android.adaptive.data.analytics.AmplitudeAnalytics
+import org.stepik.android.adaptive.data.analytics.Analytics
 import org.stepik.android.adaptive.util.changeVisibillity
 import org.stepik.android.adaptive.util.fromHtmlCompat
 import javax.inject.Inject
@@ -36,10 +37,16 @@ class DescriptionActivity: AppCompatActivity() {
 
         injectComponent()
 
-        val questionsPacksListener = View.OnClickListener { screenManager.showQuestionsPacksScreen(this) }
+        val questionsPacksListener = View.OnClickListener {
+            analytics.logAmplitudeEvent(AmplitudeAnalytics.GamificationDescription.QUESTIONS_PACKS_CLICKED)
+            screenManager.showQuestionsPacksScreen(this)
+        }
 
         close.setOnClickListener { finish() }
-        statsButton.setOnClickListener { screenManager.showStatsScreen(this, 0) }
+        statsButton.setOnClickListener {
+            analytics.logAmplitudeEvent(AmplitudeAnalytics.GamificationDescription.MY_STATS_CLICKED)
+            screenManager.showStatsScreen(this, 0)
+        }
         packsButton.setOnClickListener(questionsPacksListener)
 
         descriptionLevels.text = fromHtmlCompat(getString(R.string.description_levels_description))

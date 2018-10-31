@@ -4,8 +4,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import org.stepik.android.adaptive.App
-import org.stepik.android.adaptive.Util
-import org.stepik.android.adaptive.data.Analytics
+import org.stepik.android.adaptive.data.analytics.Analytics
 import org.stepik.android.adaptive.notifications.LocalReminder
 import org.stepik.android.adaptive.notifications.RemindNotificationManager
 import javax.inject.Inject

@@ -9,7 +9,7 @@ ext.versions = [
 
         androidGradlePlugin  : '3.1.1',
         kotlin               : '1.2.31',
-        googleServicesVersion: '3.1.0',
+        googleServicesVersion: '4.1.0',
         fabric               : '1.25.1',
 
         dagger               : '2.15',
@@ -25,9 +25,15 @@ ext.versions = [
 
         supportLibs          : '26.1.0',
         constraintLayout     : '1.0.2',
-        firebase             : '11.8.0',
-        crashlytics          : '2.9.1@aar',
-        appMetrica           : '2.80',
+
+        googleauth           : '16.0.1',
+        firebaseCore         : '16.0.4',
+        firebaseConfig       : '16.1.0',
+        firebaseMessaging    : '17.3.4',
+
+        crashlytics          : '2.9.5@aar',
+        amplitude            : '2.20.0',
+        appMetrica           : '3.2.2',
 
         facebook             : '4.17.0',
         vk                   : '1.6.5',
@@ -84,12 +90,13 @@ ext.libraries = [
         supportCardView      : "com.android.support:cardview-v7:$versions.supportLibs",
         constraintLayout     : "com.android.support.constraint:constraint-layout:$versions.constraintLayout",
 
-        googleauth           : "com.google.android.gms:play-services-auth:$versions.firebase",
-        firebaseCore         : "com.google.firebase:firebase-core:$versions.firebase",
-        firebaseConfig       : "com.google.firebase:firebase-config:$versions.firebase",
-        firebaseMessaging    : "com.google.firebase:firebase-messaging:$versions.firebase",
+        googleauth           : "com.google.android.gms:play-services-auth:$versions.googleauth",
+        firebaseCore         : "com.google.firebase:firebase-core:$versions.firebaseCore",
+        firebaseConfig       : "com.google.firebase:firebase-config:$versions.firebaseConfig",
+        firebaseMessaging    : "com.google.firebase:firebase-messaging:$versions.firebaseMessaging",
 
         crashlytics          : "com.crashlytics.sdk.android:crashlytics:$versions.crashlytics",
+        amplitude            : "com.amplitude:android-sdk:$versions.amplitude",
         appMetrica           : "com.yandex.android:mobmetricalib:$versions.appMetrica",
 
         facebookSdk          : "com.facebook.android:facebook-android-sdk:$versions.facebook",

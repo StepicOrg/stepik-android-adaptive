@@ -11,7 +11,8 @@ import org.stepik.android.adaptive.App
 import org.stepik.android.adaptive.R
 import org.stepik.android.adaptive.configuration.RemoteConfig
 import org.stepik.android.adaptive.core.ScreenManager
-import org.stepik.android.adaptive.data.Analytics
+import org.stepik.android.adaptive.data.analytics.AmplitudeAnalytics
+import org.stepik.android.adaptive.data.analytics.Analytics
 import javax.inject.Inject
 
 class QuestionsPacksDialog : DialogFragment() {
@@ -42,6 +43,7 @@ class QuestionsPacksDialog : DialogFragment() {
 
         root.actionButton.setOnClickListener {
             analytics.logEvent(Analytics.EVENT_ON_QUESTIONS_DIALOG_ACTION_CLICKED)
+            analytics.logAmplitudeEvent(AmplitudeAnalytics.QuestionPacks.POPUP_ACTION_PRESSED)
             screenManager.showQuestionsPacksScreen(activity)
             dismiss()
         }

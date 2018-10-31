@@ -4,8 +4,9 @@ package org.stepik.android.adaptive.core
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import org.stepik.android.adaptive.data.analytics.AmplitudeAnalytics
 
-import org.stepik.android.adaptive.data.Analytics
+import org.stepik.android.adaptive.data.analytics.Analytics
 import org.stepik.android.adaptive.di.AppSingleton
 import org.stepik.android.adaptive.ui.activity.*
 import javax.inject.Inject
@@ -31,6 +32,7 @@ constructor(
 
     override fun showEmptyAuthScreen(context: Context) {
         analytics.logEvent(Analytics.Login.SHOW_EMPTY_AUTH_SCREEN)
+        analytics.logAmplitudeEvent(AmplitudeAnalytics.Auth.AUTH_POPUP_OPENED)
         val intent = Intent(context, EmptyAuthActivity::class.java)
         context.startActivity(intent)
     }
@@ -50,11 +52,13 @@ constructor(
 
     override fun showQuestionsPacksScreen(context: Context) {
         analytics.onQuestionsPacksOpened()
+        analytics.logAmplitudeEvent(AmplitudeAnalytics.QuestionPacks.SCREEN_OPENED)
         context.startActivity(Intent(context, QuestionsPacksActivity::class.java))
     }
 
     override fun showGamificationDescription(context: Context) {
         analytics.logEvent(Analytics.EVENT_ON_GAMIFICATION_DESCRIPTION_SHOWN)
+        analytics.logAmplitudeEvent(AmplitudeAnalytics.GamificationDescription.SCREEN_OPENED)
         val intent = Intent(context, DescriptionActivity::class.java)
         context.startActivity(intent)
     }
