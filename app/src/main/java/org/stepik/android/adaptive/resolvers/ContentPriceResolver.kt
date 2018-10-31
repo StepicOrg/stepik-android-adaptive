@@ -15,7 +15,11 @@ constructor(
 ) {
     private val pricesMap by lazy {
         val mapTypeToken = object : TypeToken<Map<String, InAppPurchasePrice>>() {}.type
-        Gson().fromJson<Map<String, InAppPurchasePrice>>(firebaseRemoteConfig.getString(RemoteConfig.IN_APP_PRICES_MAP), mapTypeToken)
+        try {
+            Gson().fromJson<Map<String, InAppPurchasePrice>>(firebaseRemoteConfig.getString(RemoteConfig.IN_APP_PRICES_MAP), mapTypeToken)
+        } catch (_: Exception) {
+            emptyMap<String, InAppPurchasePrice>()
+        }
     }
 
     fun resolveSkuPrice(sku: Sku): Double =
