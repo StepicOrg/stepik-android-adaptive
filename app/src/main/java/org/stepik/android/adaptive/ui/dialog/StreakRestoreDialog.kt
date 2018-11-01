@@ -10,7 +10,7 @@ import kotlinx.android.synthetic.main.dialog_streak_restore.view.*
 import kotlinx.android.synthetic.main.item_inventory.view.*
 import org.stepik.android.adaptive.App
 import org.stepik.android.adaptive.R
-import org.stepik.android.adaptive.data.Analytics
+import org.stepik.android.adaptive.data.analytics.Analytics
 import org.stepik.android.adaptive.ui.fragment.RecommendationsFragment
 import org.stepik.android.adaptive.gamification.InventoryManager
 import javax.inject.Inject

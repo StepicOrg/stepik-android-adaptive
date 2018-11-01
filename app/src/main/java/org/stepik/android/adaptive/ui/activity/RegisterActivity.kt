@@ -12,6 +12,8 @@ import org.stepik.android.adaptive.core.ScreenManager
 import org.stepik.android.adaptive.core.presenter.BasePresenterActivity
 import org.stepik.android.adaptive.core.presenter.RegisterPresenter
 import org.stepik.android.adaptive.core.presenter.contracts.RegisterView
+import org.stepik.android.adaptive.data.analytics.AmplitudeAnalytics
+import org.stepik.android.adaptive.data.analytics.Analytics
 import org.stepik.android.adaptive.util.*
 import javax.inject.Inject
 import javax.inject.Provider
@@ -22,6 +24,9 @@ class RegisterActivity: BasePresenterActivity<RegisterPresenter, RegisterView>()
 
         const val REQUEST_CODE = 520
     }
+
+    @Inject
+    lateinit var analytics: Analytics
 
     @Inject
     lateinit var registerPresenterProvider: Provider<RegisterPresenter>
@@ -154,6 +159,8 @@ class RegisterActivity: BasePresenterActivity<RegisterPresenter, RegisterView>()
 
     private fun onSuccess() {
         setResult(RESULT_OK)
+        analytics.logAmplitudeEvent(AmplitudeAnalytics.Auth.REGISTERED,
+                mapOf(AmplitudeAnalytics.Auth.PARAM_SOURCE to AmplitudeAnalytics.Auth.VALUE_SOURCE_EMAIL))
         finish()
     }
 

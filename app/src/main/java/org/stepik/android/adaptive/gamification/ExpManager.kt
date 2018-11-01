@@ -1,7 +1,7 @@
 package org.stepik.android.adaptive.gamification
 
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
-import org.stepik.android.adaptive.data.Analytics
+import org.stepik.android.adaptive.data.analytics.Analytics
 import org.stepik.android.adaptive.data.preference.SharedPreferenceHelper
 import org.stepik.android.adaptive.data.db.DataBaseMgr
 
@@ -67,6 +67,7 @@ constructor(
     fun changeExp(delta: Long, submissionId: Long): Long {
         val exp = sharedPreferenceHelper.changeLong(EXP_KEY, delta)
         analytics.onExpReached(exp - delta, delta)
+        analytics.setUserExp(exp)
 
         achievementEventPoster.onEvent(AchievementManager.Event.EXP, exp, true)
 
@@ -99,6 +100,7 @@ constructor(
             2 + (Math.log((exp / 5).toDouble()) / Math.log(2.0)).toLong()
         }
 
+        analytics.setUserLevel(level)
         achievementEventPoster.onEvent(AchievementManager.Event.LEVEL, level, true)
 
         return level

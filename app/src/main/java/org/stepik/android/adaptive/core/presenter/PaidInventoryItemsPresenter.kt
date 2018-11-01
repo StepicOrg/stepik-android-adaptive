@@ -6,6 +6,8 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 import org.solovyev.android.checkout.*
 import org.stepik.android.adaptive.core.presenter.contracts.PaidInventoryItemsView
+import org.stepik.android.adaptive.data.analytics.AmplitudeAnalytics
+import org.stepik.android.adaptive.data.analytics.Analytics
 import org.stepik.android.adaptive.di.qualifiers.MainScheduler
 import org.stepik.android.adaptive.gamification.InventoryManager
 import org.stepik.android.adaptive.ui.adapter.PaidInventoryAdapter
@@ -15,6 +17,7 @@ import javax.inject.Inject
 class PaidInventoryItemsPresenter
 @Inject
 constructor(
+        private val analytics: Analytics,
         @MainScheduler
         private val mainScheduler: Scheduler,
         private val inventoryManager: InventoryManager,
@@ -30,8 +33,12 @@ constructor(
         view?.showInventoryDialog()
     }
 
-    private fun purchase(sku: Sku) {
-        val purchaseObservable = checkout?.startPurchaseFlowRx(sku) ?: Observable.empty<Purchase>()
+    private fun purchase(sku: Sku, paidContent: InventoryManager.PaidContent) {
+        val purchaseObservable = checkout?.startPurchaseFlowRx(sku)?.doOnNext {
+            analytics.logAmplitudePurchase(AmplitudeAnalytics.Tickets.TICKETS_PURCHASED, sku, mapOf(
+                    AmplitudeAnalytics.Tickets.PARAM_TICKETS_COUNT to paidContent.count
+            ))
+        } ?: Observable.empty<Purchase>()
         compositeDisposable addDisposable consume(purchaseObservable)
     }
 

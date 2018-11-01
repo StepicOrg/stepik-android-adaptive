@@ -10,7 +10,7 @@ import org.stepik.android.adaptive.api.auth.AuthRepository
 import org.stepik.android.adaptive.api.profile.ProfileRepository
 import org.stepik.android.adaptive.content.questions.QuestionsPacksManager
 import org.stepik.android.adaptive.core.presenter.contracts.AuthView
-import org.stepik.android.adaptive.data.Analytics
+import org.stepik.android.adaptive.data.analytics.Analytics
 import org.stepik.android.adaptive.data.model.AccountCredentials
 import org.stepik.android.adaptive.data.preference.ProfilePreferences
 import org.stepik.android.adaptive.di.qualifiers.BackgroundScheduler
@@ -112,6 +112,7 @@ constructor(
             .andThen(profileRepository.fetchProfileWithEmailAddresses())
             .doOnSuccess {
                 profilePreferences.profile = it
+                analytics.setUserId(it.id.toString())
                 analytics.logEvent(Analytics.Login.SUCCESS_LOGIN)
             }
             .flatMapCompletable {

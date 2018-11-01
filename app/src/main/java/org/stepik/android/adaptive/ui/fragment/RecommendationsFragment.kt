@@ -22,7 +22,8 @@ import org.stepik.android.adaptive.core.ScreenManager
 import org.stepik.android.adaptive.core.presenter.BasePresenterFragment
 import org.stepik.android.adaptive.core.presenter.RecommendationsPresenter
 import org.stepik.android.adaptive.core.presenter.contracts.RecommendationsView
-import org.stepik.android.adaptive.data.Analytics
+import org.stepik.android.adaptive.data.analytics.AmplitudeAnalytics
+import org.stepik.android.adaptive.data.analytics.Analytics
 import org.stepik.android.adaptive.data.preference.SharedPreferenceHelper
 import org.stepik.android.adaptive.databinding.FragmentRecommendationsBinding
 import org.stepik.android.adaptive.ui.activity.PaidInventoryItemsActivity
@@ -223,6 +224,7 @@ class RecommendationsFragment : BasePresenterFragment<RecommendationsPresenter, 
             screenManager.showEmptyAuthScreen(context)
 
     override fun showStreakRestoreDialog(streak: Long, withTooltip: Boolean) {
+        analytics.logAmplitudeEvent(AmplitudeAnalytics.Tickets.WIDGET_OPENED)
         refreshStreakRestoreDialog()
         streakToRestore = streak
         CardsFragmentAnimations
@@ -259,6 +261,7 @@ class RecommendationsFragment : BasePresenterFragment<RecommendationsPresenter, 
     override fun showQuestionsPacksTooltip() {
         if (isQuestionsPackSupported) {
             if (remoteConfig.getBoolean(RemoteConfig.QUESTIONS_PACKS_DIALOG_EXPERIMENT)) {
+                analytics.logAmplitudeEvent(AmplitudeAnalytics.QuestionPacks.POPUP_OPENED)
                 QuestionsPacksDialog.newInstance().show(childFragmentManager, QUESTIONS_PACKS_DIALOG_TAG)
             } else {
                 questionsPacksTooltip = PopupHelper.showPopupAnchoredToView(
@@ -278,6 +281,7 @@ class RecommendationsFragment : BasePresenterFragment<RecommendationsPresenter, 
 
     private fun openPaidContentList() {
         analytics.paidContentOpened()
+        analytics.logAmplitudeEvent(AmplitudeAnalytics.Tickets.SCREEN_OPENED)
         startActivityForResult(Intent(context, PaidInventoryItemsActivity::class.java), PAID_CONTENT_REQUEST_CODE)
     }
 

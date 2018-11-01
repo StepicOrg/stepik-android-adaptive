@@ -1,14 +1,22 @@
-package org.stepik.android.adaptive.data
+package org.stepik.android.adaptive.data.analytics
 
 import android.content.Context
 import android.os.Bundle
+import com.amplitude.api.Amplitude
+import com.amplitude.api.Identify
+import com.amplitude.api.Revenue
 
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.yandex.metrica.YandexMetrica
+import org.json.JSONObject
+import org.solovyev.android.checkout.Sku
+import org.stepik.android.adaptive.App
+import org.stepik.android.adaptive.configuration.Config
 
 import org.stepik.android.adaptive.data.model.Step
 import org.stepik.android.adaptive.data.model.Submission
 import org.stepik.android.adaptive.di.AppSingleton
+import org.stepik.android.adaptive.resolvers.ContentPriceResolver
 
 import java.util.HashMap
 import javax.inject.Inject
@@ -16,15 +24,22 @@ import javax.inject.Inject
 @AppSingleton
 class AnalyticsImpl
 @Inject
-constructor(context: Context) : Analytics {
+constructor(
+        context: Context,
+        config: Config,
+
+        private val contentPriceResolver: ContentPriceResolver
+) : Analytics {
     private val firebaseAnalytics = FirebaseAnalytics.getInstance(context)
+    private val amplitude = Amplitude.getInstance()
+            .initialize(context, config.amplitudeKey)
+            .enableForegroundTracking(App.app)
 
-    override fun successLogin() {
-        logEvent(EVENT_SUCCESS_LOGIN)
-    }
+    init {
+        amplitude.identify(Identify()
+                .set(AmplitudeAnalytics.Properties.APPLICATION_ID, context.packageName))
 
-    override fun onBoardingFinished() {
-        logEvent(EVENT_ONBOARDING_FINISHED)
+        logAmplitudeEvent(AmplitudeAnalytics.Launch.SESSION_START)
     }
 
     override fun logEvent(name: String, bundle: Bundle?) {
@@ -52,6 +67,45 @@ constructor(context: Context) : Analytics {
         val bundle = Bundle()
         bundle.putLong(param, value)
         logEvent(event, bundle)
+    }
+
+    override fun logAmplitudeEvent(eventName: String, params: Map<String, Any?>?) {
+        amplitude.logEvent(eventName, params.toJsonObject())
+    }
+
+    override fun logAmplitudePurchase(revenueType: String, sku: Sku, params: Map<String, Any?>?) {
+        val price = contentPriceResolver.resolveSkuPrice(sku)
+
+        amplitude.logRevenueV2(Revenue()
+                .setPrice(price)
+                .setQuantity(1)
+                .setRevenueType(revenueType)
+                .setProductId(sku.id.code)
+                .setEventProperties(params.toJsonObject()))
+    }
+
+    override fun setUserId(userId: String) {
+        amplitude.identify(Identify().set(AmplitudeAnalytics.Properties.STEPIK_ID, userId))
+    }
+
+    override fun setSubmissionsCount(submissionsCount: Int) {
+        amplitude.identify(Identify().set(AmplitudeAnalytics.Properties.SUBMISSIONS_COUNT, submissionsCount))
+    }
+
+    override fun setUserLevel(level: Long) {
+        amplitude.identify(Identify().set(AmplitudeAnalytics.Properties.LEVEL, level))
+    }
+
+    override fun setUserExp(exp: Long) {
+        amplitude.identify(Identify().set(AmplitudeAnalytics.Properties.EXP, exp))
+    }
+
+    override fun successLogin() {
+        logEvent(EVENT_SUCCESS_LOGIN)
+    }
+
+    override fun onBoardingFinished() {
+        logEvent(EVENT_ONBOARDING_FINISHED)
     }
 
     override fun reactionHard(lesson: Long) {
@@ -160,6 +214,16 @@ constructor(context: Context) : Analytics {
     }
 
     companion object {
+        private fun Map<String, Any?>?.toJsonObject(): JSONObject {
+            val properties = JSONObject()
+            this?.let {
+                for ((k, v) in it.entries) {
+                    properties.put(k, v)
+                }
+            }
+            return properties
+        }
+
         private const val EVENT_SUCCESS_LOGIN = "success_login"
         private const val EVENT_ONBOARDING_FINISHED = "onboarding_finished"
 

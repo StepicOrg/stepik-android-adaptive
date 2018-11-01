@@ -10,7 +10,8 @@ import org.stepik.android.adaptive.api.SubmissionResponse
 import org.stepik.android.adaptive.configuration.Config
 import org.stepik.android.adaptive.content.questions.QuestionsPacksManager
 import org.stepik.android.adaptive.core.presenter.contracts.CardView
-import org.stepik.android.adaptive.data.Analytics
+import org.stepik.android.adaptive.data.analytics.AmplitudeAnalytics
+import org.stepik.android.adaptive.data.analytics.Analytics
 import org.stepik.android.adaptive.data.preference.SharedPreferenceHelper
 import org.stepik.android.adaptive.data.db.DataBaseMgr
 import org.stepik.android.adaptive.data.model.*
@@ -160,6 +161,9 @@ class CardPresenter(val card: Card, private val listener: AdaptiveReactionListen
                     analytics.reactionEasyAfterCorrect(lesson)
                 }
                 analytics.reactionEasy(lesson)
+                analytics.logAmplitudeEvent(AmplitudeAnalytics.Submissions.REACTION_PERFORMED, mapOf(
+                        AmplitudeAnalytics.Submissions.PARAM_COMPLEXITY to AmplitudeAnalytics.Submissions.ComplexityValues.EASY
+                ))
             }
 
             RecommendationReaction.Reaction.MAYBE_LATER -> {
@@ -167,6 +171,9 @@ class CardPresenter(val card: Card, private val listener: AdaptiveReactionListen
                     analytics.reactionHardAfterCorrect(lesson)
                 }
                 analytics.reactionHard(lesson)
+                analytics.logAmplitudeEvent(AmplitudeAnalytics.Submissions.REACTION_PERFORMED, mapOf(
+                        AmplitudeAnalytics.Submissions.PARAM_COMPLEXITY to AmplitudeAnalytics.Submissions.ComplexityValues.HARD
+                ))
             }
             else -> {}
         }
@@ -182,12 +189,21 @@ class CardPresenter(val card: Card, private val listener: AdaptiveReactionListen
                 error = null
 
                 disposable = api.createSubmission(submission)
+                        .doOnComplete {
+                            analytics.setSubmissionsCount(sharedPreferenceHelper.submissionCount++)
+                        }
                         .andThen(api.getSubmissions(submission.attempt))
                         .subscribeOn(backgroundScheduler)
                         .observeOn(mainScheduler)
                         .subscribe(this::onSubmissionLoaded, this::onError)
 
                 analytics.onSubmissionWasMade()
+
+                val pack = questionsPacksManager.currentPack
+                analytics.logAmplitudeEvent(AmplitudeAnalytics.Submissions.SUBMISSION_CREATED, mapOf(
+                        AmplitudeAnalytics.Submissions.PARAM_PACK_ID to pack.courseId,
+                        AmplitudeAnalytics.Submissions.PARAM_PACK_NAME to pack.id
+                ))
             }
         }
     }

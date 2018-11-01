@@ -6,7 +6,7 @@ import io.reactivex.Single
 import io.reactivex.disposables.CompositeDisposable
 import org.stepik.android.adaptive.api.profile.ProfileRepository
 import org.stepik.android.adaptive.core.presenter.contracts.EditProfileFieldView
-import org.stepik.android.adaptive.data.Analytics
+import org.stepik.android.adaptive.data.analytics.Analytics
 import org.stepik.android.adaptive.data.model.Profile
 import org.stepik.android.adaptive.data.preference.ProfilePreferences
 import org.stepik.android.adaptive.di.qualifiers.BackgroundScheduler

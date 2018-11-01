@@ -12,4 +12,8 @@
         <key>exp_level_formula_experiment</key>
         <value>false</value>
     </entry>
+    <entry>
+        <key>in_app_prices_map</key>
+        <value>{"questions_pack_adjectives":{"price":1.49,"additional_prices":{"RUB":0.9}},"error_tickets_package_big":{"price":3,"additional_prices":{"RUB":0.9}},"questions_pack_full":{"price":3.99,"additional_prices":{"RUB":2.25}},"questions_pack_medium":{"price":1.99,"additional_prices":{"RUB":1.29}},"error_tickets_package_medium":{"price":1.5,"additional_prices":{"RUB":0.38}},"error_tickets_package_monster":{"price":7.99,"additional_prices":{"RUB":1.92}},"questions_pack_pro":{"price":2.49,"additional_prices":{"RUB":1.5}},"error_tickets_package_small":{"price":0.99,"additional_prices":{"RUB":0.18}},"questions_pack_verbs":{"price":1.49,"additional_prices":{"RUB":0.9}}}</value>
+    </entry>
 </defaultsMap>

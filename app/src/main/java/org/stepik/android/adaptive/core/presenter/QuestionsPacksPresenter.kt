@@ -3,7 +3,6 @@ package org.stepik.android.adaptive.core.presenter
 import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.Scheduler
-import io.reactivex.Single
 import io.reactivex.disposables.CompositeDisposable
 import org.solovyev.android.checkout.*
 import org.stepik.android.adaptive.api.Api
@@ -11,8 +10,9 @@ import org.stepik.android.adaptive.api.storage.RemoteStorageRepository
 import org.stepik.android.adaptive.content.questions.QuestionsPacksManager
 import org.stepik.android.adaptive.content.questions.QuestionsPacksResolver
 import org.stepik.android.adaptive.core.presenter.contracts.QuestionsPacksView
-import org.stepik.android.adaptive.data.Analytics
+import org.stepik.android.adaptive.data.analytics.Analytics
 import org.stepik.android.adaptive.content.questions.QuestionsPack
+import org.stepik.android.adaptive.data.analytics.AmplitudeAnalytics
 import org.stepik.android.adaptive.data.preference.SharedPreferenceHelper
 import org.stepik.android.adaptive.di.qualifiers.BackgroundScheduler
 import org.stepik.android.adaptive.di.qualifiers.MainScheduler
@@ -119,13 +119,18 @@ constructor(
         if (isOwned || questionsPacksResolver.isAvailableForFree(pack)) {
             changeCourse(pack)
         } else {
-            purchase(sku)
+            purchase(sku, pack)
         }
     }
 
-    private fun purchase(sku: Sku) {
+    private fun purchase(sku: Sku, pack: QuestionsPack) {
         analytics.logEvent(Analytics.EVENT_ON_QUESTIONS_PACK_PURCHASE_BUTTON_CLICKED)
-        val purchaseObservable = checkout?.startPurchaseFlowRx(sku) ?: Observable.empty<Purchase>()
+        val purchaseObservable = checkout?.startPurchaseFlowRx(sku)?.doOnNext {
+            analytics.logAmplitudePurchase(AmplitudeAnalytics.QuestionPacks.PACK_PURCHASED, sku, mapOf(
+                    AmplitudeAnalytics.QuestionPacks.PARAM_PACK_ID to pack.courseId,
+                    AmplitudeAnalytics.QuestionPacks.PARAM_PACK_NAME to pack.id
+            ))
+        } ?: Observable.empty<Purchase>()
         compositeDisposable addDisposable consume(purchaseObservable.flatMap { getAllPurchases() })
     }
 
