@@ -3,14 +3,13 @@ package org.stepik.android.adaptive.di.network
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
-import okhttp3.OkHttpClient
+import okhttp3.Interceptor
 import org.stepik.android.adaptive.api.auth.AuthInterceptor
 import org.stepik.android.adaptive.api.rating.RatingRepository
 import org.stepik.android.adaptive.api.rating.RatingRepositoryImpl
 import org.stepik.android.adaptive.api.rating.RatingService
 import org.stepik.android.adaptive.configuration.Config
 import org.stepik.android.adaptive.di.AppSingleton
-import org.stepik.android.adaptive.util.setTimeoutsInSeconds
 
 @Module
 abstract class RatingModule {
@@ -23,7 +22,7 @@ abstract class RatingModule {
         @Provides
         @AppSingleton
         @JvmStatic
-        internal fun provideRatingService(authInterceptor: AuthInterceptor, config: Config): RatingService =
-                NetworkHelper.createServiceWithAuth(authInterceptor, config.ratingHost)
+        internal fun provideRatingService(interceptors: Set<@JvmSuppressWildcards Interceptor>, config: Config): RatingService =
+                NetworkHelper.createService(interceptors, config.ratingHost)
     }
 }

@@ -86,7 +86,6 @@ ext.libraries = [
         gson                 : "com.google.code.gson:gson:$versions.gson",
 
         okhttp3              : "com.squareup.okhttp3:okhttp:$versions.okhttp3",
-        loggingInterceptor   : "com.squareup.okhttp3:logging-interceptor:$versions.okhttp3",
 
         supportAppCompat     : "com.android.support:appcompat-v7:$versions.supportLibs",
         supportDesign        : "com.android.support:design:$versions.supportLibs",

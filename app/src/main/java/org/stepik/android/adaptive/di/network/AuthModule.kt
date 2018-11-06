@@ -9,8 +9,6 @@ import okhttp3.OkHttpClient
 import okhttp3.Protocol
 import org.stepik.android.adaptive.api.auth.*
 import org.stepik.android.adaptive.configuration.Config
-import org.stepik.android.adaptive.data.preference.SharedPreferenceHelper
-import org.stepik.android.adaptive.data.preference.AuthPreferences
 import org.stepik.android.adaptive.di.AppSingleton
 import org.stepik.android.adaptive.di.qualifiers.AuthLock
 import org.stepik.android.adaptive.di.qualifiers.AuthService

@@ -106,7 +106,6 @@ dependencies {
     implementation libraries.retrofitRxJavaAdapter
 
     implementation libraries.okhttp3
-    implementation libraries.loggingInterceptor
 
     implementation libraries.supportAppCompat
     implementation libraries.supportDesign
