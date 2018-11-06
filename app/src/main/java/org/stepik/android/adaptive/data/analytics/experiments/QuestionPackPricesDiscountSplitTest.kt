@@ -18,7 +18,8 @@ constructor(
             val displayPriceMultiplier: Double
     ) : SplitTest.Group {
         Control(1.0),
-        Test20PercentDiscount(0.8);
+        Test20PercentDiscount(1.25),
+        Test3TimesDiscount(3.0);
 
         override val distribution: Int = 1
     }

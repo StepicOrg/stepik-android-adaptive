@@ -91,7 +91,7 @@ class QuestionsPacksAdapter(
         } else {
             val format = NumberFormat.getCurrencyInstance()
             format.currency = Currency.getInstance(sku.detailedPrice.currency)
-            val formattedPriceWithoutDiscount = format.format(sku.detailedPrice.amount / discountSplitTestGroup.displayPriceMultiplier / 1_000_000)
+            val formattedPriceWithoutDiscount = format.format(sku.detailedPrice.amount * discountSplitTestGroup.displayPriceMultiplier / 1_000_000)
 
             holder.actionButton.text = "${sku.price} [$formattedPriceWithoutDiscount]"
         }
