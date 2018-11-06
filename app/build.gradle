@@ -31,7 +31,6 @@ android {
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
-        multiDexEnabled true
         signingConfig signingConfigs.release
     }
     buildTypes {
@@ -177,3 +176,4 @@ repositories {
     }
     mavenCentral()
 }
+apply plugin: 'com.getkeepsafe.dexcount'

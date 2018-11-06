@@ -11,6 +11,7 @@ ext.versions = [
         kotlin               : '1.2.31',
         googleServicesVersion: '4.1.0',
         fabric               : '1.25.1',
+        dexcount             : '0.8.2',
 
         dagger               : '2.15',
 
@@ -65,7 +66,8 @@ ext.gradlePlugins = [
         googleServices: "com.google.gms:google-services:$versions.googleServicesVersion",
         kotlin        : "org.jetbrains.kotlin:kotlin-gradle-plugin:$versions.kotlin",
         android       : "com.android.tools.build:gradle:$versions.androidGradlePlugin",
-        fabric        : "io.fabric.tools:gradle:$versions.fabric"
+        fabric        : "io.fabric.tools:gradle:$versions.fabric",
+        dexcount      : "com.getkeepsafe.dexcount:dexcount-gradle-plugin:$versions.dexcount"
 ]
 
 ext.libraries = [

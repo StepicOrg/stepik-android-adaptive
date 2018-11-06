@@ -2,7 +2,6 @@ package org.stepik.android.adaptive
 
 import android.app.Application
 import com.facebook.FacebookSdk
-import com.facebook.stetho.Stetho
 import com.vk.sdk.VKSdk
 import com.yandex.metrica.YandexMetrica
 import com.yandex.metrica.YandexMetricaConfig
