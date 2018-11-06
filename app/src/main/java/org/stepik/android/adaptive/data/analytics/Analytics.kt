@@ -19,6 +19,8 @@ interface Analytics {
     fun setUserLevel(level: Long)
     fun setUserExp(exp: Long)
 
+    fun setUserProperty(name: String, value: Any)
+
     fun successLogin()
     fun onBoardingFinished()
     fun reactionHard(lesson: Long)
