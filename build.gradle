@@ -6,9 +6,9 @@ buildscript {
     apply from: 'dependencies.gradle'
 
     repositories {
+        google()
         jcenter()
         maven { url "https://maven.fabric.io/public" }
-        google()
     }
     dependencies {
         classpath gradlePlugins.android
@@ -23,8 +23,8 @@ buildscript {
 
 allprojects {
     repositories {
-        jcenter()
         google()
+        jcenter()
     }
 }
 
