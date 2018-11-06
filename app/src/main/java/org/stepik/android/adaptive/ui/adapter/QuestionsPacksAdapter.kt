@@ -14,13 +14,17 @@ import org.solovyev.android.checkout.Sku
 import org.stepik.android.adaptive.R
 import org.stepik.android.adaptive.content.questions.QuestionsPacksResolver
 import org.stepik.android.adaptive.content.questions.QuestionsPack
+import org.stepik.android.adaptive.data.analytics.experiments.QuestionPackPricesDiscountSplitTest
 import org.stepik.android.adaptive.ui.helper.setAlpha
 import org.stepik.android.adaptive.util.changeVisibillity
 import org.stepik.android.adaptive.util.fromHtmlCompat
+import java.text.NumberFormat
+import java.util.*
 
 class QuestionsPacksAdapter(
         private val onPackClicked: (Sku, QuestionsPack, Boolean) -> Unit,
-        private val questionsPacksResolver: QuestionsPacksResolver
+        private val questionsPacksResolver: QuestionsPacksResolver,
+        private val discountSplitTestGroup: QuestionPackPricesDiscountSplitTest.Group
 ) : RecyclerView.Adapter<QuestionsPacksAdapter.QuestionsPackViewHolder>() {
     companion object {
         private const val TITLE_ALPHA = 0xDD
@@ -79,11 +83,18 @@ class QuestionsPacksAdapter(
         holder.actionButton.setOnClickListener {
             onPackClicked(sku, pack, isOwned)
         }
-        holder.actionButton.text = (if (isOwned || questionsPacksResolver.isAvailableForFree(pack)) {
-            context.getString(R.string.select)
+
+        if (isOwned || questionsPacksResolver.isAvailableForFree(pack)) {
+            holder.actionButton.setText(R.string.select)
+        } else if (discountSplitTestGroup == QuestionPackPricesDiscountSplitTest.Group.Control) {
+            holder.actionButton.text = sku.price
         } else {
-            sku.price
-        })
+            val format = NumberFormat.getCurrencyInstance()
+            format.currency = Currency.getInstance(sku.detailedPrice.currency)
+            val formattedPriceWithoutDiscount = format.format(sku.detailedPrice.amount / discountSplitTestGroup.displayPriceMultiplier / 1_000_000)
+
+            holder.actionButton.text = "${sku.price} [$formattedPriceWithoutDiscount]"
+        }
         holder.root.setBackgroundResource(pack.background)
 
         holder.progressDescription.changeVisibillity(!isOwned && pack.hasProgress)
