@@ -119,6 +119,8 @@ dependencies {
     implementation libraries.firebaseConfig
     implementation libraries.firebaseMessaging
 
+    debugImplementation libraries.stetho
+    debugImplementation libraries.stethoOkHttp
     implementation(libraries.crashlytics) {
         transitive = true
     }
