@@ -1,5 +1,6 @@
 package org.stepik.android.adaptive.ui.adapter
 
+import android.graphics.Paint
 import android.support.v4.content.ContextCompat
 import android.support.v4.graphics.drawable.DrawableCompat
 import android.support.v7.widget.RecyclerView
@@ -84,16 +85,26 @@ class QuestionsPacksAdapter(
             onPackClicked(sku, pack, isOwned)
         }
 
+        holder.packPriceDiscount.changeVisibillity(false)
+        holder.packPriceDiscountDescription.changeVisibillity(false)
+
         if (isOwned || questionsPacksResolver.isAvailableForFree(pack)) {
             holder.actionButton.setText(R.string.select)
-        } else if (discountSplitTestGroup == QuestionPackPricesDiscountSplitTest.Group.Control) {
-            holder.actionButton.text = sku.price
         } else {
-            val format = NumberFormat.getCurrencyInstance()
-            format.currency = Currency.getInstance(sku.detailedPrice.currency)
-            val formattedPriceWithoutDiscount = format.format(sku.detailedPrice.amount * discountSplitTestGroup.displayPriceMultiplier / 1_000_000)
+            if (discountSplitTestGroup != QuestionPackPricesDiscountSplitTest.Group.Control) {
+                val format = NumberFormat.getCurrencyInstance()
+                format.currency = Currency.getInstance(sku.detailedPrice.currency)
+                holder.packPriceDiscount.text = format
+                        .format(sku.detailedPrice.amount * discountSplitTestGroup.displayPriceMultiplier / 1_000_000)
+                holder.packPriceDiscount.changeVisibillity(true)
 
-            holder.actionButton.text = "${sku.price} [$formattedPriceWithoutDiscount]"
+                holder.packPriceDiscountDescription.text = context.getString(R.string.questions_discount_description,
+                        100.0 - 100.0 / discountSplitTestGroup.displayPriceMultiplier)
+
+                holder.packPriceDiscountDescription.changeVisibillity(true)
+            }
+
+            holder.actionButton.text = sku.price
         }
         holder.root.setBackgroundResource(pack.background)
 
@@ -113,5 +124,12 @@ class QuestionsPacksAdapter(
         val activeIcon: ImageView = root.packActiveIcon
         val progressDescription: TextView = root.packProgressDescription
         val root: View = root.cardBody
+
+        val packPriceDiscount: TextView = root.packPriceDiscount
+        val packPriceDiscountDescription: TextView = root.packPriceDiscountDescription
+
+        init {
+            packPriceDiscount.paintFlags = packPriceDiscount.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
+        }
     }
 }
