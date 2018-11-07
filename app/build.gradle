@@ -31,7 +31,6 @@ android {
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
-        multiDexEnabled true
         signingConfig signingConfigs.release
     }
     buildTypes {
@@ -107,7 +106,6 @@ dependencies {
     implementation libraries.retrofitRxJavaAdapter
 
     implementation libraries.okhttp3
-    implementation libraries.loggingInterceptor
 
     implementation libraries.supportAppCompat
     implementation libraries.supportDesign
@@ -119,6 +117,8 @@ dependencies {
     implementation libraries.firebaseConfig
     implementation libraries.firebaseMessaging
 
+    debugImplementation libraries.stetho
+    debugImplementation libraries.stethoOkHttp
     implementation(libraries.crashlytics) {
         transitive = true
     }
@@ -175,3 +175,4 @@ repositories {
     }
     mavenCentral()
 }
+apply plugin: 'com.getkeepsafe.dexcount'

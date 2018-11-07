@@ -3,6 +3,7 @@ package org.stepik.android.adaptive.di.network
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
+import okhttp3.Interceptor
 import org.stepik.android.adaptive.api.auth.AuthInterceptor
 import org.stepik.android.adaptive.api.profile.ProfileRepository
 import org.stepik.android.adaptive.api.profile.ProfileRepositoryImpl
@@ -21,7 +22,7 @@ abstract class ProfileModule {
         @Provides
         @AppSingleton
         @JvmStatic
-        internal fun provideProfileService(authInterceptor: AuthInterceptor, config: Config): ProfileService =
-                NetworkHelper.createServiceWithAuth(authInterceptor, config.host)
+        internal fun provideProfileService(interceptors: Set<@JvmSuppressWildcards Interceptor>, config: Config): ProfileService =
+                NetworkHelper.createService(interceptors, config.host)
     }
 }

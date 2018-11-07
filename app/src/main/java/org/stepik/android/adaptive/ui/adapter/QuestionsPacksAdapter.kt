@@ -1,5 +1,6 @@
 package org.stepik.android.adaptive.ui.adapter
 
+import android.graphics.Paint
 import android.support.v4.content.ContextCompat
 import android.support.v4.graphics.drawable.DrawableCompat
 import android.support.v7.widget.RecyclerView
@@ -14,13 +15,17 @@ import org.solovyev.android.checkout.Sku
 import org.stepik.android.adaptive.R
 import org.stepik.android.adaptive.content.questions.QuestionsPacksResolver
 import org.stepik.android.adaptive.content.questions.QuestionsPack
+import org.stepik.android.adaptive.data.analytics.experiments.QuestionPackPricesDiscountSplitTest
 import org.stepik.android.adaptive.ui.helper.setAlpha
 import org.stepik.android.adaptive.util.changeVisibillity
 import org.stepik.android.adaptive.util.fromHtmlCompat
+import java.text.NumberFormat
+import java.util.*
 
 class QuestionsPacksAdapter(
         private val onPackClicked: (Sku, QuestionsPack, Boolean) -> Unit,
-        private val questionsPacksResolver: QuestionsPacksResolver
+        private val questionsPacksResolver: QuestionsPacksResolver,
+        private val discountSplitTestGroup: QuestionPackPricesDiscountSplitTest.Group
 ) : RecyclerView.Adapter<QuestionsPacksAdapter.QuestionsPackViewHolder>() {
     companion object {
         private const val TITLE_ALPHA = 0xDD
@@ -79,11 +84,28 @@ class QuestionsPacksAdapter(
         holder.actionButton.setOnClickListener {
             onPackClicked(sku, pack, isOwned)
         }
-        holder.actionButton.text = (if (isOwned || questionsPacksResolver.isAvailableForFree(pack)) {
-            context.getString(R.string.select)
+
+        holder.packPriceDiscount.changeVisibillity(false)
+        holder.packPriceDiscountDescription.changeVisibillity(false)
+
+        if (isOwned || questionsPacksResolver.isAvailableForFree(pack)) {
+            holder.actionButton.setText(R.string.select)
         } else {
-            sku.price
-        })
+            if (discountSplitTestGroup != QuestionPackPricesDiscountSplitTest.Group.Control) {
+                val format = NumberFormat.getCurrencyInstance()
+                format.currency = Currency.getInstance(sku.detailedPrice.currency)
+                holder.packPriceDiscount.text = format
+                        .format(sku.detailedPrice.amount * discountSplitTestGroup.displayPriceMultiplier / 1_000_000)
+                holder.packPriceDiscount.changeVisibillity(true)
+
+                holder.packPriceDiscountDescription.text = context.getString(R.string.questions_discount_description,
+                        100.0 - 100.0 / discountSplitTestGroup.displayPriceMultiplier)
+
+                holder.packPriceDiscountDescription.changeVisibillity(true)
+            }
+
+            holder.actionButton.text = sku.price
+        }
         holder.root.setBackgroundResource(pack.background)
 
         holder.progressDescription.changeVisibillity(!isOwned && pack.hasProgress)
@@ -102,5 +124,12 @@ class QuestionsPacksAdapter(
         val activeIcon: ImageView = root.packActiveIcon
         val progressDescription: TextView = root.packProgressDescription
         val root: View = root.cardBody
+
+        val packPriceDiscount: TextView = root.packPriceDiscount
+        val packPriceDiscountDescription: TextView = root.packPriceDiscountDescription
+
+        init {
+            packPriceDiscount.paintFlags = packPriceDiscount.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
+        }
     }
 }

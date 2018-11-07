@@ -13,6 +13,7 @@ import org.stepik.android.adaptive.core.presenter.contracts.QuestionsPacksView
 import org.stepik.android.adaptive.data.analytics.Analytics
 import org.stepik.android.adaptive.content.questions.QuestionsPack
 import org.stepik.android.adaptive.data.analytics.AmplitudeAnalytics
+import org.stepik.android.adaptive.data.analytics.experiments.QuestionPackPricesDiscountSplitTest
 import org.stepik.android.adaptive.data.preference.SharedPreferenceHelper
 import org.stepik.android.adaptive.di.qualifiers.BackgroundScheduler
 import org.stepik.android.adaptive.di.qualifiers.MainScheduler
@@ -35,9 +36,11 @@ constructor(
 
         private val remoteStorageRepository: RemoteStorageRepository,
         private val sharedPreferenceHelper: SharedPreferenceHelper,
+
+        discountSplitTest: QuestionPackPricesDiscountSplitTest,
         billing: Billing
 ): PaidContentPresenterBase<QuestionsPacksView>(billing) {
-    private val adapter = QuestionsPacksAdapter(this::onPackPressed, questionsPacksResolver)
+    private val adapter = QuestionsPacksAdapter(this::onPackPressed, questionsPacksResolver, discountSplitTest.currentGroup)
     private val skus = questionsPacksManager.ids
     private var isPacksLoaded = false
 

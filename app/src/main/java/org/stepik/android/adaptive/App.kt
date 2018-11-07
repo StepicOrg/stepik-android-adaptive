@@ -6,11 +6,14 @@ import com.vk.sdk.VKSdk
 import com.yandex.metrica.YandexMetrica
 import com.yandex.metrica.YandexMetricaConfig
 import org.stepik.android.adaptive.configuration.Config
+import org.stepik.android.adaptive.data.analytics.experiments.SplitTestsHolder
 import org.stepik.android.adaptive.di.AppCoreComponent
 import org.stepik.android.adaptive.di.ComponentManager
 import org.stepik.android.adaptive.di.DaggerAppCoreComponent
 import org.stepik.android.adaptive.di.storage.DaggerStorageComponent
 import org.stepik.android.adaptive.notifications.NotificationChannelInitializer
+import org.stepik.android.adaptive.util.StethoHelper
+import org.stepik.android.adaptive.util.isMainProcess
 import javax.inject.Inject
 
 class App : Application() {
@@ -28,8 +31,13 @@ class App : Application() {
     @Inject
     lateinit var config: Config
 
+    @Inject
+    lateinit var splitTestsHolder: SplitTestsHolder
+
     override fun onCreate() {
         super.onCreate()
+        if (!isMainProcess) return
+
         app = this
 
         component = DaggerAppCoreComponent
@@ -46,6 +54,8 @@ class App : Application() {
 
         initServices()
         NotificationChannelInitializer.initNotificationChannel(this)
+
+        StethoHelper.initStetho(this)
     }
 
     private fun initServices() {

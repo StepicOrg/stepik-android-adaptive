@@ -100,6 +100,9 @@ constructor(
         amplitude.identify(Identify().set(AmplitudeAnalytics.Properties.EXP, exp))
     }
 
+    override fun setUserProperty(name: String, value: String) =
+            amplitude.identify(Identify().set(name, value))
+
     override fun successLogin() {
         logEvent(EVENT_SUCCESS_LOGIN)
     }
