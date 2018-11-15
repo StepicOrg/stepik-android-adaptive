@@ -24,17 +24,16 @@ import org.stepik.android.adaptive.core.events.Client
 import org.stepik.android.adaptive.core.events.ClientImpl
 import org.stepik.android.adaptive.core.events.ListenerContainer
 import org.stepik.android.adaptive.core.events.ListenerContainerImpl
-import org.stepik.android.adaptive.data.analytics.Analytics
-import org.stepik.android.adaptive.data.analytics.AnalyticsImpl
 import org.stepik.android.adaptive.data.preference.ProfilePreferences
 import org.stepik.android.adaptive.data.preference.SharedPreferenceHelper
+import org.stepik.android.adaptive.di.analytics.AnalyticsModule
 import org.stepik.android.adaptive.di.qualifiers.BackgroundScheduler
 import org.stepik.android.adaptive.di.qualifiers.MainScheduler
 import org.stepik.android.adaptive.gamification.achievements.AchievementEventListener
 import org.stepik.android.adaptive.util.AppConstants
 import javax.inject.Named
 
-@Module
+@Module(includes = [AnalyticsModule::class])
 abstract class AppCoreModule {
 
     @Binds
@@ -56,9 +55,6 @@ abstract class AppCoreModule {
     @Binds
     @AppSingleton
     abstract fun provideScreenManager(screenManagerImpl: ScreenManagerImpl): ScreenManager
-
-    @Binds
-    abstract fun provideAnalytics(analyticsImpl: AnalyticsImpl): Analytics
 
     @Module
     companion object {

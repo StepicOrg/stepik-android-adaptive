@@ -123,7 +123,7 @@ constructor(context: Context): SharedPreferenceProvider, AuthPreferences, Profil
         sharedPreferences[name] = data
     }
 
-    private fun saveString(name: String, data: String?) {
+    fun saveString(name: String, data: String?) {
         sharedPreferences[name] = data
     }
 
@@ -137,7 +137,7 @@ constructor(context: Context): SharedPreferenceProvider, AuthPreferences, Profil
         return value
     }
 
-    private fun getString(name: String): String? = sharedPreferences[name]
+    fun getString(name: String): String? = sharedPreferences[name]
 
     fun getLong(name: String): Long = sharedPreferences[name]
 

@@ -3,6 +3,7 @@ package org.stepik.android.adaptive.di.network
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
+import okhttp3.Interceptor
 import org.stepik.android.adaptive.api.auth.AuthInterceptor
 import org.stepik.android.adaptive.api.user.UserRepository
 import org.stepik.android.adaptive.api.user.UserRepositoryImpl
@@ -21,7 +22,7 @@ abstract class UserModule {
         @Provides
         @AppSingleton
         @JvmStatic
-        internal fun provideStepikService(authInterceptor: AuthInterceptor, config: Config): UserService =
-                NetworkHelper.createServiceWithAuth(authInterceptor, config.host)
+        internal fun provideStepikService(interceptors: Set<@JvmSuppressWildcards Interceptor>, config: Config): UserService =
+                NetworkHelper.createService(interceptors, config.host)
     }
 }

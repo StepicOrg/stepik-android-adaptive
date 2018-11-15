@@ -3,6 +3,7 @@ package org.stepik.android.adaptive.data.analytics
 import android.os.Bundle
 import com.amplitude.api.Revenue
 import org.solovyev.android.checkout.Sku
+import org.stepik.android.adaptive.data.analytics.experiments.SplitTest
 import org.stepik.android.adaptive.data.model.Step
 import org.stepik.android.adaptive.data.model.Submission
 
@@ -18,6 +19,8 @@ interface Analytics {
     fun setSubmissionsCount(submissionsCount: Int)
     fun setUserLevel(level: Long)
     fun setUserExp(exp: Long)
+
+    fun setUserProperty(name: String, value: String)
 
     fun successLogin()
     fun onBoardingFinished()
