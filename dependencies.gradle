@@ -36,6 +36,7 @@ ext.versions = [
         crashlytics          : '2.9.5@aar',
         amplitude            : '2.20.0',
         appMetrica           : '3.2.2',
+        branch               : '2.+',
 
         facebook             : '4.17.0',
         vk                   : '1.6.5',
@@ -102,6 +103,7 @@ ext.libraries = [
         crashlytics          : "com.crashlytics.sdk.android:crashlytics:$versions.crashlytics",
         amplitude            : "com.amplitude:android-sdk:$versions.amplitude",
         appMetrica           : "com.yandex.android:mobmetricalib:$versions.appMetrica",
+        branch               : "io.branch.sdk.android:library:$versions.branch",
 
         facebookSdk          : "com.facebook.android:facebook-android-sdk:$versions.facebook",
         vkSdk                : "com.vk:androidsdk:$versions.vk",
