@@ -15,7 +15,6 @@ import org.solovyev.android.checkout.Sku
 import org.stepik.android.adaptive.R
 import org.stepik.android.adaptive.content.questions.QuestionsPacksResolver
 import org.stepik.android.adaptive.content.questions.QuestionsPack
-import org.stepik.android.adaptive.data.analytics.experiments.QuestionPackPricesDiscountSplitTest
 import org.stepik.android.adaptive.ui.helper.setAlpha
 import org.stepik.android.adaptive.util.changeVisibillity
 import org.stepik.android.adaptive.util.fromHtmlCompat
@@ -24,8 +23,7 @@ import java.util.*
 
 class QuestionsPacksAdapter(
         private val onPackClicked: (Sku, QuestionsPack, Boolean) -> Unit,
-        private val questionsPacksResolver: QuestionsPacksResolver,
-        private val discountSplitTestGroup: QuestionPackPricesDiscountSplitTest.Group
+        private val questionsPacksResolver: QuestionsPacksResolver
 ) : RecyclerView.Adapter<QuestionsPacksAdapter.QuestionsPackViewHolder>() {
     companion object {
         private const val TITLE_ALPHA = 0xDD
@@ -91,19 +89,6 @@ class QuestionsPacksAdapter(
         if (isOwned || questionsPacksResolver.isAvailableForFree(pack)) {
             holder.actionButton.setText(R.string.select)
         } else {
-            if (discountSplitTestGroup != QuestionPackPricesDiscountSplitTest.Group.Control) {
-                val format = NumberFormat.getCurrencyInstance()
-                format.currency = Currency.getInstance(sku.detailedPrice.currency)
-                holder.packPriceDiscount.text = format
-                        .format(sku.detailedPrice.amount * discountSplitTestGroup.displayPriceMultiplier / 1_000_000)
-                holder.packPriceDiscount.changeVisibillity(true)
-
-                holder.packPriceDiscountDescription.text = context.getString(R.string.questions_discount_description,
-                        100.0 - 100.0 / discountSplitTestGroup.displayPriceMultiplier)
-
-                holder.packPriceDiscountDescription.changeVisibillity(true)
-            }
-
             holder.actionButton.text = sku.price
         }
         holder.root.setBackgroundResource(pack.background)
