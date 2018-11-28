@@ -5,6 +5,7 @@ import com.facebook.FacebookSdk
 import com.vk.sdk.VKSdk
 import com.yandex.metrica.YandexMetrica
 import com.yandex.metrica.YandexMetricaConfig
+import io.branch.referral.Branch
 import org.stepik.android.adaptive.configuration.Config
 import org.stepik.android.adaptive.data.analytics.experiments.SplitTestsHolder
 import org.stepik.android.adaptive.di.AppCoreComponent
@@ -54,8 +55,6 @@ class App : Application() {
 
         initServices()
         NotificationChannelInitializer.initNotificationChannel(this)
-
-        StethoHelper.initStetho(this)
     }
 
     private fun initServices() {
@@ -64,5 +63,8 @@ class App : Application() {
 
         YandexMetrica.activate(applicationContext, YandexMetricaConfig.newConfigBuilder(config.appMetricaKey).build())
         YandexMetrica.enableActivityAutoTracking(this)
+
+        StethoHelper.initStetho(this)
+        Branch.getAutoInstance(this)
     }
 }

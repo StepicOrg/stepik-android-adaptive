@@ -124,6 +124,7 @@ dependencies {
     }
     implementation libraries.amplitude
     implementation libraries.appMetrica
+    implementation libraries.branch
 
     implementation libraries.facebookSdk
     implementation libraries.vkSdk
