@@ -1,18 +1,23 @@
 package org.stepik.android.adaptive.ui.activity
 
+import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
+import io.branch.referral.Branch
+import io.branch.referral.BranchError
 import io.reactivex.Completable
 import io.reactivex.Scheduler
 import io.reactivex.Single
 import io.reactivex.disposables.Disposable
 import io.reactivex.rxkotlin.Singles.zip
+import org.json.JSONObject
 import org.stepik.android.adaptive.App
 import org.stepik.android.adaptive.R
 import org.stepik.android.adaptive.core.ScreenManager
 import org.stepik.android.adaptive.data.analytics.AmplitudeAnalytics
 import org.stepik.android.adaptive.data.analytics.Analytics
+import org.stepik.android.adaptive.data.analytics.BranchParams
 import org.stepik.android.adaptive.data.preference.SharedPreferenceHelper
 import org.stepik.android.adaptive.di.qualifiers.BackgroundScheduler
 import org.stepik.android.adaptive.di.qualifiers.MainScheduler
@@ -79,6 +84,22 @@ class SplashActivity : AppCompatActivity() {
             }
             emitter.onComplete()
         }
+    }
+
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+        this.intent = intent
+    }
+
+    override fun onStart() {
+        super.onStart()
+        Branch.getInstance().initSession({ referringParams: JSONObject, error: BranchError? ->
+            if (error == null && referringParams.has(BranchParams.FIELD_CAMPAIGN)) {
+                analytics.logAmplitudeEvent(AmplitudeAnalytics.Branch.LINK_OPENED, mapOf(
+                    AmplitudeAnalytics.Branch.PARAM_CAMPAIGN to referringParams[BranchParams.FIELD_CAMPAIGN]
+                ))
+            }
+        }, intent?.data, this)
     }
 
     override fun onDestroy() {

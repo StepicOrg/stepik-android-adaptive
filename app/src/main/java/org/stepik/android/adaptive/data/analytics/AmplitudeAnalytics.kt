@@ -14,6 +14,12 @@ object AmplitudeAnalytics {
         const val SESSION_START = "Session start"
     }
 
+    object Branch {
+        const val LINK_OPENED = "Branch Link Opened"
+
+        const val PARAM_CAMPAIGN = "campaign"
+    }
+
     object Onboarding {
         const val SCREEN_OPENED = "Onboarding screen opened"
         const val COMPLETED = "Onboarding completed"
