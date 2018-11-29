@@ -82,6 +82,9 @@
 -keep class com.crashlytics.** { *; }
 -dontwarn com.crashlytics.**
 
+# Branch
+-dontwarn com.google.firebase.appindexing.**
+
 #Keep POJO
 -keep class org.stepik.android.adaptive.data.model.** { *; }
 -keep interface org.stepik.android.adaptive.data.model.** { *; }
