@@ -29,8 +29,8 @@ class InventoryDialog : DialogFragment() {
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        val alertDialogBuilder = AlertDialog.Builder(context, R.style.ExpLevelDialogTheme)
-        binding = DialogDefaultBodyBinding.inflate(activity.layoutInflater, null, false)
+        val alertDialogBuilder = AlertDialog.Builder(requireContext(), R.style.ExpLevelDialogTheme)
+        binding = DialogDefaultBodyBinding.inflate(layoutInflater, null, false)
 
         binding.title.setText(R.string.inventory_title)
         binding.description.visibility = View.GONE
@@ -39,7 +39,7 @@ class InventoryDialog : DialogFragment() {
 
         adapter = InventoryAdapter(inventoryManager.getInventory())
 
-        val recycler = activity.layoutInflater.inflate(R.layout.recycler_view, null, false).recycler
+        val recycler = layoutInflater.inflate(R.layout.recycler_view, null, false).recycler
 
         val layoutManager = FlexboxLayoutManager(context)
         layoutManager.flexDirection = FlexDirection.ROW

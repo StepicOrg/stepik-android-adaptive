@@ -49,7 +49,7 @@ class PaidInventoryItemsActivity : BasePresenterActivity<PaidInventoryItemsPrese
         recycler.layoutManager = LinearLayoutManager(this)
 
         val divider = DividerItemDecoration(this, DividerItemDecoration.VERTICAL)
-        divider.setDrawable(ContextCompat.getDrawable(this, R.drawable.stroke))
+        divider.setDrawable(ContextCompat.getDrawable(this, R.drawable.stroke)!!)
         recycler.addItemDecoration(divider)
 
         restorePurchases.setOnClickListener {

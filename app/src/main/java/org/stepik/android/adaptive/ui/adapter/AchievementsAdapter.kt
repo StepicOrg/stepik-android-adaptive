@@ -19,8 +19,8 @@ constructor(
 ): RecyclerView.Adapter<AchievementsAdapter.AchievementViewHolder>() {
     private val achievements = achievementManager.achievements
 
-    override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int) =
-            AchievementViewHolder(ItemAchievementBinding.inflate(LayoutInflater.from(parent?.context), parent, false))
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
+            AchievementViewHolder(ItemAchievementBinding.inflate(LayoutInflater.from(parent.context), parent, false))
 
     override fun onBindViewHolder(holder: AchievementViewHolder, p: Int) {
         val context = holder.binding.root.context
@@ -38,7 +38,7 @@ constructor(
 
 
         if (achievements[p].icon != -1) {
-            holder.binding.icon.setImageDrawable(DrawableCompat.wrap(ContextCompat.getDrawable(context, achievements[p].icon)))
+            holder.binding.icon.setImageDrawable(DrawableCompat.wrap(ContextCompat.getDrawable(context, achievements[p].icon)!!))
         }
     }
 

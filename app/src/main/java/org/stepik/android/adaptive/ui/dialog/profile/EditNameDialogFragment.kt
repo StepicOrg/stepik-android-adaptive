@@ -51,7 +51,7 @@ class EditNameDialogFragment: BasePresenterDialogFragment<EditProfileFieldPresen
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
             inflater.inflate(R.layout.dialog_edit_name, container, false)
 
-    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         confirm.setOnClickListener { changeName() }
         setConfirmButton()
 
@@ -86,7 +86,7 @@ class EditNameDialogFragment: BasePresenterDialogFragment<EditProfileFieldPresen
     }
 
     private fun setConfirmButton() {
-        confirm.isEnabled = firstName.text.isNotBlank() && secondName.text.isNotBlank()
+        confirm.isEnabled = !firstName.text.isNullOrBlank() && !secondName.text.isNullOrBlank()
     }
 
     override fun onProfile(profile: Profile) {

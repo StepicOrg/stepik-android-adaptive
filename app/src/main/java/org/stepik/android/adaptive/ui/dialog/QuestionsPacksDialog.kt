@@ -38,13 +38,13 @@ class QuestionsPacksDialog : DialogFragment() {
             analytics.logEvent(Analytics.EVENT_ON_QUESTIONS_DIALOG_SHOWN)
         }
 
-        val alertDialogBuilder = AlertDialog.Builder(context, R.style.ExpLevelDialogTheme)
-        val root = activity.layoutInflater.inflate(R.layout.dialog_questions_packs, null, false)
+        val alertDialogBuilder = AlertDialog.Builder(requireContext(), R.style.ExpLevelDialogTheme)
+        val root = layoutInflater.inflate(R.layout.dialog_questions_packs, null, false)
 
         root.actionButton.setOnClickListener {
             analytics.logEvent(Analytics.EVENT_ON_QUESTIONS_DIALOG_ACTION_CLICKED)
             analytics.logAmplitudeEvent(AmplitudeAnalytics.QuestionPacks.POPUP_ACTION_PRESSED)
-            screenManager.showQuestionsPacksScreen(activity)
+            screenManager.showQuestionsPacksScreen(requireContext())
             dismiss()
         }
 

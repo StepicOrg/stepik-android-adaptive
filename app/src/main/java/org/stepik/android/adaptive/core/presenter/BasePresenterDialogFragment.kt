@@ -28,16 +28,16 @@ abstract class BasePresenterDialogFragment<P : Presenter<V>, in V> : DialogFragm
 
     private fun initLoader() {
         loaderManager.initLoader(LOADER_ID, null, object : LoaderManager.LoaderCallbacks<P> {
-            override fun onLoadFinished(loader: Loader<P>?, data: P) {
+            override fun onLoadFinished(loader: Loader<P>, data: P) {
                 onPresenter(data)
             }
 
-            override fun onLoaderReset(loader: Loader<P>?) {
+            override fun onLoaderReset(loader: Loader<P>) {
                 presenter = null
             }
 
             override fun onCreateLoader(id: Int, args: Bundle?): Loader<P> =
-                    PresenterLoader(this@BasePresenterDialogFragment.context, getPresenterProvider())
+                    PresenterLoader(this@BasePresenterDialogFragment.requireContext(), getPresenterProvider())
         })
     }
 

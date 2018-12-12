@@ -30,11 +30,11 @@ abstract class BasePresenterActivity<P : Presenter<V>, in V> : AppCompatActivity
 
     private fun initLoader() {
         supportLoaderManager.initLoader(LOADER_ID, null, object : LoaderManager.LoaderCallbacks<P> {
-            override fun onLoadFinished(loader: Loader<P>?, data: P) {
+            override fun onLoadFinished(loader: Loader<P>, data: P) {
                 onPresenter(data)
             }
 
-            override fun onLoaderReset(loader: Loader<P>?) {
+            override fun onLoaderReset(loader: Loader<P>) {
                 presenter = null
             }
 

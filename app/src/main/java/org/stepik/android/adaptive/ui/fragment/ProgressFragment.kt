@@ -36,7 +36,7 @@ class ProgressFragment : BasePresenterFragment<ProgressPresenter, ProgressView>(
         recycler.layoutManager = LinearLayoutManager(context)
 
         val divider = DividerItemDecoration(context, DividerItemDecoration.VERTICAL)
-        divider.setDrawable(ContextCompat.getDrawable(context, R.drawable.stroke))
+        divider.setDrawable(ContextCompat.getDrawable(requireContext(), R.drawable.stroke)!!)
         recycler.addItemDecoration(divider)
 
         return recycler

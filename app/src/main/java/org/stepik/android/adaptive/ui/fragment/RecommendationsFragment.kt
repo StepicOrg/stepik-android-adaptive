@@ -102,9 +102,9 @@ class RecommendationsFragment : BasePresenterFragment<RecommendationsPresenter, 
         binding.courseCompletedText.movementMethod = LinkMovementMethod.getInstance()
 
         binding.streakSuccessContainer.nestedTextView = binding.streakSuccess
-        binding.streakSuccessContainer.setGradientDrawableParams(ContextCompat.getColor(context, R.color.colorAccent), 0f)
+        binding.streakSuccessContainer.setGradientDrawableParams(ContextCompat.getColor(requireContext(), R.color.colorAccent), 0f)
 
-        binding.toolbar.setOnClickListener { screenManager.showStatsScreen(context, 0) }
+        binding.toolbar.setOnClickListener { screenManager.showStatsScreen(requireContext(), 0) }
 
         savedInstanceState?.getLong(STREAK_RESTORE_KEY, -1)?.let {
             if (it != -1L) {
@@ -115,7 +115,7 @@ class RecommendationsFragment : BasePresenterFragment<RecommendationsPresenter, 
         binding.questionsPacks.changeVisibillity(isQuestionsPackSupported)
         binding.questionsPacks.setOnClickListener {
             questionsPacksTooltip?.dismiss()
-            screenManager.showQuestionsPacksScreen(context)
+            screenManager.showQuestionsPacksScreen(requireContext())
         }
 
         return binding.root
@@ -218,10 +218,10 @@ class RecommendationsFragment : BasePresenterFragment<RecommendationsPresenter, 
             RateAppDialog.newInstance().show(childFragmentManager, RATE_APP_DIALOG_TAG)
 
     override fun showGamificationDescriptionScreen() =
-            screenManager.showGamificationDescription(context)
+            screenManager.showGamificationDescription(requireContext())
 
     override fun showEmptyAuthScreen() =
-            screenManager.showEmptyAuthScreen(context)
+            screenManager.showEmptyAuthScreen(requireContext())
 
     override fun showStreakRestoreDialog(streak: Long, withTooltip: Boolean) {
         analytics.logAmplitudeEvent(AmplitudeAnalytics.Tickets.WIDGET_OPENED)
@@ -237,7 +237,7 @@ class RecommendationsFragment : BasePresenterFragment<RecommendationsPresenter, 
                             R.string.paid_content_tooltip
                         })
                         withEndAction {
-                            streakRestorePopup = PopupHelper.showPopupAnchoredToView(context, binding.ticketsContainer, tooltipText)
+                            streakRestorePopup = PopupHelper.showPopupAnchoredToView(requireContext(), binding.ticketsContainer, tooltipText)
                         }
                     }
                 }
@@ -265,7 +265,7 @@ class RecommendationsFragment : BasePresenterFragment<RecommendationsPresenter, 
                 QuestionsPacksDialog.newInstance().show(childFragmentManager, QUESTIONS_PACKS_DIALOG_TAG)
             } else {
                 questionsPacksTooltip = PopupHelper.showPopupAnchoredToView(
-                        context, binding.questionsPacks, getString(R.string.questions_tooltip),
+                        requireContext(), binding.questionsPacks, getString(R.string.questions_tooltip),
                         TOOLBAR_TOOLTIPS_OFF_X_PX, TOOLBAR_TOOLTIPS_OFF_Y_PX)
             }
         }
@@ -296,9 +296,9 @@ class RecommendationsFragment : BasePresenterFragment<RecommendationsPresenter, 
         super.onActivityResult(requestCode, resultCode, data)
     }
 
-    override fun onSaveInstanceState(outState: Bundle?) {
+    override fun onSaveInstanceState(outState: Bundle) {
         streakToRestore?.let {
-            outState?.putLong(STREAK_RESTORE_KEY, it)
+            outState.putLong(STREAK_RESTORE_KEY, it)
         }
         super.onSaveInstanceState(outState)
     }

@@ -51,7 +51,7 @@ class EditEmailDialogFragment: BasePresenterDialogFragment<EditProfileFieldPrese
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
             inflater.inflate(R.layout.dialog_edit_email, container, false)
 
-    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         confirm.setOnClickListener { changeEmail() }
         setConfirmButton()
 
@@ -80,7 +80,7 @@ class EditEmailDialogFragment: BasePresenterDialogFragment<EditProfileFieldPrese
     }
 
     private fun setConfirmButton() {
-        confirm.isEnabled = email.text.isNotBlank()
+        confirm.isEnabled = !email.text.isNullOrBlank()
     }
 
     override fun onProfile(profile: Profile) {

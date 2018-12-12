@@ -59,48 +59,46 @@ class WeeksAdapter : RecyclerView.Adapter<WeeksAdapter.StatsViewHolder>() {
 
 
 
-    override fun onBindViewHolder(holder: StatsViewHolder?, p: Int) {
-        holder?.let {
-            when (it) {
-                is StatsViewHolder.WeekViewHolder -> {
-                    it.binding.total.text = weeks[p - 1].total.toString()
-                    it.binding.start.text = weeks[p - 1].start.toString(DATE_FORMAT, Resources.getSystem().configuration.defaultLocale)
-                    it.binding.end.text = weeks[p - 1].end.toString(DATE_FORMAT, Resources.getSystem().configuration.defaultLocale)
-                }
-                is StatsViewHolder.StatsHeaderViewHolder -> {
-                    val binding = it.binding
-                    header.chartData?.let { dataSet ->
-                        dataSet.color = ContextCompat.getColor(binding.root.context, R.color.colorAccent)
-                        dataSet.setDrawCircles(false)
-                        dataSet.mode = LineDataSet.Mode.HORIZONTAL_BEZIER
-                        dataSet.cubicIntensity = 0.2f
-                        dataSet.fillColor = dataSet.color
-                        dataSet.fillAlpha = 100
-                        dataSet.setDrawValues(true)
-                        dataSet.setValueFormatter { v, _, _, _ -> v.toLong().toString() }
-                        dataSet.valueTextSize = 12f
-                        dataSet.setDrawHorizontalHighlightIndicator(false)
+    override fun onBindViewHolder(holder: StatsViewHolder, p: Int) {
+        when (holder) {
+            is StatsViewHolder.WeekViewHolder -> {
+                holder.binding.total.text = weeks[p - 1].total.toString()
+                holder.binding.start.text = weeks[p - 1].start.toString(DATE_FORMAT, Resources.getSystem().configuration.defaultLocale)
+                holder.binding.end.text = weeks[p - 1].end.toString(DATE_FORMAT, Resources.getSystem().configuration.defaultLocale)
+            }
+            is StatsViewHolder.StatsHeaderViewHolder -> {
+                val binding = holder.binding
+                header.chartData?.let { dataSet ->
+                    dataSet.color = ContextCompat.getColor(binding.root.context, R.color.colorAccent)
+                    dataSet.setDrawCircles(false)
+                    dataSet.mode = LineDataSet.Mode.HORIZONTAL_BEZIER
+                    dataSet.cubicIntensity = 0.2f
+                    dataSet.fillColor = dataSet.color
+                    dataSet.fillAlpha = 100
+                    dataSet.setDrawValues(true)
+                    dataSet.setValueFormatter { v, _, _, _ -> v.toLong().toString() }
+                    dataSet.valueTextSize = 12f
+                    dataSet.setDrawHorizontalHighlightIndicator(false)
 
-                        dataSet.setDrawCircles(true)
-                        dataSet.setCircleColor(dataSet.color)
+                    dataSet.setDrawCircles(true)
+                    dataSet.setCircleColor(dataSet.color)
 
-                        binding.chart.data = LineData(dataSet)
-                        binding.chart.data.isHighlightEnabled = true
+                    binding.chart.data = LineData(dataSet)
+                    binding.chart.data.isHighlightEnabled = true
 
-                        if (dataSet.entryCount > 0) {
-                            binding.chart.animateY(1400)
-                            binding.chart.invalidate()
-                            binding.chart.visibility = View.VISIBLE
-                        } else {
-                            binding.chart.visibility = View.GONE
-                        }
+                    if (dataSet.entryCount > 0) {
+                        binding.chart.animateY(1400)
+                        binding.chart.invalidate()
+                        binding.chart.visibility = View.VISIBLE
+                    } else {
+                        binding.chart.visibility = View.GONE
                     }
-                    binding.chart.visibility = if (header.chartData == null) View.INVISIBLE else View.VISIBLE
-
-                    binding.expTotal.text = header.total.toString()
-                    binding.level.text = header.level.toString()
-                    binding.expThisWeek.text = header.last7Days.toString()
                 }
+                binding.chart.visibility = if (header.chartData == null) View.INVISIBLE else View.VISIBLE
+
+                binding.expTotal.text = header.total.toString()
+                binding.level.text = header.level.toString()
+                binding.expThisWeek.text = header.last7Days.toString()
             }
         }
     }

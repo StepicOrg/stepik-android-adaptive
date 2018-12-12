@@ -50,10 +50,10 @@ class ProfileFragment: BasePresenterFragment<ProfilePresenter, ProfileView>(), P
                 .statsComponent.inject(this)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View =
             inflater.inflate(R.layout.fragment_profile, container, false)
 
-    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         signIn.setOnClickListener {
             startActivityForResult(Intent(context, LoginActivity::class.java), LoginActivity.REQUEST_CODE)
             analytics.logEvent(Analytics.Login.SHOW_LOGIN_SCREEN_FROM_PROFILE)

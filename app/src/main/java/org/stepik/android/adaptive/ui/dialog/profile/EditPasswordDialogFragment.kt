@@ -50,7 +50,7 @@ class EditPasswordDialogFragment: BasePresenterDialogFragment<EditProfileFieldPr
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
             inflater.inflate(R.layout.dialog_edit_password, container, false)
 
-    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         confirm.setOnClickListener { changePassword() }
         setConfirmButton()
 
@@ -85,7 +85,7 @@ class EditPasswordDialogFragment: BasePresenterDialogFragment<EditProfileFieldPr
     }
 
     private fun setConfirmButton() {
-        confirm.isEnabled = oldPassword.text.isNotBlank() && newPassword.text.isNotBlank()
+        confirm.isEnabled = !oldPassword.text.isNullOrBlank() && !newPassword.text.isNullOrBlank()
     }
 
     override fun onProfile(profile: Profile) {

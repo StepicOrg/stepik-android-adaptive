@@ -26,16 +26,16 @@ class BookmarksFragment: BasePresenterFragment<BookmarksPresenter, BookmarksView
         App.componentManager().statsComponent.inject(this)
     }
 
-    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?) =
-            inflater?.inflate(R.layout.fragment_bookmarks, container, false)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View =
+            inflater.inflate(R.layout.fragment_bookmarks, container, false)
 
-    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         recycler.layoutManager = LinearLayoutManager(context)
 
         val divider = DividerItemDecoration(context, DividerItemDecoration.VERTICAL)
-        divider.setDrawable(ContextCompat.getDrawable(context, R.drawable.stroke))
+        divider.setDrawable(ContextCompat.getDrawable(requireContext(), R.drawable.stroke)!!)
         recycler.addItemDecoration(divider)
     }
 

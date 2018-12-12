@@ -28,16 +28,16 @@ abstract class BasePresenterFragment<P : Presenter<V>, in V> : Fragment() {
 
     private fun initLoader() {
         loaderManager.initLoader(LOADER_ID, null, object : LoaderManager.LoaderCallbacks<P> {
-            override fun onLoadFinished(loader: Loader<P>?, data: P) {
+            override fun onLoadFinished(loader: Loader<P>, data: P) {
                 onPresenter(data)
             }
 
-            override fun onLoaderReset(loader: Loader<P>?) {
+            override fun onLoaderReset(loader: Loader<P>) {
                 presenter = null
             }
 
             override fun onCreateLoader(id: Int, args: Bundle?): Loader<P> =
-                    PresenterLoader(this@BasePresenterFragment.context, getPresenterProvider())
+                    PresenterLoader(this@BasePresenterFragment.requireContext(), getPresenterProvider())
         })
     }
 

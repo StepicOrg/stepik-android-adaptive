@@ -73,7 +73,7 @@ class QuestionsPacksAdapter(
         holder.difficulty.text = fromHtmlCompat(context.getString(R.string.questions_difficulty, context.getString(pack.difficulty)))
         holder.difficulty.setTextColor(setAlpha(pack.textColor, TEXT_ALPHA))
 
-        val activeDrawable = DrawableCompat.wrap(ContextCompat.getDrawable(context, R.drawable.ic_correct))
+        val activeDrawable = DrawableCompat.wrap(ContextCompat.getDrawable(context, R.drawable.ic_correct)!!)
         DrawableCompat.setTint(activeDrawable, setAlpha(pack.textColor, ICON_ALPHA))
         holder.activeIcon.setImageDrawable(activeDrawable)
         holder.activeIcon.changeVisibillity(pack.ordinal == selection)

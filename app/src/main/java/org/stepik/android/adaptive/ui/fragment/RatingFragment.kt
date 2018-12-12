@@ -35,10 +35,10 @@ class RatingFragment : BasePresenterFragment<RatingPresenter, RatingView>(), Rat
         recycler.layoutManager = LinearLayoutManager(context)
 
         val divider = DividerItemDecoration(context, DividerItemDecoration.VERTICAL)
-        divider.setDrawable(ContextCompat.getDrawable(context, R.drawable.stroke))
+        divider.setDrawable(ContextCompat.getDrawable(requireContext(), R.drawable.stroke)!!)
         recycler.addItemDecoration(divider)
 
-        val spinnerAdapter = ArrayAdapter<CharSequence>(context, R.layout.item_rating_period, context.resources.getStringArray(R.array.rating_periods))
+        val spinnerAdapter = ArrayAdapter<CharSequence>(requireContext(), R.layout.item_rating_period, resources.getStringArray(R.array.rating_periods))
         spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         spinner.adapter = spinnerAdapter
 

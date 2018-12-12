@@ -20,13 +20,11 @@ class InventoryAdapter(private var _data: List<Pair<InventoryManager.Item, Int>>
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
             InventoryItemViewHolder(ItemInventoryBinding.inflate(LayoutInflater.from(parent.context), parent, false))
 
-    override fun onBindViewHolder(holder: InventoryItemViewHolder?, position: Int) {
-        holder?.let {
-            val context = it.binding.root.context
+    override fun onBindViewHolder(holder: InventoryItemViewHolder, position: Int) {
+        val context = holder.binding.root.context
 
-            it.binding.icon.setImageResource(data[position].first.iconId)
-            it.binding.counter.text = context.getString(R.string.amount, data[position].second)
-        }
+        holder.binding.icon.setImageResource(data[position].first.iconId)
+        holder.binding.counter.text = context.getString(R.string.amount, data[position].second)
     }
 
 

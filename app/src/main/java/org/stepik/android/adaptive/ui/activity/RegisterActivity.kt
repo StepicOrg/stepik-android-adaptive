@@ -165,7 +165,7 @@ class RegisterActivity: BasePresenterActivity<RegisterPresenter, RegisterView>()
     }
 
     private fun setSignUpButtonState() {
-        signUpButton.isEnabled = emailField.text.isNotBlank() && firstNameField.text.isNotBlank() && passwordField.text.isNotBlank()
+        signUpButton.isEnabled = !emailField.text.isNullOrBlank() && !firstNameField.text.isNullOrBlank() && !passwordField.text.isNullOrBlank()
     }
 
     override fun onStart() {

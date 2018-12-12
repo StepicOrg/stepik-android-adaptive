@@ -36,10 +36,10 @@ class RatingAdapter(
         super.onAttachedToRecyclerView(recyclerView)
         val context = recyclerView.context
 
-        leaderIconDrawable = DrawableCompat.wrap(ContextCompat.getDrawable(context, R.drawable.ic_crown))
+        leaderIconDrawable = DrawableCompat.wrap(ContextCompat.getDrawable(context, R.drawable.ic_crown)!!)
         DrawableCompat.setTint(leaderIconDrawable, ContextCompat.getColor(context, R.color.colorYellow))
 
-        leaderIconDrawableSelected = DrawableCompat.wrap(ContextCompat.getDrawable(context, R.drawable.ic_crown))
+        leaderIconDrawableSelected = DrawableCompat.wrap(ContextCompat.getDrawable(context, R.drawable.ic_crown)!!)
         DrawableCompat.setTint(leaderIconDrawableSelected, ContextCompat.getColor(context, android.R.color.white))
     }
 
@@ -54,10 +54,10 @@ class RatingAdapter(
 
     override fun getItemCount() = items.size
 
-    override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int) =
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
             when(viewType) {
-                RATING_ITEM_VIEW_TYPE -> RatingViewHolder(ItemRatingBinding.inflate(LayoutInflater.from(parent?.context), parent, false))
-                SEPARATOR_VIEW_TYPE -> SeparatorViewHolder(LayoutInflater.from(parent?.context).inflate(R.layout.ranks_separator, parent, false))
+                RATING_ITEM_VIEW_TYPE -> RatingViewHolder(ItemRatingBinding.inflate(LayoutInflater.from(parent.context), parent, false))
+                SEPARATOR_VIEW_TYPE -> SeparatorViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.ranks_separator, parent, false))
                 else -> throw IllegalStateException("Unknown view type $viewType")
             }
 

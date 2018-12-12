@@ -20,8 +20,8 @@ class DailyRewardDialog : DialogFragment() {
 
         fun newInstance(progress: Long) : DailyRewardDialog {
             val dialog = DailyRewardDialog()
-            dialog.arguments = Bundle()
-            dialog.arguments.putLong(REWARD_PROGRESS_KEY, progress)
+            dialog.arguments = Bundle(1)
+                .apply { putLong(REWARD_PROGRESS_KEY, progress) }
             return dialog
         }
     }
@@ -32,8 +32,8 @@ class DailyRewardDialog : DialogFragment() {
     private val adapter = DailyRewardsAdapter(DailyRewardManager.rewards)
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        val alertDialogBuilder = AlertDialog.Builder(context, R.style.ExpLevelDialogTheme)
-        binding = DialogDefaultBodyBinding.inflate(activity.layoutInflater, null, false)
+        val alertDialogBuilder = AlertDialog.Builder(requireContext(), R.style.ExpLevelDialogTheme)
+        binding = DialogDefaultBodyBinding.inflate(layoutInflater, null, false)
 
         binding.title.text = getString(R.string.daily_reward_title)
         binding.description.text = getString(R.string.daily_reward_description)
@@ -43,7 +43,7 @@ class DailyRewardDialog : DialogFragment() {
 
         adapter.currentProgress = arguments?.getLong(REWARD_PROGRESS_KEY, 0)?.toInt() ?: 0
 
-        discreteScrollView = DialogBodyDailyRewardsBinding.inflate(activity.layoutInflater, binding.container, false).discreteScrollView
+        discreteScrollView = DialogBodyDailyRewardsBinding.inflate(layoutInflater, binding.container, false).discreteScrollView
         discreteScrollView.adapter = adapter
         discreteScrollView.setItemTransformer(ScaleTransformer.Builder()
                 .setMaxScale(1f)
