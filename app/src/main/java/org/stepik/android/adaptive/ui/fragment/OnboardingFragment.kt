@@ -190,7 +190,7 @@ class OnboardingFragment : Fragment(), AuthView {
                     .subscribe { isFake ->
                         screenManager.startStudy()
                         if (isFake) {
-                            screenManager.showEmptyAuthScreen(context)
+                            screenManager.showEmptyAuthScreen(requireContext())
                         }
                     }
         }
