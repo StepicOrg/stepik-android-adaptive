@@ -9,16 +9,11 @@ import android.widget.TextView
 
 import org.stepik.android.adaptive.util.KotlinUtils.setIfNot
 
-class MorphingView : FrameLayout {
-    constructor(context: Context, attributeSet: AttributeSet?, defStyleAttr: Int, defStyleRes: Int) : super(context, attributeSet, defStyleAttr, defStyleRes)
-    constructor(context: Context, attributeSet: AttributeSet?, defStyleAttr: Int) : super(context, attributeSet, defStyleAttr)
-    constructor(context: Context, attributeSet: AttributeSet?) : super(context, attributeSet)
-    constructor(context: Context) : super(context)
-
+class MorphingView
+@JvmOverloads
+constructor(context: Context, attributeSet: AttributeSet? = null, defStyleAttr: Int = 0) : FrameLayout(context, attributeSet, defStyleAttr) {
     val drawableWrapper = GradientDrawableWrapper(GradientDrawable())
-
     var nestedTextView: TextView? = null
-
 
     init {
         background = drawableWrapper.drawable

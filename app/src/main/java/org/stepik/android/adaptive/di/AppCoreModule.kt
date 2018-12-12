@@ -103,7 +103,7 @@ abstract class AppCoreModule {
                     val packageInfo = context.packageManager.getPackageInfo(context.packageName, 0)
                     val apiLevel = android.os.Build.VERSION.SDK_INT
                     ("StepikDroid/" + packageInfo.versionName + " (Android " + apiLevel
-                            + ") build/" + packageInfo.versionCode + " package/" + packageInfo.packageName)
+                            + ") build/" + packageInfo.longVersionCode + " package/" + packageInfo.packageName)
                 } catch (e: PackageManager.NameNotFoundException) {
                     ""
                 }
