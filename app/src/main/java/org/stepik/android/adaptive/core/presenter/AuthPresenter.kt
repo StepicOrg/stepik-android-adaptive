@@ -1,9 +1,13 @@
 package org.stepik.android.adaptive.core.presenter
 
+import android.os.Bundle
+import android.util.Log
+import com.google.firebase.analytics.FirebaseAnalytics
 import io.reactivex.Completable
 import io.reactivex.Scheduler
 import io.reactivex.Single
 import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.rxkotlin.plusAssign
 import org.stepik.android.adaptive.api.Api
 import org.stepik.android.adaptive.api.auth.AuthError
 import org.stepik.android.adaptive.api.auth.AuthRepository
@@ -17,7 +21,6 @@ import org.stepik.android.adaptive.di.qualifiers.BackgroundScheduler
 import org.stepik.android.adaptive.di.qualifiers.MainScheduler
 import org.stepik.android.adaptive.gamification.ExpManager
 import org.stepik.android.adaptive.util.RxOptional
-import org.stepik.android.adaptive.util.addDisposable
 import org.stepik.android.adaptive.util.then
 import retrofit2.HttpException
 import javax.inject.Inject
@@ -47,27 +50,25 @@ constructor(
     fun authFakeUser() {
         view?.onLoading()
 
-        disposable addDisposable createFakeUserRx()
-                .andThen(onLoginRx())
-                .subscribeOn(backgroundScheduler)
-                .observeOn(mainScheduler)
-                .subscribe(this::onSuccess, {
-                    onError(AuthError.ConnectionProblem)
-                })
+        disposable += createFakeUserRx()
+            .andThen(onLoginRx())
+            .subscribeOn(backgroundScheduler)
+            .observeOn(mainScheduler)
+            .subscribe(this::onSuccess, this::handleLoginError)
     }
 
     fun authWithLoginPassword(login: String, password: String) {
         view?.onLoading()
 
-        disposable addDisposable loginRx(login, password).andThen(onLoginRx())
-                .doOnComplete {
-                    profilePreferences.removeFakeUser() // we auth as normal user and can remove fake credentials
-                    analytics.logEvent(Analytics.Login.SUCCESS_LOGIN_WITH_PASSWORD)
-                }
-                .andThen(expManager.reset()) // reset rating from previous account
-                .subscribeOn(backgroundScheduler)
-                .observeOn(mainScheduler)
-                .subscribe(this::onSuccess, this::handleLoginError)
+        disposable += loginRx(login, password).andThen(onLoginRx())
+            .doOnComplete {
+                profilePreferences.removeFakeUser() // we auth as normal user and can remove fake credentials
+                analytics.logEvent(Analytics.Login.SUCCESS_LOGIN_WITH_PASSWORD)
+            }
+            .andThen(expManager.reset()) // reset rating from previous account
+            .subscribeOn(backgroundScheduler)
+            .observeOn(mainScheduler)
+            .subscribe(this::onSuccess, this::handleLoginError)
     }
 
     private fun handleLoginError(error: Throwable) {
@@ -80,7 +81,13 @@ constructor(
         } else {
             AuthError.ConnectionProblem
         }
-        onError(authError)
+
+        val bundle = Bundle(2)
+        bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, authError.name)
+        bundle.putString(FirebaseAnalytics.Param.ITEM_VARIANT, Log.getStackTraceString(error))
+        analytics.logEvent(Analytics.Login.FAIL_LOGIN, bundle)
+
+        view?.onError(authError)
     }
 
     private fun createAccountRx(credentials: AccountCredentials): Completable =
@@ -107,7 +114,8 @@ constructor(
                 }
             }
 
-    private fun onLoginRx(): Completable = api
+    private fun onLoginRx(): Completable =
+        api
             .joinCourse(questionsPacksManager.currentCourseId)
             .andThen(profileRepository.fetchProfileWithEmailAddresses())
             .doOnSuccess {
@@ -119,11 +127,6 @@ constructor(
                 it.subscribedForMail = false
                 profileRepository.updateProfile(it)
             }
-
-    private fun onError(authError: AuthError) {
-        analytics.logEventWithName(Analytics.Login.FAIL_LOGIN, authError.name)
-        view?.onError(authError)
-    }
 
     private fun onSuccess() {
         isSuccess = true
