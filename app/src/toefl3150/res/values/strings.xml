@@ -11,4 +11,5 @@
         <p>Welcome to adaptive TOEFL Vocabulary course. During this course you\'ll receive tasks depending on your answers and reactions. Let\'s look how is it work.</p>
     ]]></string>
     <string name="questions_count"><![CDATA[<b>Words:</b> %d]]></string>
+    <string name="facebook_app_id" translatable="false">366155483947215</string>
 </resources>

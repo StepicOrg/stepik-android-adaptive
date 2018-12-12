@@ -126,7 +126,9 @@ dependencies {
     implementation libraries.appMetrica
     implementation libraries.branch
 
-    implementation libraries.facebookSdk
+    implementation(libraries.facebookSdk) {
+        exclude group: 'com.android.support'
+    }
     implementation libraries.vkSdk
 
     implementation libraries.glide

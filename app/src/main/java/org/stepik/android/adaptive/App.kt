@@ -1,7 +1,6 @@
 package org.stepik.android.adaptive
 
 import android.app.Application
-import com.facebook.FacebookSdk
 import com.vk.sdk.VKSdk
 import com.yandex.metrica.YandexMetrica
 import com.yandex.metrica.YandexMetricaConfig
@@ -59,7 +58,6 @@ class App : Application() {
 
     private fun initServices() {
         VKSdk.initialize(applicationContext)
-        FacebookSdk.sdkInitialize(applicationContext)
 
         YandexMetrica.activate(applicationContext, YandexMetricaConfig.newConfigBuilder(config.appMetricaKey).build())
         YandexMetrica.enableActivityAutoTracking(this)
