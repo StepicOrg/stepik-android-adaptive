@@ -93,14 +93,20 @@ class SplashActivity : AppCompatActivity() {
 
     override fun onStart() {
         super.onStart()
-        Branch.getInstance().initSession({ referringParams: JSONObject, error: BranchError? ->
-            if (error == null && referringParams.has(BranchParams.FIELD_CAMPAIGN)) {
-                analytics.logAmplitudeEvent(AmplitudeAnalytics.Branch.LINK_OPENED, mapOf(
-                    AmplitudeAnalytics.Branch.PARAM_CAMPAIGN to referringParams[BranchParams.FIELD_CAMPAIGN],
-                    AmplitudeAnalytics.Branch.IS_FIRST_SESSION to referringParams.optBoolean(BranchParams.IS_FIRST_SESSION, false)
-                ))
-            }
-        }, intent?.data, this)
+        intent?.data?.let {
+            Branch
+                .sessionBuilder(this)
+                .withCallback { referringParams, error ->
+                    if (error == null && referringParams != null && referringParams.has(BranchParams.FIELD_CAMPAIGN)) {
+                        analytics.logAmplitudeEvent(AmplitudeAnalytics.Branch.LINK_OPENED, mapOf(
+                                AmplitudeAnalytics.Branch.PARAM_CAMPAIGN to referringParams[BranchParams.FIELD_CAMPAIGN],
+                                AmplitudeAnalytics.Branch.IS_FIRST_SESSION to referringParams.optBoolean(BranchParams.IS_FIRST_SESSION, false)
+                        ))
+                    }
+                }
+                .withData(it)
+                .init()
+        }
     }
 
     override fun onDestroy() {
