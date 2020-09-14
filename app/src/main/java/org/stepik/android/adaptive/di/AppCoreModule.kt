@@ -1,5 +1,6 @@
 package org.stepik.android.adaptive.di
 
+import android.arch.lifecycle.ViewModelProvider
 import android.content.Context
 import android.content.pm.PackageManager
 import android.webkit.CookieManager
@@ -33,7 +34,7 @@ import org.stepik.android.adaptive.gamification.achievements.AchievementEventLis
 import org.stepik.android.adaptive.util.AppConstants
 import javax.inject.Named
 
-@Module(includes = [AnalyticsModule::class])
+@Module(includes = [AnalyticsModule::class, PresenterModule::class])
 abstract class AppCoreModule {
 
     @Binds
@@ -55,6 +56,9 @@ abstract class AppCoreModule {
     @Binds
     @AppSingleton
     abstract fun provideScreenManager(screenManagerImpl: ScreenManagerImpl): ScreenManager
+
+    @Binds
+    internal abstract fun bindViewModelFactory(daggerViewModelFactory: DaggerViewModelFactory): ViewModelProvider.Factory
 
     @Module
     companion object {

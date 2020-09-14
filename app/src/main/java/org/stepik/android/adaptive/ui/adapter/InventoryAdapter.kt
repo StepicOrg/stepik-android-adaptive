@@ -20,7 +20,7 @@ class InventoryAdapter(private var _data: List<Pair<InventoryManager.Item, Int>>
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
             InventoryItemViewHolder(ItemInventoryBinding.inflate(LayoutInflater.from(parent.context), parent, false))
 
-    override fun onBindViewHolder(holder: InventoryItemViewHolder?, position: Int) {
+    override fun onBindViewHolder(holder: InventoryItemViewHolder, position: Int) {
         holder?.let {
             val context = it.binding.root.context
 

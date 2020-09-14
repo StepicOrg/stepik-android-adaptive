@@ -28,9 +28,9 @@ class ExpLevelDialog : DialogFragment() {
     private lateinit var binding : ExpLevelDialogBinding
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        val alertDialogBuilder = AlertDialog.Builder(context, R.style.ExpLevelDialogTheme)
-        binding = DataBindingUtil.inflate(activity.layoutInflater, R.layout.exp_level_dialog, null, false)
-        binding.expLevelDialogTitle.text = arguments.getLong(LEVEL_KEY).toString()
+        val alertDialogBuilder = AlertDialog.Builder(requireContext(), R.style.ExpLevelDialogTheme)
+        binding = DataBindingUtil.inflate(requireActivity().layoutInflater, R.layout.exp_level_dialog, null, false)
+        binding.expLevelDialogTitle.text = arguments?.getLong(LEVEL_KEY).toString()
 
         binding.continueButton.setOnClickListener { dismiss() }
 
@@ -43,8 +43,8 @@ class ExpLevelDialog : DialogFragment() {
         skipUIFrame({
             CommonConfetti.rainingConfetti(binding.expLevelDialogConfetti, intArrayOf(
                     Color.BLACK,
-                    ContextCompat.getColor(context, R.color.colorAccentDisabled),
-                    ContextCompat.getColor(context, R.color.colorAccent)
+                    ContextCompat.getColor(requireContext(), R.color.colorAccentDisabled),
+                    ContextCompat.getColor(requireContext(), R.color.colorAccent)
             )).infinite().setVelocityY(100f, 30f).setVelocityX(0f, 60f).setEmissionRate(15f)
         })
     }

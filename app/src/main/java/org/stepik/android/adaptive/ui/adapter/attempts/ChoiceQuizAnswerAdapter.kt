@@ -77,7 +77,7 @@ class ChoiceQuizAnswerAdapter : AttemptAnswerAdapter<ChoiceQuizAnswerAdapter.Cho
                 if (selection[pos]) R.drawable.ic_radio_button_filled else R.drawable.ic_radio_button
             }
 
-            val selectionImageDrawable = DrawableCompat.wrap(ContextCompat.getDrawable(context, selectionImageDrawableId))
+            val selectionImageDrawable = DrawableCompat.wrap(ContextCompat.getDrawable(context, selectionImageDrawableId)!!)
             DrawableCompat.setTint(selectionImageDrawable,
                     ContextCompat.getColor(context, if (selection[pos]) R.color.colorAccent else R.color.colorRadioButtonDefault))
             holder.binding.itemAnswerSelectionImage.setImageDrawable(selectionImageDrawable)

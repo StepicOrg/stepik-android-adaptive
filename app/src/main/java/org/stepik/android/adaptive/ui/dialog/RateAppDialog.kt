@@ -40,11 +40,11 @@ class RateAppDialog : DialogFragment() {
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        val builder = AlertDialog.Builder(context)
+        val builder = AlertDialog.Builder(requireContext())
 
         builder.setTitle(R.string.rate_app_title)
 
-        binding = DataBindingUtil.inflate(activity.layoutInflater, R.layout.rate_app_dialog, null, false)
+        binding = DataBindingUtil.inflate(requireActivity().layoutInflater, R.layout.rate_app_dialog, null, false)
 
         binding.starsContainer.setIsIndicator(savedInstanceState?.getBoolean(RATING_ENABLED_KEY) ?: false)
         binding.starsContainer.rating = (savedInstanceState?.getInt(RATING_COUNT_KEY) ?: 0).toFloat()
@@ -91,10 +91,10 @@ class RateAppDialog : DialogFragment() {
         binding.openGooglePlay.setOnClickListener {
             val intent = Intent(Intent.ACTION_VIEW)
             try {
-                intent.data = Uri.parse("market://details?id=${context.packageName}")
+                intent.data = Uri.parse("market://details?id=${requireContext().packageName}")
                 startActivity(intent)
             } catch (e: ActivityNotFoundException) {
-                intent.data = Uri.parse("http://play.google.com/store/apps/details?id=${context.packageName}")
+                intent.data = Uri.parse("http://play.google.com/store/apps/details?id=${requireContext().packageName}")
                 startActivity(intent)
             }
             analytics.ratePositiveGooglePlay()
@@ -110,9 +110,9 @@ class RateAppDialog : DialogFragment() {
         return dg
     }
 
-    override fun onSaveInstanceState(outState: Bundle?) {
-        outState?.putInt(RATING_COUNT_KEY, binding.starsContainer.rating.toInt())
-        outState?.putBoolean(RATING_ENABLED_KEY, binding.starsContainer.isIndicator)
+    override fun onSaveInstanceState(outState: Bundle) {
+        outState.putInt(RATING_COUNT_KEY, binding.starsContainer.rating.toInt())
+        outState.putBoolean(RATING_ENABLED_KEY, binding.starsContainer.isIndicator)
         super.onSaveInstanceState(outState)
     }
 

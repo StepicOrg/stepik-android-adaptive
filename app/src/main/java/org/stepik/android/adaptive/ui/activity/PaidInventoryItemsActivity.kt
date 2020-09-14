@@ -1,6 +1,7 @@
 package org.stepik.android.adaptive.ui.activity
 
 import android.app.Activity
+import android.arch.lifecycle.ViewModelProvider
 import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.Snackbar
@@ -14,16 +15,15 @@ import kotlinx.android.synthetic.main.app_bar.*
 import org.solovyev.android.checkout.*
 import org.stepik.android.adaptive.App
 import org.stepik.android.adaptive.R
-import org.stepik.android.adaptive.core.presenter.BasePresenterActivity
+import org.stepik.android.adaptive.core.presenter.BaseActivity
 import org.stepik.android.adaptive.core.presenter.PaidInventoryItemsPresenter
 import org.stepik.android.adaptive.core.presenter.contracts.PaidInventoryItemsView
 import org.stepik.android.adaptive.ui.adapter.PaidInventoryAdapter
 import org.stepik.android.adaptive.ui.dialog.InventoryDialog
 import org.stepik.android.adaptive.gamification.InventoryManager
 import javax.inject.Inject
-import javax.inject.Provider
 
-class PaidInventoryItemsActivity : BasePresenterActivity<PaidInventoryItemsPresenter, PaidInventoryItemsView>(), PaidInventoryItemsView {
+class PaidInventoryItemsActivity : BaseActivity(), PaidInventoryItemsView {
     companion object {
         const val INVENTORY_DIALOG_TAG = "inventory_dialog"
         const val RESTORE_DIALOG_TAG = "restore_dialog"
@@ -36,20 +36,25 @@ class PaidInventoryItemsActivity : BasePresenterActivity<PaidInventoryItemsPrese
     lateinit var inventoryManager: InventoryManager
 
     @Inject
-    lateinit var paidInventoryItemsPresenterProvider: Provider<PaidInventoryItemsPresenter>
+    internal lateinit var viewModelFactory: ViewModelProvider.Factory
 
-    override fun injectComponent() {
+    private lateinit var presenter: PaidInventoryItemsPresenter
+
+    private fun injectComponent() {
         App.componentManager().paidContentComponent.inject(this)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        injectComponent()
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_paid_content_list)
+
+        presenter = ViewModelProvider(this, viewModelFactory).get(PaidInventoryItemsPresenter::class.java)
 
         recycler.layoutManager = LinearLayoutManager(this)
 
         val divider = DividerItemDecoration(this, DividerItemDecoration.VERTICAL)
-        divider.setDrawable(ContextCompat.getDrawable(this, R.drawable.stroke))
+        divider.setDrawable(ContextCompat.getDrawable(this, R.drawable.stroke)!!)
         recycler.addItemDecoration(divider)
 
         restorePurchases.setOnClickListener {
@@ -126,6 +131,4 @@ class PaidInventoryItemsActivity : BasePresenterActivity<PaidInventoryItemsPrese
         }
         super.finish()
     }
-
-    override fun getPresenterProvider() = paidInventoryItemsPresenterProvider
 }

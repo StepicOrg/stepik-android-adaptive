@@ -1,5 +1,6 @@
 package org.stepik.android.adaptive.ui.activity
 
+import android.arch.lifecycle.ViewModelProvider
 import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.Snackbar
@@ -12,32 +13,36 @@ import org.solovyev.android.checkout.Billing
 import org.solovyev.android.checkout.Checkout
 import org.stepik.android.adaptive.App
 import org.stepik.android.adaptive.R
-import org.stepik.android.adaptive.core.presenter.BasePresenterActivity
+import org.stepik.android.adaptive.core.presenter.BaseActivity
 import org.stepik.android.adaptive.core.presenter.QuestionsPacksPresenter
 import org.stepik.android.adaptive.core.presenter.contracts.QuestionsPacksView
 import org.stepik.android.adaptive.ui.adapter.QuestionsPacksAdapter
 import org.stepik.android.adaptive.util.changeVisibillity
 import javax.inject.Inject
-import javax.inject.Provider
 
-class QuestionsPacksActivity : BasePresenterActivity<QuestionsPacksPresenter, QuestionsPacksView>(), QuestionsPacksView {
+class QuestionsPacksActivity : BaseActivity(), QuestionsPacksView {
     companion object {
         const val RESTORE_DIALOG_TAG = "restore_dialog"
     }
 
     @Inject
-    lateinit var questionsPacksPresenterProvider: Provider<QuestionsPacksPresenter>
+    internal lateinit var viewModelFactory: ViewModelProvider.Factory
 
     @Inject
     lateinit var billing: Billing
 
-    override fun injectComponent() {
+    private lateinit var presenter: QuestionsPacksPresenter
+
+    private fun injectComponent() {
         App.componentManager().paidContentComponent.inject(this)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        injectComponent()
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_questions_packs)
+
+        presenter = ViewModelProvider(this, viewModelFactory).get(QuestionsPacksPresenter::class.java)
         recycler.layoutManager = LinearLayoutManager(this)
 
         setSupportActionBar(toolbar)
@@ -45,11 +50,11 @@ class QuestionsPacksActivity : BasePresenterActivity<QuestionsPacksPresenter, Qu
         supportActionBar?.setTitle(R.string.questions_packs)
 
         restorePurchases.setOnClickListener {
-            presenter?.restorePurchases()
+            presenter.restorePurchases()
         }
 
         tryAgainButton.setOnClickListener {
-            presenter?.loadContent()
+            presenter.loadContent()
         }
     }
 
@@ -107,18 +112,16 @@ class QuestionsPacksActivity : BasePresenterActivity<QuestionsPacksPresenter, Qu
 
     override fun onStart() {
         super.onStart()
-        presenter?.attachView(this)
+        presenter.attachView(this)
     }
 
     override fun onStop() {
-        presenter?.detachView(this)
+        presenter.detachView(this)
         super.onStop()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        presenter?.onActivityResult(requestCode, resultCode, data)
+        presenter.onActivityResult(requestCode, resultCode, data)
         super.onActivityResult(requestCode, resultCode, data)
     }
-
-    override fun getPresenterProvider() = questionsPacksPresenterProvider
 }

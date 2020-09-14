@@ -27,8 +27,8 @@ class ProgressDialogFragment : DialogFragment() {
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val progressDialog = ProgressDialog(context, theme)
-        progressDialog.setTitle(arguments.getString(TITLE_ARG, ""))
-        progressDialog.setMessage(arguments.getString(MESSAGE_ARG, ""))
+        progressDialog.setTitle(arguments?.getString(TITLE_ARG, "") ?: "")
+        progressDialog.setMessage(arguments?.getString(MESSAGE_ARG, "") ?: "")
         progressDialog.isIndeterminate = true
         progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER)
         return progressDialog

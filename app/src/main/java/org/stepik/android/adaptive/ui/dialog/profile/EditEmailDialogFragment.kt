@@ -2,8 +2,10 @@ package org.stepik.android.adaptive.ui.dialog.profile
 
 import android.app.Activity
 import android.app.Dialog
+import android.arch.lifecycle.ViewModelProvider
 import android.os.Bundle
 import android.support.design.widget.TextInputLayout
+import android.support.v4.app.DialogFragment
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.LayoutInflater
@@ -13,7 +15,6 @@ import android.view.Window
 import kotlinx.android.synthetic.main.dialog_edit_email.*
 import org.stepik.android.adaptive.App
 import org.stepik.android.adaptive.R
-import org.stepik.android.adaptive.core.presenter.BasePresenterDialogFragment
 import org.stepik.android.adaptive.core.presenter.EditProfileFieldPresenter
 import org.stepik.android.adaptive.core.presenter.contracts.EditProfileFieldView
 import org.stepik.android.adaptive.data.model.Profile
@@ -22,13 +23,14 @@ import org.stepik.android.adaptive.util.ValidateUtil
 import org.stepik.android.adaptive.util.changeVisibillity
 import org.stepik.android.adaptive.util.hideAllChildren
 import javax.inject.Inject
-import javax.inject.Provider
 
-class EditEmailDialogFragment: BasePresenterDialogFragment<EditProfileFieldPresenter, EditProfileFieldView>(), EditProfileFieldView {
+class EditEmailDialogFragment: DialogFragment(), EditProfileFieldView {
     @Inject
-    lateinit var editProfileFieldPresenterProvider: Provider<EditProfileFieldPresenter>
+    internal lateinit var viewModelFactory: ViewModelProvider.Factory
 
-    override fun injectComponent() {
+    private lateinit var presenter: EditProfileFieldPresenter
+
+    private fun injectComponent() {
         App.componentManager()
                 .statsComponent.inject(this)
     }
@@ -44,14 +46,17 @@ class EditEmailDialogFragment: BasePresenterDialogFragment<EditProfileFieldPrese
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        injectComponent()
         super.onCreate(savedInstanceState)
         isCancelable = false
+
+        presenter = ViewModelProvider(this, viewModelFactory).get(EditProfileFieldPresenter::class.java)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
             inflater.inflate(R.layout.dialog_edit_email, container, false)
 
-    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         confirm.setOnClickListener { changeEmail() }
         setConfirmButton()
 
@@ -72,7 +77,7 @@ class EditEmailDialogFragment: BasePresenterDialogFragment<EditProfileFieldPrese
     private fun changeEmail() {
         if (!ValidateUtil.validateEmail(emailWrapper, email)) return
 
-        presenter?.changeEmail(email.text.toString())
+        presenter.changeEmail(email.text.toString())
     }
 
     private fun onClearError() {
@@ -80,7 +85,7 @@ class EditEmailDialogFragment: BasePresenterDialogFragment<EditProfileFieldPrese
     }
 
     private fun setConfirmButton() {
-        confirm.isEnabled = email.text.isNotBlank()
+        confirm.isEnabled = email.text.isNullOrBlank() == false
     }
 
     override fun onProfile(profile: Profile) {
@@ -124,13 +129,11 @@ class EditEmailDialogFragment: BasePresenterDialogFragment<EditProfileFieldPrese
 
     override fun onStart() {
         super.onStart()
-        presenter?.attachView(this)
+        presenter.attachView(this)
     }
 
     override fun onStop() {
-        presenter?.detachView(this)
+        presenter.detachView(this)
         super.onStop()
     }
-
-    override fun getPresenterProvider() = editProfileFieldPresenterProvider
 }

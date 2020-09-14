@@ -59,7 +59,7 @@ class WeeksAdapter : RecyclerView.Adapter<WeeksAdapter.StatsViewHolder>() {
 
 
 
-    override fun onBindViewHolder(holder: StatsViewHolder?, p: Int) {
+    override fun onBindViewHolder(holder: StatsViewHolder, p: Int) {
         holder?.let {
             when (it) {
                 is StatsViewHolder.WeekViewHolder -> {

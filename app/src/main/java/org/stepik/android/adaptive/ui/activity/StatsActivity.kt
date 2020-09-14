@@ -38,7 +38,7 @@ class StatsActivity : AppCompatActivity() {
         supportActionBar?.title = getString(R.string.stats)
 
         pager.adapter = StatsViewPagerAdapter(supportFragmentManager, this, config)
-        pager.offscreenPageLimit = pager.adapter.count
+        pager.offscreenPageLimit = (pager.adapter as StatsViewPagerAdapter).count
         tabLayout.setupWithViewPager(pager)
 
         if (savedInstanceState == null) {

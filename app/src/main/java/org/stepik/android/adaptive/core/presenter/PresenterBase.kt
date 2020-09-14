@@ -1,8 +1,9 @@
 package org.stepik.android.adaptive.core.presenter
 
+import android.arch.lifecycle.ViewModel
 import android.support.annotation.CallSuper
 
-abstract class PresenterBase<V> : Presenter<V> {
+abstract class PresenterBase<V> : Presenter<V>, ViewModel() {
     @Volatile
     var view: V? = null
         private set

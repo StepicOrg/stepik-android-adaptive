@@ -1,18 +1,19 @@
 package org.stepik.android.adaptive.ui.fragment
 
+import android.arch.lifecycle.ViewModelProvider
 import android.content.Intent
 import android.os.Bundle
+import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import kotlinx.android.synthetic.main.empty_auth.*
-import kotlinx.android.synthetic.main.header_empty_auth.*
 import kotlinx.android.synthetic.main.fragment_profile.*
+import kotlinx.android.synthetic.main.header_empty_auth.*
 import kotlinx.android.synthetic.main.view_profile.*
 import org.stepik.android.adaptive.App
 import org.stepik.android.adaptive.R
 import org.stepik.android.adaptive.core.ScreenManager
-import org.stepik.android.adaptive.core.presenter.BasePresenterFragment
 import org.stepik.android.adaptive.core.presenter.ProfilePresenter
 import org.stepik.android.adaptive.core.presenter.contracts.ProfileView
 import org.stepik.android.adaptive.data.analytics.Analytics
@@ -25,9 +26,8 @@ import org.stepik.android.adaptive.util.changeVisibillity
 import org.stepik.android.adaptive.util.fromHtmlCompat
 import org.stepik.android.adaptive.util.hideAllChildren
 import javax.inject.Inject
-import javax.inject.Provider
 
-class ProfileFragment: BasePresenterFragment<ProfilePresenter, ProfileView>(), ProfileView {
+class ProfileFragment : Fragment(), ProfileView {
     companion object {
         const val EDIT_NAME_DIALOG = "edit_name"
         const val EDIT_EMAIL_DIALOG = "edit_email"
@@ -37,7 +37,7 @@ class ProfileFragment: BasePresenterFragment<ProfilePresenter, ProfileView>(), P
     }
 
     @Inject
-    lateinit var profilePresenterProvider: Provider<ProfilePresenter>
+    internal lateinit var viewModelFactory: ViewModelProvider.Factory
 
     @Inject
     lateinit var screenManager: ScreenManager
@@ -45,15 +45,26 @@ class ProfileFragment: BasePresenterFragment<ProfilePresenter, ProfileView>(), P
     @Inject
     lateinit var analytics: Analytics
 
-    override fun injectComponent() {
-        App.componentManager()
-                .statsComponent.inject(this)
+    private lateinit var profilePresenter: ProfilePresenter
+
+    private fun injectComponent() {
+        App
+            .componentManager()
+            .statsComponent
+            .inject(this)
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        injectComponent()
+        super.onCreate(savedInstanceState)
+
+        profilePresenter = ViewModelProvider(this, viewModelFactory).get(ProfilePresenter::class.java)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
             inflater.inflate(R.layout.fragment_profile, container, false)
 
-    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         signIn.setOnClickListener {
             startActivityForResult(Intent(context, LoginActivity::class.java), LoginActivity.REQUEST_CODE)
             analytics.logEvent(Analytics.Login.SHOW_LOGIN_SCREEN_FROM_PROFILE)
@@ -108,18 +119,16 @@ class ProfileFragment: BasePresenterFragment<ProfilePresenter, ProfileView>(), P
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        presenter?.fetchProfile()
+        profilePresenter.fetchProfile()
     }
 
     override fun onStart() {
         super.onStart()
-        presenter?.attachView(this)
+        profilePresenter.attachView(this)
     }
 
     override fun onStop() {
-        presenter?.detachView(this)
+        profilePresenter.detachView(this)
         super.onStop()
     }
-
-    override fun getPresenterProvider() = profilePresenterProvider
 }

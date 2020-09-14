@@ -22,9 +22,9 @@ ext.versions = [
         retrofit             : '2.3.0',
         gson                 : '2.7',
 
-        okhttp3              : '3.8.0',
+        okhttp3              : '3.12.8',
 
-        supportLibs          : '26.1.0',
+        supportLibs          : '28.0.0',
         constraintLayout     : '1.0.2',
 
         googleauth           : '16.0.1',

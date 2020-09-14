@@ -1,5 +1,6 @@
 package org.stepik.android.adaptive.ui.activity
 
+import android.arch.lifecycle.ViewModelProvider
 import android.os.Bundle
 import android.support.annotation.StringRes
 import android.text.Editable
@@ -12,7 +13,7 @@ import org.stepik.android.adaptive.App
 import org.stepik.android.adaptive.R
 import org.stepik.android.adaptive.api.auth.AuthError
 import org.stepik.android.adaptive.core.ScreenManager
-import org.stepik.android.adaptive.core.presenter.BasePresenterActivity
+import org.stepik.android.adaptive.core.presenter.BaseActivity
 import org.stepik.android.adaptive.core.presenter.AuthPresenter
 import org.stepik.android.adaptive.core.presenter.contracts.AuthView
 import org.stepik.android.adaptive.data.analytics.AmplitudeAnalytics
@@ -23,9 +24,8 @@ import org.stepik.android.adaptive.util.fromHtmlCompat
 import org.stepik.android.adaptive.util.hideSoftKeyboard
 import org.stepik.android.adaptive.util.setOnKeyboardOpenListener
 import javax.inject.Inject
-import javax.inject.Provider
 
-class LoginActivity : BasePresenterActivity<AuthPresenter, AuthView>(), AuthView {
+class LoginActivity : BaseActivity(), AuthView {
     companion object {
         private const val PROGRESS = "login_progress"
         private const val REMIND_PASSWORD_DIALOG = "remind_password_dialog"
@@ -42,15 +42,20 @@ class LoginActivity : BasePresenterActivity<AuthPresenter, AuthView>(), AuthView
     lateinit var screenManager: ScreenManager
 
     @Inject
-    lateinit var authPresenterProvider: Provider<AuthPresenter>
+    internal lateinit var viewModelFactory: ViewModelProvider.Factory
 
-    override fun injectComponent() {
+    private lateinit var presenter: AuthPresenter
+
+    private fun injectComponent() {
         App.componentManager().loginComponent.inject(this)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        injectComponent()
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
+
+        presenter = ViewModelProvider(this, viewModelFactory).get(AuthPresenter::class.java)
 
         signInText.text = fromHtmlCompat(getString(R.string.sign_in_title))
 
@@ -137,7 +142,7 @@ class LoginActivity : BasePresenterActivity<AuthPresenter, AuthView>(), AuthView
         val login = loginField.text.toString()
         val password = passwordField.text.toString()
 
-        presenter?.authWithLoginPassword(login, password)
+        presenter.authWithLoginPassword(login, password)
     }
 
     override fun onSuccess() {
@@ -167,6 +172,4 @@ class LoginActivity : BasePresenterActivity<AuthPresenter, AuthView>(), AuthView
 
     override fun onLoading() =
         showProgressDialogFragment(PROGRESS, getString(R.string.sign_in), getString(R.string.processing_your_request))
-
-    override fun getPresenterProvider() = authPresenterProvider
 }

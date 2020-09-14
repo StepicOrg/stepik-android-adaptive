@@ -21,8 +21,9 @@ class StreakRestoreDialog : DialogFragment() {
 
         fun newInstance(streak: Long) : StreakRestoreDialog {
             val dialog = StreakRestoreDialog()
-            dialog.arguments = Bundle()
-            dialog.arguments.putLong(STREAK_KEY, streak)
+            val args = Bundle()
+            args.putLong(STREAK_KEY, streak)
+            dialog.arguments = args
             return dialog
         }
     }
@@ -44,8 +45,8 @@ class StreakRestoreDialog : DialogFragment() {
             analytics.onStreakRestoreDialogShown()
         }
 
-        val alertDialogBuilder = AlertDialog.Builder(context, R.style.ExpLevelDialogTheme)
-        val root = activity.layoutInflater.inflate(R.layout.dialog_streak_restore, null, false)
+        val alertDialogBuilder = AlertDialog.Builder(requireContext(), R.style.ExpLevelDialogTheme)
+        val root = requireActivity().layoutInflater.inflate(R.layout.dialog_streak_restore, null, false)
 
         root.ticketItem.counter.text = getString(R.string.amount, inventoryManager.getItemsCount(InventoryManager.Item.Ticket))
 

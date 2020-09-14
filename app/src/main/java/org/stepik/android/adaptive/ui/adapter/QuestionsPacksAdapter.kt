@@ -18,7 +18,6 @@ import org.stepik.android.adaptive.content.questions.QuestionsPack
 import org.stepik.android.adaptive.ui.helper.setAlpha
 import org.stepik.android.adaptive.util.changeVisibillity
 import org.stepik.android.adaptive.util.fromHtmlCompat
-import java.text.NumberFormat
 import java.util.*
 
 class QuestionsPacksAdapter(
@@ -73,7 +72,7 @@ class QuestionsPacksAdapter(
         holder.difficulty.text = fromHtmlCompat(context.getString(R.string.questions_difficulty, context.getString(pack.difficulty)))
         holder.difficulty.setTextColor(setAlpha(pack.textColor, TEXT_ALPHA))
 
-        val activeDrawable = DrawableCompat.wrap(ContextCompat.getDrawable(context, R.drawable.ic_correct))
+        val activeDrawable = DrawableCompat.wrap(ContextCompat.getDrawable(context, R.drawable.ic_correct)!!)
         DrawableCompat.setTint(activeDrawable, setAlpha(pack.textColor, ICON_ALPHA))
         holder.activeIcon.setImageDrawable(activeDrawable)
         holder.activeIcon.changeVisibillity(pack.ordinal == selection)

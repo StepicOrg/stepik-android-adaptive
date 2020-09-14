@@ -1,11 +1,13 @@
 package org.stepik.android.adaptive.ui.fragment
 
 import android.app.Activity
+import android.arch.lifecycle.ViewModelProvider
 import android.content.Intent
 import android.content.res.Resources
 import android.os.Bundle
 import android.support.annotation.DimenRes
 import android.support.annotation.DrawableRes
+import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat
 import android.text.method.LinkMovementMethod
 import android.view.LayoutInflater
@@ -19,7 +21,6 @@ import org.stepik.android.adaptive.Util
 import org.stepik.android.adaptive.configuration.RemoteConfig
 import org.stepik.android.adaptive.content.questions.QuestionsPacksManager
 import org.stepik.android.adaptive.core.ScreenManager
-import org.stepik.android.adaptive.core.presenter.BasePresenterFragment
 import org.stepik.android.adaptive.core.presenter.RecommendationsPresenter
 import org.stepik.android.adaptive.core.presenter.contracts.RecommendationsView
 import org.stepik.android.adaptive.data.analytics.AmplitudeAnalytics
@@ -38,9 +39,8 @@ import org.stepik.android.adaptive.gamification.InventoryManager
 import org.stepik.android.adaptive.util.PopupHelper
 import org.stepik.android.adaptive.util.changeVisibillity
 import javax.inject.Inject
-import javax.inject.Provider
 
-class RecommendationsFragment : BasePresenterFragment<RecommendationsPresenter, RecommendationsView>(), RecommendationsView {
+class RecommendationsFragment : Fragment(), RecommendationsView {
     companion object {
         const val STREAK_RESTORE_REQUEST_CODE = 3423
         const val PAID_CONTENT_REQUEST_CODE = 113
@@ -83,7 +83,7 @@ class RecommendationsFragment : BasePresenterFragment<RecommendationsPresenter, 
     lateinit var inventoryManager: InventoryManager
 
     @Inject
-    lateinit var recommendationsPresenterProvider: Provider<RecommendationsPresenter>
+    internal lateinit var viewModelFactory: ViewModelProvider.Factory
 
     @Inject
     lateinit var questionsPacksManager: QuestionsPacksManager
@@ -91,8 +91,16 @@ class RecommendationsFragment : BasePresenterFragment<RecommendationsPresenter, 
     @Inject
     lateinit var screenManager: ScreenManager
 
-    override fun injectComponent() {
+    private lateinit var presenter: RecommendationsPresenter
+
+    private fun injectComponent() {
         App.componentManager().studyComponent.inject(this)
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        injectComponent()
+        super.onCreate(savedInstanceState)
+        presenter = ViewModelProvider(this, viewModelFactory).get(RecommendationsPresenter::class.java)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -102,9 +110,9 @@ class RecommendationsFragment : BasePresenterFragment<RecommendationsPresenter, 
         binding.courseCompletedText.movementMethod = LinkMovementMethod.getInstance()
 
         binding.streakSuccessContainer.nestedTextView = binding.streakSuccess
-        binding.streakSuccessContainer.setGradientDrawableParams(ContextCompat.getColor(context, R.color.colorAccent), 0f)
+        binding.streakSuccessContainer.setGradientDrawableParams(ContextCompat.getColor(requireContext(), R.color.colorAccent), 0f)
 
-        binding.toolbar.setOnClickListener { screenManager.showStatsScreen(context, 0) }
+        binding.toolbar.setOnClickListener { screenManager.showStatsScreen(requireContext(), 0) }
 
         savedInstanceState?.getLong(STREAK_RESTORE_KEY, -1)?.let {
             if (it != -1L) {
@@ -115,7 +123,7 @@ class RecommendationsFragment : BasePresenterFragment<RecommendationsPresenter, 
         binding.questionsPacks.changeVisibillity(isQuestionsPackSupported)
         binding.questionsPacks.setOnClickListener {
             questionsPacksTooltip?.dismiss()
-            screenManager.showQuestionsPacksScreen(context)
+            screenManager.showQuestionsPacksScreen(requireContext())
         }
 
         return binding.root
@@ -218,10 +226,10 @@ class RecommendationsFragment : BasePresenterFragment<RecommendationsPresenter, 
             RateAppDialog.newInstance().show(childFragmentManager, RATE_APP_DIALOG_TAG)
 
     override fun showGamificationDescriptionScreen() =
-            screenManager.showGamificationDescription(context)
+            screenManager.showGamificationDescription(requireContext())
 
     override fun showEmptyAuthScreen() =
-            screenManager.showEmptyAuthScreen(context)
+            screenManager.showEmptyAuthScreen(requireContext())
 
     override fun showStreakRestoreDialog(streak: Long, withTooltip: Boolean) {
         analytics.logAmplitudeEvent(AmplitudeAnalytics.Tickets.WIDGET_OPENED)
@@ -237,7 +245,7 @@ class RecommendationsFragment : BasePresenterFragment<RecommendationsPresenter, 
                             R.string.paid_content_tooltip
                         })
                         withEndAction {
-                            streakRestorePopup = PopupHelper.showPopupAnchoredToView(context, binding.ticketsContainer, tooltipText)
+                            streakRestorePopup = PopupHelper.showPopupAnchoredToView(requireContext(), binding.ticketsContainer, tooltipText)
                         }
                     }
                 }
@@ -265,7 +273,7 @@ class RecommendationsFragment : BasePresenterFragment<RecommendationsPresenter, 
                 QuestionsPacksDialog.newInstance().show(childFragmentManager, QUESTIONS_PACKS_DIALOG_TAG)
             } else {
                 questionsPacksTooltip = PopupHelper.showPopupAnchoredToView(
-                        context, binding.questionsPacks, getString(R.string.questions_tooltip),
+                        requireContext(), binding.questionsPacks, getString(R.string.questions_tooltip),
                         TOOLBAR_TOOLTIPS_OFF_X_PX, TOOLBAR_TOOLTIPS_OFF_Y_PX)
             }
         }
@@ -296,9 +304,9 @@ class RecommendationsFragment : BasePresenterFragment<RecommendationsPresenter, 
         super.onActivityResult(requestCode, resultCode, data)
     }
 
-    override fun onSaveInstanceState(outState: Bundle?) {
+    override fun onSaveInstanceState(outState: Bundle) {
         streakToRestore?.let {
-            outState?.putLong(STREAK_RESTORE_KEY, it)
+            outState.putLong(STREAK_RESTORE_KEY, it)
         }
         super.onSaveInstanceState(outState)
     }
@@ -317,6 +325,4 @@ class RecommendationsFragment : BasePresenterFragment<RecommendationsPresenter, 
         presenter?.detachView(this)
         super.onStop()
     }
-
-    override fun getPresenterProvider() = recommendationsPresenterProvider
 }

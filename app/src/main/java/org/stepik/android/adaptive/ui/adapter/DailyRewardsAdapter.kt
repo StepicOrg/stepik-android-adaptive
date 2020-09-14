@@ -21,8 +21,8 @@ class DailyRewardsAdapter(private val rewards: List<List<Pair<InventoryManager.I
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
             DailyRewardViewHolder(ItemDailyRewardBinding.inflate(LayoutInflater.from(parent.context), parent, false))
 
-    override fun onBindViewHolder(holder: DailyRewardViewHolder?, position: Int) {
-        holder?.let {
+    override fun onBindViewHolder(holder: DailyRewardViewHolder, position: Int) {
+        holder.let {
             it.binding.day.text = it.itemView.context.getString(R.string.day_number, position + 1)
             (it.binding.rewards.adapter as InventoryAdapter).data = rewards[position]
             it.binding.root.isSelected = currentProgress == position
