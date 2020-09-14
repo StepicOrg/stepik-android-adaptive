@@ -1,9 +1,9 @@
 package org.stepik.android.adaptive.di
 
-import android.arch.lifecycle.ViewModelProvider
 import android.content.Context
 import android.content.pm.PackageManager
 import android.webkit.CookieManager
+import androidx.lifecycle.ViewModelProvider
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings
 import dagger.Binds

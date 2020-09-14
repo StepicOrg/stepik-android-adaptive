@@ -1,12 +1,12 @@
 package org.stepik.android.adaptive.ui.dialog
 
 import android.app.Dialog
-import android.databinding.DataBindingUtil
 import android.graphics.Color
 import android.os.Bundle
-import android.support.v4.app.DialogFragment
-import android.support.v4.content.ContextCompat
-import android.support.v7.app.AlertDialog
+import androidx.appcompat.app.AlertDialog
+import androidx.core.content.ContextCompat
+import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.DialogFragment
 import com.github.jinatonic.confetti.CommonConfetti
 import org.stepik.android.adaptive.R
 import org.stepik.android.adaptive.databinding.ExpLevelDialogBinding

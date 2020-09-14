@@ -1,11 +1,11 @@
 package org.stepik.android.adaptive.ui.adapter.attempts
 
-import android.databinding.DataBindingUtil
-import android.support.annotation.DrawableRes
-import android.support.v4.content.ContextCompat
-import android.support.v4.graphics.drawable.DrawableCompat
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.annotation.DrawableRes
+import androidx.core.content.ContextCompat
+import androidx.core.graphics.drawable.DrawableCompat
+import androidx.databinding.DataBindingUtil
 import org.stepik.android.adaptive.R
 import org.stepik.android.adaptive.data.model.Attempt
 import org.stepik.android.adaptive.data.model.Reply

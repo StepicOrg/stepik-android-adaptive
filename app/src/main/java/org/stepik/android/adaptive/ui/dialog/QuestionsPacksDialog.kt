@@ -2,9 +2,9 @@ package org.stepik.android.adaptive.ui.dialog
 
 import android.app.Dialog
 import android.os.Bundle
-import android.support.annotation.DrawableRes
-import android.support.v4.app.DialogFragment
-import android.support.v7.app.AlertDialog
+import androidx.annotation.DrawableRes
+import androidx.appcompat.app.AlertDialog
+import androidx.fragment.app.DialogFragment
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import kotlinx.android.synthetic.main.dialog_questions_packs.view.*
 import org.stepik.android.adaptive.App

@@ -1,10 +1,10 @@
 package org.stepik.android.adaptive.ui.adapter
 
-import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.item_bookmark.view.*
 import org.stepik.android.adaptive.R
 import org.stepik.android.adaptive.data.analytics.Analytics

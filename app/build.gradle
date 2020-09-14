@@ -2,7 +2,7 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
 apply plugin: 'kotlin-android-extensions'
-apply plugin: 'io.fabric'
+apply plugin: 'com.google.firebase.crashlytics'
 
 def globalConf = rootProject.ext
 android {
@@ -108,13 +108,20 @@ dependencies {
 
     implementation libraries.okhttp3
 
-    implementation libraries.supportAppCompat
-    implementation libraries.supportDesign
-    implementation libraries.supportCardView
+    implementation libraries.appCompat
+    implementation libraries.ktx
+    implementation libraries.recyclerview
+    implementation libraries.viewPager
+    implementation libraries.viewPager2
+    implementation libraries.cardView
     implementation libraries.constraintLayout
+    implementation libraries.material
+
+    implementation libraries.archExtensions
+    implementation libraries.archViewModel
 
     implementation libraries.googleauth
-    implementation libraries.firebaseCore
+    implementation libraries.firebaseAnalytics
     implementation libraries.firebaseConfig
     implementation libraries.firebaseMessaging
 
@@ -152,20 +159,6 @@ dependencies {
     testImplementation libraries.retrofitMock
     testImplementation libraries.mockwebserver
     testImplementation libraries.mockitoKt
-
-    androidTestImplementation(libraries.supportTestRunner) {
-        exclude group: 'com.android.support'
-    }
-    androidTestImplementation libraries.supportTestRules
-    androidTestImplementation(libraries.espressoCore) {
-        exclude group: 'com.android.support'
-    }
-    androidTestImplementation(libraries.espressoContrib) {
-        exclude group: 'com.android.support'
-    }
-    androidTestImplementation(libraries.espressoIntents) {
-        exclude group: 'com.android.support'
-    }
 
     implementation fileTree(include: ['*.jar'], dir: 'libs')
 }

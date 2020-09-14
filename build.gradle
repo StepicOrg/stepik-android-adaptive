@@ -13,8 +13,8 @@ buildscript {
     dependencies {
         classpath gradlePlugins.android
         classpath gradlePlugins.googleServices
+        classpath gradlePlugins.crashlyticsPlugin
         classpath gradlePlugins.kotlin
-        classpath gradlePlugins.fabric
         classpath gradlePlugins.dexcount
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files

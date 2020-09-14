@@ -1,11 +1,11 @@
 package org.stepik.android.adaptive.ui.adapter
 
-import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.item_paid_content.view.*
 import org.solovyev.android.checkout.Sku
 import org.stepik.android.adaptive.R

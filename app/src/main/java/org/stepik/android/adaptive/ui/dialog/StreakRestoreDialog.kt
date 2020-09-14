@@ -4,8 +4,8 @@ import android.app.Activity
 import android.app.Dialog
 import android.content.Intent
 import android.os.Bundle
-import android.support.v4.app.DialogFragment
-import android.support.v7.app.AlertDialog
+import androidx.appcompat.app.AlertDialog
+import androidx.fragment.app.DialogFragment
 import kotlinx.android.synthetic.main.dialog_streak_restore.view.*
 import kotlinx.android.synthetic.main.item_inventory.view.*
 import org.stepik.android.adaptive.App

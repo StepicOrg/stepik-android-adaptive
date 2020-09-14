@@ -2,16 +2,16 @@ package org.stepik.android.adaptive.ui.dialog.profile
 
 import android.app.Activity
 import android.app.Dialog
-import android.arch.lifecycle.ViewModelProvider
 import android.os.Bundle
-import android.support.design.widget.TextInputLayout
-import android.support.v4.app.DialogFragment
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.Window
+import androidx.fragment.app.DialogFragment
+import androidx.lifecycle.ViewModelProvider
+import com.google.android.material.textfield.TextInputLayout
 import kotlinx.android.synthetic.main.dialog_edit_email.*
 import org.stepik.android.adaptive.App
 import org.stepik.android.adaptive.R

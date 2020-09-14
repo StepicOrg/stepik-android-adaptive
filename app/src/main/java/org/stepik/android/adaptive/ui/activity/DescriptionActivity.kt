@@ -1,8 +1,8 @@
 package org.stepik.android.adaptive.ui.activity
 
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
 import android.view.View
+import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.header_description.*
 import kotlinx.android.synthetic.main.section_description_levels.*
 import kotlinx.android.synthetic.main.section_description_packs.*

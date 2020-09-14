@@ -1,19 +1,19 @@
 package org.stepik.android.adaptive.ui.fragment
 
 import android.app.Activity
-import android.arch.lifecycle.ViewModelProvider
 import android.content.Intent
 import android.content.res.Resources
 import android.os.Bundle
-import android.support.annotation.DimenRes
-import android.support.annotation.DrawableRes
-import android.support.v4.app.Fragment
-import android.support.v4.content.ContextCompat
 import android.text.method.LinkMovementMethod
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.PopupWindow
+import androidx.annotation.DimenRes
+import androidx.annotation.DrawableRes
+import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import org.stepik.android.adaptive.App
 import org.stepik.android.adaptive.R

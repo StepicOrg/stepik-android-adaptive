@@ -7,7 +7,7 @@
     android:overScrollMode="never"
     android:id="@+id/registerView">
 
-    <android.support.constraint.ConstraintLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/root_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
@@ -81,7 +81,7 @@
                 android:layout_marginLeft="@dimen/auth_form_margin"
                 android:layout_marginRight="@dimen/auth_form_margin">
 
-                <android.support.design.widget.TextInputEditText
+                <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/firstNameField"
                     style="@style/AuthFormFields"
                     android:hint="@string/first_name"
@@ -90,7 +90,7 @@
 
                 <include layout="@layout/separator_auth_form" />
 
-                <android.support.design.widget.TextInputEditText
+                <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/secondNameField"
                     style="@style/AuthFormFields"
                     android:hint="@string/second_name"
@@ -99,7 +99,7 @@
 
                 <include layout="@layout/separator_auth_form" />
 
-                <android.support.design.widget.TextInputEditText
+                <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/emailField"
                     style="@style/AuthFormFields"
                     android:hint="@string/email"
@@ -108,21 +108,21 @@
 
                 <include layout="@layout/separator_auth_form" />
 
-                <android.support.design.widget.TextInputLayout
+                <com.google.android.material.textfield.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     app:passwordToggleDrawable="@drawable/password_toggle"
                     app:hintEnabled="false"
                     app:passwordToggleEnabled="true">
 
-                    <android.support.design.widget.TextInputEditText
+                    <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/passwordField"
                         style="@style/AuthFormFields"
                         android:hint="@string/password"
                         android:imeOptions="flagNoFullscreen|actionSend"
                         android:inputType="textPassword"
                         android:maxLength="@integer/max_length_of_password"/>
-                </android.support.design.widget.TextInputLayout>
+                </com.google.android.material.textfield.TextInputLayout>
 
             </LinearLayout>
 
@@ -148,5 +148,5 @@
                 android:layout_marginRight="@dimen/auth_form_margin"
                 style="@style/AuthButtons" />
         </LinearLayout>
-    </android.support.constraint.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

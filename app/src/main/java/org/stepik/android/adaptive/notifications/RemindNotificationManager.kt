@@ -3,9 +3,9 @@ package org.stepik.android.adaptive.notifications
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
-import android.support.v4.app.NotificationCompat
-import android.support.v4.app.NotificationManagerCompat
-import android.support.v4.app.TaskStackBuilder
+import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
+import androidx.core.app.TaskStackBuilder
 import io.reactivex.Scheduler
 import org.stepik.android.adaptive.R
 import org.stepik.android.adaptive.data.db.DataBaseMgr

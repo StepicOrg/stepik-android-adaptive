@@ -4,12 +4,12 @@ import android.app.Dialog
 import android.content.ActivityNotFoundException
 import android.content.DialogInterface
 import android.content.Intent
-import android.databinding.DataBindingUtil
 import android.net.Uri
-import android.support.v4.app.DialogFragment
 import android.os.Bundle
-import android.support.v7.app.AlertDialog
 import android.view.View
+import androidx.appcompat.app.AlertDialog
+import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.DialogFragment
 import org.stepik.android.adaptive.App
 import org.stepik.android.adaptive.R
 import org.stepik.android.adaptive.data.analytics.Analytics
@@ -116,7 +116,7 @@ class RateAppDialog : DialogFragment() {
         super.onSaveInstanceState(outState)
     }
 
-    override fun onDismiss(dialog: DialogInterface?) {
+    override fun onDismiss(dialog: DialogInterface) {
         analytics.rateCanceled()
         rateAppManager.onCloseLater()
         super.onDismiss(dialog)

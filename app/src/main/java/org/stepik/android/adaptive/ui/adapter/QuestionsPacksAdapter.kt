@@ -1,15 +1,15 @@
 package org.stepik.android.adaptive.ui.adapter
 
 import android.graphics.Paint
-import android.support.v4.content.ContextCompat
-import android.support.v4.graphics.drawable.DrawableCompat
-import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.content.ContextCompat
+import androidx.core.graphics.drawable.DrawableCompat
+import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.item_questions_pack.view.*
 import org.solovyev.android.checkout.Sku
 import org.stepik.android.adaptive.R

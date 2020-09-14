@@ -1,11 +1,11 @@
 package org.stepik.android.adaptive.ui.activity
 
-import android.arch.lifecycle.ViewModelProvider
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.text.method.LinkMovementMethod
 import android.view.inputmethod.EditorInfo
+import androidx.lifecycle.ViewModelProvider
 import kotlinx.android.synthetic.main.activity_register.*
 import org.stepik.android.adaptive.App
 import org.stepik.android.adaptive.R

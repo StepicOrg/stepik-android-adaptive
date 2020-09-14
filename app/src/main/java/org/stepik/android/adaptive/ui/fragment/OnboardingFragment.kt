@@ -1,14 +1,14 @@
 package org.stepik.android.adaptive.ui.fragment
 
-import android.arch.lifecycle.ViewModelProvider
 import android.os.Bundle
-import android.support.annotation.StringRes
-import android.support.v4.app.Fragment
-import android.support.v7.app.AppCompatActivity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.DecelerateInterpolator
+import androidx.annotation.StringRes
+import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.Scheduler

@@ -7,6 +7,9 @@ import com.amplitude.api.Identify
 import com.amplitude.api.Revenue
 
 import com.google.firebase.analytics.FirebaseAnalytics
+import com.google.firebase.analytics.ktx.analytics
+import com.google.firebase.crashlytics.FirebaseCrashlytics
+import com.google.firebase.ktx.Firebase
 import com.yandex.metrica.YandexMetrica
 import org.json.JSONObject
 import org.solovyev.android.checkout.Sku
@@ -30,7 +33,8 @@ constructor(
 
         private val contentPriceResolver: ContentPriceResolver
 ) : Analytics {
-    private val firebaseAnalytics = FirebaseAnalytics.getInstance(context)
+    private val firebaseAnalytics = Firebase.analytics
+    private val firebaseCrashlytics = FirebaseCrashlytics.getInstance()
     private val amplitude = Amplitude.getInstance()
             .initialize(context, config.amplitudeKey)
             .enableForegroundTracking(App.app)
@@ -49,7 +53,7 @@ constructor(
         } else {
             val map = HashMap<String, Any>()
             for (key in bundle.keySet()) {
-                map[key] = bundle.get(key)
+                map[key] = java.lang.String.valueOf(bundle.get(key))
             }
             YandexMetrica.reportEvent(name, map)
         }
@@ -86,6 +90,7 @@ constructor(
 
     override fun setUserId(userId: String) {
         amplitude.identify(Identify().set(AmplitudeAnalytics.Properties.STEPIK_ID, userId))
+        firebaseCrashlytics.setUserId(userId)
     }
 
     override fun setSubmissionsCount(submissionsCount: Int) {

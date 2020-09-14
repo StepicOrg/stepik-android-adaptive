@@ -1,7 +1,7 @@
 package org.stepik.android.adaptive.ui.activity
 
 import android.os.Bundle
-import android.support.v4.app.Fragment
+import androidx.fragment.app.Fragment
 import org.stepik.android.adaptive.Util
 import org.stepik.android.adaptive.ui.fragment.PhotoViewFragment
 

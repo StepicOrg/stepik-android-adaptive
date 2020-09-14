@@ -40,9 +40,9 @@ fun Spanned.stripUnderlinesFromLinks(): Spanned {
 }
 
 private class URLSpanWithoutUnderline(url: String) : URLSpan(url) {
-    override fun updateDrawState(textPaint: TextPaint?) {
+    override fun updateDrawState(textPaint: TextPaint) {
         super.updateDrawState(textPaint)
-        textPaint?.isUnderlineText = false
+        textPaint.isUnderlineText = false
     }
 }
 

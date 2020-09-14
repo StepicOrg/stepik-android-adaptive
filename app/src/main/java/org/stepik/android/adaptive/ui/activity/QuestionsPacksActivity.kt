@@ -1,11 +1,11 @@
 package org.stepik.android.adaptive.ui.activity
 
-import android.arch.lifecycle.ViewModelProvider
 import android.content.Intent
 import android.os.Bundle
-import android.support.design.widget.Snackbar
-import android.support.v7.widget.LinearLayoutManager
 import android.view.MenuItem
+import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_questions_packs.*
 import kotlinx.android.synthetic.main.app_bar.*
 import kotlinx.android.synthetic.main.state_error.*

@@ -1,7 +1,7 @@
 package org.stepik.android.adaptive.core.presenter
 
-import android.support.v4.app.DialogFragment
-import android.support.v7.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.DialogFragment
 import org.stepik.android.adaptive.ui.dialog.ProgressDialogFragment
 
 abstract class BaseActivity : AppCompatActivity() {

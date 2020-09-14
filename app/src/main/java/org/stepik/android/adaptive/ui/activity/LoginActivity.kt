@@ -1,13 +1,13 @@
 package org.stepik.android.adaptive.ui.activity
 
-import android.arch.lifecycle.ViewModelProvider
 import android.os.Bundle
-import android.support.annotation.StringRes
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.MenuItem
 import android.view.View
 import android.view.inputmethod.EditorInfo
+import androidx.annotation.StringRes
+import androidx.lifecycle.ViewModelProvider
 import kotlinx.android.synthetic.main.activity_login.*
 import org.stepik.android.adaptive.App
 import org.stepik.android.adaptive.R

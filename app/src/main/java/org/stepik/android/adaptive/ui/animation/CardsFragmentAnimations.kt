@@ -2,12 +2,12 @@ package org.stepik.android.adaptive.ui.animation
 
 import android.content.Context
 import android.graphics.Color
-import android.support.design.widget.CoordinatorLayout
-import android.support.v4.content.ContextCompat
 import android.view.View
 import android.view.ViewPropertyAnimator
 import android.view.animation.DecelerateInterpolator
 import android.view.animation.OvershootInterpolator
+import androidx.coordinatorlayout.widget.CoordinatorLayout
+import androidx.core.content.ContextCompat
 import com.github.jinatonic.confetti.CommonConfetti
 import org.stepik.android.adaptive.R
 import org.stepik.android.adaptive.databinding.FragmentRecommendationsBinding

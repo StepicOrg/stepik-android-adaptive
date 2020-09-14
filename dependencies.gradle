@@ -7,17 +7,16 @@ ext.versions = [
         compileSdk           : 29,
         buildTools           : '28.0.3',
 
-        androidGradlePlugin  : '3.1.1',
-        kotlin               : '1.2.31',
-        googleServicesVersion: '4.1.0',
-        fabric               : '1.25.1',
-        dexcount             : '0.8.2',
+        androidGradlePlugin  : '4.0.1',
+        kotlin               : '1.4.0',
+        googleServicesVersion: '4.2.0',
+        dexcount             : '1.0.3',
 
-        dagger               : '2.15',
+        dagger               : '2.28',
 
-        rxJava2              : '2.1.7',
-        rxAndroid            : '2.0.1',
-        rxKotlin             : '2.2.0',
+        rxJava2              : '2.2.5',
+        rxAndroid            : '2.1.0',
+        rxKotlin             : '2.3.0',
 
         retrofit             : '2.3.0',
         gson                 : '2.7',
@@ -25,15 +24,26 @@ ext.versions = [
         okhttp3              : '3.12.8',
 
         supportLibs          : '28.0.0',
-        constraintLayout     : '1.0.2',
+
+        appCompat            : '1.1.0',
+        ktx                  : '1.1.0',
+        recyclerview         : '1.0.0',
+        viewPager            : '1.0.0',
+        viewPager2           : '1.0.0',
+        cardView             : '1.0.0',
+        constraintLayout     : '1.1.3',
+        material             : '1.1.0',
+
+        archComponents       : '2.1.0',
 
         googleauth           : '16.0.1',
-        firebaseCore         : '16.0.4',
-        firebaseConfig       : '16.1.0',
-        firebaseMessaging    : '17.3.4',
+        firebaseAnalytics    : '17.4.3',
+        firebaseConfig       : '19.1.4',
+        firebaseMessaging    : '20.2.1',
 
-        stetho               : '1.5.0',
-        crashlytics          : '2.9.5@aar',
+        stetho               : '1.5.1',
+        crashlytics          : '17.1.0',
+        crashlyticsPlugin    : '2.2.0',
         amplitude            : '2.20.0',
         appMetrica           : '3.8.0',
         branch               : '5.0.0',
@@ -54,21 +64,21 @@ ext.versions = [
         flexBox              : '0.3.0',
 
         junit                : '4.12',
-        robolectric          : '3.1.2',
-        mockito              : '2.7.21',
-        mockitoKt            : '1.5.0',
+        robolectric          : '3.8',
+        mockito              : '2.23.4',
+        mockitoKt            : '2.1.0',
         joda                 : '2.8',
-        hamcrest             : '1.3',
-        espresso             : '2.2.2',
-        supportTestRunner    : '0.5',
+        hamcrest             : '2.1',
+        espresso             : '3.1.0',
+        testCore             : '1.1.1'
 ]
 
 ext.gradlePlugins = [
-        googleServices: "com.google.gms:google-services:$versions.googleServicesVersion",
-        kotlin        : "org.jetbrains.kotlin:kotlin-gradle-plugin:$versions.kotlin",
-        android       : "com.android.tools.build:gradle:$versions.androidGradlePlugin",
-        fabric        : "io.fabric.tools:gradle:$versions.fabric",
-        dexcount      : "com.getkeepsafe.dexcount:dexcount-gradle-plugin:$versions.dexcount"
+        googleServices    : "com.google.gms:google-services:$versions.googleServicesVersion",
+        crashlyticsPlugin : "com.google.firebase:firebase-crashlytics-gradle:$versions.crashlyticsPlugin",
+        kotlin            : "org.jetbrains.kotlin:kotlin-gradle-plugin:$versions.kotlin",
+        android           : "com.android.tools.build:gradle:$versions.androidGradlePlugin",
+        dexcount          : "com.getkeepsafe.dexcount:dexcount-gradle-plugin:$versions.dexcount"
 ]
 
 ext.libraries = [
@@ -88,19 +98,26 @@ ext.libraries = [
 
         okhttp3              : "com.squareup.okhttp3:okhttp:$versions.okhttp3",
 
-        supportAppCompat     : "com.android.support:appcompat-v7:$versions.supportLibs",
-        supportDesign        : "com.android.support:design:$versions.supportLibs",
-        supportCardView      : "com.android.support:cardview-v7:$versions.supportLibs",
-        constraintLayout     : "com.android.support.constraint:constraint-layout:$versions.constraintLayout",
+        appCompat            : "androidx.appcompat:appcompat:$versions.appCompat",
+        ktx                  : "androidx.core:core-ktx:$versions.ktx",
+        recyclerview         : "androidx.recyclerview:recyclerview:$versions.recyclerview",
+        viewPager            : "androidx.viewpager:viewpager:$versions.viewPager",
+        viewPager2           : "androidx.viewpager2:viewpager2:$versions.viewPager2",
+        cardView             : "androidx.cardview:cardview:$versions.cardView",
+        constraintLayout     : "androidx.constraintlayout:constraintlayout:$versions.constraintLayout",
+        material             : "com.google.android.material:material:$versions.material",
+
+        archExtensions       : "androidx.lifecycle:lifecycle-extensions:$versions.archComponents",
+        archViewModel        : "androidx.lifecycle:lifecycle-viewmodel:$versions.archComponents",
 
         googleauth           : "com.google.android.gms:play-services-auth:$versions.googleauth",
-        firebaseCore         : "com.google.firebase:firebase-core:$versions.firebaseCore",
+        firebaseAnalytics    : "com.google.firebase:firebase-analytics-ktx:$versions.firebaseAnalytics",
         firebaseConfig       : "com.google.firebase:firebase-config:$versions.firebaseConfig",
         firebaseMessaging    : "com.google.firebase:firebase-messaging:$versions.firebaseMessaging",
 
         stetho               : "com.facebook.stetho:stetho:$versions.stetho",
         stethoOkHttp         : "com.facebook.stetho:stetho-okhttp3:$versions.stetho",
-        crashlytics          : "com.crashlytics.sdk.android:crashlytics:$versions.crashlytics",
+        crashlytics          : "com.google.firebase:firebase-crashlytics:$versions.crashlytics",
         amplitude            : "com.amplitude:android-sdk:$versions.amplitude",
         appMetrica           : "com.yandex.android:mobmetricalib:$versions.appMetrica",
         branch               : "io.branch.sdk.android:library:$versions.branch",
@@ -125,15 +142,14 @@ ext.libraries = [
         junit                : "junit:junit:$versions.junit",
         robolectric          : "org.robolectric:robolectric:$versions.robolectric",
         mockitoCore          : "org.mockito:mockito-core:$versions.mockito",
-        mockitoKt            : "com.nhaarman:mockito-kotlin-kt1.1:$versions.mockitoKt",
+        mockitoKt            : "com.nhaarman.mockitokotlin2:mockito-kotlin:$versions.mockitoKt",
         hamcrest             : "org.hamcrest:hamcrest-library:$versions.hamcrest",
         retrofitMock         : "com.squareup.retrofit2:retrofit-mock:$versions.retrofit",
         mockwebserver        : "com.squareup.okhttp3:mockwebserver:$versions.okhttp3",
 
         //Android Test Dependencies
-        supportAnnotations   : "com.android.support:support-annotations:$versions.supportLibs",
-        supportTestRunner    : "com.android.support.test:runner:$versions.supportTestRunner",
-        supportTestRules     : "com.android.support.test:rules:$versions.supportTestRunner",
+        testRunner           : "androidx.test.ext:junit:$versions.testCore",
+        testRules            : "androidx.test:rules:$versions.testCore",
         espressoCore         : "com.android.support.test.espresso:espresso-core:$versions.espresso",
         espressoContrib      : "com.android.support.test.espresso:espresso-contrib:$versions.espresso",
         espressoIntents      : "com.android.support.test.espresso:espresso-intents:$versions.espresso",

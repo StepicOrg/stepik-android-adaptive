@@ -23,7 +23,7 @@
             android:layout_marginStart="16dp"
             android:layout_marginEnd="16dp"
             android:orientation="horizontal">
-            <android.support.v7.widget.AppCompatButton
+            <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/signIn"
                 android:text="@string/sign_in"
                 android:layout_width="0dp"
@@ -33,7 +33,7 @@
                 android:background="@drawable/placeholder_button_background_selector"
                 android:textColor="@color/colorDarkGrayText"/>
 
-            <android.support.v7.widget.AppCompatButton
+            <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/signUp"
                 android:text="@string/sign_up"
                 android:layout_width="0dp"
