@@ -1,8 +1,8 @@
 package org.stepik.android.adaptive.gamification.achievements
 
 import android.content.Context
-import android.support.annotation.ArrayRes
-import android.support.annotation.StringRes
+import androidx.annotation.ArrayRes
+import androidx.annotation.StringRes
 import org.stepik.android.adaptive.R
 import org.stepik.android.adaptive.core.events.Client
 import org.stepik.android.adaptive.core.presenter.Presenter

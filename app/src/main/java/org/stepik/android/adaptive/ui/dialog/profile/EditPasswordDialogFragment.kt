@@ -9,10 +9,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.Window
+import androidx.fragment.app.DialogFragment
+import androidx.lifecycle.ViewModelProvider
 import kotlinx.android.synthetic.main.dialog_edit_password.*
 import org.stepik.android.adaptive.App
 import org.stepik.android.adaptive.R
-import org.stepik.android.adaptive.core.presenter.BasePresenterDialogFragment
 import org.stepik.android.adaptive.core.presenter.EditProfileFieldPresenter
 import org.stepik.android.adaptive.core.presenter.contracts.EditProfileFieldView
 import org.stepik.android.adaptive.data.model.Profile
@@ -21,13 +22,14 @@ import org.stepik.android.adaptive.util.ValidateUtil
 import org.stepik.android.adaptive.util.changeVisibillity
 import org.stepik.android.adaptive.util.hideAllChildren
 import javax.inject.Inject
-import javax.inject.Provider
 
-class EditPasswordDialogFragment: BasePresenterDialogFragment<EditProfileFieldPresenter, EditProfileFieldView>(), EditProfileFieldView {
+class EditPasswordDialogFragment: DialogFragment(), EditProfileFieldView {
     @Inject
-    lateinit var editProfileFieldPresenterProvider: Provider<EditProfileFieldPresenter>
+    internal lateinit var viewModelFactory: ViewModelProvider.Factory
 
-    override fun injectComponent() {
+    private lateinit var presenter: EditProfileFieldPresenter
+
+    private fun injectComponent() {
         App.componentManager()
                 .statsComponent.inject(this)
     }
@@ -43,14 +45,16 @@ class EditPasswordDialogFragment: BasePresenterDialogFragment<EditProfileFieldPr
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        injectComponent()
         super.onCreate(savedInstanceState)
         isCancelable = false
+        presenter = ViewModelProvider(this, viewModelFactory).get(EditProfileFieldPresenter::class.java)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
             inflater.inflate(R.layout.dialog_edit_password, container, false)
 
-    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         confirm.setOnClickListener { changePassword() }
         setConfirmButton()
 
@@ -76,7 +80,7 @@ class EditPasswordDialogFragment: BasePresenterDialogFragment<EditProfileFieldPr
 
         if (!isValid) return
 
-        presenter?.changePassword(oldPassword.text.toString(), newPassword.text.toString())
+        presenter.changePassword(oldPassword.text.toString(), newPassword.text.toString())
     }
 
     private fun onClearError() {
@@ -85,7 +89,9 @@ class EditPasswordDialogFragment: BasePresenterDialogFragment<EditProfileFieldPr
     }
 
     private fun setConfirmButton() {
-        confirm.isEnabled = oldPassword.text.isNotBlank() && newPassword.text.isNotBlank()
+        confirm.isEnabled =
+                oldPassword.text.isNullOrBlank() == false &&
+                newPassword.text.isNullOrBlank() == false
     }
 
     override fun onProfile(profile: Profile) {
@@ -121,13 +127,11 @@ class EditPasswordDialogFragment: BasePresenterDialogFragment<EditProfileFieldPr
 
     override fun onStart() {
         super.onStart()
-        presenter?.attachView(this)
+        presenter.attachView(this)
     }
 
     override fun onStop() {
-        presenter?.detachView(this)
+        presenter.detachView(this)
         super.onStop()
     }
-
-    override fun getPresenterProvider() = editProfileFieldPresenterProvider
 }

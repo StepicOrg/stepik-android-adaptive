@@ -1,12 +1,12 @@
 package org.stepik.android.adaptive.ui.adapter
 
 import android.content.res.Resources
-import android.databinding.DataBindingUtil
-import android.support.v4.content.ContextCompat
-import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.view.View
+import androidx.core.content.ContextCompat
+import androidx.databinding.DataBindingUtil
+import androidx.recyclerview.widget.RecyclerView
 import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
 import org.stepik.android.adaptive.R
@@ -59,7 +59,7 @@ class WeeksAdapter : RecyclerView.Adapter<WeeksAdapter.StatsViewHolder>() {
 
 
 
-    override fun onBindViewHolder(holder: StatsViewHolder?, p: Int) {
+    override fun onBindViewHolder(holder: StatsViewHolder, p: Int) {
         holder?.let {
             when (it) {
                 is StatsViewHolder.WeekViewHolder -> {

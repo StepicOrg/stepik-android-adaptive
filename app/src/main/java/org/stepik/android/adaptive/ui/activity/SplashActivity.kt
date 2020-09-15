@@ -2,7 +2,7 @@ package org.stepik.android.adaptive.ui.activity
 
 import android.content.Intent
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import io.branch.referral.Branch
 import io.branch.referral.BranchError
@@ -78,10 +78,7 @@ class SplashActivity : AppCompatActivity() {
     }
 
     private fun fetchRemoteConfig() = Completable.create { emitter ->
-        firebaseRemoteConfig.fetch().addOnCompleteListener { task ->
-            if (task.isSuccessful) {
-                firebaseRemoteConfig.activateFetched()
-            }
+        firebaseRemoteConfig.fetchAndActivate().addOnCompleteListener { task ->
             emitter.onComplete()
         }
     }
@@ -93,14 +90,20 @@ class SplashActivity : AppCompatActivity() {
 
     override fun onStart() {
         super.onStart()
-        Branch.getInstance().initSession({ referringParams: JSONObject, error: BranchError? ->
-            if (error == null && referringParams.has(BranchParams.FIELD_CAMPAIGN)) {
-                analytics.logAmplitudeEvent(AmplitudeAnalytics.Branch.LINK_OPENED, mapOf(
-                    AmplitudeAnalytics.Branch.PARAM_CAMPAIGN to referringParams[BranchParams.FIELD_CAMPAIGN],
-                    AmplitudeAnalytics.Branch.IS_FIRST_SESSION to referringParams.optBoolean(BranchParams.IS_FIRST_SESSION, false)
-                ))
-            }
-        }, intent?.data, this)
+        intent?.data?.let {
+            Branch
+                .sessionBuilder(this)
+                .withCallback { referringParams, error ->
+                    if (error == null && referringParams != null && referringParams.has(BranchParams.FIELD_CAMPAIGN)) {
+                        analytics.logAmplitudeEvent(AmplitudeAnalytics.Branch.LINK_OPENED, mapOf(
+                                AmplitudeAnalytics.Branch.PARAM_CAMPAIGN to referringParams[BranchParams.FIELD_CAMPAIGN],
+                                AmplitudeAnalytics.Branch.IS_FIRST_SESSION to referringParams.optBoolean(BranchParams.IS_FIRST_SESSION, false)
+                        ))
+                    }
+                }
+                .withData(it)
+                .init()
+        }
     }
 
     override fun onDestroy() {

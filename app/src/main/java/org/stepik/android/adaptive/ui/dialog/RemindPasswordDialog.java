@@ -3,15 +3,18 @@ package org.stepik.android.adaptive.ui.dialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.design.widget.TextInputEditText;
-import android.support.design.widget.TextInputLayout;
-import android.support.v4.app.DialogFragment;
-import android.support.v4.app.Fragment;
-import android.support.v7.app.AlertDialog;
+
 import android.view.LayoutInflater;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
+import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.Fragment;
+
+import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
 
 import org.stepik.android.adaptive.App;
 import org.stepik.android.adaptive.R;
@@ -52,7 +55,7 @@ public final class RemindPasswordDialog extends DialogFragment {
     @NonNull
     @Override
     public Dialog onCreateDialog(final Bundle savedInstanceState) {
-        final AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getContext());
+        final AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(requireContext());
 
         alertDialogBuilder.setTitle(R.string.remind_password);
         alertDialogBuilder.setPositiveButton(android.R.string.ok, null);

@@ -1,13 +1,13 @@
 package org.stepik.android.adaptive.util
 
 import android.content.Context
-import android.support.v4.widget.PopupWindowCompat
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewTreeObserver
 import android.widget.LinearLayout
 import android.widget.PopupWindow
+import androidx.core.widget.PopupWindowCompat
 import kotlinx.android.synthetic.main.popup_window.view.*
 import org.stepik.android.adaptive.R
 

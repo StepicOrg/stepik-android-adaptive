@@ -1,9 +1,9 @@
 package org.stepik.android.adaptive.util;
 
-
-import android.support.design.widget.TextInputEditText;
-import android.support.design.widget.TextInputLayout;
 import android.text.TextUtils;
+
+import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
 
 import org.stepik.android.adaptive.R;
 

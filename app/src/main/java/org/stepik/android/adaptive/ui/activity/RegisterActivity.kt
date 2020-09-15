@@ -5,20 +5,20 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.text.method.LinkMovementMethod
 import android.view.inputmethod.EditorInfo
+import androidx.lifecycle.ViewModelProvider
 import kotlinx.android.synthetic.main.activity_register.*
 import org.stepik.android.adaptive.App
 import org.stepik.android.adaptive.R
 import org.stepik.android.adaptive.core.ScreenManager
-import org.stepik.android.adaptive.core.presenter.BasePresenterActivity
+import org.stepik.android.adaptive.core.presenter.BaseActivity
 import org.stepik.android.adaptive.core.presenter.RegisterPresenter
 import org.stepik.android.adaptive.core.presenter.contracts.RegisterView
 import org.stepik.android.adaptive.data.analytics.AmplitudeAnalytics
 import org.stepik.android.adaptive.data.analytics.Analytics
 import org.stepik.android.adaptive.util.*
 import javax.inject.Inject
-import javax.inject.Provider
 
-class RegisterActivity: BasePresenterActivity<RegisterPresenter, RegisterView>(), RegisterView {
+class RegisterActivity: BaseActivity(), RegisterView {
     companion object {
         private const val PROGRESS = "register_progress"
 
@@ -29,18 +29,23 @@ class RegisterActivity: BasePresenterActivity<RegisterPresenter, RegisterView>()
     lateinit var analytics: Analytics
 
     @Inject
-    lateinit var registerPresenterProvider: Provider<RegisterPresenter>
+    internal lateinit var viewModelFactory: ViewModelProvider.Factory
 
     @Inject
     lateinit var screenManager: ScreenManager
 
-    override fun injectComponent() {
+    private lateinit var presenter: RegisterPresenter
+
+    private fun injectComponent() {
         App.componentManager().loginComponent.inject(this)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        injectComponent()
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_register)
+
+        presenter = ViewModelProvider(this, viewModelFactory).get(RegisterPresenter::class.java)
 
         signUpText.text = fromHtmlCompat(getString(R.string.sign_up_title))
 
@@ -165,19 +170,19 @@ class RegisterActivity: BasePresenterActivity<RegisterPresenter, RegisterView>()
     }
 
     private fun setSignUpButtonState() {
-        signUpButton.isEnabled = emailField.text.isNotBlank() && firstNameField.text.isNotBlank() && passwordField.text.isNotBlank()
+        signUpButton.isEnabled =
+                emailField.text.isNullOrBlank() == false &&
+                firstNameField.text.isNullOrBlank() == false &&
+                passwordField.text.isNullOrBlank() == false
     }
 
     override fun onStart() {
         super.onStart()
-        presenter?.attachView(this)
+        presenter.attachView(this)
     }
 
     override fun onStop() {
-        presenter?.detachView(this)
+        presenter.detachView(this)
         super.onStop()
     }
-
-    override fun getPresenterProvider()
-            = registerPresenterProvider
 }

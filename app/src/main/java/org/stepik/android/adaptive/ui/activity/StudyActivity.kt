@@ -1,5 +1,6 @@
 package org.stepik.android.adaptive.ui.activity
 
+import androidx.fragment.app.Fragment
 import kotlinx.android.synthetic.main.fragment_activity.*
 import org.stepik.android.adaptive.App
 import org.stepik.android.adaptive.core.ScreenManager
@@ -46,5 +47,5 @@ class StudyActivity : FragmentActivity(), AchievementView {
         super.onStop()
     }
 
-    override fun createFragment() = RecommendationsFragment()
+    override fun createFragment(): Fragment = RecommendationsFragment()
 }

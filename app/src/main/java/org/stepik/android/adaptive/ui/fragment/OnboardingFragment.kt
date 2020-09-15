@@ -1,13 +1,14 @@
 package org.stepik.android.adaptive.ui.fragment
 
 import android.os.Bundle
-import android.support.annotation.StringRes
-import android.support.v4.app.Fragment
-import android.support.v7.app.AppCompatActivity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.DecelerateInterpolator
+import androidx.annotation.StringRes
+import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.Scheduler
@@ -55,13 +56,15 @@ class OnboardingFragment : Fragment(), AuthView {
     lateinit var backgroundScheduler: Scheduler
 
     @Inject
-    lateinit var presenter: AuthPresenter
+    internal lateinit var viewModelFactory: ViewModelProvider.Factory
 
     @Inject
     lateinit var sharedPreferenceHelper: SharedPreferenceHelper
 
     @Inject
     lateinit var screenManager: ScreenManager
+
+    private lateinit var presenter: AuthPresenter
 
     private val adapter = OnboardingQuizCardsAdapter {
         updateToolbar(true)
@@ -86,6 +89,8 @@ class OnboardingFragment : Fragment(), AuthView {
                 .studyComponent
                 .inject(this)
         retainInstance = true
+
+        presenter = ViewModelProvider(this, viewModelFactory).get(AuthPresenter::class.java)
         initOnboardingCards()
         presenter.attachView(this)
 
@@ -190,7 +195,7 @@ class OnboardingFragment : Fragment(), AuthView {
                     .subscribe { isFake ->
                         screenManager.startStudy()
                         if (isFake) {
-                            screenManager.showEmptyAuthScreen(context)
+                            screenManager.showEmptyAuthScreen(requireContext())
                         }
                     }
         }

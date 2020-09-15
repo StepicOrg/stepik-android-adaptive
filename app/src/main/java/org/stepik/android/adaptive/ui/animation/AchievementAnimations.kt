@@ -5,13 +5,13 @@ import android.animation.AnimatorListenerAdapter
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.graphics.drawable.GradientDrawable
-import android.support.v4.content.ContextCompat
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AccelerateDecelerateInterpolator
 import android.view.animation.AnticipateInterpolator
 import android.view.animation.OvershootInterpolator
+import androidx.core.content.ContextCompat
 import org.stepik.android.adaptive.R
 import org.stepik.android.adaptive.core.ScreenManager
 import org.stepik.android.adaptive.data.model.Achievement

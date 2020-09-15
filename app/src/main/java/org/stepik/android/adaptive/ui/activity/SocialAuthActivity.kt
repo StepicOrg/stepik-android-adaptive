@@ -4,8 +4,8 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
 import android.webkit.WebView
+import androidx.appcompat.app.AppCompatActivity
 import org.stepik.android.adaptive.App
 import org.stepik.android.adaptive.configuration.Config
 import org.stepik.android.adaptive.R
@@ -51,8 +51,9 @@ class SocialAuthActivity : AppCompatActivity() {
         }
     }
 
-    override fun onSaveInstanceState(outState: Bundle?) {
+    override fun onSaveInstanceState(outState: Bundle) {
         authWebView.saveState(outState)
+        super.onSaveInstanceState(outState)
     }
 
     override fun onBackPressed() {

@@ -1,10 +1,10 @@
 package org.stepik.android.adaptive.ui.activity
 
 import android.os.Bundle
-import android.support.v4.app.FragmentStatePagerAdapter
-import android.support.v4.view.ViewPager
-import android.support.v7.app.AppCompatActivity
 import android.view.MenuItem
+import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.FragmentStatePagerAdapter
+import androidx.viewpager.widget.ViewPager
 import kotlinx.android.synthetic.main.activity_stats.*
 import org.stepik.android.adaptive.App
 import org.stepik.android.adaptive.R
@@ -38,7 +38,7 @@ class StatsActivity : AppCompatActivity() {
         supportActionBar?.title = getString(R.string.stats)
 
         pager.adapter = StatsViewPagerAdapter(supportFragmentManager, this, config)
-        pager.offscreenPageLimit = pager.adapter.count
+        pager.offscreenPageLimit = (pager.adapter as StatsViewPagerAdapter).count
         tabLayout.setupWithViewPager(pager)
 
         if (savedInstanceState == null) {

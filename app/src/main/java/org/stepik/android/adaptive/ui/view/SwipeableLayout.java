@@ -2,12 +2,13 @@ package org.stepik.android.adaptive.ui.view;
 
 import android.content.Context;
 import android.content.res.Resources;
-import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.FrameLayout;
+
+import androidx.annotation.NonNull;
 
 import org.stepik.android.adaptive.math.LinearRegression;
 import org.stepik.android.adaptive.ui.animation.CardAnimations;

@@ -1,15 +1,15 @@
 package org.stepik.android.adaptive.ui.adapter
 
 import android.graphics.Paint
-import android.support.v4.content.ContextCompat
-import android.support.v4.graphics.drawable.DrawableCompat
-import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.content.ContextCompat
+import androidx.core.graphics.drawable.DrawableCompat
+import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.item_questions_pack.view.*
 import org.solovyev.android.checkout.Sku
 import org.stepik.android.adaptive.R
@@ -18,7 +18,6 @@ import org.stepik.android.adaptive.content.questions.QuestionsPack
 import org.stepik.android.adaptive.ui.helper.setAlpha
 import org.stepik.android.adaptive.util.changeVisibillity
 import org.stepik.android.adaptive.util.fromHtmlCompat
-import java.text.NumberFormat
 import java.util.*
 
 class QuestionsPacksAdapter(
@@ -73,7 +72,7 @@ class QuestionsPacksAdapter(
         holder.difficulty.text = fromHtmlCompat(context.getString(R.string.questions_difficulty, context.getString(pack.difficulty)))
         holder.difficulty.setTextColor(setAlpha(pack.textColor, TEXT_ALPHA))
 
-        val activeDrawable = DrawableCompat.wrap(ContextCompat.getDrawable(context, R.drawable.ic_correct))
+        val activeDrawable = DrawableCompat.wrap(ContextCompat.getDrawable(context, R.drawable.ic_correct)!!)
         DrawableCompat.setTint(activeDrawable, setAlpha(pack.textColor, ICON_ALPHA))
         holder.activeIcon.setImageDrawable(activeDrawable)
         holder.activeIcon.changeVisibillity(pack.ordinal == selection)

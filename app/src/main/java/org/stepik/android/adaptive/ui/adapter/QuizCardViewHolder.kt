@@ -1,7 +1,5 @@
 package org.stepik.android.adaptive.ui.adapter
 
-import android.support.annotation.StringRes
-import android.support.design.widget.Snackbar
 import android.view.View
 import org.stepik.android.adaptive.core.presenter.CardPresenter
 import org.stepik.android.adaptive.core.presenter.contracts.CardView
@@ -14,6 +12,8 @@ import org.stepik.android.adaptive.ui.view.SwipeableLayout
 import org.stepik.android.adaptive.util.HtmlUtil
 import android.view.ViewGroup
 import android.webkit.WebSettings
+import androidx.annotation.StringRes
+import com.google.android.material.snackbar.Snackbar
 import org.stepik.android.adaptive.App
 import org.stepik.android.adaptive.R
 import org.stepik.android.adaptive.configuration.Config

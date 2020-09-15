@@ -1,9 +1,9 @@
 package org.stepik.android.adaptive.ui.adapter
 
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import org.stepik.android.adaptive.R
 import org.stepik.android.adaptive.databinding.ItemDailyRewardBinding
 import org.stepik.android.adaptive.gamification.InventoryManager
@@ -21,8 +21,8 @@ class DailyRewardsAdapter(private val rewards: List<List<Pair<InventoryManager.I
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
             DailyRewardViewHolder(ItemDailyRewardBinding.inflate(LayoutInflater.from(parent.context), parent, false))
 
-    override fun onBindViewHolder(holder: DailyRewardViewHolder?, position: Int) {
-        holder?.let {
+    override fun onBindViewHolder(holder: DailyRewardViewHolder, position: Int) {
+        holder.let {
             it.binding.day.text = it.itemView.context.getString(R.string.day_number, position + 1)
             (it.binding.rewards.adapter as InventoryAdapter).data = rewards[position]
             it.binding.root.isSelected = currentProgress == position

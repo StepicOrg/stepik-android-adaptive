@@ -3,17 +3,18 @@ package org.stepik.android.adaptive.ui.dialog.profile
 import android.app.Activity.RESULT_OK
 import android.app.Dialog
 import android.os.Bundle
-import android.support.design.widget.TextInputLayout
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.Window
+import androidx.fragment.app.DialogFragment
+import androidx.lifecycle.ViewModelProvider
+import com.google.android.material.textfield.TextInputLayout
 import kotlinx.android.synthetic.main.dialog_edit_name.*
 import org.stepik.android.adaptive.App
 import org.stepik.android.adaptive.R
-import org.stepik.android.adaptive.core.presenter.BasePresenterDialogFragment
 import org.stepik.android.adaptive.core.presenter.EditProfileFieldPresenter
 import org.stepik.android.adaptive.core.presenter.contracts.EditProfileFieldView
 import org.stepik.android.adaptive.data.model.Profile
@@ -22,13 +23,14 @@ import org.stepik.android.adaptive.util.ValidateUtil
 import org.stepik.android.adaptive.util.changeVisibillity
 import org.stepik.android.adaptive.util.hideAllChildren
 import javax.inject.Inject
-import javax.inject.Provider
 
-class EditNameDialogFragment: BasePresenterDialogFragment<EditProfileFieldPresenter, EditProfileFieldView>(), EditProfileFieldView {
+class EditNameDialogFragment: DialogFragment(), EditProfileFieldView {
     @Inject
-    lateinit var editProfileFieldPresenterProvider: Provider<EditProfileFieldPresenter>
+    internal lateinit var viewModelFactory: ViewModelProvider.Factory
 
-    override fun injectComponent() {
+    private lateinit var presenter: EditProfileFieldPresenter
+
+    private fun injectComponent() {
         App.componentManager()
                 .statsComponent.inject(this)
     }
@@ -44,14 +46,16 @@ class EditNameDialogFragment: BasePresenterDialogFragment<EditProfileFieldPresen
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        injectComponent()
         super.onCreate(savedInstanceState)
         isCancelable = false
+        presenter = ViewModelProvider(this, viewModelFactory).get(EditProfileFieldPresenter::class.java)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
             inflater.inflate(R.layout.dialog_edit_name, container, false)
 
-    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         confirm.setOnClickListener { changeName() }
         setConfirmButton()
 
@@ -77,7 +81,7 @@ class EditNameDialogFragment: BasePresenterDialogFragment<EditProfileFieldPresen
 
         if (!isValid) return
 
-        presenter?.changeName(firstName.text.toString(), secondName.text.toString())
+        presenter.changeName(firstName.text.toString(), secondName.text.toString())
     }
 
     private fun onClearError() {
@@ -86,7 +90,9 @@ class EditNameDialogFragment: BasePresenterDialogFragment<EditProfileFieldPresen
     }
 
     private fun setConfirmButton() {
-        confirm.isEnabled = firstName.text.isNotBlank() && secondName.text.isNotBlank()
+        confirm.isEnabled =
+                firstName.text.isNullOrBlank() == false &&
+                secondName.text.isNullOrBlank() == false
     }
 
     override fun onProfile(profile: Profile) {
@@ -131,13 +137,11 @@ class EditNameDialogFragment: BasePresenterDialogFragment<EditProfileFieldPresen
 
     override fun onStart() {
         super.onStart()
-        presenter?.attachView(this)
+        presenter.attachView(this)
     }
 
     override fun onStop() {
-        presenter?.detachView(this)
+        presenter.detachView(this)
         super.onStop()
     }
-
-    override fun getPresenterProvider() = editProfileFieldPresenterProvider
 }

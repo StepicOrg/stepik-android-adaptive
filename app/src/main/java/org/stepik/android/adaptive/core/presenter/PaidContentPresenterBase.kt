@@ -1,7 +1,7 @@
 package org.stepik.android.adaptive.core.presenter
 
 import android.content.Intent
-import android.support.annotation.CallSuper
+import androidx.annotation.CallSuper
 import io.reactivex.Observable
 import io.reactivex.Single
 import org.solovyev.android.checkout.*

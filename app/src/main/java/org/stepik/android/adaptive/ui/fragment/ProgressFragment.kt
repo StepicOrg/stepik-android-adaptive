@@ -1,34 +1,42 @@
 package org.stepik.android.adaptive.ui.fragment
 
 import android.os.Bundle
-import android.support.v4.content.ContextCompat
-import android.support.v7.widget.DividerItemDecoration
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.recycler_view.view.*
 import org.stepik.android.adaptive.App
 import org.stepik.android.adaptive.R
-import org.stepik.android.adaptive.core.presenter.BasePresenterFragment
 import org.stepik.android.adaptive.core.presenter.ProgressPresenter
 import org.stepik.android.adaptive.core.presenter.contracts.ProgressView
 import org.stepik.android.adaptive.ui.adapter.WeeksAdapter
 import javax.inject.Inject
-import javax.inject.Provider
 
 
-class ProgressFragment : BasePresenterFragment<ProgressPresenter, ProgressView>(), ProgressView {
+class ProgressFragment : Fragment(), ProgressView {
     private lateinit var recycler : RecyclerView
 
     @Inject
-    lateinit var progressPresenterProvider: Provider<ProgressPresenter>
+    internal lateinit var viewModelFactory: ViewModelProvider.Factory
 
-    override fun injectComponent() {
+    private lateinit var presenter: ProgressPresenter
+
+    private fun injectComponent() {
         App.componentManager()
                 .statsComponent
                 .inject(this)
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        injectComponent()
+        super.onCreate(savedInstanceState)
+        presenter = ViewModelProvider(this, viewModelFactory).get(ProgressPresenter::class.java)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -36,7 +44,7 @@ class ProgressFragment : BasePresenterFragment<ProgressPresenter, ProgressView>(
         recycler.layoutManager = LinearLayoutManager(context)
 
         val divider = DividerItemDecoration(context, DividerItemDecoration.VERTICAL)
-        divider.setDrawable(ContextCompat.getDrawable(context, R.drawable.stroke))
+        divider.setDrawable(ContextCompat.getDrawable(requireContext(), R.drawable.stroke)!!)
         recycler.addItemDecoration(divider)
 
         return recycler
@@ -48,13 +56,11 @@ class ProgressFragment : BasePresenterFragment<ProgressPresenter, ProgressView>(
 
     override fun onStart() {
         super.onStart()
-        presenter?.attachView(this)
+        presenter.attachView(this)
     }
 
     override fun onStop() {
-        presenter?.detachView(this)
+        presenter.detachView(this)
         super.onStop()
     }
-
-    override fun getPresenterProvider() = progressPresenterProvider
 }

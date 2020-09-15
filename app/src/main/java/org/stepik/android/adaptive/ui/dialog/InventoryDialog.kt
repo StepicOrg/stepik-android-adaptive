@@ -2,9 +2,9 @@ package org.stepik.android.adaptive.ui.dialog
 
 import android.app.Dialog
 import android.os.Bundle
-import android.support.v4.app.DialogFragment
-import android.support.v7.app.AlertDialog
 import android.view.View
+import androidx.appcompat.app.AlertDialog
+import androidx.fragment.app.DialogFragment
 import com.google.android.flexbox.FlexDirection
 import com.google.android.flexbox.FlexboxLayoutManager
 import com.google.android.flexbox.JustifyContent
@@ -29,8 +29,8 @@ class InventoryDialog : DialogFragment() {
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        val alertDialogBuilder = AlertDialog.Builder(context, R.style.ExpLevelDialogTheme)
-        binding = DialogDefaultBodyBinding.inflate(activity.layoutInflater, null, false)
+        val alertDialogBuilder = AlertDialog.Builder(requireContext(), R.style.ExpLevelDialogTheme)
+        binding = DialogDefaultBodyBinding.inflate(requireActivity().layoutInflater, null, false)
 
         binding.title.setText(R.string.inventory_title)
         binding.description.visibility = View.GONE
@@ -39,7 +39,7 @@ class InventoryDialog : DialogFragment() {
 
         adapter = InventoryAdapter(inventoryManager.getInventory())
 
-        val recycler = activity.layoutInflater.inflate(R.layout.recycler_view, null, false).recycler
+        val recycler = requireActivity().layoutInflater.inflate(R.layout.recycler_view, null, false).recycler
 
         val layoutManager = FlexboxLayoutManager(context)
         layoutManager.flexDirection = FlexDirection.ROW

@@ -10,7 +10,7 @@
         android:layerType="hardware"
         android:id="@+id/container">
 
-        <android.support.v7.widget.CardView
+        <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:cardUseCompatPadding="true"
@@ -254,6 +254,6 @@
                     android:layout_height="32dp"
                     android:layout_gravity="center" />
             </FrameLayout>
-        </android.support.v7.widget.CardView>
+        </androidx.cardview.widget.CardView>
     </org.stepik.android.adaptive.ui.view.SwipeableLayout>
 </layout>

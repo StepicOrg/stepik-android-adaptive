@@ -1,12 +1,12 @@
 package org.stepik.android.adaptive.ui.adapter
 
 import android.graphics.drawable.Drawable
-import android.support.v4.content.ContextCompat
-import android.support.v4.graphics.drawable.DrawableCompat
-import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
+import androidx.core.graphics.drawable.DrawableCompat
+import androidx.recyclerview.widget.RecyclerView
 import org.stepik.android.adaptive.R
 import org.stepik.android.adaptive.data.model.RatingItem
 import org.stepik.android.adaptive.databinding.ItemRatingBinding
@@ -36,10 +36,10 @@ class RatingAdapter(
         super.onAttachedToRecyclerView(recyclerView)
         val context = recyclerView.context
 
-        leaderIconDrawable = DrawableCompat.wrap(ContextCompat.getDrawable(context, R.drawable.ic_crown))
+        leaderIconDrawable = DrawableCompat.wrap(ContextCompat.getDrawable(context, R.drawable.ic_crown)!!)
         DrawableCompat.setTint(leaderIconDrawable, ContextCompat.getColor(context, R.color.colorYellow))
 
-        leaderIconDrawableSelected = DrawableCompat.wrap(ContextCompat.getDrawable(context, R.drawable.ic_crown))
+        leaderIconDrawableSelected = DrawableCompat.wrap(ContextCompat.getDrawable(context, R.drawable.ic_crown)!!)
         DrawableCompat.setTint(leaderIconDrawableSelected, ContextCompat.getColor(context, android.R.color.white))
     }
 
@@ -54,7 +54,7 @@ class RatingAdapter(
 
     override fun getItemCount() = items.size
 
-    override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int) =
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
             when(viewType) {
                 RATING_ITEM_VIEW_TYPE -> RatingViewHolder(ItemRatingBinding.inflate(LayoutInflater.from(parent?.context), parent, false))
                 SEPARATOR_VIEW_TYPE -> SeparatorViewHolder(LayoutInflater.from(parent?.context).inflate(R.layout.ranks_separator, parent, false))

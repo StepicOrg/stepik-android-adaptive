@@ -1,11 +1,11 @@
 package org.stepik.android.adaptive.ui.adapter
 
-import android.support.v4.content.ContextCompat
-import android.support.v4.graphics.drawable.DrawableCompat
-import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
+import androidx.core.graphics.drawable.DrawableCompat
+import androidx.recyclerview.widget.RecyclerView
 import org.stepik.android.adaptive.R
 import org.stepik.android.adaptive.databinding.ItemAchievementBinding
 import org.stepik.android.adaptive.gamification.achievements.AchievementManager
@@ -19,7 +19,7 @@ constructor(
 ): RecyclerView.Adapter<AchievementsAdapter.AchievementViewHolder>() {
     private val achievements = achievementManager.achievements
 
-    override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int) =
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
             AchievementViewHolder(ItemAchievementBinding.inflate(LayoutInflater.from(parent?.context), parent, false))
 
     override fun onBindViewHolder(holder: AchievementViewHolder, p: Int) {
@@ -38,7 +38,7 @@ constructor(
 
 
         if (achievements[p].icon != -1) {
-            holder.binding.icon.setImageDrawable(DrawableCompat.wrap(ContextCompat.getDrawable(context, achievements[p].icon)))
+            holder.binding.icon.setImageDrawable(DrawableCompat.wrap(ContextCompat.getDrawable(context, achievements[p].icon)!!))
         }
     }
 

@@ -1,11 +1,11 @@
 package org.stepik.android.adaptive.ui.adapter.attempts
 
-import android.databinding.DataBindingUtil
-import android.support.annotation.DrawableRes
-import android.support.v4.content.ContextCompat
-import android.support.v4.graphics.drawable.DrawableCompat
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.annotation.DrawableRes
+import androidx.core.content.ContextCompat
+import androidx.core.graphics.drawable.DrawableCompat
+import androidx.databinding.DataBindingUtil
 import org.stepik.android.adaptive.R
 import org.stepik.android.adaptive.data.model.Attempt
 import org.stepik.android.adaptive.data.model.Reply
@@ -77,7 +77,7 @@ class ChoiceQuizAnswerAdapter : AttemptAnswerAdapter<ChoiceQuizAnswerAdapter.Cho
                 if (selection[pos]) R.drawable.ic_radio_button_filled else R.drawable.ic_radio_button
             }
 
-            val selectionImageDrawable = DrawableCompat.wrap(ContextCompat.getDrawable(context, selectionImageDrawableId))
+            val selectionImageDrawable = DrawableCompat.wrap(ContextCompat.getDrawable(context, selectionImageDrawableId)!!)
             DrawableCompat.setTint(selectionImageDrawable,
                     ContextCompat.getColor(context, if (selection[pos]) R.color.colorAccent else R.color.colorRadioButtonDefault))
             holder.binding.itemAnswerSelectionImage.setImageDrawable(selectionImageDrawable)

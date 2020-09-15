@@ -1,14 +1,16 @@
 package org.stepik.android.adaptive.ui.fragment
 
 import android.os.Bundle
-import android.support.v4.content.ContextCompat
-import android.support.v7.widget.DividerItemDecoration
-import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
+import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.android.synthetic.main.fragment_rating.*
 import org.stepik.android.adaptive.App
 import org.stepik.android.adaptive.R
@@ -16,16 +18,23 @@ import org.stepik.android.adaptive.core.presenter.*
 import org.stepik.android.adaptive.core.presenter.contracts.RatingView
 import org.stepik.android.adaptive.ui.adapter.RatingAdapter
 import javax.inject.Inject
-import javax.inject.Provider
 
-class RatingFragment : BasePresenterFragment<RatingPresenter, RatingView>(), RatingView {
+class RatingFragment : Fragment(), RatingView {
     @Inject
-    lateinit var ratingPresenterProvider: Provider<RatingPresenter>
+    internal lateinit var viewModelFactory: ViewModelProvider.Factory
 
-    override fun injectComponent() {
+    private lateinit var presenter: RatingPresenter
+
+    private fun injectComponent() {
         App.componentManager()
                 .statsComponent
                 .inject(this)
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        injectComponent()
+        super.onCreate(savedInstanceState)
+        presenter = ViewModelProvider(this, viewModelFactory).get(RatingPresenter::class.java)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
@@ -35,10 +44,10 @@ class RatingFragment : BasePresenterFragment<RatingPresenter, RatingView>(), Rat
         recycler.layoutManager = LinearLayoutManager(context)
 
         val divider = DividerItemDecoration(context, DividerItemDecoration.VERTICAL)
-        divider.setDrawable(ContextCompat.getDrawable(context, R.drawable.stroke))
+        divider.setDrawable(ContextCompat.getDrawable(requireContext(), R.drawable.stroke)!!)
         recycler.addItemDecoration(divider)
 
-        val spinnerAdapter = ArrayAdapter<CharSequence>(context, R.layout.item_rating_period, context.resources.getStringArray(R.array.rating_periods))
+        val spinnerAdapter = ArrayAdapter<CharSequence>(requireContext(), R.layout.item_rating_period, resources.getStringArray(R.array.rating_periods))
         spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         spinner.adapter = spinnerAdapter
 
@@ -94,6 +103,4 @@ class RatingFragment : BasePresenterFragment<RatingPresenter, RatingView>(), Rat
         presenter?.detachView(this)
         super.onStop()
     }
-
-    override fun getPresenterProvider() = ratingPresenterProvider
 }
