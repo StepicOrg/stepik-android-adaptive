@@ -87,7 +87,7 @@ abstract class AppCoreModule {
             Billing(
                 context,
                 object : Billing.DefaultConfiguration() {
-                    override fun getPublicKey() =
+                    override fun getPublicKey(): String =
                         config.appPublicLicenseKey
                 }
             )

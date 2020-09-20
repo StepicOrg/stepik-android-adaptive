@@ -34,7 +34,7 @@ class StudyActivity : FragmentActivity(), AchievementView {
         }
     }
 
-    override fun canShowAchievement() =
+    override fun canShowAchievement(): Boolean =
         !isPlayingAchievementAnimation
 
     override fun onStart() {

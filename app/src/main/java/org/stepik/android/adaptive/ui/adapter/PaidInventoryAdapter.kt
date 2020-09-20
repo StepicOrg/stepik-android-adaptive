@@ -20,7 +20,8 @@ class PaidInventoryAdapter(
             notifyDataSetChanged()
         }
 
-    override fun getItemCount() = items.size
+    override fun getItemCount(): Int =
+        items.size
 
     override fun onBindViewHolder(holder: PaidContentViewHolder, pos: Int) {
         holder.title.text = items[pos].first.displayTitle

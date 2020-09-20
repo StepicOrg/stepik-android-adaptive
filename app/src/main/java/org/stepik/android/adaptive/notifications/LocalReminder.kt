@@ -27,7 +27,7 @@ constructor(
         const val DAYS_MULTIPLIER_KEY = "days_multiplier"
 
         @JvmStatic
-        fun isGoodTime(hour: Int) =
+        fun isGoodTime(hour: Int): Boolean =
             hour in 7..23
     }
 

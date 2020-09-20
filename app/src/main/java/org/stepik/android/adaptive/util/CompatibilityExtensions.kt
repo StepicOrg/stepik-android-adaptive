@@ -4,7 +4,7 @@ import android.content.res.Configuration
 import android.os.Build
 import android.text.Html
 import android.text.Spanned
-import java.util.*
+import java.util.Locale
 
 fun fromHtmlCompat(html: String): Spanned =
     if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {

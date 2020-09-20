@@ -7,5 +7,5 @@ import androidx.annotation.ColorInt
 fun setAlpha(@ColorInt color: Int, alpha: Int): Int =
     (color and 0x00FFFFFF) or (alpha shl 24)
 
-fun dpToPx(dp: Int) =
+fun dpToPx(dp: Int): Float =
     Resources.getSystem().displayMetrics.density * dp

@@ -15,7 +15,11 @@ import org.stepik.android.adaptive.core.presenter.RegisterPresenter
 import org.stepik.android.adaptive.core.presenter.contracts.RegisterView
 import org.stepik.android.adaptive.data.analytics.AmplitudeAnalytics
 import org.stepik.android.adaptive.data.analytics.Analytics
-import org.stepik.android.adaptive.util.*
+import org.stepik.android.adaptive.util.changeVisibillity
+import org.stepik.android.adaptive.util.fromHtmlCompat
+import org.stepik.android.adaptive.util.hideSoftKeyboard
+import org.stepik.android.adaptive.util.setOnKeyboardOpenListener
+import org.stepik.android.adaptive.util.stripUnderlinesFromLinks
 import javax.inject.Inject
 
 class RegisterActivity : BaseActivity(), RegisterView {
@@ -121,10 +125,10 @@ class RegisterActivity : BaseActivity(), RegisterView {
         val email = emailField.text.toString().trim()
         val password = passwordField.text.toString()
 
-        presenter?.register(firstName, lastName, email, password)
+        presenter.register(firstName, lastName, email, password)
     }
 
-    override fun setState(state: RegisterView.State) =
+    override fun setState(state: RegisterView.State) {
         when (state) {
             is RegisterView.State.Idle -> {
                 // reset view state
@@ -147,6 +151,7 @@ class RegisterActivity : BaseActivity(), RegisterView {
                 onSuccess()
             }
         }
+    }
 
     private fun onChangesNeededError(message: String) {
         signUpButton.isEnabled = false

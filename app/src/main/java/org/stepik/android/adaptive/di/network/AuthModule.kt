@@ -6,7 +6,11 @@ import dagger.Provides
 import okhttp3.Credentials
 import okhttp3.OkHttpClient
 import okhttp3.Protocol
-import org.stepik.android.adaptive.api.auth.*
+import org.stepik.android.adaptive.api.auth.AuthRepository
+import org.stepik.android.adaptive.api.auth.AuthRepositoryImpl
+import org.stepik.android.adaptive.api.auth.CookieHelper
+import org.stepik.android.adaptive.api.auth.EmptyAuthService
+import org.stepik.android.adaptive.api.auth.OAuthService
 import org.stepik.android.adaptive.configuration.Config
 import org.stepik.android.adaptive.di.AppSingleton
 import org.stepik.android.adaptive.di.qualifiers.AuthLock

@@ -6,7 +6,7 @@ import org.stepik.android.adaptive.R
 object MorphingHelper {
 
     @JvmStatic
-    fun morphStreakHeaderToIncBubble(header: MorphingView, inc: TextView) =
+    fun morphStreakHeaderToIncBubble(header: MorphingView, inc: TextView): MorphingAnimation =
         MorphingAnimation(
             header,
             MorphingView.MorphParams(

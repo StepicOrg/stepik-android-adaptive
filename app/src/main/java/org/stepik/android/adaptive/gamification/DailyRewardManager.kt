@@ -34,10 +34,10 @@ constructor(
         private const val TOTAL_REWARD_PROGRESS_KEY = "total_reward_progress"
     }
 
-    fun getLastSessionTimestamp() =
+    fun getLastSessionTimestamp(): Long =
         sharedPreferenceHelper.getLong(LAST_SESSION_KEY)
 
-    private fun getRewardProgress() =
+    private fun getRewardProgress(): Long =
         sharedPreferenceHelper.getLong(REWARD_PROGRESS_KEY)
 
     var totalRewardProgress: Long

@@ -15,10 +15,10 @@ class DailyRewardsAdapter(private val rewards: List<List<Pair<InventoryManager.I
             notifyDataSetChanged()
         }
 
-    override fun getItemCount() =
+    override fun getItemCount(): Int =
         rewards.size
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DailyRewardViewHolder =
         DailyRewardViewHolder(ItemDailyRewardBinding.inflate(LayoutInflater.from(parent.context), parent, false))
 
     override fun onBindViewHolder(holder: DailyRewardViewHolder, position: Int) {

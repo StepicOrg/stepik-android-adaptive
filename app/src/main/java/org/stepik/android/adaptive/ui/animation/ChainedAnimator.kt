@@ -9,7 +9,7 @@ class ChainedAnimator(private val c: () -> Animator) {
 
     private var block: (() -> Unit)? = null
 
-    fun then(block: () -> Animator) =
+    fun then(block: () -> Animator): ChainedAnimator =
         then(ChainedAnimator(block))
 
     fun then(chainedAnimator: ChainedAnimator): ChainedAnimator {

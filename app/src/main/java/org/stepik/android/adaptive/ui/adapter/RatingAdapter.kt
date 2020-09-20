@@ -45,19 +45,19 @@ class RatingAdapter(
 
     private val items = ArrayList<RatingItem>()
 
-    override fun getItemViewType(position: Int) =
+    override fun getItemViewType(position: Int): Int =
         if (isNotSeparatorStub(items[position])) {
             RATING_ITEM_VIEW_TYPE
         } else {
             SEPARATOR_VIEW_TYPE
         }
 
-    override fun getItemCount() = items.size
+    override fun getItemCount(): Int = items.size
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder =
         when (viewType) {
-            RATING_ITEM_VIEW_TYPE -> RatingViewHolder(ItemRatingBinding.inflate(LayoutInflater.from(parent?.context), parent, false))
-            SEPARATOR_VIEW_TYPE -> SeparatorViewHolder(LayoutInflater.from(parent?.context).inflate(R.layout.ranks_separator, parent, false))
+            RATING_ITEM_VIEW_TYPE -> RatingViewHolder(ItemRatingBinding.inflate(LayoutInflater.from(parent.context), parent, false))
+            SEPARATOR_VIEW_TYPE -> SeparatorViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.ranks_separator, parent, false))
             else -> throw IllegalStateException("Unknown view type $viewType")
         }
 

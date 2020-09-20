@@ -15,9 +15,10 @@ class InventoryAdapter(private var _data: List<Pair<InventoryManager.Item, Int>>
             notifyDataSetChanged()
         }
 
-    override fun getItemCount() = data.size
+    override fun getItemCount(): Int =
+        data.size
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): InventoryItemViewHolder =
         InventoryItemViewHolder(ItemInventoryBinding.inflate(LayoutInflater.from(parent.context), parent, false))
 
     override fun onBindViewHolder(holder: InventoryItemViewHolder, position: Int) {

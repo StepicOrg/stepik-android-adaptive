@@ -1,5 +1,6 @@
 package org.stepik.android.adaptive.ui.adapter
 
+import android.annotation.SuppressLint
 import android.view.View
 import android.view.ViewGroup
 import android.webkit.WebSettings
@@ -39,6 +40,7 @@ class QuizCardViewHolder(val binding: QuizCardViewBinding) : ContainerView.ViewH
         settings.loadWithOverviewMode = true
         settings.useWideViewPort = true
         settings.layoutAlgorithm = WebSettings.LayoutAlgorithm.NORMAL
+        @SuppressLint("SetJavaScriptEnabled")
         settings.javaScriptEnabled = true
 
         binding.question.webViewClient = DefaultWebViewClient(null) { _, _ -> onCardLoaded() }
@@ -86,8 +88,8 @@ class QuizCardViewHolder(val binding: QuizCardViewBinding) : ContainerView.ViewH
 
         binding.container.setSwipeListener(object : SwipeableLayout.SwipeListener() {
             override fun onScroll(scrollProgress: Float) {
-                binding.hardReaction.alpha = Math.max(2 * scrollProgress, 0f)
-                binding.easyReaction.alpha = Math.max(2 * -scrollProgress, 0f)
+                binding.hardReaction.alpha = (2 * scrollProgress).coerceAtLeast(0f)
+                binding.easyReaction.alpha = (2 * -scrollProgress).coerceAtLeast(0f)
             }
 
             override fun onSwipeLeft() {
@@ -171,11 +173,13 @@ class QuizCardViewHolder(val binding: QuizCardViewBinding) : ContainerView.ViewH
         }
     }
 
-    override fun onSubmissionConnectivityError() =
+    override fun onSubmissionConnectivityError() {
         onSubmissionError(R.string.connectivity_error)
+    }
 
-    override fun onSubmissionRequestError() =
+    override fun onSubmissionRequestError() {
         onSubmissionError(R.string.request_error)
+    }
 
     private fun onSubmissionError(@StringRes errorMessage: Int) {
         if (binding.root.parent != null) {

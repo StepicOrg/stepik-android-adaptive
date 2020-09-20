@@ -23,6 +23,6 @@ data class Achievement(
         get() = sharedPreferenceHelper.getLong(path)
         set(value) = sharedPreferenceHelper.saveLong(path, value)
 
-    fun isComplete() =
+    fun isComplete(): Boolean =
         currentValue >= targetValue
 }

@@ -18,7 +18,7 @@ constructor(
 ) : RecyclerView.Adapter<AchievementsAdapter.AchievementViewHolder>() {
     private val achievements = achievementManager.achievements
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AchievementViewHolder =
         AchievementViewHolder(ItemAchievementBinding.inflate(LayoutInflater.from(parent?.context), parent, false))
 
     override fun onBindViewHolder(holder: AchievementViewHolder, p: Int) {
@@ -40,7 +40,7 @@ constructor(
         }
     }
 
-    override fun getItemCount() =
+    override fun getItemCount(): Int =
         achievements.size
 
     class AchievementViewHolder(val binding: ItemAchievementBinding) : RecyclerView.ViewHolder(binding.root)

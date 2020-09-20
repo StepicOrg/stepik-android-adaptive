@@ -14,7 +14,7 @@ class SharedPreferenceDelegate<in R : SharedPreferenceProvider, T : Any>(
     private val key: String,
     private val klass: KClass<T>
 ) : ReadWriteProperty<R, T>, ReadOnlyProperty<R, T> {
-    override fun getValue(thisRef: R, property: KProperty<*>) =
+    override fun getValue(thisRef: R, property: KProperty<*>): T =
         thisRef.sharedPreferences[klass, key]
 
     override fun setValue(thisRef: R, property: KProperty<*>, value: T) {
@@ -22,8 +22,8 @@ class SharedPreferenceDelegate<in R : SharedPreferenceProvider, T : Any>(
     }
 }
 
-inline fun <R : SharedPreferenceProvider, reified T : Any> preference(key: String) =
-    SharedPreferenceDelegate<R, T>(key, T::class)
+inline fun <R : SharedPreferenceProvider, reified T : Any> preference(key: String): SharedPreferenceDelegate<R, T> =
+    SharedPreferenceDelegate(key, T::class)
 
 inline fun SharedPreferences.edit(operation: SharedPreferences.Editor.() -> Unit) {
     val editor = edit()
@@ -31,7 +31,7 @@ inline fun SharedPreferences.edit(operation: SharedPreferences.Editor.() -> Unit
     editor.apply()
 }
 
-operator fun SharedPreferences.set(key: String, value: Any?) =
+operator fun SharedPreferences.set(key: String, value: Any?) {
     when (value) {
         is Boolean -> edit { putBoolean(key, value) }
         is Long    -> edit { putLong(key, value) }
@@ -40,9 +40,10 @@ operator fun SharedPreferences.set(key: String, value: Any?) =
         is Float   -> edit { putFloat(key, value) }
         else -> throw IllegalStateException("unsupported type ${value?.javaClass}")
     }
+}
 
 @Suppress("UNCHECKED_CAST")
-operator fun <T : Any> SharedPreferences.get(klass: KClass<T>, key: String, default: T? = null) =
+operator fun <T : Any> SharedPreferences.get(klass: KClass<T>, key: String, default: T? = null): T =
     when (klass) {
         Boolean::class  -> getBoolean(key, default as? Boolean ?: false) as T
         Long::class     -> getLong(key, default as? Long ?: 0) as T

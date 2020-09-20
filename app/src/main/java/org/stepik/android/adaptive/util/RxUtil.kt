@@ -9,7 +9,7 @@ import io.reactivex.disposables.Disposable
 import java.util.concurrent.TimeUnit
 
 data class RxOptional<out T>(val value: T?) {
-    fun <R> map(f: (T) -> R?) =
+    fun <R> map(f: (T) -> R?): RxOptional<R> =
         RxOptional(value?.let(f))
 }
 
@@ -26,7 +26,7 @@ inline fun <T, R> Observable<T>.mapNotNull(crossinline f: (T) -> R?): Observable
         f(it)?.let { return@let Observable.just(it) } ?: Observable.empty()
     }
 
-infix fun CompositeDisposable.addDisposable(d: Disposable) =
+infix fun CompositeDisposable.addDisposable(d: Disposable): Boolean =
     this.add(d)
 
 infix fun Completable.then(completable: Completable?): Completable =

@@ -89,7 +89,7 @@ class ChoiceQuizAnswerAdapter : AttemptAnswerAdapter<ChoiceQuizAnswerAdapter.Cho
         }
     }
 
-    override fun getItemCount() =
+    override fun getItemCount(): Int =
         state?.options?.size ?: 0
 
     class ChoiceQuizViewHolder(val binding: ItemAnswerBinding) : ContainerView.ViewHolder(binding.root)

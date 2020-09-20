@@ -18,7 +18,7 @@ import org.stepik.android.adaptive.content.questions.QuestionsPacksResolver
 import org.stepik.android.adaptive.ui.helper.setAlpha
 import org.stepik.android.adaptive.util.changeVisibillity
 import org.stepik.android.adaptive.util.fromHtmlCompat
-import java.util.*
+import java.util.HashSet
 
 class QuestionsPacksAdapter(
     private val onPackClicked: (Sku, QuestionsPack, Boolean) -> Unit,
@@ -50,9 +50,9 @@ class QuestionsPacksAdapter(
         notifyDataSetChanged()
     }
 
-    override fun getItemCount() = items.size
+    override fun getItemCount(): Int = items.size
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): QuestionsPackViewHolder =
         QuestionsPackViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.item_questions_pack, parent, false))
 
     override fun onBindViewHolder(holder: QuestionsPackViewHolder, pos: Int) {

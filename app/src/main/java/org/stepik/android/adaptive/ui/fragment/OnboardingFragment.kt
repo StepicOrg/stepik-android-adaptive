@@ -21,7 +21,13 @@ import org.stepik.android.adaptive.core.presenter.AuthPresenter
 import org.stepik.android.adaptive.core.presenter.contracts.AuthView
 import org.stepik.android.adaptive.data.analytics.AmplitudeAnalytics
 import org.stepik.android.adaptive.data.analytics.Analytics
-import org.stepik.android.adaptive.data.model.*
+import org.stepik.android.adaptive.data.model.Attempt
+import org.stepik.android.adaptive.data.model.Block
+import org.stepik.android.adaptive.data.model.Card
+import org.stepik.android.adaptive.data.model.Dataset
+import org.stepik.android.adaptive.data.model.DatasetWrapper
+import org.stepik.android.adaptive.data.model.Lesson
+import org.stepik.android.adaptive.data.model.Step
 import org.stepik.android.adaptive.data.preference.SharedPreferenceHelper
 import org.stepik.android.adaptive.databinding.FragmentRecommendationsBinding
 import org.stepik.android.adaptive.di.qualifiers.BackgroundScheduler

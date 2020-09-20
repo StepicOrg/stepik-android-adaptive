@@ -113,8 +113,8 @@ class LoginActivity : BaseActivity(), AuthView {
         close.setOnClickListener { finish() }
     }
 
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        if ((item?.itemId ?: -1) == android.R.id.home) {
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (item.itemId == android.R.id.home) {
             hideSoftKeyboard()
             onBackPressed()
             return true
@@ -124,11 +124,11 @@ class LoginActivity : BaseActivity(), AuthView {
 
     override fun onStart() {
         super.onStart()
-        presenter?.attachView(this)
+        presenter.attachView(this)
     }
 
     override fun onStop() {
-        presenter?.detachView(this)
+        presenter.detachView(this)
         super.onStop()
     }
 
@@ -172,6 +172,7 @@ class LoginActivity : BaseActivity(), AuthView {
         hideProgressDialogFragment(PROGRESS)
     }
 
-    override fun onLoading() =
+    override fun onLoading() {
         showProgressDialogFragment(PROGRESS, getString(R.string.sign_in), getString(R.string.processing_your_request))
+    }
 }

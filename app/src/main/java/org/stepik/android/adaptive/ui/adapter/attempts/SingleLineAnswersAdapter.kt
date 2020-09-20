@@ -42,12 +42,12 @@ open class SingleLineAnswersAdapter : AttemptAnswerAdapter<SingleLineAnswersAdap
         submitButton?.isEnabled = value.isNotBlank()
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup) =
+    override fun onCreateViewHolder(parent: ViewGroup): StringViewHolder =
         StringViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.quiz_type_string, parent, false) as EditText).apply {
             editField.addTextChangedListener(textWatcher)
         }
 
-    override fun getItemCount() = 1
+    override fun getItemCount(): Int = 1
 
     class StringViewHolder(val editField: EditText) : ContainerView.ViewHolder(editField)
 }

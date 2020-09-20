@@ -14,7 +14,7 @@ import org.stepik.android.adaptive.data.model.WeekProgress
 import org.stepik.android.adaptive.databinding.HeaderStatsBinding
 import org.stepik.android.adaptive.databinding.ItemWeekBinding
 import org.stepik.android.adaptive.util.defaultLocale
-import java.util.*
+import java.util.ArrayList
 
 class WeeksAdapter : RecyclerView.Adapter<WeeksAdapter.StatsViewHolder>() {
     data class Header(var total: Long = 0, var level: Long = 0, var last7Days: Long = 0, var chartData: LineDataSet? = null)
@@ -41,7 +41,7 @@ class WeeksAdapter : RecyclerView.Adapter<WeeksAdapter.StatsViewHolder>() {
         notifyItemChanged(0)
     }
 
-    override fun getItemViewType(position: Int) =
+    override fun getItemViewType(position: Int): Int =
         if (position == 0)
             HEADER_VIEW_TYPE
         else
@@ -57,7 +57,7 @@ class WeeksAdapter : RecyclerView.Adapter<WeeksAdapter.StatsViewHolder>() {
     }
 
     override fun onBindViewHolder(holder: StatsViewHolder, p: Int) {
-        holder?.let {
+        holder.let {
             when (it) {
                 is StatsViewHolder.WeekViewHolder -> {
                     it.binding.total.text = weeks[p - 1].total.toString()
@@ -102,7 +102,7 @@ class WeeksAdapter : RecyclerView.Adapter<WeeksAdapter.StatsViewHolder>() {
         }
     }
 
-    override fun getItemCount() =
+    override fun getItemCount(): Int =
         weeks.size + 1
 
     fun addAll(data: List<WeekProgress>) {

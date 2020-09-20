@@ -39,16 +39,17 @@ constructor(
 
             val ids = idToContent.keys
 
-            fun getById(id: String) =
+            fun getById(id: String): PaidContent? =
                 idToContent[id]
         }
     }
 
-    fun getItemsCount(item: Item) =
+    fun getItemsCount(item: Item): Long =
         sharedPreferenceHelper.getLong(item.key)
 
-    private fun setItemsCount(item: Item, count: Long) =
+    private fun setItemsCount(item: Item, count: Long) {
         sharedPreferenceHelper.saveLong(item.key, count)
+    }
 
     fun useItem(item: Item): Boolean {
         val count = getItemsCount(item)
@@ -59,10 +60,10 @@ constructor(
         return false
     }
 
-    fun changeItemCount(item: Item, delta: Long) =
+    fun changeItemCount(item: Item, delta: Long): Long =
         sharedPreferenceHelper.changeLong(item.key, delta)
 
-    fun hasTickets() =
+    fun hasTickets(): Boolean =
         getItemsCount(Item.Ticket) > 0
 
     fun starterPack() {

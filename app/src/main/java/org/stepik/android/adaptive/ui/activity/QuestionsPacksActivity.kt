@@ -9,6 +9,7 @@ import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_questions_packs.*
 import kotlinx.android.synthetic.main.app_bar.*
 import kotlinx.android.synthetic.main.state_error.*
+import org.solovyev.android.checkout.ActivityCheckout
 import org.solovyev.android.checkout.Billing
 import org.solovyev.android.checkout.Checkout
 import org.stepik.android.adaptive.App
@@ -58,8 +59,8 @@ class QuestionsPacksActivity : BaseActivity(), QuestionsPacksView {
         }
     }
 
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        if (item?.itemId == android.R.id.home) {
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (item.itemId == android.R.id.home) {
             onBackPressed()
             return true
         }
@@ -99,14 +100,16 @@ class QuestionsPacksActivity : BaseActivity(), QuestionsPacksView {
         errorState.changeVisibillity(true)
     }
 
-    override fun createCheckout() =
+    override fun createCheckout(): ActivityCheckout =
         Checkout.forActivity(this, billing)
 
-    override fun showProgress() =
+    override fun showProgress() {
         showProgressDialogFragment(RESTORE_DIALOG_TAG, getString(R.string.loading_message), getString(R.string.processing_your_request))
+    }
 
-    override fun hideProgress() =
+    override fun hideProgress() {
         hideProgressDialogFragment(RESTORE_DIALOG_TAG)
+    }
 
     override fun onAdapter(adapter: QuestionsPacksAdapter) {
         recycler.adapter = adapter

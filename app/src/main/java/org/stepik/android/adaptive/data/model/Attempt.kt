@@ -13,6 +13,6 @@ class Attempt(
     val time_left: String? = null,
     val user: Long = 0
 ) {
-    fun getDataset() =
+    fun getDataset(): Dataset? =
         datasetWrapper?.dataset
 }

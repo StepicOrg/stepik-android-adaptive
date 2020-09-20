@@ -27,9 +27,9 @@ class BookmarksAdapter(
         notifyItemRemoved(pos)
     }
 
-    override fun getItemCount() = data.size
+    override fun getItemCount(): Int = data.size
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BookmarkViewHolder =
         BookmarkViewHolder(
             LayoutInflater.from(parent.context).inflate(R.layout.item_bookmark, parent, false)
         )

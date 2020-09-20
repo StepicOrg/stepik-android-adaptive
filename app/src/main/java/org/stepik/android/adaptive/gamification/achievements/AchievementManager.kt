@@ -12,7 +12,9 @@ import org.stepik.android.adaptive.data.preference.SharedPreferenceHelper
 import org.stepik.android.adaptive.di.AppSingleton
 import org.stepik.android.adaptive.gamification.DailyRewardManager
 import org.stepik.android.adaptive.gamification.ExpManager
-import java.util.*
+import java.util.ArrayDeque
+import java.util.ArrayList
+import java.util.HashSet
 import javax.inject.Inject
 
 @AppSingleton

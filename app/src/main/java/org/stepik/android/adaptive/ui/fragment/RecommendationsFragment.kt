@@ -106,7 +106,7 @@ class RecommendationsFragment : Fragment(), RecommendationsView {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         binding = FragmentRecommendationsBinding.inflate(inflater, container, false)
 
-        binding.tryAgain.setOnClickListener { presenter?.retry() }
+        binding.tryAgain.setOnClickListener { presenter.retry() }
         binding.courseCompletedText.movementMethod = LinkMovementMethod.getInstance()
 
         binding.streakSuccessContainer.nestedTextView = binding.streakSuccess
@@ -148,8 +148,9 @@ class RecommendationsFragment : Fragment(), RecommendationsView {
         binding.questionsPacks.setPadding(padding, padding, padding, padding)
     }
 
-    override fun onAdapter(cardsAdapter: QuizCardsAdapter) =
+    override fun onAdapter(cardsAdapter: QuizCardsAdapter) {
         binding.cardsContainer.setAdapter(cardsAdapter)
+    }
 
     override fun onLoading() {
         binding.progress.visibility = View.VISIBLE
@@ -211,26 +212,33 @@ class RecommendationsFragment : Fragment(), RecommendationsView {
         }
     }
 
-    override fun onStreakLost() =
+    override fun onStreakLost() {
         CardsFragmentAnimations.playStreakFailedAnimation(binding.streakFailed, binding.expProgress)
+    }
 
-    override fun onStreakRestored() =
+    override fun onStreakRestored() {
         CardsFragmentAnimations.playStreakRestoreAnimation(binding.streakSuccessContainer)
+    }
 
-    override fun showDailyRewardDialog(progress: Long) =
+    override fun showDailyRewardDialog(progress: Long) {
         DailyRewardDialog.newInstance(progress).show(childFragmentManager, DAILY_REWARD_DIALOG_TAG)
+    }
 
-    override fun showNewLevelDialog(level: Long) =
+    override fun showNewLevelDialog(level: Long) {
         ExpLevelDialog.newInstance(level).show(childFragmentManager, LEVEL_DIALOG_TAG)
+    }
 
-    override fun showRateAppDialog() =
+    override fun showRateAppDialog() {
         RateAppDialog.newInstance().show(childFragmentManager, RATE_APP_DIALOG_TAG)
+    }
 
-    override fun showGamificationDescriptionScreen() =
+    override fun showGamificationDescriptionScreen() {
         screenManager.showGamificationDescription(requireContext())
+    }
 
-    override fun showEmptyAuthScreen() =
+    override fun showEmptyAuthScreen() {
         screenManager.showEmptyAuthScreen(requireContext())
+    }
 
     override fun showStreakRestoreDialog(streak: Long, withTooltip: Boolean) {
         analytics.logAmplitudeEvent(AmplitudeAnalytics.Tickets.WIDGET_OPENED)
@@ -256,7 +264,7 @@ class RecommendationsFragment : Fragment(), RecommendationsView {
         binding.ticketsContainer.setOnClickListener {
             if (inventoryManager.hasTickets()) {
                 if (inventoryManager.useItem(InventoryManager.Item.Ticket)) {
-                    presenter?.restoreStreak(streak)
+                    presenter.restoreStreak(streak)
                 }
                 hideStreakRestoreDialog()
             } else {
@@ -266,7 +274,7 @@ class RecommendationsFragment : Fragment(), RecommendationsView {
     }
 
     private fun refreshStreakRestoreDialog() {
-        binding.ticketItem?.counter?.text = getString(R.string.amount, inventoryManager.getItemsCount(InventoryManager.Item.Ticket))
+        binding.ticketItem.counter.text = getString(R.string.amount, inventoryManager.getItemsCount(InventoryManager.Item.Ticket))
     }
 
     override fun showQuestionsPacksTooltip() {
@@ -299,7 +307,7 @@ class RecommendationsFragment : Fragment(), RecommendationsView {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode == STREAK_RESTORE_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
-            presenter?.restoreStreak(data?.getLongExtra(STREAK_RESTORE_KEY, 0) ?: 0)
+            presenter.restoreStreak(data?.getLongExtra(STREAK_RESTORE_KEY, 0) ?: 0)
         }
 
         if (requestCode == PAID_CONTENT_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
@@ -322,11 +330,11 @@ class RecommendationsFragment : Fragment(), RecommendationsView {
 
     override fun onStart() {
         super.onStart()
-        presenter?.attachView(this)
+        presenter.attachView(this)
     }
 
     override fun onStop() {
-        presenter?.detachView(this)
+        presenter.detachView(this)
         super.onStop()
     }
 }

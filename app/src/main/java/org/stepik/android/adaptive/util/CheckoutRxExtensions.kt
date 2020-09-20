@@ -2,7 +2,13 @@ package org.stepik.android.adaptive.util
 
 import io.reactivex.Completable
 import io.reactivex.Observable
-import org.solovyev.android.checkout.*
+import org.solovyev.android.checkout.ActivityCheckout
+import org.solovyev.android.checkout.BillingRequests
+import org.solovyev.android.checkout.Checkout
+import org.solovyev.android.checkout.Purchase
+import org.solovyev.android.checkout.Purchases
+import org.solovyev.android.checkout.RequestListener
+import org.solovyev.android.checkout.Sku
 
 fun BillingRequests.getPurchasesRx(type: String, continuationToken: String?): Observable<Purchases> =
     Observable.create { emitter ->

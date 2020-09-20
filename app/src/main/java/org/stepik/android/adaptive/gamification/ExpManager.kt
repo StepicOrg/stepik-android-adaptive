@@ -5,8 +5,8 @@ import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.Scheduler
 import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.functions.Consumer
 import io.reactivex.internal.functions.Functions
+import io.reactivex.rxkotlin.plusAssign
 import org.stepik.android.adaptive.api.rating.RatingRepository
 import org.stepik.android.adaptive.configuration.RemoteConfig
 import org.stepik.android.adaptive.data.analytics.Analytics
@@ -16,10 +16,12 @@ import org.stepik.android.adaptive.di.AppSingleton
 import org.stepik.android.adaptive.di.qualifiers.BackgroundScheduler
 import org.stepik.android.adaptive.gamification.achievements.AchievementEventPoster
 import org.stepik.android.adaptive.gamification.achievements.AchievementManager
-import org.stepik.android.adaptive.util.addDisposable
 import org.stepik.android.adaptive.util.then
 import retrofit2.HttpException
 import javax.inject.Inject
+import kotlin.math.ceil
+import kotlin.math.ln
+import kotlin.math.pow
 
 @AppSingleton
 class ExpManager
@@ -71,11 +73,11 @@ constructor(
 
         achievementEventPoster.onEvent(AchievementManager.Event.EXP, exp, true)
 
-        compositeDisposable addDisposable (dataBaseMgr.onExpGained(delta, submissionId) then syncRating(dataBaseMgr, ratingRepository))
+        compositeDisposable += (dataBaseMgr.onExpGained(delta, submissionId) then syncRating(dataBaseMgr, ratingRepository))
             .subscribeOn(backgroundScheduler)
             .subscribe(
                 Functions.EMPTY_ACTION,
-                Consumer { e ->
+                { e ->
                     if (e is HttpException) {
                         analytics.onRatingError()
                     }
@@ -85,7 +87,7 @@ constructor(
         return exp
     }
 
-    fun incStreak() =
+    fun incStreak(): Long =
         changeStreak(1)
 
     fun changeStreak(delta: Long): Long {
@@ -97,10 +99,10 @@ constructor(
 
     fun getCurrentLevel(exp: Long): Long {
         val level = if (firebaseRemoteConfig.getBoolean(RemoteConfig.EXP_LEVEL_FORMULA_EXPERIMENT)) {
-            Math.pow(exp.toDouble(), 1.0 / LEVEL_POW).toLong()
+            exp.toDouble().pow(1.0 / LEVEL_POW).toLong()
         } else {
             if (exp < 5) return 1
-            2 + (Math.log((exp / 5).toDouble()) / Math.log(2.0)).toLong()
+            2 + (ln((exp / 5).toDouble()) / ln(2.0)).toLong()
         }
 
         analytics.setUserLevel(level)
@@ -109,11 +111,11 @@ constructor(
         return level
     }
 
-    fun getNextLevelExp(currentLevel: Long) =
+    fun getNextLevelExp(currentLevel: Long): Long =
         if (firebaseRemoteConfig.getBoolean(RemoteConfig.EXP_LEVEL_FORMULA_EXPERIMENT)) {
-            Math.ceil(Math.pow(currentLevel.toDouble() + 1, LEVEL_POW)).toLong()
+            ceil((currentLevel.toDouble() + 1).pow(LEVEL_POW)).toLong()
         } else {
-            if (currentLevel == 1L) 5 else 5 * Math.pow(2.0, (currentLevel - 1).toDouble()).toLong()
+            if (currentLevel == 1L) 5 else 5 * 2.0.pow((currentLevel - 1).toDouble()).toLong()
         }
 
     fun resetStreak() {
