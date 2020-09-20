@@ -40,13 +40,13 @@ abstract class StorageModule {
         @Provides
         @JvmStatic
         internal fun provideWritableDatabase(helper: SQLiteOpenHelper): SQLiteDatabase =
-                helper.writableDatabase
+            helper.writableDatabase
 
         @StorageSingleton
         @Provides
         @JvmStatic
         @DatabaseLock
-        internal fun provideDatabaseLock(): ReentrantReadWriteLock = ReentrantReadWriteLock()
+        internal fun provideDatabaseLock(): ReentrantReadWriteLock =
+            ReentrantReadWriteLock()
     }
-
 }

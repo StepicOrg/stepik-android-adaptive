@@ -4,6 +4,8 @@ import io.reactivex.Scheduler
 import io.reactivex.Single
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
+import io.reactivex.rxkotlin.plusAssign
+import io.reactivex.rxkotlin.subscribeBy
 import org.stepik.android.adaptive.App
 import org.stepik.android.adaptive.api.Api
 import org.stepik.android.adaptive.api.SubmissionResponse
@@ -12,9 +14,12 @@ import org.stepik.android.adaptive.content.questions.QuestionsPacksManager
 import org.stepik.android.adaptive.core.presenter.contracts.CardView
 import org.stepik.android.adaptive.data.analytics.AmplitudeAnalytics
 import org.stepik.android.adaptive.data.analytics.Analytics
-import org.stepik.android.adaptive.data.preference.SharedPreferenceHelper
 import org.stepik.android.adaptive.data.db.DataBaseMgr
-import org.stepik.android.adaptive.data.model.*
+import org.stepik.android.adaptive.data.model.Bookmark
+import org.stepik.android.adaptive.data.model.Card
+import org.stepik.android.adaptive.data.model.RecommendationReaction
+import org.stepik.android.adaptive.data.model.Submission
+import org.stepik.android.adaptive.data.preference.SharedPreferenceHelper
 import org.stepik.android.adaptive.di.qualifiers.BackgroundScheduler
 import org.stepik.android.adaptive.di.qualifiers.MainScheduler
 import org.stepik.android.adaptive.ui.adapter.attempts.ChoiceQuizAnswerAdapter
@@ -25,7 +30,6 @@ import org.stepik.android.adaptive.util.addDisposable
 import retrofit2.HttpException
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
-
 
 class CardPresenter(val card: Card, private val listener: AdaptiveReactionListener?, private val answerListener: AnswerListener?) : PresenterBase<CardView>() {
     private var submission: Submission? = null
@@ -95,12 +99,15 @@ class CardPresenter(val card: Card, private val listener: AdaptiveReactionListen
 
     private fun fetchBookmarkState() =
         compositeDisposable addDisposable dataBaseMgr.isInBookmarks(card.step.id)
-                .subscribeOn(backgroundScheduler)
-                .observeOn(mainScheduler)
-                .subscribe({
+            .subscribeOn(backgroundScheduler)
+            .observeOn(mainScheduler)
+            .subscribe(
+                {
                     isBookmarked = it
                     resolveBookmarkState()
-                }, {})
+                },
+                {}
+            )
 
     private fun resolveBookmarkState() {
         if (card.lessonId != Card.MOCK_LESSON_ID && config.isBookmarksSupported) { // do not show bookmark button for mock cards and unsupported flavours
@@ -118,31 +125,37 @@ class CardPresenter(val card: Card, private val listener: AdaptiveReactionListen
         }
 
         return Bookmark(
-                questionsPacksManager.currentCourseId,
-                card.step.id,
-                card.lesson.title,
-                definition
+            questionsPacksManager.currentCourseId,
+            card.step.id,
+            card.lesson.title,
+            definition
         )
     }
 
-    fun toggleBookmark() = isBookmarked?.let { bookmarked ->
-        isBookmarked = null
-        val bookmark = createBookmark()
+    fun toggleBookmark() {
+        isBookmarked?.let { bookmarked ->
+            isBookmarked = null
+            val bookmark = createBookmark()
 
-        compositeDisposable addDisposable
+            compositeDisposable +=
                 if (bookmarked) {
                     analytics.logEvent(Analytics.EVENT_ON_BOOKMARK_REMOVED)
                     dataBaseMgr.removeBookmark(bookmark)
                 } else {
                     analytics.logEvent(Analytics.EVENT_ON_BOOKMARK_ADDED)
                     dataBaseMgr.addBookmark(bookmark)
-                }.andThen(Single.just(!bookmarked))
-                        .subscribeOn(backgroundScheduler)
-                        .observeOn(mainScheduler)
-                        .subscribe({
+                }
+                    .andThen(Single.just(!bookmarked))
+                    .subscribeOn(backgroundScheduler)
+                    .observeOn(mainScheduler)
+                    .subscribeBy(
+                        onSuccess = {
                             isBookmarked = it
                             resolveBookmarkState()
-                        }, {})
+                        },
+                        onError = {}
+                    )
+        }
     }
 
     /**
@@ -155,15 +168,18 @@ class CardPresenter(val card: Card, private val listener: AdaptiveReactionListen
 
     fun createReaction(reaction: RecommendationReaction.Reaction) {
         val lesson = card.lessonId
-        when(reaction) {
+        when (reaction) {
             RecommendationReaction.Reaction.NEVER_AGAIN -> {
                 if (card.isCorrect) {
                     analytics.reactionEasyAfterCorrect(lesson)
                 }
                 analytics.reactionEasy(lesson)
-                analytics.logAmplitudeEvent(AmplitudeAnalytics.Submissions.REACTION_PERFORMED, mapOf(
+                analytics.logAmplitudeEvent(
+                    AmplitudeAnalytics.Submissions.REACTION_PERFORMED,
+                    mapOf(
                         AmplitudeAnalytics.Submissions.PARAM_COMPLEXITY to AmplitudeAnalytics.Submissions.ComplexityValues.EASY
-                ))
+                    )
+                )
             }
 
             RecommendationReaction.Reaction.MAYBE_LATER -> {
@@ -171,9 +187,12 @@ class CardPresenter(val card: Card, private val listener: AdaptiveReactionListen
                     analytics.reactionHardAfterCorrect(lesson)
                 }
                 analytics.reactionHard(lesson)
-                analytics.logAmplitudeEvent(AmplitudeAnalytics.Submissions.REACTION_PERFORMED, mapOf(
+                analytics.logAmplitudeEvent(
+                    AmplitudeAnalytics.Submissions.REACTION_PERFORMED,
+                    mapOf(
                         AmplitudeAnalytics.Submissions.PARAM_COMPLEXITY to AmplitudeAnalytics.Submissions.ComplexityValues.HARD
-                ))
+                    )
+                )
             }
             else -> {}
         }
@@ -189,21 +208,24 @@ class CardPresenter(val card: Card, private val listener: AdaptiveReactionListen
                 error = null
 
                 disposable = api.createSubmission(submission)
-                        .doOnComplete {
-                            analytics.setSubmissionsCount(sharedPreferenceHelper.submissionCount++)
-                        }
-                        .andThen(api.getSubmissions(submission.attempt))
-                        .subscribeOn(backgroundScheduler)
-                        .observeOn(mainScheduler)
-                        .subscribe(this::onSubmissionLoaded, this::onError)
+                    .doOnComplete {
+                        analytics.setSubmissionsCount(sharedPreferenceHelper.submissionCount++)
+                    }
+                    .andThen(api.getSubmissions(submission.attempt))
+                    .subscribeOn(backgroundScheduler)
+                    .observeOn(mainScheduler)
+                    .subscribe(this::onSubmissionLoaded, this::onError)
 
                 analytics.onSubmissionWasMade()
 
                 val pack = questionsPacksManager.currentPack
-                analytics.logAmplitudeEvent(AmplitudeAnalytics.Submissions.SUBMISSION_CREATED, mapOf(
+                analytics.logAmplitudeEvent(
+                    AmplitudeAnalytics.Submissions.SUBMISSION_CREATED,
+                    mapOf(
                         AmplitudeAnalytics.Submissions.PARAM_PACK_ID to pack.courseId,
                         AmplitudeAnalytics.Submissions.PARAM_PACK_NAME to pack.id
-                ))
+                    )
+                )
             }
         }
     }
@@ -218,10 +240,10 @@ class CardPresenter(val card: Card, private val listener: AdaptiveReactionListen
         submission?.let {
             if (it.status == Submission.Status.EVALUATION) {
                 disposable = api.getSubmissions(it.attempt)
-                        .delay(1, TimeUnit.SECONDS)
-                        .subscribeOn(backgroundScheduler)
-                        .observeOn(mainScheduler)
-                        .subscribe(this::onSubmissionLoaded, this::onError)
+                    .delay(1, TimeUnit.SECONDS)
+                    .subscribeOn(backgroundScheduler)
+                    .observeOn(mainScheduler)
+                    .subscribe(this::onSubmissionLoaded, this::onError)
             } else {
                 isLoading = false
                 analytics.answerResult(card.step, it)

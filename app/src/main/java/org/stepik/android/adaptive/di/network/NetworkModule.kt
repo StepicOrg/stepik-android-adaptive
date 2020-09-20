@@ -35,12 +35,13 @@ abstract class NetworkModule {
         @JvmStatic
         @IntoSet
         internal fun provideStethoInterceptor(): Interceptor =
-                StethoHelper.getInterceptor()
+            StethoHelper.getInterceptor()
 
         @Provides
         @AppSingleton
         @JvmStatic
-        internal fun provideModelGson(): Gson = GsonBuilder()
+        internal fun provideModelGson(): Gson =
+            GsonBuilder()
                 .registerTypeAdapter(DatasetWrapper::class.java, DatasetWrapperDeserializer())
                 .create()
 
@@ -48,7 +49,6 @@ abstract class NetworkModule {
         @AppSingleton
         @JvmStatic
         internal fun provideStepikService(interceptors: Set<@JvmSuppressWildcards Interceptor>, config: Config, gson: Gson): StepikService =
-                NetworkHelper.createService(interceptors, config.host, gson)
+            NetworkHelper.createService(interceptors, config.host, gson)
     }
-
 }

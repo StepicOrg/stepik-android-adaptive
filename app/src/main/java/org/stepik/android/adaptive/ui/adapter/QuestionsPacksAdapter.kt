@@ -13,16 +13,16 @@ import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.item_questions_pack.view.*
 import org.solovyev.android.checkout.Sku
 import org.stepik.android.adaptive.R
-import org.stepik.android.adaptive.content.questions.QuestionsPacksResolver
 import org.stepik.android.adaptive.content.questions.QuestionsPack
+import org.stepik.android.adaptive.content.questions.QuestionsPacksResolver
 import org.stepik.android.adaptive.ui.helper.setAlpha
 import org.stepik.android.adaptive.util.changeVisibillity
 import org.stepik.android.adaptive.util.fromHtmlCompat
 import java.util.*
 
 class QuestionsPacksAdapter(
-        private val onPackClicked: (Sku, QuestionsPack, Boolean) -> Unit,
-        private val questionsPacksResolver: QuestionsPacksResolver
+    private val onPackClicked: (Sku, QuestionsPack, Boolean) -> Unit,
+    private val questionsPacksResolver: QuestionsPacksResolver
 ) : RecyclerView.Adapter<QuestionsPacksAdapter.QuestionsPackViewHolder>() {
     companion object {
         private const val TITLE_ALPHA = 0xDD
@@ -53,7 +53,7 @@ class QuestionsPacksAdapter(
     override fun getItemCount() = items.size
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
-            QuestionsPackViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.item_questions_pack, parent, false))
+        QuestionsPackViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.item_questions_pack, parent, false))
 
     override fun onBindViewHolder(holder: QuestionsPackViewHolder, pos: Int) {
         val (sku, pack) = items[pos]
@@ -99,7 +99,7 @@ class QuestionsPacksAdapter(
         }
     }
 
-    class QuestionsPackViewHolder(root: View): RecyclerView.ViewHolder(root) {
+    class QuestionsPackViewHolder(root: View) : RecyclerView.ViewHolder(root) {
         val title: TextView = root.packTitle
         val questionsCount: TextView = root.packQuestionsCount
         val difficulty: TextView = root.packDifficulty

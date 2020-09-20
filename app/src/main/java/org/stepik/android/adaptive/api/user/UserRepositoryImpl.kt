@@ -11,18 +11,17 @@ import javax.inject.Inject
 class UserRepositoryImpl
 @Inject
 constructor(
-        private val userService: UserService
-): UserRepository {
+    private val userService: UserService
+) : UserRepository {
 
     override fun getUsers(ids: LongArray): Single<List<User>> =
-            userService.getUsers(ids, 1).concatMap {
-                if (it.meta.hasNext) {
-                    Observable.just(it).concatWith(userService.getUsers(ids, it.meta.page + 1))
-                } else {
-                    Observable.just(it)
-                }
-            }.concatMap {
-                it.users.toObservable()
-            }.toList()
-
+        userService.getUsers(ids, 1).concatMap {
+            if (it.meta.hasNext) {
+                Observable.just(it).concatWith(userService.getUsers(ids, it.meta.page + 1))
+            } else {
+                Observable.just(it)
+            }
+        }.concatMap {
+            it.users.toObservable()
+        }.toList()
 }

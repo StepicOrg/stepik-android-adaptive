@@ -3,7 +3,6 @@ package org.stepik.android.adaptive.di.study
 import dagger.Subcomponent
 import org.stepik.android.adaptive.core.presenter.CardPresenter
 import org.stepik.android.adaptive.data.model.Card
-import org.stepik.android.adaptive.di.AppSingleton
 import org.stepik.android.adaptive.ui.activity.DescriptionActivity
 import org.stepik.android.adaptive.ui.activity.StudyActivity
 import org.stepik.android.adaptive.ui.fragment.OnboardingFragment
@@ -26,5 +25,4 @@ interface StudyComponent {
 
     fun inject(cardPresenter: CardPresenter)
     fun inject(card: Card)
-
 }

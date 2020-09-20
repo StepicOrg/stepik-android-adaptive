@@ -27,8 +27,8 @@ class RatingFragment : Fragment(), RatingView {
 
     private fun injectComponent() {
         App.componentManager()
-                .statsComponent
-                .inject(this)
+            .statsComponent
+            .inject(this)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -38,7 +38,7 @@ class RatingFragment : Fragment(), RatingView {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
-            inflater.inflate(R.layout.fragment_rating, container, false)
+        inflater.inflate(R.layout.fragment_rating, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         recycler.layoutManager = LinearLayoutManager(context)

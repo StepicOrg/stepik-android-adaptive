@@ -6,9 +6,8 @@ import io.reactivex.Completable
 import io.reactivex.Maybe
 import io.reactivex.Single
 import org.stepik.android.adaptive.data.db.operations.DatabaseOperations
-import org.stepik.android.adaptive.util.RxOptional
 
-abstract class DaoBase<T>(private val databaseOperations: DatabaseOperations): IDao<T> {
+abstract class DaoBase<T>(private val databaseOperations: DatabaseOperations) : IDao<T> {
     override fun insertOrUpdate(persistentObject: T): Completable {
         val primaryValue = getDefaultPrimaryValue(persistentObject)
         val primaryKey = getDefaultPrimaryColumn()
@@ -22,67 +21,68 @@ abstract class DaoBase<T>(private val databaseOperations: DatabaseOperations): I
         }
     }
 
-    override fun insertOrReplace(persistentObject: T) =
+    override fun insertOrReplace(persistentObject: T): Completable =
         databaseOperations.executeReplace(getDbName(), getContentValues(persistentObject))
 
-    override fun update(persistentObject: T) =
+    override fun update(persistentObject: T): Completable =
         databaseOperations.executeUpdate(
-                getDbName(),
-                getContentValues(persistentObject),
-                "${getDefaultPrimaryColumn()} = ?",
-                arrayOf(getDefaultPrimaryValue(persistentObject))
+            getDbName(),
+            getContentValues(persistentObject),
+            "${getDefaultPrimaryColumn()} = ?",
+            arrayOf(getDefaultPrimaryValue(persistentObject))
         )
 
+    override fun isInDb(persistentObject: T): Single<Boolean> =
+        isInDb(getDefaultPrimaryColumn(), getDefaultPrimaryValue(persistentObject))
 
-    override fun isInDb(persistentObject: T) = isInDb(getDefaultPrimaryColumn(), getDefaultPrimaryValue(persistentObject))
-
-    override fun isInDb(whereColumn: String, value: String) =
+    override fun isInDb(whereColumn: String, value: String): Single<Boolean> =
         databaseOperations.executeQuery("SELECT * FROM ${getDbName()} WHERE $whereColumn = ?", arrayOf(value)) {
             it.count > 0
         }
 
-    override fun getAll() =
-            getAll("SELECT * FROM ${getDbName()}", null)
+    override fun getAll(): Single<List<T>> =
+        getAll("SELECT * FROM ${getDbName()}", null)
 
-    override fun getAll(whereColumnName: String, whereValue: String) =
-            getAll("SELECT * FROM ${getDbName()} WHERE $whereColumnName = ?", arrayOf(whereValue))
+    override fun getAll(whereColumnName: String, whereValue: String): Single<List<T>> =
+        getAll("SELECT * FROM ${getDbName()} WHERE $whereColumnName = ?", arrayOf(whereValue))
 
     override fun getAll(query: String, whereArgs: Array<String>?): Single<List<T>> =
-            databaseOperations.executeQuery(query, whereArgs) { cursor ->
-                val data = ArrayList<T>()
+        databaseOperations.executeQuery(query, whereArgs) { cursor ->
+            val data = ArrayList<T>()
 
-                if (cursor.moveToFirst()) {
-                    do {
-                        data.add(parsePersistentObject(cursor))
-                    } while (cursor.moveToNext())
-                }
-
-                return@executeQuery data
+            if (cursor.moveToFirst()) {
+                do {
+                    data.add(parsePersistentObject(cursor))
+                } while (cursor.moveToNext())
             }
 
-    override fun getAllOrdered(orderBy: String, orderDirection: String) =
-            getAll("SELECT * FROM ${getDbName()} ORDER BY $orderBy $orderDirection", null)
+            return@executeQuery data
+        }
+
+    override fun getAllOrdered(orderBy: String, orderDirection: String): Single<List<T>> =
+        getAll("SELECT * FROM ${getDbName()} ORDER BY $orderBy $orderDirection", null)
 
     override fun get(whereColumnName: String, whereValue: String): Maybe<T> =
-            getAll("SELECT * FROM ${getDbName()} WHERE $whereColumnName = ? COUNT 1", arrayOf(whereValue)).flatMapMaybe {
-                val item = it.firstOrNull()
-                if (item != null) {
-                    Maybe.just(item)
-                } else {
-                    Maybe.empty()
-                }
+        getAll("SELECT * FROM ${getDbName()} WHERE $whereColumnName = ? COUNT 1", arrayOf(whereValue)).flatMapMaybe {
+            val item = it.firstOrNull()
+            if (item != null) {
+                Maybe.just(item)
+            } else {
+                Maybe.empty()
             }
+        }
 
-    override fun remove(whereColumn: String, whereValue: String) =
-            databaseOperations.executeDelete(getDbName(), "$whereColumn = ?", arrayOf(whereValue))
+    override fun remove(whereColumn: String, whereValue: String): Completable =
+        databaseOperations.executeDelete(getDbName(), "$whereColumn = ?", arrayOf(whereValue))
 
-    override fun remove(persistentObject: T) =
-            remove(getDefaultPrimaryColumn(), getDefaultPrimaryValue(persistentObject))
+    override fun remove(persistentObject: T): Completable =
+        remove(getDefaultPrimaryColumn(), getDefaultPrimaryValue(persistentObject))
 
-    override fun removeAll() = databaseOperations.executeDelete(getDbName(), null, null)
+    override fun removeAll(): Completable =
+        databaseOperations.executeDelete(getDbName(), null, null)
 
     protected fun <U> rawQuery(query: String, whereArgs: Array<String>?, handler: (Cursor) -> U): Single<U> =
-            databaseOperations.executeQuery(query, whereArgs, handler)
+        databaseOperations.executeQuery(query, whereArgs, handler)
 
     protected abstract fun getDbName(): String
     protected abstract fun getDefaultPrimaryColumn(): String

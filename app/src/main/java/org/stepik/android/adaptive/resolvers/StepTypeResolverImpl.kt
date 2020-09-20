@@ -9,7 +9,7 @@ import javax.inject.Inject
 @StudyScope
 class StepTypeResolverImpl
 @Inject
-constructor(): StepTypeResolver {
+constructor() : StepTypeResolver {
     override fun getAttemptAdapter(step: Step): AttemptAnswerAdapter<*> {
         val type = step.block?.name ?: return NotSupportedQuizAnswerAdapter()
 

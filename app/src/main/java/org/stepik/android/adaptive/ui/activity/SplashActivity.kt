@@ -5,13 +5,11 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import io.branch.referral.Branch
-import io.branch.referral.BranchError
 import io.reactivex.Completable
 import io.reactivex.Scheduler
 import io.reactivex.Single
 import io.reactivex.disposables.Disposable
 import io.reactivex.rxkotlin.Singles.zip
-import org.json.JSONObject
 import org.stepik.android.adaptive.App
 import org.stepik.android.adaptive.R
 import org.stepik.android.adaptive.core.ScreenManager
@@ -26,7 +24,7 @@ import javax.inject.Inject
 
 class SplashActivity : AppCompatActivity() {
 
-    private lateinit var disposable : Disposable
+    private lateinit var disposable: Disposable
 
     @Inject
     lateinit var analytics: Analytics
@@ -57,31 +55,32 @@ class SplashActivity : AppCompatActivity() {
         val onboardingObservable = Single.fromCallable(sharedPreferenceHelper::isNotFirstTime)
 
         disposable = fetchRemoteConfig()
-                .andThen(zip(authObservable, onboardingObservable))
-                .doOnSuccess { (_, isNotFirstTime) ->
-                    val isFirstTime = !isNotFirstTime && !sharedPreferenceHelper.isNotFirstSession
-                    if (isFirstTime) {
-                        sharedPreferenceHelper.isNotFirstSession = true
-                        analytics.logAmplitudeEvent(AmplitudeAnalytics.Launch.FIRST_TIME)
-                    }
+            .andThen(zip(authObservable, onboardingObservable))
+            .doOnSuccess { (_, isNotFirstTime) ->
+                val isFirstTime = !isNotFirstTime && !sharedPreferenceHelper.isNotFirstSession
+                if (isFirstTime) {
+                    sharedPreferenceHelper.isNotFirstSession = true
+                    analytics.logAmplitudeEvent(AmplitudeAnalytics.Launch.FIRST_TIME)
                 }
-                .delay(1L, TimeUnit.SECONDS)
-                .subscribeOn(backgroundScheduler)
-                .observeOn(mainScheduler)
-                .subscribe { (authResponseDeadline, isNotFirstTime) ->
-                    if (authResponseDeadline != 0L && isNotFirstTime) {
-                        screenManager.startStudy()
-                    } else {
-                        screenManager.showOnboardingScreen()
-                    }
+            }
+            .delay(1L, TimeUnit.SECONDS)
+            .subscribeOn(backgroundScheduler)
+            .observeOn(mainScheduler)
+            .subscribe { (authResponseDeadline, isNotFirstTime) ->
+                if (authResponseDeadline != 0L && isNotFirstTime) {
+                    screenManager.startStudy()
+                } else {
+                    screenManager.showOnboardingScreen()
                 }
+            }
     }
 
-    private fun fetchRemoteConfig() = Completable.create { emitter ->
-        firebaseRemoteConfig.fetchAndActivate().addOnCompleteListener { task ->
-            emitter.onComplete()
+    private fun fetchRemoteConfig() =
+        Completable.create { emitter ->
+            firebaseRemoteConfig.fetchAndActivate().addOnCompleteListener { task ->
+                emitter.onComplete()
+            }
         }
-    }
 
     override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)
@@ -95,10 +94,13 @@ class SplashActivity : AppCompatActivity() {
                 .sessionBuilder(this)
                 .withCallback { referringParams, error ->
                     if (error == null && referringParams != null && referringParams.has(BranchParams.FIELD_CAMPAIGN)) {
-                        analytics.logAmplitudeEvent(AmplitudeAnalytics.Branch.LINK_OPENED, mapOf(
+                        analytics.logAmplitudeEvent(
+                            AmplitudeAnalytics.Branch.LINK_OPENED,
+                            mapOf(
                                 AmplitudeAnalytics.Branch.PARAM_CAMPAIGN to referringParams[BranchParams.FIELD_CAMPAIGN],
                                 AmplitudeAnalytics.Branch.IS_FIRST_SESSION to referringParams.optBoolean(BranchParams.IS_FIRST_SESSION, false)
-                        ))
+                            )
+                        )
                     }
                 }
                 .withData(it)

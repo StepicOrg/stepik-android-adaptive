@@ -5,20 +5,19 @@ import org.stepik.android.adaptive.data.model.Dataset
 import org.stepik.android.adaptive.data.model.DatasetWrapper
 import java.lang.reflect.Type
 
-class DatasetWrapperDeserializer: JsonDeserializer<DatasetWrapper> {
+class DatasetWrapperDeserializer : JsonDeserializer<DatasetWrapper> {
     @Throws(JsonParseException::class)
-    override fun deserialize(json: JsonElement, typeOfT: Type, context: JsonDeserializationContext): DatasetWrapper {
-        return if (json !is JsonObject) {
+    override fun deserialize(json: JsonElement, typeOfT: Type, context: JsonDeserializationContext): DatasetWrapper = 
+        if (json !is JsonObject) {
             try {
                 val o = context.deserialize<Any>(json, String::class.java)
                 val dataset = Dataset(o as String)
                 DatasetWrapper(dataset)
             } catch (e: Exception) {
-                //if it is primitive, but not string.
+                // if it is primitive, but not string.
                 DatasetWrapper()
             }
         } else {
             DatasetWrapper(context.deserialize<Any>(json, Dataset::class.java) as Dataset)
         }
-    }
 }

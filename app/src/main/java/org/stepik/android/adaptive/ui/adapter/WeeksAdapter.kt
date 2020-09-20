@@ -2,8 +2,8 @@ package org.stepik.android.adaptive.ui.adapter
 
 import android.content.res.Resources
 import android.view.LayoutInflater
-import android.view.ViewGroup
 import android.view.View
+import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
@@ -15,7 +15,6 @@ import org.stepik.android.adaptive.databinding.HeaderStatsBinding
 import org.stepik.android.adaptive.databinding.ItemWeekBinding
 import org.stepik.android.adaptive.util.defaultLocale
 import java.util.*
-
 
 class WeeksAdapter : RecyclerView.Adapter<WeeksAdapter.StatsViewHolder>() {
     data class Header(var total: Long = 0, var level: Long = 0, var last7Days: Long = 0, var chartData: LineDataSet? = null)
@@ -43,12 +42,12 @@ class WeeksAdapter : RecyclerView.Adapter<WeeksAdapter.StatsViewHolder>() {
     }
 
     override fun getItemViewType(position: Int) =
-            if (position == 0)
-                HEADER_VIEW_TYPE
-            else
-                ITEM_VIEW_TYPE
+        if (position == 0)
+            HEADER_VIEW_TYPE
+        else
+            ITEM_VIEW_TYPE
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) : StatsViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): StatsViewHolder {
         val inflater = LayoutInflater.from(parent.context)
         return if (viewType == HEADER_VIEW_TYPE) {
             StatsViewHolder.StatsHeaderViewHolder(DataBindingUtil.inflate(inflater, R.layout.header_stats, parent, false))
@@ -56,8 +55,6 @@ class WeeksAdapter : RecyclerView.Adapter<WeeksAdapter.StatsViewHolder>() {
             StatsViewHolder.WeekViewHolder(DataBindingUtil.inflate(inflater, R.layout.item_week, parent, false))
         }
     }
-
-
 
     override fun onBindViewHolder(holder: StatsViewHolder, p: Int) {
         holder?.let {
@@ -105,7 +102,8 @@ class WeeksAdapter : RecyclerView.Adapter<WeeksAdapter.StatsViewHolder>() {
         }
     }
 
-    override fun getItemCount() = weeks.size + 1
+    override fun getItemCount() =
+        weeks.size + 1
 
     fun addAll(data: List<WeekProgress>) {
         weeks.addAll(data)

@@ -21,7 +21,6 @@ object PopupHelper {
         return anchorOffset.toFloat() - pos[0] - arrowView.measuredWidth / 2
     }
 
-
     fun showPopupAnchoredToView(context: Context, anchorView: View?, popupText: String, x: Int = 0, y: Int = 0): PopupWindow? {
         if (anchorView == null) {
             return null

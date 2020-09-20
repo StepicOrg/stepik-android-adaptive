@@ -4,9 +4,9 @@ import com.google.gson.annotations.SerializedName
 import org.stepik.android.adaptive.data.model.Meta
 
 class EmailAddressesResponse(
-        val meta: Meta,
-        @SerializedName("email-addresses")
-        val emailAddresses: List<EmailAddress>?
+    val meta: Meta,
+    @SerializedName("email-addresses")
+    val emailAddresses: List<EmailAddress>?
 ) {
     val emailAddress: EmailAddress?
         get() = emailAddresses?.firstOrNull()

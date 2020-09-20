@@ -62,7 +62,7 @@ class ProfileFragment : Fragment(), ProfileView {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
-            inflater.inflate(R.layout.fragment_profile, container, false)
+        inflater.inflate(R.layout.fragment_profile, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         signIn.setOnClickListener {
@@ -92,17 +92,17 @@ class ProfileFragment : Fragment(), ProfileView {
     }
 
     private fun showEditNameDialog() =
-            EditNameDialogFragment().show(childFragmentManager, EDIT_NAME_DIALOG)
+        EditNameDialogFragment().show(childFragmentManager, EDIT_NAME_DIALOG)
 
     private fun showEditEmailDialog() =
-            EditEmailDialogFragment().show(childFragmentManager, EDIT_EMAIL_DIALOG)
+        EditEmailDialogFragment().show(childFragmentManager, EDIT_EMAIL_DIALOG)
 
     private fun showEditPasswordDialog() =
-            EditPasswordDialogFragment().show(childFragmentManager, EDIT_EMAIL_PASSWORD)
+        EditPasswordDialogFragment().show(childFragmentManager, EDIT_EMAIL_PASSWORD)
 
     override fun setState(state: ProfileView.State) {
         profileContainer.hideAllChildren()
-        when(state) {
+        when (state) {
             is ProfileView.State.EmptyAuth -> {
                 emptyAuth.changeVisibillity(true)
             }

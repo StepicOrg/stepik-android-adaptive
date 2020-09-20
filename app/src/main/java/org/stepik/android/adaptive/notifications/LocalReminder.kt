@@ -9,16 +9,16 @@ import org.joda.time.DateTime
 import org.joda.time.Days
 import org.joda.time.Hours
 import org.stepik.android.adaptive.data.preference.SharedPreferenceHelper
-import org.stepik.android.adaptive.receivers.NotificationsReceiver
 import org.stepik.android.adaptive.gamification.DailyRewardManager
+import org.stepik.android.adaptive.receivers.NotificationsReceiver
 import javax.inject.Inject
 
 class LocalReminder
 @Inject
 constructor(
-        private val context: Context,
-        private val dailyRewardManager: DailyRewardManager,
-        private val sharedPreferenceHelper: SharedPreferenceHelper
+    private val context: Context,
+    private val dailyRewardManager: DailyRewardManager,
+    private val sharedPreferenceHelper: SharedPreferenceHelper
 ) {
     companion object {
         private const val NOTIFICATION_TIMESTAMP_KEY = "notification_timestamp"
@@ -27,9 +27,9 @@ constructor(
         const val DAYS_MULTIPLIER_KEY = "days_multiplier"
 
         @JvmStatic
-        fun isGoodTime(hour: Int) = hour in 7..23
+        fun isGoodTime(hour: Int) =
+            hour in 7..23
     }
-
 
     private val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
 
@@ -61,7 +61,6 @@ constructor(
         } else {
             notificationTimestamp
         }
-
 
         val intent = Intent(context, NotificationsReceiver::class.java)
         intent.putExtra(DAYS_MULTIPLIER_KEY, dayMultiplier)

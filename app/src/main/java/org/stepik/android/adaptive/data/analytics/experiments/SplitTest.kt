@@ -5,11 +5,11 @@ import org.stepik.android.adaptive.data.preference.SharedPreferenceHelper
 import org.stepik.android.adaptive.util.random
 
 abstract class SplitTest<G : SplitTest.Group>(
-        private val analytics: Analytics,
-        private val sharedPreferenceHelper: SharedPreferenceHelper,
+    private val analytics: Analytics,
+    private val sharedPreferenceHelper: SharedPreferenceHelper,
 
-        val name: String,
-        private val groups: Array<G>
+    val name: String,
+    private val groups: Array<G>
 ) {
     companion object {
         private const val SPLIT_TEST_PREFIX = "split_test_"
@@ -18,15 +18,15 @@ abstract class SplitTest<G : SplitTest.Group>(
     val currentGroup: G = getLocalGroup() ?: fetchGroup()
 
     private fun getLocalGroup(): G? =
-            sharedPreferenceHelper
-                    .getString(SPLIT_TEST_PREFIX + name)
-                    ?.let { groupName -> groups.find { it.name == groupName } }
+        sharedPreferenceHelper
+            .getString(SPLIT_TEST_PREFIX + name)
+            ?.let { groupName -> groups.find { it.name == groupName } }
 
     private fun fetchGroup(): G =
-            getRandomGroup().also { group ->
-                sharedPreferenceHelper.saveString(SPLIT_TEST_PREFIX + name, group.name)
-                analytics.setUserProperty(SPLIT_TEST_PREFIX + name, group.name)
-            }
+        getRandomGroup().also { group ->
+            sharedPreferenceHelper.saveString(SPLIT_TEST_PREFIX + name, group.name)
+            analytics.setUserProperty(SPLIT_TEST_PREFIX + name, group.name)
+        }
 
     private fun getRandomGroup(): G {
         val totalDistribution = groups.sumBy(Group::distribution)

@@ -11,4 +11,4 @@ object KotlinUtils {
 }
 
 fun IntRange.random() =
-        Random().nextInt((endInclusive + 1) - start) +  start
+    Random().nextInt((endInclusive + 1) - start) +  start

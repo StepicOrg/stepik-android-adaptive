@@ -24,7 +24,7 @@ import org.stepik.android.adaptive.util.changeVisibillity
 import org.stepik.android.adaptive.util.hideAllChildren
 import javax.inject.Inject
 
-class EditNameDialogFragment: DialogFragment(), EditProfileFieldView {
+class EditNameDialogFragment : DialogFragment(), EditProfileFieldView {
     @Inject
     internal lateinit var viewModelFactory: ViewModelProvider.Factory
 
@@ -32,7 +32,7 @@ class EditNameDialogFragment: DialogFragment(), EditProfileFieldView {
 
     private fun injectComponent() {
         App.componentManager()
-                .statsComponent.inject(this)
+            .statsComponent.inject(this)
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
@@ -53,7 +53,7 @@ class EditNameDialogFragment: DialogFragment(), EditProfileFieldView {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
-            inflater.inflate(R.layout.dialog_edit_name, container, false)
+        inflater.inflate(R.layout.dialog_edit_name, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         confirm.setOnClickListener { changeName() }
@@ -77,7 +77,7 @@ class EditNameDialogFragment: DialogFragment(), EditProfileFieldView {
 
     private fun changeName() {
         val isValid = ValidateUtil.validateRequiredField(firstNameWrapper, firstName) &&
-                ValidateUtil.validateRequiredField(secondNameWrapper, secondName)
+            ValidateUtil.validateRequiredField(secondNameWrapper, secondName)
 
         if (!isValid) return
 
@@ -91,8 +91,8 @@ class EditNameDialogFragment: DialogFragment(), EditProfileFieldView {
 
     private fun setConfirmButton() {
         confirm.isEnabled =
-                firstName.text.isNullOrBlank() == false &&
-                secondName.text.isNullOrBlank() == false
+            firstName.text.isNullOrBlank() == false &&
+            secondName.text.isNullOrBlank() == false
     }
 
     override fun onProfile(profile: Profile) {

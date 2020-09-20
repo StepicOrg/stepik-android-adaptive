@@ -9,7 +9,6 @@ import org.stepik.android.adaptive.notifications.LocalReminder
 import org.stepik.android.adaptive.notifications.RemindNotificationManager
 import javax.inject.Inject
 
-
 class NotificationsReceiver : BroadcastReceiver() {
     companion object {
         const val REQUEST_CODE = 564
@@ -45,5 +44,4 @@ class NotificationsReceiver : BroadcastReceiver() {
             }
         }
     }
-
 }

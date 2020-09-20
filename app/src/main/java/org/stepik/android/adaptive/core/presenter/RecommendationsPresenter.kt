@@ -9,41 +9,41 @@ import org.stepik.android.adaptive.api.Api
 import org.stepik.android.adaptive.api.RecommendationsResponse
 import org.stepik.android.adaptive.content.questions.QuestionsPacksManager
 import org.stepik.android.adaptive.core.presenter.contracts.RecommendationsView
-import org.stepik.android.adaptive.data.preference.SharedPreferenceHelper
 import org.stepik.android.adaptive.data.model.Card
 import org.stepik.android.adaptive.data.model.RecommendationReaction
+import org.stepik.android.adaptive.data.preference.SharedPreferenceHelper
 import org.stepik.android.adaptive.di.qualifiers.BackgroundScheduler
 import org.stepik.android.adaptive.di.qualifiers.MainScheduler
+import org.stepik.android.adaptive.gamification.DailyRewardManager
+import org.stepik.android.adaptive.gamification.ExpManager
+import org.stepik.android.adaptive.gamification.InventoryManager
 import org.stepik.android.adaptive.notifications.LocalReminder
 import org.stepik.android.adaptive.ui.adapter.QuizCardsAdapter
 import org.stepik.android.adaptive.ui.helper.CardHelper
 import org.stepik.android.adaptive.ui.listener.AdaptiveReactionListener
 import org.stepik.android.adaptive.ui.listener.AnswerListener
-import org.stepik.android.adaptive.gamification.DailyRewardManager
-import org.stepik.android.adaptive.gamification.ExpManager
-import org.stepik.android.adaptive.gamification.InventoryManager
 import org.stepik.android.adaptive.util.RateAppManager
 import org.stepik.android.adaptive.util.addDisposable
 import retrofit2.HttpException
-import java.util.*
+import java.util.ArrayDeque
 import javax.inject.Inject
 
 class RecommendationsPresenter
 @Inject
 constructor(
-        private val api: Api,
-        private val sharedPreferenceHelper: SharedPreferenceHelper,
-        @BackgroundScheduler
-        private val backgroundScheduler: Scheduler,
-        @MainScheduler
-        private val mainScheduler: Scheduler,
-        localReminder: LocalReminder,
-        private val dailyRewardManager: DailyRewardManager,
-        private val expManager: ExpManager,
-        private val inventoryManager: InventoryManager,
-        private val rateAppManager: RateAppManager,
-        private val questionsPacksManager: QuestionsPacksManager
-): PresenterBase<RecommendationsView>(), AnswerListener {
+    private val api: Api,
+    private val sharedPreferenceHelper: SharedPreferenceHelper,
+    @BackgroundScheduler
+    private val backgroundScheduler: Scheduler,
+    @MainScheduler
+    private val mainScheduler: Scheduler,
+    localReminder: LocalReminder,
+    private val dailyRewardManager: DailyRewardManager,
+    private val expManager: ExpManager,
+    private val inventoryManager: InventoryManager,
+    private val rateAppManager: RateAppManager,
+    private val questionsPacksManager: QuestionsPacksManager
+) : PresenterBase<RecommendationsView>(), AnswerListener {
     companion object {
         private const val MIN_STREAK_TO_OFFER_TO_BUY = 7
         private const val LEVEL_TO_SHOW_GAMIFICATION_DESCRIPTION = 2
@@ -96,12 +96,12 @@ constructor(
 
     private fun fetchExp() {
         compositeDisposable addDisposable expManager.fetchExp()
-                .observeOn(mainScheduler)
-                .subscribeOn(backgroundScheduler)
-                .subscribe {
-                    exp = it
-                    updateExp()
-                }
+            .observeOn(mainScheduler)
+            .subscribeOn(backgroundScheduler)
+            .subscribe {
+                exp = it
+                updateExp()
+            }
     }
 
     private fun resolveDailyReward() {
@@ -142,18 +142,19 @@ constructor(
             val isNewLevelGained = level != expManager.getCurrentLevel(exp - streak)
 
             val shouldShowGamificationDescription = isQuestionsPacksSupported &&
-                    (isNewLevelGained && level >= LEVEL_TO_SHOW_GAMIFICATION_DESCRIPTION || level >= LEVEL_TOO_HIGH_TO_WAIT)
-                    && !sharedPreferenceHelper.isGamificationDescriptionWasShown
+                (isNewLevelGained && level >= LEVEL_TO_SHOW_GAMIFICATION_DESCRIPTION || level >= LEVEL_TOO_HIGH_TO_WAIT) &&
+                !sharedPreferenceHelper.isGamificationDescriptionWasShown
 
-            val shouldShowEmptyAuthScreen = (isNewLevelGained && level >= LEVEL_TO_SHOW_EMPTY_AUTH_SCREEN)
-                    && !sharedPreferenceHelper.isEmptyAuthScreenWasShown
+            val shouldShowEmptyAuthScreen = (isNewLevelGained && level >= LEVEL_TO_SHOW_EMPTY_AUTH_SCREEN) &&
+                !sharedPreferenceHelper.isEmptyAuthScreenWasShown
 
             when {
                 shouldShowGamificationDescription -> {
                     sharedPreferenceHelper.isGamificationDescriptionWasShown = true
                     view?.showGamificationDescriptionScreen()
                 }
-                shouldShowEmptyAuthScreen -> compositeDisposable addDisposable sharedPreferenceHelper.isFakeUser()
+                shouldShowEmptyAuthScreen ->
+                    compositeDisposable addDisposable sharedPreferenceHelper.isFakeUser()
                         .subscribeOn(backgroundScheduler)
                         .observeOn(mainScheduler)
                         .subscribe { isFake ->
@@ -215,18 +216,17 @@ constructor(
         expManager.resetStreak()
     }
 
-
     private fun createReaction(lesson: Long, reaction: RecommendationReaction.Reaction) {
         if (adapter.isEmptyOrContainsOnlySwipedCard(lesson)) {
             view?.onLoading()
         }
 
         compositeDisposable addDisposable CardHelper.createReactionObservable(api, sharedPreferenceHelper, lesson, reaction, cards.size + adapter.getItemCount())
-                .subscribeOn(backgroundScheduler)
-                .observeOn(mainScheduler)
-                .doOnError(this::onError)
-                .retryWhen { it.zipWith(retrySubject, BiFunction<Any, Any, Any> {a, _ -> a}) }
-                .subscribe(this::onRecommendation, this::onError)
+            .subscribeOn(backgroundScheduler)
+            .observeOn(mainScheduler)
+            .doOnError(this::onError)
+            .retryWhen { it.zipWith(retrySubject, BiFunction<Any, Any, Any> { a, _ -> a }) }
+            .subscribe(this::onRecommendation, this::onError)
     }
 
     private fun onRecommendation(response: RecommendationsResponse) {
@@ -237,8 +237,8 @@ constructor(
         } else {
             val size = cards.size
             recommendations
-                    .filter { !isCardExists(it.lesson) }
-                    .forEach { cards.add(Card(it.lesson)) }
+                .filter { !isCardExists(it.lesson) }
+                .forEach { cards.add(Card(it.lesson)) }
 
             if (size == 0) resubscribe()
         }
@@ -246,7 +246,7 @@ constructor(
 
     private fun onError(throwable: Throwable?) {
         this.error = throwable
-        when(throwable) {
+        when (throwable) {
             is HttpException -> view?.onRequestError()
             else -> view?.onConnectivityError()
         }
@@ -270,7 +270,7 @@ constructor(
             }
 
             cardDisposable = cards.peek()
-                    .subscribe(this::onCardDataLoaded, this::onError)
+                .subscribe(this::onCardDataLoaded, this::onError)
         }
     }
 
@@ -282,8 +282,7 @@ constructor(
     }
 
     private fun isCardExists(lessonId: Long) =
-            cards.any { it.lessonId == lessonId } || adapter.isCardExists(lessonId)
-
+        cards.any { it.lessonId == lessonId } || adapter.isCardExists(lessonId)
 
     override fun detachView(view: RecommendationsView) {
         adapter.detach()

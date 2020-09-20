@@ -23,7 +23,7 @@ import org.stepik.android.adaptive.util.changeVisibillity
 import org.stepik.android.adaptive.util.hideAllChildren
 import javax.inject.Inject
 
-class EditPasswordDialogFragment: DialogFragment(), EditProfileFieldView {
+class EditPasswordDialogFragment : DialogFragment(), EditProfileFieldView {
     @Inject
     internal lateinit var viewModelFactory: ViewModelProvider.Factory
 
@@ -31,7 +31,7 @@ class EditPasswordDialogFragment: DialogFragment(), EditProfileFieldView {
 
     private fun injectComponent() {
         App.componentManager()
-                .statsComponent.inject(this)
+            .statsComponent.inject(this)
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
@@ -52,7 +52,7 @@ class EditPasswordDialogFragment: DialogFragment(), EditProfileFieldView {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
-            inflater.inflate(R.layout.dialog_edit_password, container, false)
+        inflater.inflate(R.layout.dialog_edit_password, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         confirm.setOnClickListener { changePassword() }
@@ -76,7 +76,7 @@ class EditPasswordDialogFragment: DialogFragment(), EditProfileFieldView {
 
     private fun changePassword() {
         val isValid = ValidateUtil.validatePassword(oldPasswordWrapper, oldPassword) &&
-                ValidateUtil.validatePassword(newPasswordWrapper, newPassword)
+            ValidateUtil.validatePassword(newPasswordWrapper, newPassword)
 
         if (!isValid) return
 
@@ -90,8 +90,8 @@ class EditPasswordDialogFragment: DialogFragment(), EditProfileFieldView {
 
     private fun setConfirmButton() {
         confirm.isEnabled =
-                oldPassword.text.isNullOrBlank() == false &&
-                newPassword.text.isNullOrBlank() == false
+            oldPassword.text.isNullOrBlank() == false &&
+            newPassword.text.isNullOrBlank() == false
     }
 
     override fun onProfile(profile: Profile) {

@@ -19,35 +19,40 @@ import javax.inject.Inject
 class RemoteStorageRepositoryImpl
 @Inject
 constructor(
-        config: Config,
-        private val remoteStorageService: RemoteStorageService,
-        private val profilePreferences: ProfilePreferences
-): RemoteStorageRepository {
+    config: Config,
+    private val remoteStorageService: RemoteStorageService,
+    private val profilePreferences: ProfilePreferences
+) : RemoteStorageRepository {
     private val packsKind = "adaptive_${config.courseId}_packs"
     private val gson = Gson()
 
-    override fun storeQuestionsPack(packId: String): Completable = Single.fromCallable {
-        gson.toJsonTree(QuestionsPackStorageItem(packId))
-    }.flatMapCompletable { data ->
-        remoteStorageService.createStorageRecord(StorageRequest(StorageRecord(
-                kind = packsKind,
-                data = data
-        )))
-    }
+    override fun storeQuestionsPack(packId: String): Completable =
+        Single.fromCallable {
+            gson.toJsonTree(QuestionsPackStorageItem(packId))
+        }.flatMapCompletable { data ->
+            remoteStorageService.createStorageRecord(
+                StorageRequest(
+                    StorageRecord(
+                        kind = packsKind,
+                        data = data
+                    )
+                )
+            )
+        }
 
     private fun getQuestionsPacks(page: Int): Observable<StorageResponse> =
-            Observable.fromCallable(profilePreferences::profileId).flatMap {
-                remoteStorageService.getStorageRecords(page, it, packsKind)
-            }
-
-
-    override fun getQuestionsPacks(): Single<List<String>> = getQuestionsPacks(page = 1).concatMap {
-        if (it.meta?.hasNext == true) {
-            Observable.just(it).concatWith(getQuestionsPacks(page = it.meta.page + 1))
-        } else {
-            Observable.just(it)
+        Observable.fromCallable(profilePreferences::profileId).flatMap {
+            remoteStorageService.getStorageRecords(page, it, packsKind)
         }
-    }.concatMap {
-        it.records.map { it.data.toObject<QuestionsPackStorageItem>(gson).packId }.toObservable()
-    }.toList()
+
+    override fun getQuestionsPacks(): Single<List<String>> =
+        getQuestionsPacks(page = 1).concatMap {
+            if (it.meta?.hasNext == true) {
+                Observable.just(it).concatWith(getQuestionsPacks(page = it.meta.page + 1))
+            } else {
+                Observable.just(it)
+            }
+        }.concatMap {
+            it.records.map { it.data.toObject<QuestionsPackStorageItem>(gson).packId }.toObservable()
+        }.toList()
 }

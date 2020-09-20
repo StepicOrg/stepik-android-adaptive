@@ -11,7 +11,7 @@ import org.stepik.android.adaptive.data.model.Reply
 import org.stepik.android.adaptive.data.model.Submission
 import org.stepik.android.adaptive.ui.view.container.ContainerView
 
-open class SingleLineAnswersAdapter: AttemptAnswerAdapter<SingleLineAnswersAdapter.StringViewHolder>() {
+open class SingleLineAnswersAdapter : AttemptAnswerAdapter<SingleLineAnswersAdapter.StringViewHolder>() {
     protected var value = String()
     protected var attemptId: Long? = null
 
@@ -28,9 +28,10 @@ open class SingleLineAnswersAdapter: AttemptAnswerAdapter<SingleLineAnswersAdapt
         attemptId = attempt?.id
     }
 
-    override fun createSubmission(): Submission? = attemptId?.let {
-        Submission(Reply(text = value), it)
-    }
+    override fun createSubmission(): Submission? =
+        attemptId?.let {
+            Submission(Reply(text = value), it)
+        }
 
     override fun onBindViewHolder(holder: StringViewHolder, pos: Int) {
         holder.editField.setText(value)
@@ -42,11 +43,11 @@ open class SingleLineAnswersAdapter: AttemptAnswerAdapter<SingleLineAnswersAdapt
     }
 
     override fun onCreateViewHolder(parent: ViewGroup) =
-            StringViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.quiz_type_string, parent, false) as EditText).apply {
-                editField.addTextChangedListener(textWatcher)
-            }
+        StringViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.quiz_type_string, parent, false) as EditText).apply {
+            editField.addTextChangedListener(textWatcher)
+        }
 
     override fun getItemCount() = 1
 
-    class StringViewHolder(val editField: EditText): ContainerView.ViewHolder(editField)
+    class StringViewHolder(val editField: EditText) : ContainerView.ViewHolder(editField)
 }

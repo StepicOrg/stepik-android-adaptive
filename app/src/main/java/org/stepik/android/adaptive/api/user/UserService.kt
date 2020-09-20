@@ -9,8 +9,7 @@ interface UserService {
 
     @GET("api/users")
     fun getUsers(
-            @Query("ids[]") userIds: LongArray,
-            @Query("page") page: Int
+        @Query("ids[]") userIds: LongArray,
+        @Query("page") page: Int
     ): Observable<UsersResponse>
-
 }

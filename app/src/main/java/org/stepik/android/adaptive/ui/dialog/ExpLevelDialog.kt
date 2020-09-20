@@ -16,7 +16,7 @@ class ExpLevelDialog : DialogFragment() {
     companion object {
         private const val LEVEL_KEY = "level"
 
-        fun newInstance(level: Long) : ExpLevelDialog {
+        fun newInstance(level: Long): ExpLevelDialog {
             val dialog = ExpLevelDialog()
             val args = Bundle()
             args.putLong(LEVEL_KEY, level)
@@ -25,7 +25,7 @@ class ExpLevelDialog : DialogFragment() {
         }
     }
 
-    private lateinit var binding : ExpLevelDialogBinding
+    private lateinit var binding: ExpLevelDialogBinding
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val alertDialogBuilder = AlertDialog.Builder(requireContext(), R.style.ExpLevelDialogTheme)
@@ -41,11 +41,14 @@ class ExpLevelDialog : DialogFragment() {
     override fun onResume() {
         super.onResume()
         skipUIFrame({
-            CommonConfetti.rainingConfetti(binding.expLevelDialogConfetti, intArrayOf(
+            CommonConfetti.rainingConfetti(
+                binding.expLevelDialogConfetti,
+                intArrayOf(
                     Color.BLACK,
                     ContextCompat.getColor(requireContext(), R.color.colorAccentDisabled),
                     ContextCompat.getColor(requireContext(), R.color.colorAccent)
-            )).infinite().setVelocityY(100f, 30f).setVelocityX(0f, 60f).setEmissionRate(15f)
+                )
+            ).infinite().setVelocityY(100f, 30f).setVelocityX(0f, 60f).setEmissionRate(15f)
         })
     }
 }

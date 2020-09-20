@@ -5,7 +5,7 @@ import io.reactivex.Single
 import org.stepik.android.adaptive.data.model.LocalExpItem
 import org.stepik.android.adaptive.data.model.WeekProgress
 
-interface ExpDao: IDao<LocalExpItem> {
+interface ExpDao : IDao<LocalExpItem> {
     fun getExpItem(submissionId: Long = -1): Maybe<LocalExpItem>
 
     fun getExp(): Single<Long>

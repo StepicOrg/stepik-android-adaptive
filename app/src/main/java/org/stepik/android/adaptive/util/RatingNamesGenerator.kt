@@ -10,8 +10,8 @@ import javax.inject.Inject
 class RatingNamesGenerator
 @Inject
 constructor(
-        private val context: Context,
-        private val sharedPreferenceHelper: SharedPreferenceHelper
+    private val context: Context,
+    private val sharedPreferenceHelper: SharedPreferenceHelper
 ) {
     private val animalsMale by lazy { context.resources.getStringArray(R.array.animals_m) }
     private val animalsFemale by lazy { context.resources.getStringArray(R.array.animals_f) }
@@ -20,24 +20,25 @@ constructor(
     private val adjectives by lazy { context.resources.getStringArray(R.array.adjectives) }
     private val adjectivesFemale by lazy { context.resources.getStringArray(R.array.adjectives_female) }
 
-    fun getName(user: Long) : String =
-            if (user == sharedPreferenceHelper.profileId) {
-                context.getString(R.string.rating_you_placeholder)
+    fun getName(user: Long): String =
+        if (user == sharedPreferenceHelper.profileId) {
+            context.getString(R.string.rating_you_placeholder)
+        } else {
+            val hash = hash(user)
+            val animal = animals[(hash % animals.size).toInt()]
+
+            val adjIndex = (hash / animals.size).toInt()
+            val adj = if (isFemaleNoun(animal)) {
+                adjectivesFemale[adjIndex]
             } else {
-                val hash = hash(user)
-                val animal = animals[(hash % animals.size).toInt()]
-
-                val adjIndex = (hash / animals.size).toInt()
-                val adj = if (isFemaleNoun(animal)) {
-                    adjectivesFemale[adjIndex]
-                } else {
-                    adjectives[adjIndex]
-                }
-
-                adj.capitalize() + ' ' + animal
+                adjectives[adjIndex]
             }
 
-    private fun isFemaleNoun(noun: String) = animalsFemale.contains(noun)
+            adj.capitalize() + ' ' + animal
+        }
+
+    private fun isFemaleNoun(noun: String) =
+        animalsFemale.contains(noun)
 
     private fun hash(x: Long): Long {
         var h = x

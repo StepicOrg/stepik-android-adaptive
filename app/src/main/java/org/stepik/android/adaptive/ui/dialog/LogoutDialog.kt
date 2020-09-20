@@ -11,7 +11,7 @@ import org.stepik.android.adaptive.core.LogoutHelper
 import org.stepik.android.adaptive.core.ScreenManager
 import javax.inject.Inject
 
-class LogoutDialog: DialogFragment(), DialogInterface.OnClickListener {
+class LogoutDialog : DialogFragment(), DialogInterface.OnClickListener {
     @Inject
     lateinit var logoutHelper: LogoutHelper
 

@@ -12,8 +12,8 @@ import org.stepik.android.adaptive.data.model.Bookmark
 import org.stepik.android.adaptive.util.changeVisibillity
 
 class BookmarksAdapter(
-        private val removeBookmark: (Bookmark, Int) -> Unit,
-        private val analytics: Analytics
+    private val removeBookmark: (Bookmark, Int) -> Unit,
+    private val analytics: Analytics
 ) : RecyclerView.Adapter<BookmarksAdapter.BookmarkViewHolder>() {
     private val data = ArrayList<Bookmark>()
 
@@ -29,9 +29,10 @@ class BookmarksAdapter(
 
     override fun getItemCount() = data.size
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = BookmarkViewHolder(
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
+        BookmarkViewHolder(
             LayoutInflater.from(parent.context).inflate(R.layout.item_bookmark, parent, false)
-    )
+        )
 
     override fun onBindViewHolder(holder: BookmarkViewHolder, position: Int) {
         val bookmark = data[position]
@@ -43,7 +44,7 @@ class BookmarksAdapter(
         holder.correct.changeVisibillity(isCorrect)
     }
 
-    inner class BookmarkViewHolder(root: View): RecyclerView.ViewHolder(root) {
+    inner class BookmarkViewHolder(root: View) : RecyclerView.ViewHolder(root) {
         val title: TextView = root.title
         val definition: TextView = root.definition
         val correct: View = root.correct

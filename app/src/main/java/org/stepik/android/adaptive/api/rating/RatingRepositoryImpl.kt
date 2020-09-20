@@ -14,17 +14,17 @@ import javax.inject.Inject
 class RatingRepositoryImpl
 @Inject
 constructor(
-        private val config: Config,
-        private val ratingService: RatingService,
-        private val authPreferences: AuthPreferences,
-        private val profilePreferences: ProfilePreferences
-): RatingRepository {
+    private val config: Config,
+    private val ratingService: RatingService,
+    private val authPreferences: AuthPreferences,
+    private val profilePreferences: ProfilePreferences
+) : RatingRepository {
     override fun fetchRating(): Single<Long> =
-            ratingService.restoreRating(config.courseId, authPreferences.oAuthResponse?.accessToken).map { it.exp }
+        ratingService.restoreRating(config.courseId, authPreferences.oAuthResponse?.accessToken).map { it.exp }
 
     override fun getRatingTable(count: Int, days: Int): Single<List<RatingItem>> =
-            ratingService.getRating(config.courseId, count.toLong(), days.toLong(), profilePreferences.profileId).map { it.users }
+        ratingService.getRating(config.courseId, count.toLong(), days.toLong(), profilePreferences.profileId).map { it.users }
 
     override fun putRating(exp: Long): Completable =
-            ratingService.putRating(RatingRequest(exp, config.courseId, authPreferences.oAuthResponse?.accessToken))
+        ratingService.putRating(RatingRequest(exp, config.courseId, authPreferences.oAuthResponse?.accessToken))
 }

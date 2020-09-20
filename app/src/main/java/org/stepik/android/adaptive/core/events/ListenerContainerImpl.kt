@@ -15,5 +15,6 @@ class ListenerContainerImpl<T>
         listeners.remove(listener)
     }
 
-    override fun asIterable() = listeners.asIterable()
+    override fun asIterable(): Iterable<T> =
+        listeners
 }

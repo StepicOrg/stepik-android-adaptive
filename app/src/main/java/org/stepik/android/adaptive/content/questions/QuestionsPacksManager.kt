@@ -9,10 +9,10 @@ import javax.inject.Inject
 class QuestionsPacksManager
 @Inject
 constructor(
-        private val analytics: Analytics,
-        private val sharedPreferenceHelper: SharedPreferenceHelper,
+    private val analytics: Analytics,
+    private val sharedPreferenceHelper: SharedPreferenceHelper,
 
-        val questionsPacks: Array<QuestionsPack>
+    val questionsPacks: Array<QuestionsPack>
 ) {
     private val idToPack = questionsPacks.associateBy { it.id }
 
@@ -34,15 +34,18 @@ constructor(
     val currentCourseId: Long
         get() = currentPack.courseId
 
-    val isQuestionsPacksSupported = questionsPacks.size > 1
+    val isQuestionsPacksSupported: Boolean =
+        questionsPacks.size > 1
 
-    fun onQuestionsPackViewed(pack: QuestionsPack) =
+    fun onQuestionsPackViewed(pack: QuestionsPack) {
         sharedPreferenceHelper.onQuestionsPackViewed(pack)
+    }
 
     val unviewedPacksCount: Int
         get() = questionsPacks.count { !sharedPreferenceHelper.isQuestionsPackViewed(it) }
 
-    fun getPackById(id: String) = idToPack[id]
+    fun getPackById(id: String): QuestionsPack? =
+        idToPack[id]
 
     fun switchPack(pack: QuestionsPack) {
         sharedPreferenceHelper.questionsPackIndex = pack.ordinal

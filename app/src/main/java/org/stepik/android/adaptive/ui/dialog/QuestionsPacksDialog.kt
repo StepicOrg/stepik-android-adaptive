@@ -17,7 +17,8 @@ import javax.inject.Inject
 
 class QuestionsPacksDialog : DialogFragment() {
     companion object {
-        fun newInstance() = QuestionsPacksDialog()
+        fun newInstance() =
+            QuestionsPacksDialog()
     }
 
     @Inject

@@ -1,15 +1,6 @@
 package org.stepik.android.adaptive.ui.adapter
 
 import android.view.View
-import org.stepik.android.adaptive.core.presenter.CardPresenter
-import org.stepik.android.adaptive.core.presenter.contracts.CardView
-import org.stepik.android.adaptive.data.model.RecommendationReaction
-import org.stepik.android.adaptive.data.model.Submission
-import org.stepik.android.adaptive.databinding.QuizCardViewBinding
-import org.stepik.android.adaptive.ui.animation.CardAnimations
-import org.stepik.android.adaptive.ui.helper.CardHelper
-import org.stepik.android.adaptive.ui.view.SwipeableLayout
-import org.stepik.android.adaptive.util.HtmlUtil
 import android.view.ViewGroup
 import android.webkit.WebSettings
 import androidx.annotation.StringRes
@@ -18,9 +9,18 @@ import org.stepik.android.adaptive.App
 import org.stepik.android.adaptive.R
 import org.stepik.android.adaptive.configuration.Config
 import org.stepik.android.adaptive.core.ScreenManager
+import org.stepik.android.adaptive.core.presenter.CardPresenter
+import org.stepik.android.adaptive.core.presenter.contracts.CardView
+import org.stepik.android.adaptive.data.model.RecommendationReaction
+import org.stepik.android.adaptive.data.model.Submission
+import org.stepik.android.adaptive.databinding.QuizCardViewBinding
 import org.stepik.android.adaptive.ui.DefaultWebViewClient
 import org.stepik.android.adaptive.ui.adapter.attempts.AttemptAnswerAdapter
+import org.stepik.android.adaptive.ui.animation.CardAnimations
+import org.stepik.android.adaptive.ui.helper.CardHelper
+import org.stepik.android.adaptive.ui.view.SwipeableLayout
 import org.stepik.android.adaptive.ui.view.container.ContainerView
+import org.stepik.android.adaptive.util.HtmlUtil
 import org.stepik.android.adaptive.util.changeVisibillity
 import javax.inject.Inject
 
@@ -109,11 +109,13 @@ class QuizCardViewHolder(val binding: QuizCardViewBinding) : ContainerView.ViewH
 
     override fun setBookmarkState(isBookmarked: Boolean) {
         binding.bookmark.changeVisibillity(true)
-        binding.bookmark.setImageResource(if (isBookmarked) {
-            R.drawable.ic_bookmark_filled
-        } else {
-            R.drawable.ic_bookmark
-        })
+        binding.bookmark.setImageResource(
+            if (isBookmarked) {
+                R.drawable.ic_bookmark_filled
+            } else {
+                R.drawable.ic_bookmark
+            }
+        )
     }
 
     override fun setTitle(title: String) {
@@ -170,12 +172,10 @@ class QuizCardViewHolder(val binding: QuizCardViewBinding) : ContainerView.ViewH
     }
 
     override fun onSubmissionConnectivityError() =
-            onSubmissionError(R.string.connectivity_error)
-
+        onSubmissionError(R.string.connectivity_error)
 
     override fun onSubmissionRequestError() =
-            onSubmissionError(R.string.request_error)
-
+        onSubmissionError(R.string.request_error)
 
     private fun onSubmissionError(@StringRes errorMessage: Int) {
         if (binding.root.parent != null) {

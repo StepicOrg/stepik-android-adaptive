@@ -25,20 +25,20 @@ import javax.inject.Inject
 class AuthPresenter
 @Inject
 constructor(
-        private val api: Api,
-        private val authRepository: AuthRepository,
-        private val profileRepository: ProfileRepository,
-        private val profilePreferences: ProfilePreferences,
-        private val analytics: Analytics,
+    private val api: Api,
+    private val authRepository: AuthRepository,
+    private val profileRepository: ProfileRepository,
+    private val profilePreferences: ProfilePreferences,
+    private val analytics: Analytics,
 
-        private val questionsPacksManager: QuestionsPacksManager,
-        private val expManager: ExpManager,
+    private val questionsPacksManager: QuestionsPacksManager,
+    private val expManager: ExpManager,
 
-        @BackgroundScheduler
-        private val backgroundScheduler: Scheduler,
-        @MainScheduler
-        private val mainScheduler: Scheduler
-): PresenterBase<AuthView>() {
+    @BackgroundScheduler
+    private val backgroundScheduler: Scheduler,
+    @MainScheduler
+    private val mainScheduler: Scheduler
+) : PresenterBase<AuthView>() {
 
     private val disposable = CompositeDisposable()
 
@@ -48,26 +48,29 @@ constructor(
         view?.onLoading()
 
         disposable addDisposable createFakeUserRx()
-                .andThen(onLoginRx())
-                .subscribeOn(backgroundScheduler)
-                .observeOn(mainScheduler)
-                .subscribe(this::onSuccess, {
+            .andThen(onLoginRx())
+            .subscribeOn(backgroundScheduler)
+            .observeOn(mainScheduler)
+            .subscribe(
+                this::onSuccess,
+                {
                     onError(AuthError.ConnectionProblem)
-                })
+                }
+            )
     }
 
     fun authWithLoginPassword(login: String, password: String) {
         view?.onLoading()
 
         disposable addDisposable loginRx(login, password).andThen(onLoginRx())
-                .doOnComplete {
-                    profilePreferences.removeFakeUser() // we auth as normal user and can remove fake credentials
-                    analytics.logEvent(Analytics.Login.SUCCESS_LOGIN_WITH_PASSWORD)
-                }
-                .andThen(expManager.reset()) // reset rating from previous account
-                .subscribeOn(backgroundScheduler)
-                .observeOn(mainScheduler)
-                .subscribe(this::onSuccess, this::handleLoginError)
+            .doOnComplete {
+                profilePreferences.removeFakeUser() // we auth as normal user and can remove fake credentials
+                analytics.logEvent(Analytics.Login.SUCCESS_LOGIN_WITH_PASSWORD)
+            }
+            .andThen(expManager.reset()) // reset rating from previous account
+            .subscribeOn(backgroundScheduler)
+            .observeOn(mainScheduler)
+            .subscribe(this::onSuccess, this::handleLoginError)
     }
 
     private fun handleLoginError(error: Throwable) {
@@ -84,30 +87,31 @@ constructor(
     }
 
     private fun createAccountRx(credentials: AccountCredentials): Completable =
-            authRepository.createAccount(credentials.toRegistrationUser())
+        authRepository.createAccount(credentials.toRegistrationUser())
 
     private fun loginRx(login: String, password: String): Completable =
-            authRepository.authWithLoginPassword(login, password).toCompletable()
+        authRepository.authWithLoginPassword(login, password).toCompletable()
 
     private fun createFakeUserRx(): Completable =
-            Single.fromCallable { RxOptional(profilePreferences.fakeUser) }.flatMapCompletable { optional ->
-                val credentials = optional.value ?: api.createFakeAccount()
-                if (optional.value == null) {
-                    profilePreferences.fakeUser = credentials
-                    createAccountRx(credentials) then loginRx(credentials.login, credentials.password)
-                } else {
-                    loginRx(credentials.login, credentials.password).onErrorResumeNext { error ->
-                        if (error is HttpException && error.code() == 401) { // on some reason we cannot authorize user with old fake account credential
-                            profilePreferences.fakeUser = null // remove old fake user
-                            createFakeUserRx() // retry
-                        } else {
-                            Completable.error(error)
-                        }
+        Single.fromCallable { RxOptional(profilePreferences.fakeUser) }.flatMapCompletable { optional ->
+            val credentials = optional.value ?: api.createFakeAccount()
+            if (optional.value == null) {
+                profilePreferences.fakeUser = credentials
+                createAccountRx(credentials) then loginRx(credentials.login, credentials.password)
+            } else {
+                loginRx(credentials.login, credentials.password).onErrorResumeNext { error ->
+                    if (error is HttpException && error.code() == 401) { // on some reason we cannot authorize user with old fake account credential
+                        profilePreferences.fakeUser = null // remove old fake user
+                        createFakeUserRx() // retry
+                    } else {
+                        Completable.error(error)
                     }
                 }
             }
+        }
 
-    private fun onLoginRx(): Completable = api
+    private fun onLoginRx(): Completable =
+        api
             .joinCourse(questionsPacksManager.currentCourseId)
             .andThen(profileRepository.fetchProfileWithEmailAddresses())
             .doOnSuccess {

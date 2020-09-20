@@ -6,7 +6,6 @@ import android.util.AttributeSet
 import android.util.TypedValue
 import android.widget.FrameLayout
 import android.widget.TextView
-
 import org.stepik.android.adaptive.util.KotlinUtils.setIfNot
 
 class MorphingView : FrameLayout {
@@ -18,7 +17,6 @@ class MorphingView : FrameLayout {
     val drawableWrapper = GradientDrawableWrapper(GradientDrawable())
 
     var nestedTextView: TextView? = null
-
 
     init {
         background = drawableWrapper.drawable
@@ -58,38 +56,38 @@ class MorphingView : FrameLayout {
         val lParams = layoutParams as MarginLayoutParams
 
         return MorphParams(
-                drawableWrapper.cornerRadius,
-                drawableWrapper.color,
+            drawableWrapper.cornerRadius,
+            drawableWrapper.color,
 
-                width,
-                height,
+            width,
+            height,
 
-                lParams.leftMargin,
-                lParams.topMargin,
-                lParams.rightMargin,
-                lParams.bottomMargin,
+            lParams.leftMargin,
+            lParams.topMargin,
+            lParams.rightMargin,
+            lParams.bottomMargin,
 
-                nestedTextView?.text?.toString() ?: "",
-                nestedTextView?.textSize ?: -1f
+            nestedTextView?.text?.toString() ?: "",
+            nestedTextView?.textSize ?: -1f
         )
     }
 
     val initialMorphParams by lazy { getMorphParams() }
 
     data class MorphParams(
-            val cornerRadius: Float = -1f,
+        val cornerRadius: Float = -1f,
 
-            val backgroundColor: Int = -1,
+        val backgroundColor: Int = -1,
 
-            val width: Int = -1,
-            val height: Int = -1,
+        val width: Int = -1,
+        val height: Int = -1,
 
-            val marginLeft: Int = -1,
-            val marginTop: Int = -1,
-            val marginRight: Int = -1,
-            val marginBottom: Int = -1,
+        val marginLeft: Int = -1,
+        val marginTop: Int = -1,
+        val marginRight: Int = -1,
+        val marginBottom: Int = -1,
 
-            val text: String? = null,
-            val textSize: Float = -1f
+        val text: String? = null,
+        val textSize: Float = -1f
     )
 }

@@ -65,57 +65,65 @@ abstract class AppCoreModule {
         @Provides
         @JvmStatic
         @MainScheduler
-        internal fun provideAndroidScheduler(): Scheduler = AndroidSchedulers.mainThread()
+        internal fun provideAndroidScheduler(): Scheduler =
+            AndroidSchedulers.mainThread()
 
         @Provides
         @JvmStatic
         @BackgroundScheduler
-        internal fun provideBackgroundScheduler(): Scheduler = Schedulers.io()
+        internal fun provideBackgroundScheduler(): Scheduler =
+            Schedulers.io()
 
         @Provides
         @AppSingleton
         @JvmStatic
         internal fun provideConfig(configFactory: ConfigImpl.ConfigFactory): Config =
-                configFactory.create()
+            configFactory.create()
 
         @JvmStatic
         @Provides
         @AppSingleton
         internal fun provideBilling(context: Context, config: Config): Billing =
-                Billing(context, object : Billing.DefaultConfiguration() {
-                    override fun getPublicKey() = config.appPublicLicenseKey
-                })
+            Billing(
+                context,
+                object : Billing.DefaultConfiguration() {
+                    override fun getPublicKey() =
+                        config.appPublicLicenseKey
+                }
+            )
 
         @JvmStatic
         @Provides
         @AppSingleton
         internal fun provideFirebaseRemoteConfig(): FirebaseRemoteConfig =
-                FirebaseRemoteConfig.getInstance().apply {
-                    val configSettings = FirebaseRemoteConfigSettings.Builder()
-                            .setDeveloperModeEnabled(BuildConfig.DEBUG)
-                            .build()
-                    setConfigSettings(configSettings)
-                    setDefaults(R.xml.remote_config_defaults)
-                }
+            FirebaseRemoteConfig.getInstance().apply {
+                val configSettings = FirebaseRemoteConfigSettings.Builder()
+                    .setDeveloperModeEnabled(BuildConfig.DEBUG)
+                    .build()
+                setConfigSettings(configSettings)
+                setDefaults(R.xml.remote_config_defaults)
+            }
 
         @JvmStatic
         @Provides
         @AppSingleton
         @Named(AppConstants.userAgentName)
         internal fun provideUserAgent(context: Context): String =
-                try {
-                    val packageInfo = context.packageManager.getPackageInfo(context.packageName, 0)
-                    val apiLevel = android.os.Build.VERSION.SDK_INT
-                    ("StepikDroid/" + packageInfo.versionName + " (Android " + apiLevel
-                            + ") build/" + packageInfo.versionCode + " package/" + packageInfo.packageName)
-                } catch (e: PackageManager.NameNotFoundException) {
-                    ""
-                }
+            try {
+                val packageInfo = context.packageManager.getPackageInfo(context.packageName, 0)
+                val apiLevel = android.os.Build.VERSION.SDK_INT
+                (
+                    "StepikDroid/" + packageInfo.versionName + " (Android " + apiLevel +
+                        ") build/" + packageInfo.versionCode + " package/" + packageInfo.packageName
+                    )
+            } catch (e: PackageManager.NameNotFoundException) {
+                ""
+            }
 
         @JvmStatic
         @Provides
         @AppSingleton
-        internal fun provideCookieManager(): CookieManager = CookieManager.getInstance()
-
+        internal fun provideCookieManager(): CookieManager =
+            CookieManager.getInstance()
     }
 }

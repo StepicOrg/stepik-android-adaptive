@@ -12,21 +12,21 @@ import javax.inject.Inject
 class DailyRewardManager
 @Inject
 constructor(
-        private val achievementEventPoster: AchievementEventPoster,
-        private val sharedPreferenceHelper: SharedPreferenceHelper,
-        private val inventoryManager: InventoryManager
+    private val achievementEventPoster: AchievementEventPoster,
+    private val sharedPreferenceHelper: SharedPreferenceHelper,
+    private val inventoryManager: InventoryManager
 ) {
     companion object {
         const val DISCARD = -1L
 
         val rewards = listOf(
-                listOf(InventoryManager.Item.Ticket to 3),
-                listOf(InventoryManager.Item.Ticket to 3),
-                listOf(InventoryManager.Item.Ticket to 5),
-                listOf(InventoryManager.Item.Ticket to 5),
-                listOf(InventoryManager.Item.Ticket to 7),
-                listOf(InventoryManager.Item.Ticket to 7),
-                listOf(InventoryManager.Item.Ticket to 25)
+            listOf(InventoryManager.Item.Ticket to 3),
+            listOf(InventoryManager.Item.Ticket to 3),
+            listOf(InventoryManager.Item.Ticket to 5),
+            listOf(InventoryManager.Item.Ticket to 5),
+            listOf(InventoryManager.Item.Ticket to 7),
+            listOf(InventoryManager.Item.Ticket to 7),
+            listOf(InventoryManager.Item.Ticket to 25)
         )
 
         private const val LAST_SESSION_KEY = "last_session"
@@ -35,10 +35,10 @@ constructor(
     }
 
     fun getLastSessionTimestamp() =
-            sharedPreferenceHelper.getLong(LAST_SESSION_KEY)
+        sharedPreferenceHelper.getLong(LAST_SESSION_KEY)
 
     private fun getRewardProgress() =
-            sharedPreferenceHelper.getLong(REWARD_PROGRESS_KEY)
+        sharedPreferenceHelper.getLong(REWARD_PROGRESS_KEY)
 
     var totalRewardProgress: Long
         get() = sharedPreferenceHelper.getLong(TOTAL_REWARD_PROGRESS_KEY)
@@ -48,7 +48,7 @@ constructor(
         totalRewardProgress = Math.max(totalRewardProgress, getRewardProgress())
     }
 
-    private fun getCurrentRewardDay() : Long {
+    private fun getCurrentRewardDay(): Long {
         val lastSession = sharedPreferenceHelper.getLong(LAST_SESSION_KEY)
 
         val lastSessionDay = DateTime(lastSession).withTimeAtStartOfDay()
@@ -81,7 +81,7 @@ constructor(
             progress
     }
 
-    fun giveRewardAndGetCurrentRewardDay() : Long {
+    fun giveRewardAndGetCurrentRewardDay(): Long {
         val day = getCurrentRewardDay()
         if (day != DISCARD) {
             rewards[day.toInt()].forEach {
@@ -93,6 +93,6 @@ constructor(
         return day
     }
 
-    private fun resetProgress() = sharedPreferenceHelper.remove(REWARD_PROGRESS_KEY)
-
+    private fun resetProgress() =
+        sharedPreferenceHelper.remove(REWARD_PROGRESS_KEY)
 }

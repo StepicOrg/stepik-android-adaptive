@@ -24,7 +24,7 @@ import org.stepik.android.adaptive.util.changeVisibillity
 import org.stepik.android.adaptive.util.hideAllChildren
 import javax.inject.Inject
 
-class EditEmailDialogFragment: DialogFragment(), EditProfileFieldView {
+class EditEmailDialogFragment : DialogFragment(), EditProfileFieldView {
     @Inject
     internal lateinit var viewModelFactory: ViewModelProvider.Factory
 
@@ -32,7 +32,7 @@ class EditEmailDialogFragment: DialogFragment(), EditProfileFieldView {
 
     private fun injectComponent() {
         App.componentManager()
-                .statsComponent.inject(this)
+            .statsComponent.inject(this)
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
@@ -54,7 +54,7 @@ class EditEmailDialogFragment: DialogFragment(), EditProfileFieldView {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
-            inflater.inflate(R.layout.dialog_edit_email, container, false)
+        inflater.inflate(R.layout.dialog_edit_email, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         confirm.setOnClickListener { changeEmail() }

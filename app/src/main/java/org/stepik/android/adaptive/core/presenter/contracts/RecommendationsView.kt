@@ -13,11 +13,12 @@ interface RecommendationsView {
     fun onCardLoaded()
 
     fun updateExp(
-            exp: Long,
-            currentLevelExp: Long,
-            nextLevelExp: Long,
+        exp: Long,
+        currentLevelExp: Long,
+        nextLevelExp: Long,
 
-            level: Long)
+        level: Long
+    )
     fun onStreak(streak: Long)
     fun onStreakLost()
     fun onStreakRestored()

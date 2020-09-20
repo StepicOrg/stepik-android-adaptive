@@ -99,12 +99,14 @@ class QuestionsPacksActivity : BaseActivity(), QuestionsPacksView {
         errorState.changeVisibillity(true)
     }
 
-    override fun createCheckout() = Checkout.forActivity(this, billing)
+    override fun createCheckout() =
+        Checkout.forActivity(this, billing)
 
     override fun showProgress() =
-            showProgressDialogFragment(RESTORE_DIALOG_TAG, getString(R.string.loading_message), getString(R.string.processing_your_request))
+        showProgressDialogFragment(RESTORE_DIALOG_TAG, getString(R.string.loading_message), getString(R.string.processing_your_request))
 
-    override fun hideProgress() = hideProgressDialogFragment(RESTORE_DIALOG_TAG)
+    override fun hideProgress() =
+        hideProgressDialogFragment(RESTORE_DIALOG_TAG)
 
     override fun onAdapter(adapter: QuestionsPacksAdapter) {
         recycler.adapter = adapter

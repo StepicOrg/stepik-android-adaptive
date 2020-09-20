@@ -6,7 +6,7 @@ import javax.inject.Inject
 class AchievementEventPoster
 @Inject
 constructor(
-        private val listeners: ListenerContainer<AchievementEventListener>
+    private val listeners: ListenerContainer<AchievementEventListener>
 ) {
     fun onEvent(event: AchievementManager.Event, value: Long, show: Boolean = true) {
         listeners.asIterable().forEach {

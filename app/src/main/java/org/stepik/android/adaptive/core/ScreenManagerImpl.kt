@@ -1,23 +1,29 @@
 package org.stepik.android.adaptive.core
 
-
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import org.stepik.android.adaptive.data.analytics.AmplitudeAnalytics
-
 import org.stepik.android.adaptive.data.analytics.Analytics
 import org.stepik.android.adaptive.di.AppSingleton
-import org.stepik.android.adaptive.ui.activity.*
+import org.stepik.android.adaptive.ui.activity.DescriptionActivity
+import org.stepik.android.adaptive.ui.activity.EmptyAuthActivity
+import org.stepik.android.adaptive.ui.activity.IntroActivity
+import org.stepik.android.adaptive.ui.activity.LoginActivity
+import org.stepik.android.adaptive.ui.activity.PhotoViewActivity
+import org.stepik.android.adaptive.ui.activity.QuestionsPacksActivity
+import org.stepik.android.adaptive.ui.activity.RegisterActivity
+import org.stepik.android.adaptive.ui.activity.StatsActivity
+import org.stepik.android.adaptive.ui.activity.StudyActivity
 import javax.inject.Inject
 
 @AppSingleton
 class ScreenManagerImpl
 @Inject
 constructor(
-        private val analytics: Analytics,
-        private val context: Context
-): ScreenManager {
+    private val analytics: Analytics,
+    private val context: Context
+) : ScreenManager {
     override fun showOnboardingScreen() {
         val intent = Intent(context, IntroActivity::class.java)
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)

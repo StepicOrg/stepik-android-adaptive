@@ -18,7 +18,7 @@ import org.stepik.android.adaptive.ui.adapter.BookmarksAdapter
 import org.stepik.android.adaptive.util.changeVisibillity
 import javax.inject.Inject
 
-class BookmarksFragment: Fragment(), BookmarksView {
+class BookmarksFragment : Fragment(), BookmarksView {
     @Inject
     internal lateinit var viewModelFactory: ViewModelProvider.Factory
 
@@ -35,7 +35,7 @@ class BookmarksFragment: Fragment(), BookmarksView {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
-            inflater.inflate(R.layout.fragment_bookmarks, container, false)
+        inflater.inflate(R.layout.fragment_bookmarks, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

@@ -12,5 +12,4 @@ interface AuthRepository {
     fun authWithCode(code: String): Single<OAuthResponse>
 
     fun createAccount(credentials: RegistrationUser): Completable
-
 }

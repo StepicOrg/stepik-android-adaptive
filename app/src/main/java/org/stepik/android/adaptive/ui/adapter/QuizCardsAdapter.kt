@@ -11,27 +11,28 @@ import org.stepik.android.adaptive.databinding.QuizCardViewBinding
 import org.stepik.android.adaptive.ui.listener.AdaptiveReactionListener
 import org.stepik.android.adaptive.ui.listener.AnswerListener
 import org.stepik.android.adaptive.ui.view.QuizCardsContainer
-
 import java.util.ArrayList
 
 open class QuizCardsAdapter(
-        private val listener: AdaptiveReactionListener?,
-        private val answerListener: AnswerListener?) : QuizCardsContainer.CardsAdapter<QuizCardViewHolder>() {
+    private val listener: AdaptiveReactionListener?,
+    private val answerListener: AnswerListener?
+) : QuizCardsContainer.CardsAdapter<QuizCardViewHolder>() {
 
     companion object {
         @JvmStatic
         private fun changeVisibilityOfAllChildrenTo(viewGroup: ViewGroup, visibility: Int, exclude: List<Int>?) {
             val count = viewGroup.childCount
             (0 until count)
-                    .map { viewGroup.getChildAt(it) }
-                    .filterNot { exclude != null && exclude.contains(it.id) }
-                    .forEach { it.visibility = visibility }
+                .map { viewGroup.getChildAt(it) }
+                .filterNot { exclude != null && exclude.contains(it.id) }
+                .forEach { it.visibility = visibility }
         }
     }
 
     private val presenters = ArrayList<CardPresenter>()
 
-    fun destroy() = presenters.forEach(CardPresenter::destroy)
+    fun destroy() =
+        presenters.forEach(CardPresenter::destroy)
 
     /**
      * Method that detaches adapter from container
@@ -42,20 +43,19 @@ open class QuizCardsAdapter(
     }
 
     fun isCardExists(lessonId: Long) =
-            presenters.any { it.card.lessonId == lessonId }
+        presenters.any { it.card.lessonId == lessonId }
 
     override fun onCreateViewHolder(parent: ViewGroup) =
-            QuizCardViewHolder(QuizCardViewBinding.inflate(LayoutInflater.from(parent.context), parent, false))
+        QuizCardViewHolder(QuizCardViewBinding.inflate(LayoutInflater.from(parent.context), parent, false))
 
     override fun getItemCount() =
-            presenters.size
+        presenters.size
 
     override fun onBindViewHolder(holder: QuizCardViewHolder, pos: Int) =
-            holder.bind(presenters[pos])
-
+        holder.bind(presenters[pos])
 
     override fun onBindTopCard(holder: QuizCardViewHolder, pos: Int) =
-            holder.onTopCard()
+        holder.onTopCard()
 
     override fun onPositionChanged(holder: QuizCardViewHolder, pos: Int) {
         val p = holder.binding.card.layoutParams as FrameLayout.LayoutParams
@@ -75,14 +75,13 @@ open class QuizCardsAdapter(
     }
 
     fun isEmptyOrContainsOnlySwipedCard(lesson: Long) =
-            presenters.isEmpty() || presenters.size == 1 && presenters[0].card.lessonId == lesson
+        presenters.isEmpty() || presenters.size == 1 && presenters[0].card.lessonId == lesson
 
     override fun poll() =
-            presenters.removeAt(0).destroy()
+        presenters.removeAt(0).destroy()
 
     fun clear() {
         presenters.clear()
         onDataSetChanged()
     }
-
 }

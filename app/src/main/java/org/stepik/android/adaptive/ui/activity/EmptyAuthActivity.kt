@@ -14,7 +14,7 @@ import org.stepik.android.adaptive.data.analytics.Analytics
 import org.stepik.android.adaptive.util.fromHtmlCompat
 import javax.inject.Inject
 
-class EmptyAuthActivity: AppCompatActivity() {
+class EmptyAuthActivity : AppCompatActivity() {
     @Inject
     lateinit var screenManager: ScreenManager
 

@@ -49,12 +49,13 @@ class StatsActivity : AppCompatActivity() {
         pager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
             override fun onPageScrollStateChanged(state: Int) = Unit
             override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) = Unit
-            override fun onPageSelected(position: Int) = this@StatsActivity.onPageSelected(position)
+            override fun onPageSelected(position: Int) =
+                this@StatsActivity.onPageSelected(position)
         })
     }
 
     private fun onPageSelected(position: Int) {
-        val screen = when((pager.adapter as FragmentStatePagerAdapter).getItem(position)) {
+        val screen = when ((pager.adapter as FragmentStatePagerAdapter).getItem(position)) {
             is ProfileFragment ->
                 AmplitudeAnalytics.Stats.ScreenValues.PROFILE
 
@@ -73,8 +74,10 @@ class StatsActivity : AppCompatActivity() {
             else -> ""
         }
 
-        analytics.logAmplitudeEvent(AmplitudeAnalytics.Stats.SCREEN_OPENED,
-                mapOf(AmplitudeAnalytics.Stats.PARAM_SCREEN to screen))
+        analytics.logAmplitudeEvent(
+            AmplitudeAnalytics.Stats.SCREEN_OPENED,
+            mapOf(AmplitudeAnalytics.Stats.PARAM_SCREEN to screen)
+        )
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {

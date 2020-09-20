@@ -15,34 +15,37 @@ import javax.inject.Inject
 class BookmarksPresenter
 @Inject
 constructor(
-        @BackgroundScheduler
-        private val backgroundScheduler: Scheduler,
-        @MainScheduler
-        private val mainScheduler: Scheduler,
-        private val dataBaseMgr: DataBaseMgr,
-        private val analytics: Analytics
-): PresenterBase<BookmarksView>() {
+    @BackgroundScheduler
+    private val backgroundScheduler: Scheduler,
+    @MainScheduler
+    private val mainScheduler: Scheduler,
+    private val dataBaseMgr: DataBaseMgr,
+    private val analytics: Analytics
+) : PresenterBase<BookmarksView>() {
     private var isLoading = true
     private val adapter = BookmarksAdapter(::removeFromBookmarks, analytics)
     private val compositeDisposable = CompositeDisposable()
 
     init {
         compositeDisposable addDisposable dataBaseMgr.getBookmarks()
-                .subscribeOn(backgroundScheduler)
-                .observeOn(mainScheduler)
-                .subscribe({
+            .subscribeOn(backgroundScheduler)
+            .observeOn(mainScheduler)
+            .subscribe(
+                {
                     adapter.addAll(it)
-                        isLoading = false
+                    isLoading = false
 
-                        view?.onStopLoading()
-                        resolveBookmarksCount()
-                }, {})
+                    view?.onStopLoading()
+                    resolveBookmarksCount()
+                },
+                {}
+            )
     }
 
     private fun removeFromBookmarks(bookmark: Bookmark, pos: Int) {
         analytics.logEvent(Analytics.EVENT_ON_BOOKMARK_REMOVED)
         compositeDisposable addDisposable dataBaseMgr.removeBookmark(bookmark)
-                .subscribeOn(backgroundScheduler).observeOn(backgroundScheduler).subscribe()
+            .subscribeOn(backgroundScheduler).observeOn(backgroundScheduler).subscribe()
         adapter.remove(pos)
     }
 

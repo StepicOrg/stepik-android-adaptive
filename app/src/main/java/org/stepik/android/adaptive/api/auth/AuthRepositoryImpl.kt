@@ -19,26 +19,28 @@ import kotlin.concurrent.withLock
 class AuthRepositoryImpl
 @Inject
 constructor(
-        @AuthLock
-        private val authLock: ReentrantLock,
+    @AuthLock
+    private val authLock: ReentrantLock,
 
-        @AuthService
-        private val authService: OAuthService,
-        @SocialAuthService
-        private val socialAuthService: OAuthService,
-        @CookieAuthService
-        private val cookieAuthService: OAuthService,
+    @AuthService
+    private val authService: OAuthService,
+    @SocialAuthService
+    private val socialAuthService: OAuthService,
+    @CookieAuthService
+    private val cookieAuthService: OAuthService,
 
-        private val config: Config,
-        private val authPreferences: AuthPreferences
-): AuthRepository {
+    private val config: Config,
+    private val authPreferences: AuthPreferences
+) : AuthRepository {
 
-    private fun saveResponse(response: OAuthResponse, isSocial: Boolean) = authLock.withLock {
-        authPreferences.oAuthResponse = response
-        authPreferences.isAuthTokenSocial = isSocial
-    }
+    private fun saveResponse(response: OAuthResponse, isSocial: Boolean) =
+        authLock.withLock {
+            authPreferences.oAuthResponse = response
+            authPreferences.isAuthTokenSocial = isSocial
+        }
 
-    override fun authWithLoginPassword(login: String, password: String): Single<OAuthResponse> = authService
+    override fun authWithLoginPassword(login: String, password: String): Single<OAuthResponse> =
+        authService
             .authWithLoginPassword(config.grantType, login, password)
             .doOnSuccess { saveResponse(it, isSocial = false) }
 
@@ -49,19 +51,20 @@ constructor(
         }
 
         return socialAuthService.getTokenByNativeCode(
-                type.identifier,
-                code,
-                config.grantTypeSocial,
-                config.redirectUri,
-                codeType)
-                .doOnSuccess { saveResponse(it, isSocial = true) }
+            type.identifier,
+            code,
+            config.grantTypeSocial,
+            config.redirectUri,
+            codeType
+        )
+            .doOnSuccess { saveResponse(it, isSocial = true) }
     }
 
-    override fun authWithCode(code: String): Single<OAuthResponse> = socialAuthService
+    override fun authWithCode(code: String): Single<OAuthResponse> =
+        socialAuthService
             .getTokenByCode(config.grantTypeSocial, code, config.redirectUri)
             .doOnSuccess { saveResponse(it, isSocial = true) }
 
     override fun createAccount(credentials: RegistrationUser): Completable =
-            cookieAuthService.createAccount(UserRegistrationRequest(credentials))
-
+        cookieAuthService.createAccount(UserRegistrationRequest(credentials))
 }

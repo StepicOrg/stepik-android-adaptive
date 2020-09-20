@@ -10,7 +10,8 @@ fun OkHttpClient.Builder.setTimeoutsInSeconds(timeout: Long) {
     readTimeout(timeout, TimeUnit.SECONDS)
 }
 
-fun Interceptor.Chain.addUserAgent(userAgent: String): Request = request()
+fun Interceptor.Chain.addUserAgent(userAgent: String): Request =
+    request()
         .newBuilder()
         .header(AppConstants.userAgentName, userAgent)
         .build()

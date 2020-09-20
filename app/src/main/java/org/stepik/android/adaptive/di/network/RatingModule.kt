@@ -4,7 +4,6 @@ import dagger.Binds
 import dagger.Module
 import dagger.Provides
 import okhttp3.Interceptor
-import org.stepik.android.adaptive.api.auth.AuthInterceptor
 import org.stepik.android.adaptive.api.rating.RatingRepository
 import org.stepik.android.adaptive.api.rating.RatingRepositoryImpl
 import org.stepik.android.adaptive.api.rating.RatingService
@@ -23,6 +22,6 @@ abstract class RatingModule {
         @AppSingleton
         @JvmStatic
         internal fun provideRatingService(interceptors: Set<@JvmSuppressWildcards Interceptor>, config: Config): RatingService =
-                NetworkHelper.createService(interceptors, config.ratingHost)
+            NetworkHelper.createService(interceptors, config.ratingHost)
     }
 }

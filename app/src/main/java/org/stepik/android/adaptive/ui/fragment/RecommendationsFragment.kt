@@ -27,6 +27,7 @@ import org.stepik.android.adaptive.data.analytics.AmplitudeAnalytics
 import org.stepik.android.adaptive.data.analytics.Analytics
 import org.stepik.android.adaptive.data.preference.SharedPreferenceHelper
 import org.stepik.android.adaptive.databinding.FragmentRecommendationsBinding
+import org.stepik.android.adaptive.gamification.InventoryManager
 import org.stepik.android.adaptive.ui.activity.PaidInventoryItemsActivity
 import org.stepik.android.adaptive.ui.adapter.QuizCardsAdapter
 import org.stepik.android.adaptive.ui.animation.CardsFragmentAnimations
@@ -35,7 +36,6 @@ import org.stepik.android.adaptive.ui.dialog.ExpLevelDialog
 import org.stepik.android.adaptive.ui.dialog.QuestionsPacksDialog
 import org.stepik.android.adaptive.ui.dialog.RateAppDialog
 import org.stepik.android.adaptive.ui.helper.dpToPx
-import org.stepik.android.adaptive.gamification.InventoryManager
 import org.stepik.android.adaptive.util.PopupHelper
 import org.stepik.android.adaptive.util.changeVisibillity
 import javax.inject.Inject
@@ -151,7 +151,6 @@ class RecommendationsFragment : Fragment(), RecommendationsView {
     override fun onAdapter(cardsAdapter: QuizCardsAdapter) =
         binding.cardsContainer.setAdapter(cardsAdapter)
 
-
     override fun onLoading() {
         binding.progress.visibility = View.VISIBLE
         binding.error.visibility = View.GONE
@@ -185,11 +184,13 @@ class RecommendationsFragment : Fragment(), RecommendationsView {
         binding.courseCompleted.visibility = View.VISIBLE
     }
 
-    override fun updateExp(exp: Long,
-                           currentLevelExp: Long,
-                           nextLevelExp: Long,
+    override fun updateExp(
+        exp: Long,
+        currentLevelExp: Long,
+        nextLevelExp: Long,
 
-                           level: Long) {
+        level: Long
+    ) {
 
         binding.expProgress.progress = (exp - currentLevelExp).toInt()
         binding.expProgress.max = (nextLevelExp - currentLevelExp).toInt()
@@ -211,45 +212,47 @@ class RecommendationsFragment : Fragment(), RecommendationsView {
     }
 
     override fun onStreakLost() =
-            CardsFragmentAnimations.playStreakFailedAnimation(binding.streakFailed, binding.expProgress)
+        CardsFragmentAnimations.playStreakFailedAnimation(binding.streakFailed, binding.expProgress)
 
     override fun onStreakRestored() =
-            CardsFragmentAnimations.playStreakRestoreAnimation(binding.streakSuccessContainer)
+        CardsFragmentAnimations.playStreakRestoreAnimation(binding.streakSuccessContainer)
 
     override fun showDailyRewardDialog(progress: Long) =
-            DailyRewardDialog.newInstance(progress).show(childFragmentManager, DAILY_REWARD_DIALOG_TAG)
+        DailyRewardDialog.newInstance(progress).show(childFragmentManager, DAILY_REWARD_DIALOG_TAG)
 
     override fun showNewLevelDialog(level: Long) =
-            ExpLevelDialog.newInstance(level).show(childFragmentManager, LEVEL_DIALOG_TAG)
+        ExpLevelDialog.newInstance(level).show(childFragmentManager, LEVEL_DIALOG_TAG)
 
     override fun showRateAppDialog() =
-            RateAppDialog.newInstance().show(childFragmentManager, RATE_APP_DIALOG_TAG)
+        RateAppDialog.newInstance().show(childFragmentManager, RATE_APP_DIALOG_TAG)
 
     override fun showGamificationDescriptionScreen() =
-            screenManager.showGamificationDescription(requireContext())
+        screenManager.showGamificationDescription(requireContext())
 
     override fun showEmptyAuthScreen() =
-            screenManager.showEmptyAuthScreen(requireContext())
+        screenManager.showEmptyAuthScreen(requireContext())
 
     override fun showStreakRestoreDialog(streak: Long, withTooltip: Boolean) {
         analytics.logAmplitudeEvent(AmplitudeAnalytics.Tickets.WIDGET_OPENED)
         refreshStreakRestoreDialog()
         streakToRestore = streak
         CardsFragmentAnimations
-                .createShowStreakRestoreWidgetAnimation(binding.ticketsContainer, streakRestoreViewOffsetX)
-                .apply {
-                    if (withTooltip) {
-                        val tooltipText = getString(if (inventoryManager.hasTickets()) {
+            .createShowStreakRestoreWidgetAnimation(binding.ticketsContainer, streakRestoreViewOffsetX)
+            .apply {
+                if (withTooltip) {
+                    val tooltipText = getString(
+                        if (inventoryManager.hasTickets()) {
                             R.string.streak_restore_text
                         } else {
                             R.string.paid_content_tooltip
-                        })
-                        withEndAction {
-                            streakRestorePopup = PopupHelper.showPopupAnchoredToView(requireContext(), binding.ticketsContainer, tooltipText)
                         }
+                    )
+                    withEndAction {
+                        streakRestorePopup = PopupHelper.showPopupAnchoredToView(requireContext(), binding.ticketsContainer, tooltipText)
                     }
                 }
-                .start()
+            }
+            .start()
         binding.ticketsContainer.setOnClickListener {
             if (inventoryManager.hasTickets()) {
                 if (inventoryManager.useItem(InventoryManager.Item.Ticket)) {
@@ -273,8 +276,9 @@ class RecommendationsFragment : Fragment(), RecommendationsView {
                 QuestionsPacksDialog.newInstance().show(childFragmentManager, QUESTIONS_PACKS_DIALOG_TAG)
             } else {
                 questionsPacksTooltip = PopupHelper.showPopupAnchoredToView(
-                        requireContext(), binding.questionsPacks, getString(R.string.questions_tooltip),
-                        TOOLBAR_TOOLTIPS_OFF_X_PX, TOOLBAR_TOOLTIPS_OFF_Y_PX)
+                    requireContext(), binding.questionsPacks, getString(R.string.questions_tooltip),
+                    TOOLBAR_TOOLTIPS_OFF_X_PX, TOOLBAR_TOOLTIPS_OFF_Y_PX
+                )
             }
         }
     }

@@ -10,12 +10,12 @@ interface EditProfileFieldView {
     fun onProfile(profile: Profile)
 
     sealed class State {
-        object Loading: State()
-        object Success: State()
-        object ProfileLoaded: State()
-        class NameError(val error: EditNameError): State()
-        class EmailError(val error: EditEmailError): State()
-        class PasswordError(val error: EditPasswordError): State()
-        object NetworkError: State()
+        object Loading : State()
+        object Success : State()
+        object ProfileLoaded : State()
+        class NameError(val error: EditNameError) : State()
+        class EmailError(val error: EditEmailError) : State()
+        class PasswordError(val error: EditPasswordError) : State()
+        object NetworkError : State()
     }
 }

@@ -26,5 +26,4 @@ interface StatsComponent {
     fun inject(dialog: EditEmailDialogFragment)
     fun inject(dialog: EditNameDialogFragment)
     fun inject(dialog: EditPasswordDialogFragment)
-
 }

@@ -32,9 +32,10 @@ class ChoiceQuizAnswerAdapter : AttemptAnswerAdapter<ChoiceQuizAnswerAdapter.Cho
         onDataSetChanged()
     }
 
-    override fun createSubmission(): Submission? = state?.let { (attempt, _, selection) ->
-        Submission(Reply(choices = selection), attempt.id)
-    }
+    override fun createSubmission(): Submission? =
+        state?.let { (attempt, _, selection) ->
+            Submission(Reply(choices = selection), attempt.id)
+        }
 
     override fun refreshSubmitButton() {
         submitButton?.isEnabled = selectedCount > 0
@@ -62,7 +63,7 @@ class ChoiceQuizAnswerAdapter : AttemptAnswerAdapter<ChoiceQuizAnswerAdapter.Cho
     }
 
     override fun onCreateViewHolder(parent: ViewGroup): ChoiceQuizViewHolder =
-            ChoiceQuizViewHolder(DataBindingUtil.inflate(LayoutInflater.from(parent.context), R.layout.item_answer, parent, false))
+        ChoiceQuizViewHolder(DataBindingUtil.inflate(LayoutInflater.from(parent.context), R.layout.item_answer, parent, false))
 
     override fun onBindViewHolder(holder: ChoiceQuizViewHolder, pos: Int) {
         state?.let { (attempt, options, selection) ->
@@ -78,8 +79,10 @@ class ChoiceQuizAnswerAdapter : AttemptAnswerAdapter<ChoiceQuizAnswerAdapter.Cho
             }
 
             val selectionImageDrawable = DrawableCompat.wrap(ContextCompat.getDrawable(context, selectionImageDrawableId)!!)
-            DrawableCompat.setTint(selectionImageDrawable,
-                    ContextCompat.getColor(context, if (selection[pos]) R.color.colorAccent else R.color.colorRadioButtonDefault))
+            DrawableCompat.setTint(
+                selectionImageDrawable,
+                ContextCompat.getColor(context, if (selection[pos]) R.color.colorAccent else R.color.colorRadioButtonDefault)
+            )
             holder.binding.itemAnswerSelectionImage.setImageDrawable(selectionImageDrawable)
 
             holder.binding.root.setOnClickListener { select(pos) }
@@ -87,13 +90,13 @@ class ChoiceQuizAnswerAdapter : AttemptAnswerAdapter<ChoiceQuizAnswerAdapter.Cho
     }
 
     override fun getItemCount() =
-            state?.options?.size ?: 0
+        state?.options?.size ?: 0
 
     class ChoiceQuizViewHolder(val binding: ItemAnswerBinding) : ContainerView.ViewHolder(binding.root)
 
     private data class AdapterState(
-            val attempt: Attempt,
-            val options: List<String>,
-            val selection: BooleanArray
+        val attempt: Attempt,
+        val options: List<String>,
+        val selection: BooleanArray
     )
 }

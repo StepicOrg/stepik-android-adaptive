@@ -13,8 +13,8 @@ import org.stepik.android.adaptive.App
 import org.stepik.android.adaptive.R
 import org.stepik.android.adaptive.api.auth.AuthError
 import org.stepik.android.adaptive.core.ScreenManager
-import org.stepik.android.adaptive.core.presenter.BaseActivity
 import org.stepik.android.adaptive.core.presenter.AuthPresenter
+import org.stepik.android.adaptive.core.presenter.BaseActivity
 import org.stepik.android.adaptive.core.presenter.contracts.AuthView
 import org.stepik.android.adaptive.data.analytics.AmplitudeAnalytics
 import org.stepik.android.adaptive.data.analytics.Analytics
@@ -105,9 +105,9 @@ class LoginActivity : BaseActivity(), AuthView {
         }
 
         setOnKeyboardOpenListener(
-                root_view,
-                onKeyboardShown = { signInText.changeVisibillity(false) },
-                onKeyboardHidden = { signInText.changeVisibillity(true) }
+            root_view,
+            onKeyboardShown = { signInText.changeVisibillity(false) },
+            onKeyboardHidden = { signInText.changeVisibillity(true) }
         )
 
         close.setOnClickListener { finish() }
@@ -147,8 +147,10 @@ class LoginActivity : BaseActivity(), AuthView {
 
     override fun onSuccess() {
         setResult(RESULT_OK)
-        analytics.logAmplitudeEvent(AmplitudeAnalytics.Auth.LOGGED_ID,
-                mapOf(AmplitudeAnalytics.Auth.PARAM_SOURCE to AmplitudeAnalytics.Auth.VALUE_SOURCE_EMAIL))
+        analytics.logAmplitudeEvent(
+            AmplitudeAnalytics.Auth.LOGGED_ID,
+            mapOf(AmplitudeAnalytics.Auth.PARAM_SOURCE to AmplitudeAnalytics.Auth.VALUE_SOURCE_EMAIL)
+        )
         finish()
     }
 
