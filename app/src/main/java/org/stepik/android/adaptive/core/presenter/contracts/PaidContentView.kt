@@ -1,7 +1,6 @@
 package org.stepik.android.adaptive.core.presenter.contracts
 
 import org.solovyev.android.checkout.ActivityCheckout
-import org.solovyev.android.checkout.Billing
 
 interface PaidContentView {
     fun createCheckout(): ActivityCheckout

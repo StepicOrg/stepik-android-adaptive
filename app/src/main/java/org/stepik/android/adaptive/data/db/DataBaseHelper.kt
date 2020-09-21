@@ -17,7 +17,6 @@ constructor(context: Context) : SQLiteOpenHelper(context, DB_NAME, null, DB_VERS
         private const val DB_VERSION = 2
     }
 
-
     override fun onCreate(db: SQLiteDatabase) {
         createExpDatabase(db)
 
@@ -35,20 +34,24 @@ constructor(context: Context) : SQLiteOpenHelper(context, DB_NAME, null, DB_VERS
     }
 
     private fun createBookmarksDatabase(db: SQLiteDatabase) {
-        db.execSQL("CREATE TABLE ${BookmarksDbStructure.TABLE_NAME} (" +
+        db.execSQL(
+            "CREATE TABLE ${BookmarksDbStructure.TABLE_NAME} (" +
                 "${BookmarksDbStructure.Columns.STEP_ID} INTEGER, " +
                 "${BookmarksDbStructure.Columns.COURSE_ID} INTEGER, " +
                 "${BookmarksDbStructure.Columns.TITLE} TEXT, " +
                 "${BookmarksDbStructure.Columns.DEFINITION} TEXT, " +
                 "${BookmarksDbStructure.Columns.DATE_ADDED} DATETIME DEFAULT CURRENT_TIMESTAMP," +
-                "PRIMARY KEY (${BookmarksDbStructure.Columns.STEP_ID}));")
+                "PRIMARY KEY (${BookmarksDbStructure.Columns.STEP_ID}));"
+        )
     }
 
     private fun createExpDatabase(db: SQLiteDatabase) {
-        db.execSQL("CREATE TABLE ${ExpDbStructure.TABLE_NAME} (" +
+        db.execSQL(
+            "CREATE TABLE ${ExpDbStructure.TABLE_NAME} (" +
                 "${ExpDbStructure.Columns.EXP} INTEGER," +
                 "${ExpDbStructure.Columns.SOLVED_AT} DATETIME DEFAULT CURRENT_TIMESTAMP," +
                 "${ExpDbStructure.Columns.SUBMISSION_ID} INTEGER," +
-                "PRIMARY KEY (${ExpDbStructure.Columns.SOLVED_AT}, ${ExpDbStructure.Columns.SUBMISSION_ID}));")
+                "PRIMARY KEY (${ExpDbStructure.Columns.SOLVED_AT}, ${ExpDbStructure.Columns.SUBMISSION_ID}));"
+        )
     }
 }

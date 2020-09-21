@@ -9,7 +9,6 @@ import android.text.style.URLSpan
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
-import android.widget.TextView
 
 fun View.changeVisibillity(needShow: Boolean) {
     visibility = if (needShow) {

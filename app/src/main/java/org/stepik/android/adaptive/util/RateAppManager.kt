@@ -8,7 +8,7 @@ import javax.inject.Inject
 class RateAppManager
 @Inject
 constructor(
-        private val sharedPreferenceHelper: SharedPreferenceHelper
+    private val sharedPreferenceHelper: SharedPreferenceHelper
 ) {
     companion object {
         private const val NOTIFY_DELAY_LATER = (1000 * 60 * 60 * 24 * 2).toLong()

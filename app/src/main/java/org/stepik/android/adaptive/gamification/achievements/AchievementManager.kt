@@ -7,24 +7,26 @@ import org.stepik.android.adaptive.R
 import org.stepik.android.adaptive.core.events.Client
 import org.stepik.android.adaptive.core.presenter.Presenter
 import org.stepik.android.adaptive.core.presenter.contracts.AchievementView
-import org.stepik.android.adaptive.data.preference.SharedPreferenceHelper
 import org.stepik.android.adaptive.data.model.Achievement
+import org.stepik.android.adaptive.data.preference.SharedPreferenceHelper
 import org.stepik.android.adaptive.di.AppSingleton
 import org.stepik.android.adaptive.gamification.DailyRewardManager
 import org.stepik.android.adaptive.gamification.ExpManager
-import java.util.*
+import java.util.ArrayDeque
+import java.util.ArrayList
+import java.util.HashSet
 import javax.inject.Inject
 
 @AppSingleton
 class AchievementManager
 @Inject
 constructor(
-        context: Context,
-        private val expManager: ExpManager,
-        private val dailyRewardManager: DailyRewardManager,
-        private val sharedPreferenceHelper: SharedPreferenceHelper,
-        eventClient: Client<AchievementEventListener>
-): Presenter<AchievementView>, AchievementEventListener {
+    context: Context,
+    private val expManager: ExpManager,
+    private val dailyRewardManager: DailyRewardManager,
+    private val sharedPreferenceHelper: SharedPreferenceHelper,
+    eventClient: Client<AchievementEventListener>
+) : Presenter<AchievementView>, AchievementEventListener {
     private val views = HashSet<AchievementView>()
 
     val achievements = ArrayList<Achievement>()
@@ -53,7 +55,8 @@ constructor(
     }
 
     private fun initOnboardingAchievement(context: Context) {
-        achievements.add(Achievement(
+        achievements.add(
+            Achievement(
                 context.getString(R.string.ach_onboarding_title),
                 context.getString(R.string.ach_onboarding_description),
                 prefix + context.getString(R.string.ach_onboarding_prefix),
@@ -62,63 +65,75 @@ constructor(
                 R.drawable.ic_ach_onboarding,
                 false,
                 sharedPreferenceHelper
-        ))
+            )
+        )
     }
 
     private fun initExpAchievements(context: Context) {
-        initAchievementGroup(context,
-                R.string.ach_exp_prefix,
-                Event.EXP,
-                R.array.ach_exp_titles,
-                R.string.ach_exp_description,
-                R.array.ach_exp_values,
-                R.array.ach_exp_icons)
+        initAchievementGroup(
+            context,
+            R.string.ach_exp_prefix,
+            Event.EXP,
+            R.array.ach_exp_titles,
+            R.string.ach_exp_description,
+            R.array.ach_exp_values,
+            R.array.ach_exp_icons
+        )
     }
 
     private fun initStreakAchievements(context: Context) {
-        initAchievementGroup(context,
-                R.string.ach_streak_prefix,
-                Event.STREAK,
-                R.array.ach_streak_titles,
-                R.string.ach_streak_description,
-                R.array.ach_streak_values,
-                R.array.ach_streak_icons)
+        initAchievementGroup(
+            context,
+            R.string.ach_streak_prefix,
+            Event.STREAK,
+            R.array.ach_streak_titles,
+            R.string.ach_streak_description,
+            R.array.ach_streak_values,
+            R.array.ach_streak_icons
+        )
     }
 
     private fun initDaysAchievements(context: Context) {
-        initAchievementGroup(context,
-                R.string.ach_days_prefix,
-                Event.DAYS,
-                R.array.ach_days_titles,
-                R.string.ach_days_description,
-                R.array.ach_days_values,
-                R.array.ach_days_icons)
+        initAchievementGroup(
+            context,
+            R.string.ach_days_prefix,
+            Event.DAYS,
+            R.array.ach_days_titles,
+            R.string.ach_days_description,
+            R.array.ach_days_values,
+            R.array.ach_days_icons
+        )
     }
 
     private fun initLevelAchievements(context: Context) {
-        initAchievementGroup(context,
-                R.string.ach_level_prefix,
-                Event.LEVEL,
-                R.array.ach_level_titles,
-                R.string.ach_level_description,
-                R.array.ach_level_values,
-                R.array.ach_level_icons)
+        initAchievementGroup(
+            context,
+            R.string.ach_level_prefix,
+            Event.LEVEL,
+            R.array.ach_level_titles,
+            R.string.ach_level_description,
+            R.array.ach_level_values,
+            R.array.ach_level_icons
+        )
     }
 
-    private fun initAchievementGroup(context: Context,
-                                     @StringRes typePrefixRes: Int,
-                                     event: Event,
-                                     @ArrayRes titlesRes: Int,
-                                     @StringRes descriptionRes: Int,
-                                     @ArrayRes valuesRes: Int,
-                                     @ArrayRes iconsRes: Int) {
+    private fun initAchievementGroup(
+        context: Context,
+        @StringRes typePrefixRes: Int,
+        event: Event,
+        @ArrayRes titlesRes: Int,
+        @StringRes descriptionRes: Int,
+        @ArrayRes valuesRes: Int,
+        @ArrayRes iconsRes: Int
+    ) {
         val titles = context.resources.getStringArray(titlesRes)
         val values = context.resources.getIntArray(valuesRes)
 
         val drawables = context.resources.obtainTypedArray(iconsRes)
 
-        achievements.addAll(titles.mapIndexed { index, title ->
-            Achievement(
+        achievements.addAll(
+            titles.mapIndexed { index, title ->
+                Achievement(
                     title,
                     context.getString(descriptionRes, values[index]),
                     prefix + context.getString(typePrefixRes, values[index]),
@@ -126,8 +141,10 @@ constructor(
                     values[index].toLong(),
 
                     drawables.getResourceId(index, -1),
-                    sharedPreferenceHelper = sharedPreferenceHelper)
-        })
+                    sharedPreferenceHelper = sharedPreferenceHelper
+                )
+            }
+        )
 
         drawables.recycle()
     }
@@ -159,7 +176,6 @@ constructor(
             }
         }
     }
-
 
     /**
      * Method to sync achievements and stats

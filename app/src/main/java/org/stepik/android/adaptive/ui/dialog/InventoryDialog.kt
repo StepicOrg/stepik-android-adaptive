@@ -12,8 +12,8 @@ import kotlinx.android.synthetic.main.recycler_view.view.*
 import org.stepik.android.adaptive.App
 import org.stepik.android.adaptive.R
 import org.stepik.android.adaptive.databinding.DialogDefaultBodyBinding
-import org.stepik.android.adaptive.ui.adapter.InventoryAdapter
 import org.stepik.android.adaptive.gamification.InventoryManager
+import org.stepik.android.adaptive.ui.adapter.InventoryAdapter
 import javax.inject.Inject
 
 class InventoryDialog : DialogFragment() {

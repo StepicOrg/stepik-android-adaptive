@@ -3,7 +3,7 @@ package org.stepik.android.adaptive.data.model
 import com.google.gson.annotations.SerializedName
 import org.stepik.android.adaptive.api.profile.model.EmailAddress
 
-class Profile (
+class Profile(
     val id: Long = 0,
     @SerializedName("first_name")
     var firstName: String? = null,

@@ -25,22 +25,22 @@ import javax.inject.Named
 class AuthInterceptor
 @Inject
 constructor(
-        @Named(AppConstants.userAgentName)
-        private val userAgent: String,
+    @Named(AppConstants.userAgentName)
+    private val userAgent: String,
 
-        @AuthLock
-        private val authLock: ReentrantLock,
+    @AuthLock
+    private val authLock: ReentrantLock,
 
-        @AuthService
-        private val authService: OAuthService,
-        @SocialAuthService
-        private val socialAuthService: OAuthService,
+    @AuthService
+    private val authService: OAuthService,
+    @SocialAuthService
+    private val socialAuthService: OAuthService,
 
-        private val config: Config,
-        private val authPreferences: AuthPreferences,
-        private val logoutHelper: LogoutHelper,
-        private val screenManager: ScreenManager
-): Interceptor {
+    private val config: Config,
+    private val authPreferences: AuthPreferences,
+    private val logoutHelper: LogoutHelper,
+    private val screenManager: ScreenManager
+) : Interceptor {
 
     override fun intercept(chain: Interceptor.Chain): Response {
         val request = chain.addUserAgent(userAgent)
@@ -82,8 +82,8 @@ constructor(
                     authPreferences.oAuthResponse = response
                 }
                 request = request.newBuilder()
-                        .addHeader(AppConstants.authorizationHeaderName, response.tokenType + " " + response.accessToken)
-                        .build()
+                    .addHeader(AppConstants.authorizationHeaderName, response.tokenType + " " + response.accessToken)
+                    .build()
             }
         } finally {
             authLock.unlock()
@@ -93,10 +93,9 @@ constructor(
     }
 
     private fun isUpdateNeeded() =
-            DateTime.now(DateTimeZone.UTC).millis > authPreferences.authResponseDeadline
+        DateTime.now(DateTimeZone.UTC).millis > authPreferences.authResponseDeadline
 
     private fun authWithRefreshToken(refreshToken: String): Call<OAuthResponse> =
-            (if (authPreferences.isAuthTokenSocial) socialAuthService else authService)
-                    .refreshAccessToken(config.refreshGrantType, refreshToken)
-
+        (if (authPreferences.isAuthTokenSocial) socialAuthService else authService)
+            .refreshAccessToken(config.refreshGrantType, refreshToken)
 }

@@ -3,22 +3,21 @@ package org.stepik.android.adaptive.data.preference
 import android.content.Context
 import android.content.SharedPreferences
 import android.preference.PreferenceManager
-
 import com.google.gson.Gson
 import io.reactivex.Single
 import org.joda.time.DateTime
 import org.joda.time.DateTimeZone
 import org.stepik.android.adaptive.api.auth.OAuthResponse
+import org.stepik.android.adaptive.content.questions.QuestionsPack
 import org.stepik.android.adaptive.data.model.AccountCredentials
 import org.stepik.android.adaptive.data.model.Profile
-import org.stepik.android.adaptive.content.questions.QuestionsPack
 import org.stepik.android.adaptive.di.AppSingleton
 import javax.inject.Inject
 
 @AppSingleton
 class SharedPreferenceHelper
 @Inject
-constructor(context: Context): SharedPreferenceProvider, AuthPreferences, ProfilePreferences {
+constructor(context: Context) : SharedPreferenceProvider, AuthPreferences, ProfilePreferences {
     override val sharedPreferences: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
     private val gson = Gson()
 
@@ -72,7 +71,7 @@ constructor(context: Context): SharedPreferenceProvider, AuthPreferences, Profil
     val isQuestionsPacksTooltipWasShown: Boolean by preference(IS_QUESTIONS_PACKS_TOOLTIP_WAS_SHOWN)
 
     var isGamificationDescriptionWasShown: Boolean by preference(IS_PACKS_FOR_LEVELS_WINDOW_WAS_SHOWN)
-    var isEmptyAuthScreenWasShown        : Boolean by preference(IS_EMPTY_AUTH_SCREEN_WAS_SHOWN)
+    var isEmptyAuthScreenWasShown: Boolean by preference(IS_EMPTY_AUTH_SCREEN_WAS_SHOWN)
 
     override var isAuthTokenSocial:      Boolean by preference(IS_OAUTH_TOKEN_SOCIAL)
     var isNotFirstTime:                  Boolean by preference(NOT_FIRST_TIME) // isNotFirstTime determines is user completes onboarding
@@ -90,7 +89,7 @@ constructor(context: Context): SharedPreferenceProvider, AuthPreferences, Profil
     }
 
     override fun isFakeUser(): Single<Boolean> =
-            Single.fromCallable { sharedPreferences.contains(FAKE_USER) }
+        Single.fromCallable { sharedPreferences.contains(FAKE_USER) }
 
     override fun removeFakeUser() {
         remove(FAKE_USER)
@@ -117,7 +116,7 @@ constructor(context: Context): SharedPreferenceProvider, AuthPreferences, Profil
     }
 
     fun isQuestionsPackViewed(pack: QuestionsPack): Boolean =
-            sharedPreferences[QUESTIONS_PACK_VIEWED_PREFIX + pack.id]
+        sharedPreferences[QUESTIONS_PACK_VIEWED_PREFIX + pack.id]
 
     fun saveBoolean(name: String, data: Boolean) {
         sharedPreferences[name] = data
@@ -137,11 +136,14 @@ constructor(context: Context): SharedPreferenceProvider, AuthPreferences, Profil
         return value
     }
 
-    fun getString(name: String): String? = sharedPreferences[name]
+    fun getString(name: String): String? =
+        sharedPreferences[name]
 
-    fun getLong(name: String): Long = sharedPreferences[name]
+    fun getLong(name: String): Long =
+        sharedPreferences[name]
 
-    fun getBoolean(name: String): Boolean = sharedPreferences[name]
+    fun getBoolean(name: String): Boolean =
+        sharedPreferences[name]
 
     fun remove(name: String) {
         sharedPreferences.edit().remove(name).apply()
@@ -174,5 +176,4 @@ constructor(context: Context): SharedPreferenceProvider, AuthPreferences, Profil
 
         private const val SUBMISSION_COUNT = "submission_count"
     }
-
 }

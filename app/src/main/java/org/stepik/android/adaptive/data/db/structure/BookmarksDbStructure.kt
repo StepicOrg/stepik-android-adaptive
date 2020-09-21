@@ -11,5 +11,4 @@ object BookmarksDbStructure {
         const val DEFINITION = "definition"
         const val DATE_ADDED = "date_added"
     }
-
 }

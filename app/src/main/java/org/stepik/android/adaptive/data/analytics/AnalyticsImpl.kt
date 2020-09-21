@@ -5,7 +5,6 @@ import android.os.Bundle
 import com.amplitude.api.Amplitude
 import com.amplitude.api.Identify
 import com.amplitude.api.Revenue
-
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.analytics.ktx.analytics
 import com.google.firebase.crashlytics.FirebaseCrashlytics
@@ -15,12 +14,10 @@ import org.json.JSONObject
 import org.solovyev.android.checkout.Sku
 import org.stepik.android.adaptive.App
 import org.stepik.android.adaptive.configuration.Config
-
 import org.stepik.android.adaptive.data.model.Step
 import org.stepik.android.adaptive.data.model.Submission
 import org.stepik.android.adaptive.di.AppSingleton
 import org.stepik.android.adaptive.resolvers.ContentPriceResolver
-
 import java.util.HashMap
 import javax.inject.Inject
 
@@ -28,20 +25,22 @@ import javax.inject.Inject
 class AnalyticsImpl
 @Inject
 constructor(
-        context: Context,
-        config: Config,
+    context: Context,
+    config: Config,
 
-        private val contentPriceResolver: ContentPriceResolver
+    private val contentPriceResolver: ContentPriceResolver
 ) : Analytics {
     private val firebaseAnalytics = Firebase.analytics
     private val firebaseCrashlytics = FirebaseCrashlytics.getInstance()
     private val amplitude = Amplitude.getInstance()
-            .initialize(context, config.amplitudeKey)
-            .enableForegroundTracking(App.app)
+        .initialize(context, config.amplitudeKey)
+        .enableForegroundTracking(App.app)
 
     init {
-        amplitude.identify(Identify()
-                .set(AmplitudeAnalytics.Properties.APPLICATION_ID, context.packageName))
+        amplitude.identify(
+            Identify()
+                .set(AmplitudeAnalytics.Properties.APPLICATION_ID, context.packageName)
+        )
 
         logAmplitudeEvent(AmplitudeAnalytics.Launch.SESSION_START)
     }
@@ -80,12 +79,14 @@ constructor(
     override fun logAmplitudePurchase(revenueType: String, sku: Sku, params: Map<String, Any?>?) {
         val price = contentPriceResolver.resolveSkuPrice(sku)
 
-        amplitude.logRevenueV2(Revenue()
+        amplitude.logRevenueV2(
+            Revenue()
                 .setPrice(price)
                 .setQuantity(1)
                 .setRevenueType(revenueType)
                 .setProductId(sku.id.code)
-                .setEventProperties(params.toJsonObject()))
+                .setEventProperties(params.toJsonObject())
+        )
     }
 
     override fun setUserId(userId: String) {
@@ -105,8 +106,9 @@ constructor(
         amplitude.identify(Identify().set(AmplitudeAnalytics.Properties.EXP, exp))
     }
 
-    override fun setUserProperty(name: String, value: String) =
-            amplitude.identify(Identify().set(name, value))
+    override fun setUserProperty(name: String, value: String) {
+        amplitude.identify(Identify().set(name, value))
+    }
 
     override fun successLogin() {
         logEvent(EVENT_SUCCESS_LOGIN)
@@ -175,7 +177,6 @@ constructor(
     override fun paidContentOpened() {
         logEvent(EVENT_PAID_CONTENT_OPENED)
     }
-
 
     override fun onExpReached(exp: Long, delta: Long) {
         var event: String? = null

@@ -11,5 +11,4 @@ interface StudyModule {
     @Binds
     @StudyScope
     fun provideStepTypeResolver(stepTypeResolverImpl: StepTypeResolverImpl): StepTypeResolver
-
 }

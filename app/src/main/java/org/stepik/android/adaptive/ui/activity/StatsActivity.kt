@@ -12,7 +12,11 @@ import org.stepik.android.adaptive.configuration.Config
 import org.stepik.android.adaptive.data.analytics.AmplitudeAnalytics
 import org.stepik.android.adaptive.data.analytics.Analytics
 import org.stepik.android.adaptive.ui.adapter.StatsViewPagerAdapter
-import org.stepik.android.adaptive.ui.fragment.*
+import org.stepik.android.adaptive.ui.fragment.AchievementsFragment
+import org.stepik.android.adaptive.ui.fragment.BookmarksFragment
+import org.stepik.android.adaptive.ui.fragment.ProfileFragment
+import org.stepik.android.adaptive.ui.fragment.ProgressFragment
+import org.stepik.android.adaptive.ui.fragment.RatingFragment
 import javax.inject.Inject
 
 class StatsActivity : AppCompatActivity() {
@@ -47,14 +51,16 @@ class StatsActivity : AppCompatActivity() {
         }
 
         pager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
-            override fun onPageScrollStateChanged(state: Int) = Unit
-            override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) = Unit
-            override fun onPageSelected(position: Int) = this@StatsActivity.onPageSelected(position)
+            override fun onPageScrollStateChanged(state: Int) {}
+            override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {}
+            override fun onPageSelected(position: Int) {
+                this@StatsActivity.onPageSelected(position)
+            }
         })
     }
 
     private fun onPageSelected(position: Int) {
-        val screen = when((pager.adapter as FragmentStatePagerAdapter).getItem(position)) {
+        val screen = when ((pager.adapter as FragmentStatePagerAdapter).getItem(position)) {
             is ProfileFragment ->
                 AmplitudeAnalytics.Stats.ScreenValues.PROFILE
 
@@ -73,12 +79,14 @@ class StatsActivity : AppCompatActivity() {
             else -> ""
         }
 
-        analytics.logAmplitudeEvent(AmplitudeAnalytics.Stats.SCREEN_OPENED,
-                mapOf(AmplitudeAnalytics.Stats.PARAM_SCREEN to screen))
+        analytics.logAmplitudeEvent(
+            AmplitudeAnalytics.Stats.SCREEN_OPENED,
+            mapOf(AmplitudeAnalytics.Stats.PARAM_SCREEN to screen)
+        )
     }
 
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        if (item?.itemId == android.R.id.home) {
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (item.itemId == android.R.id.home) {
             onBackPressed()
             return true
         }

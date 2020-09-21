@@ -15,10 +15,14 @@ import org.stepik.android.adaptive.core.presenter.RegisterPresenter
 import org.stepik.android.adaptive.core.presenter.contracts.RegisterView
 import org.stepik.android.adaptive.data.analytics.AmplitudeAnalytics
 import org.stepik.android.adaptive.data.analytics.Analytics
-import org.stepik.android.adaptive.util.*
+import org.stepik.android.adaptive.util.changeVisibillity
+import org.stepik.android.adaptive.util.fromHtmlCompat
+import org.stepik.android.adaptive.util.hideSoftKeyboard
+import org.stepik.android.adaptive.util.setOnKeyboardOpenListener
+import org.stepik.android.adaptive.util.stripUnderlinesFromLinks
 import javax.inject.Inject
 
-class RegisterActivity: BaseActivity(), RegisterView {
+class RegisterActivity : BaseActivity(), RegisterView {
     companion object {
         private const val PROGRESS = "register_progress"
 
@@ -96,11 +100,15 @@ class RegisterActivity: BaseActivity(), RegisterView {
 
         registerView.requestFocus()
 
-        setOnKeyboardOpenListener(root_view, {
-            signUpText.changeVisibillity(false)
-        }, {
-            signUpText.changeVisibillity(true)
-        })
+        setOnKeyboardOpenListener(
+            root_view,
+            {
+                signUpText.changeVisibillity(false)
+            },
+            {
+                signUpText.changeVisibillity(true)
+            }
+        )
 
         close.setOnClickListener { finish() }
 
@@ -117,29 +125,31 @@ class RegisterActivity: BaseActivity(), RegisterView {
         val email = emailField.text.toString().trim()
         val password = passwordField.text.toString()
 
-        presenter?.register(firstName, lastName, email, password)
+        presenter.register(firstName, lastName, email, password)
     }
 
-    override fun setState(state: RegisterView.State) = when (state) {
-        is RegisterView.State.Idle -> {
-            // reset view state
-        }
+    override fun setState(state: RegisterView.State) {
+        when (state) {
+            is RegisterView.State.Idle -> {
+                // reset view state
+            }
 
-        is RegisterView.State.Loading ->
-            showProgressDialogFragment(PROGRESS, getString(R.string.sign_up), getString(R.string.processing_your_request))
+            is RegisterView.State.Loading ->
+                showProgressDialogFragment(PROGRESS, getString(R.string.sign_up), getString(R.string.processing_your_request))
 
-        is RegisterView.State.NetworkError ->
-            onError(getString(R.string.connectivity_error))
+            is RegisterView.State.NetworkError ->
+                onError(getString(R.string.connectivity_error))
 
-        is RegisterView.State.EmptyEmailError ->
-            onChangesNeededError(getString(R.string.auth_error_empty_email))
+            is RegisterView.State.EmptyEmailError ->
+                onChangesNeededError(getString(R.string.auth_error_empty_email))
 
-        is RegisterView.State.Error ->
-            onChangesNeededError(state.message)
+            is RegisterView.State.Error ->
+                onChangesNeededError(state.message)
 
-        is RegisterView.State.Success -> {
-            hideProgressDialogFragment(PROGRESS)
-            onSuccess()
+            is RegisterView.State.Success -> {
+                hideProgressDialogFragment(PROGRESS)
+                onSuccess()
+            }
         }
     }
 
@@ -164,16 +174,18 @@ class RegisterActivity: BaseActivity(), RegisterView {
 
     private fun onSuccess() {
         setResult(RESULT_OK)
-        analytics.logAmplitudeEvent(AmplitudeAnalytics.Auth.REGISTERED,
-                mapOf(AmplitudeAnalytics.Auth.PARAM_SOURCE to AmplitudeAnalytics.Auth.VALUE_SOURCE_EMAIL))
+        analytics.logAmplitudeEvent(
+            AmplitudeAnalytics.Auth.REGISTERED,
+            mapOf(AmplitudeAnalytics.Auth.PARAM_SOURCE to AmplitudeAnalytics.Auth.VALUE_SOURCE_EMAIL)
+        )
         finish()
     }
 
     private fun setSignUpButtonState() {
         signUpButton.isEnabled =
-                emailField.text.isNullOrBlank() == false &&
-                firstNameField.text.isNullOrBlank() == false &&
-                passwordField.text.isNullOrBlank() == false
+            emailField.text.isNullOrBlank() == false &&
+            firstNameField.text.isNullOrBlank() == false &&
+            passwordField.text.isNullOrBlank() == false
     }
 
     override fun onStart() {

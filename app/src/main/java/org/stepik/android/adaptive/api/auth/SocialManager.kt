@@ -1,6 +1,5 @@
 package org.stepik.android.adaptive.api.auth
 
-
 object SocialManager {
     private const val GOOGLE_SOCIAL_IDENTIFIER = "google"
     private const val FACEBOOK_SOCIAL_IDENTIFIER = "facebook"
@@ -17,7 +16,7 @@ object SocialManager {
         mailru(MAILRU_SOCIAL_IDENTIFIER),
         github(GITHUB_SOCIAL_IDENTIFIER);
 
-        fun needUseAccessTokenInsteadOfCode() =
-                identifier == VK_SOCIAL_IDENTIFIER || identifier == FACEBOOK_SOCIAL_IDENTIFIER
+        fun needUseAccessTokenInsteadOfCode(): Boolean =
+            identifier == VK_SOCIAL_IDENTIFIER || identifier == FACEBOOK_SOCIAL_IDENTIFIER
     }
 }

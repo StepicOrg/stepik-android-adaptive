@@ -1,7 +1,7 @@
 package org.stepik.android.adaptive.di
 
 class ComponentManager(
-        private val appCoreComponent: AppCoreComponent
+    private val appCoreComponent: AppCoreComponent
 ) {
 
     val statsComponent by lazy {
@@ -19,5 +19,4 @@ class ComponentManager(
     val loginComponent by lazy {
         appCoreComponent.loginComponentBuilder().build()
     }
-
 }

@@ -16,37 +16,42 @@ import javax.inject.Inject
 @StorageSingleton
 class ExpDaoImpl
 @Inject
-constructor(databaseOperations: DatabaseOperations): DaoBase<LocalExpItem>(databaseOperations), ExpDao {
+constructor(databaseOperations: DatabaseOperations) : DaoBase<LocalExpItem>(databaseOperations), ExpDao {
     companion object {
         private const val FIELD_DAY = "day"
         private const val FIELD_WEEK = "week"
     }
 
-    override fun getDbName() = ExpDbStructure.TABLE_NAME
-    override fun getDefaultPrimaryColumn() = ExpDbStructure.Columns.SUBMISSION_ID
-    override fun getDefaultPrimaryValue(persistentObject: LocalExpItem) = persistentObject.submissionId.toString()
+    override fun getDbName(): String =
+        ExpDbStructure.TABLE_NAME
+    override fun getDefaultPrimaryColumn(): String =
+        ExpDbStructure.Columns.SUBMISSION_ID
+    override fun getDefaultPrimaryValue(persistentObject: LocalExpItem): String =
+        persistentObject.submissionId.toString()
 
-    override fun getContentValues(persistentObject: LocalExpItem) = ContentValues().apply {
-        put(ExpDbStructure.Columns.SUBMISSION_ID, persistentObject.submissionId)
-        put(ExpDbStructure.Columns.EXP, persistentObject.exp)
-        persistentObject.solvedAt?.let {
-            put(ExpDbStructure.Columns.SOLVED_AT, it)
+    override fun getContentValues(persistentObject: LocalExpItem): ContentValues =
+        ContentValues().apply {
+            put(ExpDbStructure.Columns.SUBMISSION_ID, persistentObject.submissionId)
+            put(ExpDbStructure.Columns.EXP, persistentObject.exp)
+            persistentObject.solvedAt?.let {
+                put(ExpDbStructure.Columns.SOLVED_AT, it)
+            }
         }
-    }
 
-    override fun parsePersistentObject(cursor: Cursor) = LocalExpItem(
+    override fun parsePersistentObject(cursor: Cursor): LocalExpItem =
+        LocalExpItem(
             exp          = cursor.getLong(cursor.getColumnIndex(ExpDbStructure.Columns.EXP)),
             submissionId = cursor.getLong(cursor.getColumnIndex(ExpDbStructure.Columns.SUBMISSION_ID)),
             solvedAt     = cursor.getString(cursor.getColumnIndex(ExpDbStructure.Columns.SOLVED_AT))
-    )
+        )
 
     override fun getExpItem(submissionId: Long): Maybe<LocalExpItem> {
         val sqlPrefix = "SELECT * FROM ${getDbName()} WHERE "
 
         return if (submissionId == -1L) {
             val sql = sqlPrefix +
-                    "${ExpDbStructure.Columns.SUBMISSION_ID} <> 0 " + // submission id = 0 only for syncing
-                    "ORDER BY ${ExpDbStructure.Columns.SOLVED_AT} DESC LIMIT 1"
+                "${ExpDbStructure.Columns.SUBMISSION_ID} <> 0 " + // submission id = 0 only for syncing
+                "ORDER BY ${ExpDbStructure.Columns.SOLVED_AT} DESC LIMIT 1"
             getAll(sql, null)
         } else {
             val sql = sqlPrefix + "${ExpDbStructure.Columns.SUBMISSION_ID} = ?"
@@ -72,7 +77,7 @@ constructor(databaseOperations: DatabaseOperations): DaoBase<LocalExpItem>(datab
 
     override fun getExpForLast7Days(): Single<Array<Long>> {
         val sql =
-                "SELECT " +
+            "SELECT " +
                 "STRFTIME('%Y %j', ${ExpDbStructure.Columns.SOLVED_AT}) as $FIELD_DAY, " +
                 "STRFTIME('%s', ${ExpDbStructure.Columns.SOLVED_AT}) as ${ExpDbStructure.Columns.SOLVED_AT}, " +
                 "SUM(${ExpDbStructure.Columns.EXP}) as ${ExpDbStructure.Columns.EXP} " +
@@ -103,7 +108,7 @@ constructor(databaseOperations: DatabaseOperations): DaoBase<LocalExpItem>(datab
 
     override fun getWeeks(): Single<List<WeekProgress>> {
         val sql =
-                "SELECT " +
+            "SELECT " +
                 "STRFTIME('%Y %W', ${ExpDbStructure.Columns.SOLVED_AT}) as $FIELD_WEEK, " +
                 "STRFTIME('%s', ${ExpDbStructure.Columns.SOLVED_AT}) as ${ExpDbStructure.Columns.SOLVED_AT}, " +
                 "SUM(${ExpDbStructure.Columns.EXP}) as ${ExpDbStructure.Columns.EXP} " +
@@ -129,6 +134,4 @@ constructor(databaseOperations: DatabaseOperations): DaoBase<LocalExpItem>(datab
             return@rawQuery res
         }
     }
-
-
 }

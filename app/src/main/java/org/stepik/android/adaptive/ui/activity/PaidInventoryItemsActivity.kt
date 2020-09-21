@@ -12,15 +12,17 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_paid_content_list.*
 import kotlinx.android.synthetic.main.app_bar.*
-import org.solovyev.android.checkout.*
+import org.solovyev.android.checkout.ActivityCheckout
+import org.solovyev.android.checkout.Billing
+import org.solovyev.android.checkout.Checkout
 import org.stepik.android.adaptive.App
 import org.stepik.android.adaptive.R
 import org.stepik.android.adaptive.core.presenter.BaseActivity
 import org.stepik.android.adaptive.core.presenter.PaidInventoryItemsPresenter
 import org.stepik.android.adaptive.core.presenter.contracts.PaidInventoryItemsView
+import org.stepik.android.adaptive.gamification.InventoryManager
 import org.stepik.android.adaptive.ui.adapter.PaidInventoryAdapter
 import org.stepik.android.adaptive.ui.dialog.InventoryDialog
-import org.stepik.android.adaptive.gamification.InventoryManager
 import javax.inject.Inject
 
 class PaidInventoryItemsActivity : BaseActivity(), PaidInventoryItemsView {
@@ -58,7 +60,7 @@ class PaidInventoryItemsActivity : BaseActivity(), PaidInventoryItemsView {
         recycler.addItemDecoration(divider)
 
         restorePurchases.setOnClickListener {
-            presenter?.restorePurchases()
+            presenter.restorePurchases()
         }
 
         setSupportActionBar(toolbar)
@@ -66,8 +68,8 @@ class PaidInventoryItemsActivity : BaseActivity(), PaidInventoryItemsView {
         supportActionBar?.setTitle(R.string.paid_items)
     }
 
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        if (item?.itemId == android.R.id.home) {
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (item.itemId == android.R.id.home) {
             onBackPressed()
             return true
         }
@@ -97,14 +99,20 @@ class PaidInventoryItemsActivity : BaseActivity(), PaidInventoryItemsView {
         purchasesAreNotSupported.visibility = View.GONE
     }
 
-    override fun createCheckout() = Checkout.forActivity(this, billing)
+    override fun createCheckout(): ActivityCheckout =
+        Checkout.forActivity(this, billing)
 
-    override fun showInventoryDialog() = InventoryDialog().show(supportFragmentManager, INVENTORY_DIALOG_TAG)
+    override fun showInventoryDialog() {
+        InventoryDialog().show(supportFragmentManager, INVENTORY_DIALOG_TAG)
+    }
 
-    override fun showProgress() =
-            showProgressDialogFragment(RESTORE_DIALOG_TAG, getString(R.string.loading_message), getString(R.string.processing_your_request))
+    override fun showProgress() {
+        showProgressDialogFragment(RESTORE_DIALOG_TAG, getString(R.string.loading_message), getString(R.string.processing_your_request))
+    }
 
-    override fun hideProgress() = hideProgressDialogFragment(RESTORE_DIALOG_TAG)
+    override fun hideProgress() {
+        hideProgressDialogFragment(RESTORE_DIALOG_TAG)
+    }
 
     override fun onAdapter(adapter: PaidInventoryAdapter) {
         recycler.adapter = adapter
@@ -112,16 +120,16 @@ class PaidInventoryItemsActivity : BaseActivity(), PaidInventoryItemsView {
 
     override fun onStart() {
         super.onStart()
-        presenter?.attachView(this)
+        presenter.attachView(this)
     }
 
     override fun onStop() {
-        presenter?.detachView(this)
+        presenter.detachView(this)
         super.onStop()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        presenter?.onActivityResult(requestCode, resultCode, data)
+        presenter.onActivityResult(requestCode, resultCode, data)
         super.onActivityResult(requestCode, resultCode, data)
     }
 

@@ -26,9 +26,9 @@ object CardsFragmentAnimations {
     private fun initColors(context: Context) {
         if (confettiColors == null) {
             confettiColors = intArrayOf(
-                    Color.BLACK,
-                    ContextCompat.getColor(context, R.color.colorAccentDisabled),
-                    ContextCompat.getColor(context, R.color.colorAccent)
+                Color.BLACK,
+                ContextCompat.getColor(context, R.color.colorAccentDisabled),
+                ContextCompat.getColor(context, R.color.colorAccent)
             )
         }
     }
@@ -37,11 +37,11 @@ object CardsFragmentAnimations {
     fun playStreakBubbleAnimation(greenStreakBubble: View) {
         greenStreakBubble.alpha = 1f
         greenStreakBubble.animate()
-                .alpha(0f)
-                .setInterpolator(DecelerateInterpolator())
-                .setStartDelay(ANIMATION_START_DELAY_FOR_VIEWS_MS)
-                .setDuration(ANIMATION_DURATION_MS)
-                .start()
+            .alpha(0f)
+            .setInterpolator(DecelerateInterpolator())
+            .setStartDelay(ANIMATION_START_DELAY_FOR_VIEWS_MS)
+            .setDuration(ANIMATION_DURATION_MS)
+            .start()
     }
 
     @JvmStatic
@@ -49,53 +49,53 @@ object CardsFragmentAnimations {
         streakContainer.morph(MorphingView.MorphParams(text = streakContainer.context.getString(R.string.streak_restored)))
 
         streakContainer.animate()
-                .alpha(1f)
-                .setDuration(ANIMATION_DURATION_MS)
-                .setStartDelay(0)
-                .withEndAction {
-                    streakContainer.animate()
-                            .alpha(0f)
-                            .setStartDelay(ANIMATION_START_DELAY_FOR_VIEWS_MS)
-                            .setDuration(ANIMATION_DURATION_MS)
-                            .start()
-                }
-                .start()
+            .alpha(1f)
+            .setDuration(ANIMATION_DURATION_MS)
+            .setStartDelay(0)
+            .withEndAction {
+                streakContainer.animate()
+                    .alpha(0f)
+                    .setStartDelay(ANIMATION_START_DELAY_FOR_VIEWS_MS)
+                    .setDuration(ANIMATION_DURATION_MS)
+                    .start()
+            }
+            .start()
     }
 
     @JvmStatic
     fun playStreakSuccessAnimationSequence(binding: FragmentRecommendationsBinding) {
         binding.streakSuccessContainer.animate()
-                .alpha(1f)
-                .setStartDelay(0)
-                .setDuration(ANIMATION_DURATION_MS)
-                .withEndAction { playStreakMorphAnimation(binding) }
-                .start()
+            .alpha(1f)
+            .setStartDelay(0)
+            .setDuration(ANIMATION_DURATION_MS)
+            .withEndAction { playStreakMorphAnimation(binding) }
+            .start()
     }
-
 
     private fun playStreakMorphAnimation(binding: FragmentRecommendationsBinding) {
         val params = binding.streakSuccessContainer.initialMorphParams
 
         MorphingHelper.morphStreakHeaderToIncBubble(binding.streakSuccessContainer, binding.expInc)
-                .setStartDelay(ANIMATION_START_DELAY_FOR_VIEWS_MS)
-                .withEndAction(Runnable {
+            .setStartDelay(ANIMATION_START_DELAY_FOR_VIEWS_MS)
+            .withEndAction(
+                Runnable {
                     binding.expProgress.visibility = View.VISIBLE
                     startConfettiExplosion(binding.root as CoordinatorLayout, binding.expBubble)
 
                     binding.streakSuccessContainer.animate()
-                            .alpha(0f)
-                            .setInterpolator(DecelerateInterpolator())
-                            .setStartDelay(ANIMATION_START_DELAY_FOR_VIEWS_MS)
-                            .setDuration(ANIMATION_DURATION_MS)
-                            .withEndAction { binding.streakSuccessContainer.morph(params) }
-                            .start()
-                })
-                .setDuration(FAST_ANIMATION_DURATION_MS)
-                .start()
+                        .alpha(0f)
+                        .setInterpolator(DecelerateInterpolator())
+                        .setStartDelay(ANIMATION_START_DELAY_FOR_VIEWS_MS)
+                        .setDuration(ANIMATION_DURATION_MS)
+                        .withEndAction { binding.streakSuccessContainer.morph(params) }
+                        .start()
+                }
+            )
+            .setDuration(FAST_ANIMATION_DURATION_MS)
+            .start()
 
         binding.expProgress.visibility = View.INVISIBLE
     }
-
 
     fun startConfettiExplosion(root: CoordinatorLayout, expBubble: View) {
         initColors(root.context)
@@ -108,18 +108,17 @@ object CardsFragmentAnimations {
     @JvmStatic
     fun playStreakFailedAnimation(streakContainer: View, expProgress: View) {
         streakContainer.animate()
-                .alpha(1f)
-                .setStartDelay(0)
-                .setDuration(ANIMATION_DURATION_MS)
-                .withEndAction {
-                    streakContainer.animate()
-                            .setStartDelay(ANIMATION_START_DELAY_FOR_VIEWS_MS)
-                            .setDuration(ANIMATION_DURATION_MS)
-                            .alpha(0f)
-                            .withEndAction { expProgress.visibility = View.VISIBLE }
-                            .start()
-
-                }.start()
+            .alpha(1f)
+            .setStartDelay(0)
+            .setDuration(ANIMATION_DURATION_MS)
+            .withEndAction {
+                streakContainer.animate()
+                    .setStartDelay(ANIMATION_START_DELAY_FOR_VIEWS_MS)
+                    .setDuration(ANIMATION_DURATION_MS)
+                    .alpha(0f)
+                    .withEndAction { expProgress.visibility = View.VISIBLE }
+                    .start()
+            }.start()
         expProgress.visibility = View.INVISIBLE
     }
 
@@ -128,20 +127,20 @@ object CardsFragmentAnimations {
         ticketsContainer.translationX = dx
         ticketsContainer.visibility = View.VISIBLE
         return ticketsContainer.animate()
-                .translationX(0f)
-                .setDuration(ANIMATION_DURATION_MS)
-                .setInterpolator(OvershootInterpolator(1f))
+            .translationX(0f)
+            .setDuration(ANIMATION_DURATION_MS)
+            .setInterpolator(OvershootInterpolator(1f))
     }
 
     @JvmStatic
     fun playHideStreakRestoreWidgetAnimation(ticketsContainer: View, dx: Float) {
         ticketsContainer.setOnClickListener(null)
         ticketsContainer.animate()
-                .translationX(dx)
-                .setDuration(ANIMATION_DURATION_MS)
-                .withEndAction {
-                    ticketsContainer.visibility = View.GONE
-                }
-                .start()
+            .translationX(dx)
+            .setDuration(ANIMATION_DURATION_MS)
+            .withEndAction {
+                ticketsContainer.visibility = View.GONE
+            }
+            .start()
     }
 }

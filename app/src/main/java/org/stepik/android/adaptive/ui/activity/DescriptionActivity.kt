@@ -17,7 +17,7 @@ import org.stepik.android.adaptive.util.changeVisibillity
 import org.stepik.android.adaptive.util.fromHtmlCompat
 import javax.inject.Inject
 
-class DescriptionActivity: AppCompatActivity() {
+class DescriptionActivity : AppCompatActivity() {
     @Inject
     lateinit var analytics: Analytics
 

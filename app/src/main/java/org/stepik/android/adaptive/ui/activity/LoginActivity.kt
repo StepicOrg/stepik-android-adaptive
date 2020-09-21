@@ -13,8 +13,8 @@ import org.stepik.android.adaptive.App
 import org.stepik.android.adaptive.R
 import org.stepik.android.adaptive.api.auth.AuthError
 import org.stepik.android.adaptive.core.ScreenManager
-import org.stepik.android.adaptive.core.presenter.BaseActivity
 import org.stepik.android.adaptive.core.presenter.AuthPresenter
+import org.stepik.android.adaptive.core.presenter.BaseActivity
 import org.stepik.android.adaptive.core.presenter.contracts.AuthView
 import org.stepik.android.adaptive.data.analytics.AmplitudeAnalytics
 import org.stepik.android.adaptive.data.analytics.Analytics
@@ -105,16 +105,16 @@ class LoginActivity : BaseActivity(), AuthView {
         }
 
         setOnKeyboardOpenListener(
-                root_view,
-                onKeyboardShown = { signInText.changeVisibillity(false) },
-                onKeyboardHidden = { signInText.changeVisibillity(true) }
+            root_view,
+            onKeyboardShown = { signInText.changeVisibillity(false) },
+            onKeyboardHidden = { signInText.changeVisibillity(true) }
         )
 
         close.setOnClickListener { finish() }
     }
 
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        if ((item?.itemId ?: -1) == android.R.id.home) {
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (item.itemId == android.R.id.home) {
             hideSoftKeyboard()
             onBackPressed()
             return true
@@ -124,11 +124,11 @@ class LoginActivity : BaseActivity(), AuthView {
 
     override fun onStart() {
         super.onStart()
-        presenter?.attachView(this)
+        presenter.attachView(this)
     }
 
     override fun onStop() {
-        presenter?.detachView(this)
+        presenter.detachView(this)
         super.onStop()
     }
 
@@ -147,8 +147,10 @@ class LoginActivity : BaseActivity(), AuthView {
 
     override fun onSuccess() {
         setResult(RESULT_OK)
-        analytics.logAmplitudeEvent(AmplitudeAnalytics.Auth.LOGGED_ID,
-                mapOf(AmplitudeAnalytics.Auth.PARAM_SOURCE to AmplitudeAnalytics.Auth.VALUE_SOURCE_EMAIL))
+        analytics.logAmplitudeEvent(
+            AmplitudeAnalytics.Auth.LOGGED_ID,
+            mapOf(AmplitudeAnalytics.Auth.PARAM_SOURCE to AmplitudeAnalytics.Auth.VALUE_SOURCE_EMAIL)
+        )
         finish()
     }
 
@@ -170,6 +172,7 @@ class LoginActivity : BaseActivity(), AuthView {
         hideProgressDialogFragment(PROGRESS)
     }
 
-    override fun onLoading() =
+    override fun onLoading() {
         showProgressDialogFragment(PROGRESS, getString(R.string.sign_in), getString(R.string.processing_your_request))
+    }
 }

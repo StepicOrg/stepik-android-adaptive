@@ -6,9 +6,9 @@ interface ProfileView {
     fun setState(state: State)
 
     sealed class State {
-        object Idle: State()
-        object EmptyAuth: State()
-        object Error: State()
-        class ProfileLoaded(val profile: Profile): State()
+        object Idle : State()
+        object EmptyAuth : State()
+        object Error : State()
+        class ProfileLoaded(val profile: Profile) : State()
     }
 }

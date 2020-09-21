@@ -10,15 +10,15 @@ import com.yarolegovich.discretescrollview.transform.ScaleTransformer
 import org.stepik.android.adaptive.R
 import org.stepik.android.adaptive.databinding.DialogBodyDailyRewardsBinding
 import org.stepik.android.adaptive.databinding.DialogDefaultBodyBinding
+import org.stepik.android.adaptive.gamification.DailyRewardManager
 import org.stepik.android.adaptive.ui.adapter.DailyRewardsAdapter
 import org.stepik.android.adaptive.ui.fragment.RecommendationsFragment
-import org.stepik.android.adaptive.gamification.DailyRewardManager
 
 class DailyRewardDialog : DialogFragment() {
     companion object {
         private const val REWARD_PROGRESS_KEY = "reward_progress"
 
-        fun newInstance(progress: Long) : DailyRewardDialog {
+        fun newInstance(progress: Long): DailyRewardDialog {
             val dialog = DailyRewardDialog()
             val args = Bundle()
             args.putLong(REWARD_PROGRESS_KEY, progress)
@@ -46,12 +46,14 @@ class DailyRewardDialog : DialogFragment() {
 
         discreteScrollView = DialogBodyDailyRewardsBinding.inflate(requireActivity().layoutInflater, binding.container, false).discreteScrollView
         discreteScrollView.adapter = adapter
-        discreteScrollView.setItemTransformer(ScaleTransformer.Builder()
+        discreteScrollView.setItemTransformer(
+            ScaleTransformer.Builder()
                 .setMaxScale(1f)
                 .setMinScale(0.8f)
                 .setPivotX(Pivot.X.CENTER)
                 .setPivotY(Pivot.Y.BOTTOM)
-                .build())
+                .build()
+        )
         discreteScrollView.scrollToPosition(adapter.currentProgress)
 
         binding.container.addView(discreteScrollView)

@@ -21,15 +21,15 @@ import javax.inject.Inject
 class RegisterPresenter
 @Inject
 constructor(
-        private val profileRepository: ProfileRepository,
-        private val profilePreferences: ProfilePreferences,
+    private val profileRepository: ProfileRepository,
+    private val profilePreferences: ProfilePreferences,
 
-        @BackgroundScheduler
-        private val backgroundScheduler: Scheduler,
-        @MainScheduler
-        private val mainScheduler: Scheduler,
-        private val analytics: Analytics
-): PresenterBase<RegisterView>() {
+    @BackgroundScheduler
+    private val backgroundScheduler: Scheduler,
+    @MainScheduler
+    private val mainScheduler: Scheduler,
+    private val analytics: Analytics
+) : PresenterBase<RegisterView>() {
     private val compositeDisposable = CompositeDisposable()
     private val gson = Gson()
 
@@ -48,7 +48,6 @@ constructor(
         return true
     }
 
-
     fun register(firstName: String, lastName: String, email: String, password: String) {
         if (!validate(firstName, lastName, email, password)) return
 
@@ -59,30 +58,33 @@ constructor(
             profile.lastName = lastName
 
             profileRepository.updateProfile(profile) then
-                    profileRepository.updateEmail(email) then
-                    profileRepository.fetchProfileWithEmailAddresses().doOnSuccess { profilePreferences.profile = it }.map { it.id }
+                profileRepository.updateEmail(email) then
+                profileRepository.fetchProfileWithEmailAddresses().doOnSuccess { profilePreferences.profile = it }.map { it.id }
         }.flatMapCompletable { profileId ->
             val oldPassword = profilePreferences.fakeUser?.password ?: ""
             profileRepository.updatePassword(profileId, oldPassword, password)
         }.subscribeOn(backgroundScheduler).observeOn(mainScheduler).doOnComplete {
             profilePreferences.removeFakeUser()
-        }.subscribe({
-            state = RegisterView.State.Success
-            analytics.logEvent(Analytics.Registration.SUCCESS_REGISTER)
-        }, {
-            state = if (it is HttpException) {
-                val error = gson.fromJson(it.response()?.errorBody()?.string(), ProfileCompositeError::class.java)
-                val errorMessage = error?.asList?.filterNotNull()?.firstOrNull()
-                if (errorMessage != null) {
-                    RegisterView.State.Error(errorMessage)
+        }.subscribe(
+            {
+                state = RegisterView.State.Success
+                analytics.logEvent(Analytics.Registration.SUCCESS_REGISTER)
+            },
+            {
+                state = if (it is HttpException) {
+                    val error = gson.fromJson(it.response()?.errorBody()?.string(), ProfileCompositeError::class.java)
+                    val errorMessage = error?.asList?.filterNotNull()?.firstOrNull()
+                    if (errorMessage != null) {
+                        RegisterView.State.Error(errorMessage)
+                    } else {
+                        RegisterView.State.NetworkError
+                    }
                 } else {
                     RegisterView.State.NetworkError
                 }
-            } else {
-                RegisterView.State.NetworkError
+                analytics.logEventWithName(Analytics.Registration.ERROR, it?.message ?: "")
             }
-            analytics.logEventWithName(Analytics.Registration.ERROR, it?.message ?: "")
-        })
+        )
     }
 
     override fun attachView(view: RegisterView) {
@@ -90,6 +92,7 @@ constructor(
         view.setState(state)
     }
 
-    override fun destroy() =
-            compositeDisposable.dispose()
+    override fun destroy() {
+        compositeDisposable.dispose()
+    }
 }

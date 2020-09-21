@@ -1,13 +1,16 @@
 package org.stepik.android.adaptive.di.network
 
-
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
 import okhttp3.Credentials
 import okhttp3.OkHttpClient
 import okhttp3.Protocol
-import org.stepik.android.adaptive.api.auth.*
+import org.stepik.android.adaptive.api.auth.AuthRepository
+import org.stepik.android.adaptive.api.auth.AuthRepositoryImpl
+import org.stepik.android.adaptive.api.auth.CookieHelper
+import org.stepik.android.adaptive.api.auth.EmptyAuthService
+import org.stepik.android.adaptive.api.auth.OAuthService
 import org.stepik.android.adaptive.configuration.Config
 import org.stepik.android.adaptive.di.AppSingleton
 import org.stepik.android.adaptive.di.qualifiers.AuthLock
@@ -33,27 +36,30 @@ abstract class AuthModule {
         @AppSingleton
         @JvmStatic
         @AuthLock
-        internal fun provideAuthLock(): ReentrantLock = ReentrantLock()
+        internal fun provideAuthLock(): ReentrantLock =
+            ReentrantLock()
 
         @Provides
         @AppSingleton
         @JvmStatic
         @SocialAuthService
         internal fun provideSocialAuthService(
-                @Named(AppConstants.userAgentName)
-                userAgent: String,
-                config: Config
-        ): OAuthService = createAuthService(Credentials.basic(config.oAuthClientIdSocial, config.oAuthClientSecretSocial), userAgent, config.host)
+            @Named(AppConstants.userAgentName)
+            userAgent: String,
+            config: Config
+        ): OAuthService =
+            createAuthService(Credentials.basic(config.oAuthClientIdSocial, config.oAuthClientSecretSocial), userAgent, config.host)
 
         @Provides
         @AppSingleton
         @JvmStatic
         @AuthService
         internal fun provideAuthService(
-                @Named(AppConstants.userAgentName)
-                userAgent: String,
-                config: Config
-        ): OAuthService = createAuthService(Credentials.basic(config.oAuthClientId, config.oAuthClientSecret), userAgent, config.host)
+            @Named(AppConstants.userAgentName)
+            userAgent: String,
+            config: Config
+        ): OAuthService =
+            createAuthService(Credentials.basic(config.oAuthClientId, config.oAuthClientSecret), userAgent, config.host)
 
         @Provides
         @AppSingleton
@@ -70,10 +76,10 @@ abstract class AuthModule {
         @JvmStatic
         @CookieAuthService
         internal fun provideCookieAuthService(
-                @Named(AppConstants.userAgentName)
-                userAgent: String,
-                cookieHelper: CookieHelper,
-                config: Config
+            @Named(AppConstants.userAgentName)
+            userAgent: String,
+            cookieHelper: CookieHelper,
+            config: Config
         ): OAuthService {
             val okHttpBuilder = OkHttpClient.Builder()
             okHttpBuilder.addNetworkInterceptor { chain ->
@@ -100,5 +106,4 @@ abstract class AuthModule {
             return retrofit.create(OAuthService::class.java)
         }
     }
-
 }

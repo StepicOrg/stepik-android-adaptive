@@ -13,21 +13,21 @@ import org.stepik.android.adaptive.util.AppConstants
 import java.net.HttpCookie
 import java.net.URI
 import java.net.URISyntaxException
-import java.util.*
+import java.util.Locale
 import javax.inject.Inject
 
 @AppSingleton
 class CookieHelper
 @Inject constructor(
-        private val emptyAuthService: EmptyAuthService,
-        private val cookieManager: CookieManager,
-        private val config: Config,
-        @BackgroundScheduler
-        private val backgroundScheduler: Scheduler
+    private val emptyAuthService: EmptyAuthService,
+    private val cookieManager: CookieManager,
+    private val config: Config,
+    @BackgroundScheduler
+    private val backgroundScheduler: Scheduler
 ) {
     companion object {
         private fun tryGetCsrfFromOnePair(keyValueCookie: String): String? =
-                HttpCookie.parse(keyValueCookie).find { it.name == AppConstants.csrfTokenCookieName }?.value
+            HttpCookie.parse(keyValueCookie).find { it.name == AppConstants.csrfTokenCookieName }?.value
 
         private fun getCsrfTokenFromCookies(cookies: String): String {
             cookies.split(";").forEach {
@@ -58,10 +58,10 @@ class CookieHelper
         } else {
             val csrftoken = getCsrfTokenFromCookies(cookies)
             request.newBuilder()
-                    .addHeader(AppConstants.refererHeaderName, config.host)
-                    .addHeader(AppConstants.csrfTokenHeaderName, csrftoken)
-                    .addHeader(AppConstants.cookieHeaderName, cookies)
-                    .build()
+                .addHeader(AppConstants.refererHeaderName, config.host)
+                .addHeader(AppConstants.csrfTokenHeaderName, csrftoken)
+                .addHeader(AppConstants.cookieHeaderName, cookies)
+                .build()
         }
     }
 
@@ -88,7 +88,7 @@ class CookieHelper
         val setCookieHeaders = response.headers().values(AppConstants.setCookieHeaderName)
         for (value in setCookieHeaders) {
             if (value != null) {
-                cookieManager.setCookie(config.host, value) //set-cookie is not empty
+                cookieManager.setCookie(config.host, value) // set-cookie is not empty
             }
         }
     }

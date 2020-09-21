@@ -11,7 +11,7 @@ import org.stepik.android.adaptive.R
 object NotificationChannelInitializer {
     fun initNotificationChannel(context: Context) {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
-            //channels were introduced only in O. Before we had used in-app channels
+            // channels were introduced only in O. Before we had used in-app channels
             return
         }
 
@@ -22,8 +22,10 @@ object NotificationChannelInitializer {
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    private fun initChannel(context: Context,
-                            stepikChannel: StepikNotificationChannel): NotificationChannel {
+    private fun initChannel(
+        context: Context,
+        stepikChannel: StepikNotificationChannel
+    ): NotificationChannel {
         val channelName = context.getString(stepikChannel.visibleChannelNameRes)
         val channel = NotificationChannel(stepikChannel.channelId, channelName, stepikChannel.importance)
         channel.description = context.getString(stepikChannel.visibleChannelDescriptionRes)
@@ -33,23 +35,24 @@ object NotificationChannelInitializer {
     }
 
     private fun getImportanceCompat(): Int =
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                NotificationManager.IMPORTANCE_HIGH
-            } else {
-                //it is -1 because channel should not be used for previous versions
-                -1
-            }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            NotificationManager.IMPORTANCE_HIGH
+        } else {
+            // it is -1 because channel should not be used for previous versions
+            -1
+        }
 
     private const val CHANNEL_LEARNING_ID = "learnChannel"
 
     enum class StepikNotificationChannel(
-            val channelId: String,
-            @StringRes
-            val visibleChannelNameRes: Int,
-            @StringRes
-            val visibleChannelDescriptionRes: Int,
-            val importance: Int = getImportanceCompat()) {
-        //order is important!
+        val channelId: String,
+        @StringRes
+        val visibleChannelNameRes: Int,
+        @StringRes
+        val visibleChannelDescriptionRes: Int,
+        val importance: Int = getImportanceCompat()
+    ) {
+        // order is important!
 
         Learning(CHANNEL_LEARNING_ID, R.string.notification_channel_learning_name, R.string.notification_channel_learning_description),
     }

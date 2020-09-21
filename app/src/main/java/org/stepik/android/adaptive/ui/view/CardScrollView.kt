@@ -5,14 +5,14 @@ import android.util.AttributeSet
 import android.view.MotionEvent
 import android.widget.ScrollView
 
-
 class CardScrollView(context: Context, attributeSet: AttributeSet?, defStyleAttr: Int) : ScrollView(context, attributeSet, defStyleAttr) {
     constructor(context: Context) : this(context, null, 0)
     constructor(context: Context, attributeSet: AttributeSet?) : this(context, attributeSet, 0)
 
-    fun canScrollVertically() = canScrollVertically(-1) || canScrollVertically(1)
+    fun canScrollVertically(): Boolean =
+        canScrollVertically(-1) || canScrollVertically(1)
 
-    override fun onTouchEvent(ev: MotionEvent?) =
+    override fun onTouchEvent(ev: MotionEvent?): Boolean =
         if (ev?.action == MotionEvent.ACTION_DOWN)
             canScrollVertically()
         else

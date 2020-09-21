@@ -18,9 +18,8 @@ import org.stepik.android.adaptive.core.presenter.contracts.ProgressView
 import org.stepik.android.adaptive.ui.adapter.WeeksAdapter
 import javax.inject.Inject
 
-
 class ProgressFragment : Fragment(), ProgressView {
-    private lateinit var recycler : RecyclerView
+    private lateinit var recycler: RecyclerView
 
     @Inject
     internal lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -29,8 +28,8 @@ class ProgressFragment : Fragment(), ProgressView {
 
     private fun injectComponent() {
         App.componentManager()
-                .statsComponent
-                .inject(this)
+            .statsComponent
+            .inject(this)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -51,7 +50,7 @@ class ProgressFragment : Fragment(), ProgressView {
     }
 
     override fun onWeeksAdapter(adapter: WeeksAdapter) {
-       recycler.adapter = adapter
+        recycler.adapter = adapter
     }
 
     override fun onStart() {

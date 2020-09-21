@@ -4,14 +4,15 @@ import android.content.res.Configuration
 import android.os.Build
 import android.text.Html
 import android.text.Spanned
-import java.util.*
+import java.util.Locale
 
-fun fromHtmlCompat(html: String): Spanned = if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
-    @Suppress("DEPRECATION")
-    Html.fromHtml(html)
-} else {
-    Html.fromHtml(html, Html.FROM_HTML_MODE_COMPACT)
-}
+fun fromHtmlCompat(html: String): Spanned =
+    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
+        @Suppress("DEPRECATION")
+        Html.fromHtml(html)
+    } else {
+        Html.fromHtml(html, Html.FROM_HTML_MODE_COMPACT)
+    }
 
 val Configuration.defaultLocale: Locale
     get() = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {

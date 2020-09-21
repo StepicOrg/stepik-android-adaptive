@@ -8,7 +8,6 @@ import org.stepik.android.adaptive.R
 import org.stepik.android.adaptive.databinding.ItemDailyRewardBinding
 import org.stepik.android.adaptive.gamification.InventoryManager
 
-
 class DailyRewardsAdapter(private val rewards: List<List<Pair<InventoryManager.Item, Int>>>) : RecyclerView.Adapter<DailyRewardsAdapter.DailyRewardViewHolder>() {
     var currentProgress: Int = 0
         set(value) {
@@ -16,10 +15,11 @@ class DailyRewardsAdapter(private val rewards: List<List<Pair<InventoryManager.I
             notifyDataSetChanged()
         }
 
-    override fun getItemCount() = rewards.size
+    override fun getItemCount(): Int =
+        rewards.size
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
-            DailyRewardViewHolder(ItemDailyRewardBinding.inflate(LayoutInflater.from(parent.context), parent, false))
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DailyRewardViewHolder =
+        DailyRewardViewHolder(ItemDailyRewardBinding.inflate(LayoutInflater.from(parent.context), parent, false))
 
     override fun onBindViewHolder(holder: DailyRewardViewHolder, position: Int) {
         holder.let {

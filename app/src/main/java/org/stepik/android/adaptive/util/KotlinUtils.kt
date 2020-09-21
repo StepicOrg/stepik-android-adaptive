@@ -1,6 +1,6 @@
 package org.stepik.android.adaptive.util
 
-import java.util.*
+import java.util.Random
 
 object KotlinUtils {
     inline fun <T> setIfNot(setter: (T) -> Unit, value: T, not: T) {
@@ -10,5 +10,5 @@ object KotlinUtils {
     }
 }
 
-fun IntRange.random() =
-        Random().nextInt((endInclusive + 1) - start) +  start
+fun IntRange.random(): Int =
+    Random().nextInt((endInclusive + 1) - start) +  start

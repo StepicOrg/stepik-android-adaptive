@@ -1,6 +1,11 @@
 package org.stepik.android.adaptive.ui.view.morphing
 
-import android.animation.*
+import android.animation.Animator
+import android.animation.AnimatorListenerAdapter
+import android.animation.AnimatorSet
+import android.animation.ArgbEvaluator
+import android.animation.ObjectAnimator
+import android.animation.ValueAnimator
 import android.view.animation.Interpolator
 
 class MorphingAnimation(private val view: MorphingView, private val to: MorphingView.MorphParams, val interpolator: Interpolator? = null) {
@@ -19,7 +24,8 @@ class MorphingAnimation(private val view: MorphingView, private val to: Morphing
         morphParamsAnimator.addUpdateListener {
             val scale = it.animatedValue as Float
 
-            view.morph(MorphingView.MorphParams(
+            view.morph(
+                MorphingView.MorphParams(
                     getScaledValue(scale, from.cornerRadius, to.cornerRadius),
                     -1,
 
@@ -33,7 +39,8 @@ class MorphingAnimation(private val view: MorphingView, private val to: Morphing
 
                     if (from.text == to.text || to.text == null) from.text else "",
                     getScaledValue(scale, from.textSize, to.textSize)
-            ))
+                )
+            )
         }
 
         interpolator?.let { set.interpolator = it }
@@ -54,12 +61,11 @@ class MorphingAnimation(private val view: MorphingView, private val to: Morphing
     }
 
     private fun getScaledValue(scale: Float, from: Float, to: Float, not: Float = -1f) =
-            if (to != not) {
-                from + (to - from) * scale
-            } else {
-                to
-            }
-
+        if (to != not) {
+            from + (to - from) * scale
+        } else {
+            to
+        }
 
     private var next: MorphingAnimation? = null
     private var runnable: Runnable? = null

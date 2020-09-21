@@ -11,7 +11,7 @@ import javax.inject.Inject
 class ContentPriceResolver
 @Inject
 constructor(
-        private val firebaseRemoteConfig: FirebaseRemoteConfig
+    private val firebaseRemoteConfig: FirebaseRemoteConfig
 ) {
     private val pricesMap by lazy {
         val mapTypeToken = object : TypeToken<Map<String, InAppPurchasePrice>>() {}.type

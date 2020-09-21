@@ -1,13 +1,11 @@
 package org.stepik.android.adaptive.core
 
 import com.vk.sdk.VKSdk
-
-import org.stepik.android.adaptive.data.preference.SharedPreferenceHelper
-import org.stepik.android.adaptive.di.AppSingleton
-
 import io.reactivex.Completable
 import io.reactivex.Scheduler
 import org.stepik.android.adaptive.api.auth.CookieHelper
+import org.stepik.android.adaptive.data.preference.SharedPreferenceHelper
+import org.stepik.android.adaptive.di.AppSingleton
 import org.stepik.android.adaptive.di.qualifiers.AuthLock
 import org.stepik.android.adaptive.di.qualifiers.BackgroundScheduler
 import org.stepik.android.adaptive.di.qualifiers.MainScheduler
@@ -19,31 +17,31 @@ import kotlin.concurrent.withLock
 class LogoutHelperImpl
 @Inject
 constructor(
-        private val sharedPreferenceHelper: SharedPreferenceHelper,
+    private val sharedPreferenceHelper: SharedPreferenceHelper,
 
-        @BackgroundScheduler
-        private val backgroundScheduler: Scheduler,
-        @MainScheduler
-        private val mainScheduler: Scheduler,
+    @BackgroundScheduler
+    private val backgroundScheduler: Scheduler,
+    @MainScheduler
+    private val mainScheduler: Scheduler,
 
-        @AuthLock
-        private val authLock: ReentrantLock,
+    @AuthLock
+    private val authLock: ReentrantLock,
 
-        private val cookieHelper: CookieHelper
-): LogoutHelper {
+    private val cookieHelper: CookieHelper
+) : LogoutHelper {
 
     override fun logout(onComplete: (() -> Unit)?) {
         val c = Completable.fromRunnable {
-                    cookieHelper.removeCookiesCompat()
-                    VKSdk.logout()
+            cookieHelper.removeCookiesCompat()
+            VKSdk.logout()
 
-                    authLock.withLock {
-                        sharedPreferenceHelper.removeProfile()
-                    }
-                    //                    ExpManager.reset();
-                }
-                .subscribeOn(backgroundScheduler)
-                .observeOn(mainScheduler)
+            authLock.withLock {
+                sharedPreferenceHelper.removeProfile()
+            }
+            //                    ExpManager.reset();
+        }
+            .subscribeOn(backgroundScheduler)
+            .observeOn(mainScheduler)
 
         if (onComplete != null) {
             c.subscribe(onComplete)

@@ -4,12 +4,11 @@ import androidx.fragment.app.Fragment
 import kotlinx.android.synthetic.main.fragment_activity.*
 import org.stepik.android.adaptive.App
 import org.stepik.android.adaptive.core.ScreenManager
-
 import org.stepik.android.adaptive.core.presenter.contracts.AchievementView
 import org.stepik.android.adaptive.data.model.Achievement
+import org.stepik.android.adaptive.gamification.achievements.AchievementManager
 import org.stepik.android.adaptive.ui.animation.AchievementAnimations
 import org.stepik.android.adaptive.ui.fragment.RecommendationsFragment
-import org.stepik.android.adaptive.gamification.achievements.AchievementManager
 import javax.inject.Inject
 
 class StudyActivity : FragmentActivity(), AchievementView {
@@ -23,8 +22,8 @@ class StudyActivity : FragmentActivity(), AchievementView {
 
     override fun injectComponent() {
         App.componentManager()
-                .studyComponent
-                .inject(this)
+            .studyComponent
+            .inject(this)
     }
 
     override fun showAchievement(achievement: Achievement) {
@@ -35,7 +34,8 @@ class StudyActivity : FragmentActivity(), AchievementView {
         }
     }
 
-    override fun canShowAchievement() = !isPlayingAchievementAnimation
+    override fun canShowAchievement(): Boolean =
+        !isPlayingAchievementAnimation
 
     override fun onStart() {
         super.onStart()
@@ -47,5 +47,6 @@ class StudyActivity : FragmentActivity(), AchievementView {
         super.onStop()
     }
 
-    override fun createFragment(): Fragment = RecommendationsFragment()
+    override fun createFragment(): Fragment =
+        RecommendationsFragment()
 }

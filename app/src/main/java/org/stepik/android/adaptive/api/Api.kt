@@ -1,47 +1,45 @@
 package org.stepik.android.adaptive.api
 
 import android.net.Uri
-import org.stepik.android.adaptive.configuration.Config
-import org.stepik.android.adaptive.Util
-import org.stepik.android.adaptive.api.auth.SocialManager
-import org.stepik.android.adaptive.data.preference.SharedPreferenceHelper
-import org.stepik.android.adaptive.data.model.EnrollmentWrapper
-import org.stepik.android.adaptive.data.model.AccountCredentials
-import org.stepik.android.adaptive.data.model.RecommendationReaction
-import org.stepik.android.adaptive.data.model.Submission
-import org.stepik.android.adaptive.di.AppSingleton
-import org.stepik.android.adaptive.util.AppConstants
-
-import java.net.URLEncoder
-
-import javax.inject.Inject
-
 import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.Single
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
-import org.stepik.android.adaptive.api.auth.*
+import org.stepik.android.adaptive.Util
+import org.stepik.android.adaptive.api.auth.CookieHelper
+import org.stepik.android.adaptive.api.auth.EmptyAuthService
+import org.stepik.android.adaptive.api.auth.SocialManager
+import org.stepik.android.adaptive.configuration.Config
 import org.stepik.android.adaptive.content.questions.QuestionsPacksManager
+import org.stepik.android.adaptive.data.model.AccountCredentials
+import org.stepik.android.adaptive.data.model.EnrollmentWrapper
+import org.stepik.android.adaptive.data.model.RecommendationReaction
+import org.stepik.android.adaptive.data.model.Submission
+import org.stepik.android.adaptive.data.preference.SharedPreferenceHelper
+import org.stepik.android.adaptive.di.AppSingleton
 import org.stepik.android.adaptive.di.network.NetworkHelper
+import org.stepik.android.adaptive.util.AppConstants
 import org.stepik.android.adaptive.util.addUserAgent
 import org.stepik.android.adaptive.util.setTimeoutsInSeconds
+import java.net.URLEncoder
+import javax.inject.Inject
 import javax.inject.Named
 
 @AppSingleton
 class Api
 @Inject
 constructor(
-        private val config: Config,
-        private val sharedPreferenceHelper: SharedPreferenceHelper,
-        private val questionsPacksManager: QuestionsPacksManager,
+    private val config: Config,
+    private val sharedPreferenceHelper: SharedPreferenceHelper,
+    private val questionsPacksManager: QuestionsPacksManager,
 
-        @Named(AppConstants.userAgentName)
-        private val userAgent: String,
+    @Named(AppConstants.userAgentName)
+    private val userAgent: String,
 
-        private val cookieHelper: CookieHelper,
+    private val cookieHelper: CookieHelper,
 
-        private val stepikService: StepikService
+    private val stepikService: StepikService
 ) {
     companion object {
         private const val FAKE_MAIL_PATTERN = "adaptive_%s_android_%d%s@stepik.org"
@@ -77,17 +75,17 @@ constructor(
             val cookieResult = AppConstants.csrfTokenCookieName + "=" + csrftoken + "; " + AppConstants.sessionCookieName + "=" + sessionId
             if (csrftoken == null) return@Interceptor chain.proceed(newRequest)
             val url = newRequest
-                    .url()
-                    .newBuilder()
-                    .addQueryParameter("csrfmiddlewaretoken", csrftoken)
-                    .addQueryParameter("csrfmiddlewaretoken", csrftoken)
-                    .build()
+                .url()
+                .newBuilder()
+                .addQueryParameter("csrfmiddlewaretoken", csrftoken)
+                .addQueryParameter("csrfmiddlewaretoken", csrftoken)
+                .build()
             newRequest = newRequest.newBuilder()
-                    .addHeader("referer", config.host)
-                    .addHeader("X-CSRFToken", csrftoken)
-                    .addHeader("Cookie", cookieResult)
-                    .url(url)
-                    .build()
+                .addHeader("referer", config.host)
+                .addHeader("X-CSRFToken", csrftoken)
+                .addHeader("Cookie", cookieResult)
+                .url(url)
+                .build()
             chain.proceed(newRequest)
         }
         val okHttpBuilder = OkHttpClient.Builder()
@@ -101,40 +99,40 @@ constructor(
     }
 
     fun getCourses(ids: LongArray): Single<CoursesResponse> =
-            stepikService.getCourses(ids)
+        stepikService.getCourses(ids)
 
     fun joinCourse(course: Long): Completable =
-            stepikService.joinCourse(EnrollmentWrapper(course))
+        stepikService.joinCourse(EnrollmentWrapper(course))
 
     fun getNextRecommendations(count: Int): Observable<RecommendationsResponse> =
-            stepikService.getNextRecommendations(questionsPacksManager.currentCourseId, count)
+        stepikService.getNextRecommendations(questionsPacksManager.currentCourseId, count)
 
     fun getSteps(lesson: Long): Observable<StepsResponse> =
-            stepikService.getSteps(lesson)
+        stepikService.getSteps(lesson)
 
     fun createAttempt(step: Long): Observable<AttemptResponse> =
-            stepikService.createAttempt(AttemptRequest(step))
+        stepikService.createAttempt(AttemptRequest(step))
 
     fun getAttempts(step: Long): Observable<AttemptResponse> =
-            stepikService.getAttempts(step, sharedPreferenceHelper.profileId)
+        stepikService.getAttempts(step, sharedPreferenceHelper.profileId)
 
     fun createSubmission(submission: Submission): Completable =
-            stepikService.createSubmission(SubmissionRequest(submission))
+        stepikService.createSubmission(SubmissionRequest(submission))
 
     fun getSubmissions(attempt: Long): Observable<SubmissionResponse> =
-            stepikService.getSubmissions(attempt, "desc")
+        stepikService.getSubmissions(attempt, "desc")
 
     fun createReaction(reaction: RecommendationReaction): Completable =
-            stepikService.createRecommendationReaction(RecommendationReactionsRequest(reaction))
+        stepikService.createRecommendationReaction(RecommendationReactionsRequest(reaction))
 
     fun getLessons(lesson: Long): Observable<LessonsResponse> =
-            stepikService.getLessons(lesson)
+        stepikService.getLessons(lesson)
 
     fun getUnits(lesson: Long): Observable<UnitsResponse> =
-            stepikService.getUnits(config.courseId, lesson)
+        stepikService.getUnits(config.courseId, lesson)
 
     fun reportView(assignment: Long, step: Long): Completable =
-            stepikService.reportView(ViewRequest(assignment, step))
+        stepikService.reportView(ViewRequest(assignment, step))
 
     fun getUriForSocialAuth(type: SocialManager.SocialType): Uri {
         val socialIdentifier = type.identifier

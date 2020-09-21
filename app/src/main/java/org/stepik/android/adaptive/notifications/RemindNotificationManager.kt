@@ -15,16 +15,15 @@ import org.stepik.android.adaptive.receivers.NotificationsReceiver
 import org.stepik.android.adaptive.ui.activity.SplashActivity
 import javax.inject.Inject
 
-
 class RemindNotificationManager
 @Inject
 constructor(
-        private val context: Context,
-        @BackgroundScheduler
-        private val backgroundScheduler: Scheduler,
-        @MainScheduler
-        private val mainScheduler: Scheduler,
-        private val dataBaseMgr: DataBaseMgr
+    private val context: Context,
+    @BackgroundScheduler
+    private val backgroundScheduler: Scheduler,
+    @MainScheduler
+    private val mainScheduler: Scheduler,
+    private val dataBaseMgr: DataBaseMgr
 ) {
     companion object {
         private const val NOTIFICATION_ID = 2138
@@ -36,9 +35,10 @@ constructor(
     fun showEveryDayNotification() {
         val title = context.getString(R.string.local_push_title)
         dataBaseMgr.getExpForLast7Days()
-                .subscribeOn(backgroundScheduler)
-                .observeOn(mainScheduler)
-                .subscribe({
+            .subscribeOn(backgroundScheduler)
+            .observeOn(mainScheduler)
+            .subscribe(
+                {
                     val description = if (it[5] < MIN_DAILY_EXP) {
                         val length = it.slice(0..5).takeLastWhile { num -> num > 0 }.size
                         if (length > 0) {
@@ -50,14 +50,16 @@ constructor(
                         context.getString(R.string.local_push_yesterday, it[5])
                     }
                     showNotification(title, description, 1)
-                }, {})
+                },
+                {}
+            )
     }
 
     fun show3DaysNotification() {
         showNotification(context.getString(R.string.local_push_title), context.getString(R.string.local_push_3days), 3)
     }
 
-    private fun getDeleteIntent(days: Int) : PendingIntent {
+    private fun getDeleteIntent(days: Int): PendingIntent {
         val intent = Intent(context, NotificationsReceiver::class.java)
         intent.action = NotificationsReceiver.NOTIFICATION_CANCELED
         intent.putExtra(LocalReminder.DAYS_MULTIPLIER_KEY, days)
@@ -66,10 +68,10 @@ constructor(
 
     private fun showNotification(title: String, description: String, days: Int) {
         val notificationBuilder = NotificationCompat.Builder(context)
-                .setSmallIcon(R.drawable.ic_small_notification)
-                .setContentTitle(title)
-                .setContentText(description)
-                .setAutoCancel(true)
+            .setSmallIcon(R.drawable.ic_small_notification)
+            .setContentTitle(title)
+            .setContentText(description)
+            .setAutoCancel(true)
 
         val stackBuilder = TaskStackBuilder.create(context)
         stackBuilder.addParentStack(SplashActivity::class.java)

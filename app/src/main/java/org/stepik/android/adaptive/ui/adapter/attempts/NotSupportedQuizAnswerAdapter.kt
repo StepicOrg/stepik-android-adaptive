@@ -8,8 +8,8 @@ import org.stepik.android.adaptive.data.model.Submission
 import org.stepik.android.adaptive.ui.view.container.ContainerView
 import org.stepik.android.adaptive.util.changeVisibillity
 
-class NotSupportedQuizAnswerAdapter: AttemptAnswerAdapter<ContainerView.ViewHolder>() {
-    override fun getItemCount() = 1
+class NotSupportedQuizAnswerAdapter : AttemptAnswerAdapter<ContainerView.ViewHolder>() {
+    override fun getItemCount(): Int = 1
     override fun createSubmission(): Submission? = null
     override fun onCreateViewHolder(parent: ViewGroup): ContainerView.ViewHolder =
         ContainerView.ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.quiz_type_not_supported, parent, false))

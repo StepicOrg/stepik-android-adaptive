@@ -21,8 +21,10 @@ class App : Application() {
         lateinit var app: App
             private set
 
-        fun component() = app.component
-        fun componentManager() = app.componentManager
+        fun component(): AppCoreComponent =
+            app.component
+        fun componentManager(): ComponentManager =
+            app.componentManager
     }
 
     private lateinit var component: AppCoreComponent
@@ -41,14 +43,14 @@ class App : Application() {
         app = this
 
         component = DaggerAppCoreComponent
-                .builder()
-                .setStorageComponent(
-                        DaggerStorageComponent.builder()
-                                .context(applicationContext)
-                                .build()
-                )
-                .context(applicationContext)
-                .build()
+            .builder()
+            .setStorageComponent(
+                DaggerStorageComponent.builder()
+                    .context(applicationContext)
+                    .build()
+            )
+            .context(applicationContext)
+            .build()
         componentManager = ComponentManager(component)
         component.inject(this)
 

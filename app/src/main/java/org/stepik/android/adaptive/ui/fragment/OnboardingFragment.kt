@@ -21,13 +21,19 @@ import org.stepik.android.adaptive.core.presenter.AuthPresenter
 import org.stepik.android.adaptive.core.presenter.contracts.AuthView
 import org.stepik.android.adaptive.data.analytics.AmplitudeAnalytics
 import org.stepik.android.adaptive.data.analytics.Analytics
+import org.stepik.android.adaptive.data.model.Attempt
+import org.stepik.android.adaptive.data.model.Block
+import org.stepik.android.adaptive.data.model.Card
+import org.stepik.android.adaptive.data.model.Dataset
+import org.stepik.android.adaptive.data.model.DatasetWrapper
+import org.stepik.android.adaptive.data.model.Lesson
+import org.stepik.android.adaptive.data.model.Step
 import org.stepik.android.adaptive.data.preference.SharedPreferenceHelper
-import org.stepik.android.adaptive.data.model.*
 import org.stepik.android.adaptive.databinding.FragmentRecommendationsBinding
 import org.stepik.android.adaptive.di.qualifiers.BackgroundScheduler
 import org.stepik.android.adaptive.di.qualifiers.MainScheduler
-import org.stepik.android.adaptive.ui.adapter.OnboardingQuizCardsAdapter
 import org.stepik.android.adaptive.gamification.achievements.AchievementManager
+import org.stepik.android.adaptive.ui.adapter.OnboardingQuizCardsAdapter
 import org.stepik.android.adaptive.util.addDisposable
 import javax.inject.Inject
 
@@ -36,7 +42,7 @@ class OnboardingFragment : Fragment(), AuthView {
         private const val ONBOARDING_CARDS_COUNT = 4
     }
 
-    private lateinit var binding : FragmentRecommendationsBinding
+    private lateinit var binding: FragmentRecommendationsBinding
     private var completed = 0
 
     private val disposable = CompositeDisposable()
@@ -71,40 +77,44 @@ class OnboardingFragment : Fragment(), AuthView {
 
         if (it == 0) {
             Completable
-                    .fromAction {
-                        sharedPreferenceHelper.isNotFirstTime = true
-                        achievementManager.onEvent(AchievementManager.Event.ONBOARDING, 1)
-                    }
-                    .observeOn(mainScheduler)
-                    .subscribe(this::onSuccess)
+                .fromAction {
+                    sharedPreferenceHelper.isNotFirstTime = true
+                    achievementManager.onEvent(AchievementManager.Event.ONBOARDING, 1)
+                }
+                .observeOn(mainScheduler)
+                .subscribe(this::onSuccess)
         } else {
-            analytics.logAmplitudeEvent(AmplitudeAnalytics.Onboarding.SCREEN_OPENED,
-                    mapOf(AmplitudeAnalytics.Onboarding.PARAM_SCREEN to ONBOARDING_CARDS_COUNT - it + 1))
+            analytics.logAmplitudeEvent(
+                AmplitudeAnalytics.Onboarding.SCREEN_OPENED,
+                mapOf(AmplitudeAnalytics.Onboarding.PARAM_SCREEN to ONBOARDING_CARDS_COUNT - it + 1)
+            )
         }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         App.componentManager()
-                .studyComponent
-                .inject(this)
+            .studyComponent
+            .inject(this)
         retainInstance = true
 
         presenter = ViewModelProvider(this, viewModelFactory).get(AuthPresenter::class.java)
         initOnboardingCards()
         presenter.attachView(this)
 
-        analytics.logAmplitudeEvent(AmplitudeAnalytics.Onboarding.SCREEN_OPENED,
-                mapOf(AmplitudeAnalytics.Onboarding.PARAM_SCREEN to 1))
+        analytics.logAmplitudeEvent(
+            AmplitudeAnalytics.Onboarding.SCREEN_OPENED,
+            mapOf(AmplitudeAnalytics.Onboarding.PARAM_SCREEN to 1)
+        )
 
         disposable addDisposable Observable.fromCallable(sharedPreferenceHelper::authResponseDeadline)
-                .observeOn(mainScheduler)
-                .subscribe {
-                    if(it == 0L)
-                        createMockAccount()
-                    else
-                        onSuccess()
-                }
+            .observeOn(mainScheduler)
+            .subscribe {
+                if (it == 0L)
+                    createMockAccount()
+                else
+                    onSuccess()
+            }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -140,11 +150,11 @@ class OnboardingFragment : Fragment(), AuthView {
         if (animate) {
             binding.expInc.alpha = 1f
             binding.expInc.animate()
-                    .alpha(0f)
-                    .setInterpolator(DecelerateInterpolator())
-                    .setStartDelay(1500)
-                    .setDuration(200)
-                    .start()
+                .alpha(0f)
+                .setInterpolator(DecelerateInterpolator())
+                .setStartDelay(1500)
+                .setDuration(200)
+                .start()
         }
 
         if (adapter.getItemCount() == 0) {
@@ -190,14 +200,14 @@ class OnboardingFragment : Fragment(), AuthView {
             analytics.logAmplitudeEvent(AmplitudeAnalytics.Onboarding.COMPLETED)
 
             disposable addDisposable sharedPreferenceHelper.isFakeUser()
-                    .subscribeOn(backgroundScheduler)
-                    .observeOn(mainScheduler)
-                    .subscribe { isFake ->
-                        screenManager.startStudy()
-                        if (isFake) {
-                            screenManager.showEmptyAuthScreen(requireContext())
-                        }
+                .subscribeOn(backgroundScheduler)
+                .observeOn(mainScheduler)
+                .subscribe { isFake ->
+                    screenManager.startStudy()
+                    if (isFake) {
+                        screenManager.showEmptyAuthScreen(requireContext())
                     }
+                }
         }
     }
 
@@ -208,9 +218,8 @@ class OnboardingFragment : Fragment(), AuthView {
         adapter.add(createMockCard(Card.MOCK_LESSON_ID, R.string.onboarding_card_title_4, R.string.onboarding_card_question_4))
     }
 
-    private fun createMockCard(id: Long, @StringRes title_id: Int, @StringRes question_id: Int) : Card =
-            Card(id, Lesson(getString(title_id)), Step(Block(getString(question_id))), Attempt(0, 0, datasetWrapper = DatasetWrapper(Dataset(listOf(), false))))
-
+    private fun createMockCard(id: Long, @StringRes title_id: Int, @StringRes question_id: Int): Card =
+        Card(id, Lesson(getString(title_id)), Step(Block(getString(question_id))), Attempt(0, 0, datasetWrapper = DatasetWrapper(Dataset(listOf(), false))))
 
     private fun createMockAccount() {
         presenter.authFakeUser()

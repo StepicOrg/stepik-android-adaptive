@@ -6,7 +6,7 @@ import org.stepik.android.adaptive.data.model.Submission
 import org.stepik.android.adaptive.ui.view.container.ContainerAdapter
 import org.stepik.android.adaptive.ui.view.container.ContainerView
 
-abstract class AttemptAnswerAdapter<VH : ContainerView.ViewHolder>: ContainerAdapter<VH>() {
+abstract class AttemptAnswerAdapter<VH : ContainerView.ViewHolder> : ContainerAdapter<VH>() {
     var isEnabled = true
         set(value) {
             field = value

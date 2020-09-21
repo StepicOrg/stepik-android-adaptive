@@ -7,13 +7,13 @@ import android.os.Bundle
 import android.webkit.WebView
 import androidx.appcompat.app.AppCompatActivity
 import org.stepik.android.adaptive.App
-import org.stepik.android.adaptive.configuration.Config
 import org.stepik.android.adaptive.R
+import org.stepik.android.adaptive.configuration.Config
 import org.stepik.android.adaptive.ui.DefaultWebViewClient
 import javax.inject.Inject
 
 class SocialAuthActivity : AppCompatActivity() {
-    private lateinit var authWebView : WebView
+    private lateinit var authWebView: WebView
 
     @Inject
     lateinit var config: Config
@@ -28,20 +28,23 @@ class SocialAuthActivity : AppCompatActivity() {
         val d = intent.data.toString()
 
         authWebView = findViewById(R.id.social_auth_web_view)
-        authWebView.webViewClient = DefaultWebViewClient({ _: WebView?, url: String? ->
-            if (url != null) {
-                if (url.startsWith(config.redirectUri)) {
-                    val uri = Uri.parse(url)
-                    if (uri.getQueryParameter(config.codeQueryParameter) != null) {
-                        this@SocialAuthActivity.setResult(android.app.Activity.RESULT_OK, Intent().setData(uri))
-                    } else {
-                        this@SocialAuthActivity.setResult(android.app.Activity.RESULT_CANCELED)
+        authWebView.webViewClient = DefaultWebViewClient(
+            { _: WebView?, url: String? ->
+                if (url != null) {
+                    if (url.startsWith(config.redirectUri)) {
+                        val uri = Uri.parse(url)
+                        if (uri.getQueryParameter(config.codeQueryParameter) != null) {
+                            this@SocialAuthActivity.setResult(android.app.Activity.RESULT_OK, Intent().setData(uri))
+                        } else {
+                            this@SocialAuthActivity.setResult(android.app.Activity.RESULT_CANCELED)
+                        }
+                        this@SocialAuthActivity.finish()
                     }
-                    this@SocialAuthActivity.finish()
                 }
-            }
-            false
-        }, null)
+                false
+            },
+            null
+        )
         authWebView.settings.javaScriptEnabled = true
 
         if (savedInstanceState == null) {

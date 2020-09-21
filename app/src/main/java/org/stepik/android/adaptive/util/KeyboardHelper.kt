@@ -5,11 +5,12 @@ import android.view.View
 
 const val PART_OF_KEYBOARD_ON_SCREEN = 0.15
 
-//this method works good with activities, this listener will be destroyed with viewTree
+// this method works good with activities, this listener will be destroyed with viewTree
 inline fun setOnKeyboardOpenListener(
-        rootView: View,
-        crossinline onKeyboardShown: () -> Unit,
-        crossinline onKeyboardHidden: () -> Unit) {
+    rootView: View,
+    crossinline onKeyboardShown: () -> Unit,
+    crossinline onKeyboardHidden: () -> Unit
+) {
     rootView.viewTreeObserver.addOnGlobalLayoutListener {
         val rect = Rect()
         rootView.getWindowVisibleDisplayFrame(rect)

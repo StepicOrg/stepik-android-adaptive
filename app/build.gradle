@@ -4,6 +4,8 @@ apply plugin: 'kotlin-kapt'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'com.google.firebase.crashlytics'
 
+apply from: '../code_quality_tools/ktlint.gradle'
+
 def globalConf = rootProject.ext
 android {
     signingConfigs {

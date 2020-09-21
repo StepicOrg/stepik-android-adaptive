@@ -15,7 +15,11 @@ import org.stepik.android.adaptive.receivers.BootCompletedReceiver
 import org.stepik.android.adaptive.receivers.NotificationsReceiver
 import org.stepik.android.adaptive.ui.activity.SplashActivity
 import org.stepik.android.adaptive.ui.adapter.QuizCardViewHolder
-import org.stepik.android.adaptive.ui.dialog.*
+import org.stepik.android.adaptive.ui.dialog.InventoryDialog
+import org.stepik.android.adaptive.ui.dialog.LogoutDialog
+import org.stepik.android.adaptive.ui.dialog.QuestionsPacksDialog
+import org.stepik.android.adaptive.ui.dialog.RateAppDialog
+import org.stepik.android.adaptive.ui.dialog.StreakRestoreDialog
 
 @AppSingleton
 @Component(modules = [AppCoreModule::class, NetworkModule::class, QuestionsModule::class], dependencies = [StorageComponent::class])

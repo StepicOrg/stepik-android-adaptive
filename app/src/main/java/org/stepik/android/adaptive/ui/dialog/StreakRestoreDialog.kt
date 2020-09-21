@@ -11,15 +11,15 @@ import kotlinx.android.synthetic.main.item_inventory.view.*
 import org.stepik.android.adaptive.App
 import org.stepik.android.adaptive.R
 import org.stepik.android.adaptive.data.analytics.Analytics
-import org.stepik.android.adaptive.ui.fragment.RecommendationsFragment
 import org.stepik.android.adaptive.gamification.InventoryManager
+import org.stepik.android.adaptive.ui.fragment.RecommendationsFragment
 import javax.inject.Inject
 
 class StreakRestoreDialog : DialogFragment() {
     companion object {
         private const val STREAK_KEY = "streak"
 
-        fun newInstance(streak: Long) : StreakRestoreDialog {
+        fun newInstance(streak: Long): StreakRestoreDialog {
             val dialog = StreakRestoreDialog()
             val args = Bundle()
             args.putLong(STREAK_KEY, streak)

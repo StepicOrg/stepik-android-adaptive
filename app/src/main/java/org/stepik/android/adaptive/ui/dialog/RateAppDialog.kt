@@ -23,7 +23,8 @@ class RateAppDialog : DialogFragment() {
         private const val RATING_ENABLED_KEY = "rating_enabled"
         private const val MIN_POSITIVE = 4
 
-        fun newInstance() = RateAppDialog()
+        fun newInstance(): RateAppDialog =
+            RateAppDialog()
     }
 
     private lateinit var binding: RateAppDialogBinding

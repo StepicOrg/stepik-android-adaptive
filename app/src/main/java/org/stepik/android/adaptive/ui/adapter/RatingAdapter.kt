@@ -12,8 +12,8 @@ import org.stepik.android.adaptive.data.model.RatingItem
 import org.stepik.android.adaptive.databinding.ItemRatingBinding
 
 class RatingAdapter(
-        private val profileId: Long
-): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+    private val profileId: Long
+) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private lateinit var leaderIconDrawable: Drawable
     private lateinit var leaderIconDrawableSelected: Drawable
 
@@ -25,11 +25,11 @@ class RatingAdapter(
 
         @JvmStatic
         private fun isRatingGap(current: RatingItem, next: RatingItem) =
-                current.rank + 1 != next.rank
+            current.rank + 1 != next.rank
 
         @JvmStatic
         private fun isNotSeparatorStub(item: RatingItem) =
-                item.user != SEPARATOR
+            item.user != SEPARATOR
     }
 
     override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
@@ -45,21 +45,21 @@ class RatingAdapter(
 
     private val items = ArrayList<RatingItem>()
 
-    override fun getItemViewType(position: Int) =
+    override fun getItemViewType(position: Int): Int =
         if (isNotSeparatorStub(items[position])) {
             RATING_ITEM_VIEW_TYPE
         } else {
             SEPARATOR_VIEW_TYPE
         }
 
-    override fun getItemCount() = items.size
+    override fun getItemCount(): Int = items.size
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
-            when(viewType) {
-                RATING_ITEM_VIEW_TYPE -> RatingViewHolder(ItemRatingBinding.inflate(LayoutInflater.from(parent?.context), parent, false))
-                SEPARATOR_VIEW_TYPE -> SeparatorViewHolder(LayoutInflater.from(parent?.context).inflate(R.layout.ranks_separator, parent, false))
-                else -> throw IllegalStateException("Unknown view type $viewType")
-            }
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder =
+        when (viewType) {
+            RATING_ITEM_VIEW_TYPE -> RatingViewHolder(ItemRatingBinding.inflate(LayoutInflater.from(parent.context), parent, false))
+            SEPARATOR_VIEW_TYPE -> SeparatorViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.ranks_separator, parent, false))
+            else -> throw IllegalStateException("Unknown view type $viewType")
+        }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when (getItemViewType(position)) {
@@ -72,11 +72,13 @@ class RatingAdapter(
                     it.root.isSelected = profileId == items[position].user
 
                     if (items[position].rank == 1) {
-                        it.icon.setImageDrawable(if (profileId == items[position].user) {
-                            leaderIconDrawableSelected
-                        } else {
-                            leaderIconDrawable
-                        })
+                        it.icon.setImageDrawable(
+                            if (profileId == items[position].user) {
+                                leaderIconDrawableSelected
+                            } else {
+                                leaderIconDrawable
+                            }
+                        )
 
                         it.icon.visibility = View.VISIBLE
                         it.rank.visibility = View.GONE
@@ -98,10 +100,9 @@ class RatingAdapter(
 
     private fun addSeparator() {
         (items.size - 2 downTo 0)
-                .filter { isRatingGap(items[it], items[it + 1]) && isNotSeparatorStub(items[it]) && isNotSeparatorStub(items[it + 1]) }
-                .forEach { items.add(it + 1, RatingItem(0, "", 0, SEPARATOR)) }
+            .filter { isRatingGap(items[it], items[it + 1]) && isNotSeparatorStub(items[it]) && isNotSeparatorStub(items[it + 1]) }
+            .forEach { items.add(it + 1, RatingItem(0, "", 0, SEPARATOR)) }
     }
-
 
     class RatingViewHolder(val binding: ItemRatingBinding) : RecyclerView.ViewHolder(binding.root)
     class SeparatorViewHolder(view: View) : RecyclerView.ViewHolder(view)

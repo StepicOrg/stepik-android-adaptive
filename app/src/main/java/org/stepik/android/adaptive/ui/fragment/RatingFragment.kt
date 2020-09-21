@@ -14,7 +14,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.android.synthetic.main.fragment_rating.*
 import org.stepik.android.adaptive.App
 import org.stepik.android.adaptive.R
-import org.stepik.android.adaptive.core.presenter.*
+import org.stepik.android.adaptive.core.presenter.RatingPresenter
 import org.stepik.android.adaptive.core.presenter.contracts.RatingView
 import org.stepik.android.adaptive.ui.adapter.RatingAdapter
 import javax.inject.Inject
@@ -27,8 +27,8 @@ class RatingFragment : Fragment(), RatingView {
 
     private fun injectComponent() {
         App.componentManager()
-                .statsComponent
-                .inject(this)
+            .statsComponent
+            .inject(this)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -38,7 +38,7 @@ class RatingFragment : Fragment(), RatingView {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
-            inflater.inflate(R.layout.fragment_rating, container, false)
+        inflater.inflate(R.layout.fragment_rating, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         recycler.layoutManager = LinearLayoutManager(context)

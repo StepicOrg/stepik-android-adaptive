@@ -11,16 +11,15 @@ import org.stepik.android.adaptive.databinding.ItemAchievementBinding
 import org.stepik.android.adaptive.gamification.achievements.AchievementManager
 import javax.inject.Inject
 
-
 class AchievementsAdapter
 @Inject
 constructor(
-        achievementManager: AchievementManager
-): RecyclerView.Adapter<AchievementsAdapter.AchievementViewHolder>() {
+    achievementManager: AchievementManager
+) : RecyclerView.Adapter<AchievementsAdapter.AchievementViewHolder>() {
     private val achievements = achievementManager.achievements
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
-            AchievementViewHolder(ItemAchievementBinding.inflate(LayoutInflater.from(parent?.context), parent, false))
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AchievementViewHolder =
+        AchievementViewHolder(ItemAchievementBinding.inflate(LayoutInflater.from(parent?.context), parent, false))
 
     override fun onBindViewHolder(holder: AchievementViewHolder, p: Int) {
         val context = holder.binding.root.context
@@ -36,14 +35,13 @@ constructor(
 
         holder.binding.icon.alpha = if (achievements[p].isComplete()) 1f else 0.4f
 
-
         if (achievements[p].icon != -1) {
             holder.binding.icon.setImageDrawable(DrawableCompat.wrap(ContextCompat.getDrawable(context, achievements[p].icon)!!))
         }
     }
 
-    override fun getItemCount() = achievements.size
-
+    override fun getItemCount(): Int =
+        achievements.size
 
     class AchievementViewHolder(val binding: ItemAchievementBinding) : RecyclerView.ViewHolder(binding.root)
 }

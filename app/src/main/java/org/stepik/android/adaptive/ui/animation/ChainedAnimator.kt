@@ -4,14 +4,15 @@ import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 
 class ChainedAnimator(private val c: () -> Animator) {
-    private var prev : ChainedAnimator? = null
-    private var next : ChainedAnimator? = null
+    private var prev: ChainedAnimator? = null
+    private var next: ChainedAnimator? = null
 
-    private var block : (() -> Unit)? = null
+    private var block: (() -> Unit)? = null
 
-    fun then(block: () -> Animator) = then(ChainedAnimator(block))
+    fun then(block: () -> Animator): ChainedAnimator =
+        then(ChainedAnimator(block))
 
-    fun then(chainedAnimator: ChainedAnimator) : ChainedAnimator {
+    fun then(chainedAnimator: ChainedAnimator): ChainedAnimator {
         this.next = chainedAnimator
         chainedAnimator.prev = this
         return chainedAnimator

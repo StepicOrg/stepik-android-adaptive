@@ -22,7 +22,7 @@ abstract class ContainerAdapter<VH : ContainerView.ViewHolder> {
         container?.onRebind(pos)
     }
 
-    abstract fun onCreateViewHolder(parent: ViewGroup) : VH
-    abstract fun getItemCount() : Int
+    abstract fun onCreateViewHolder(parent: ViewGroup): VH
+    abstract fun getItemCount(): Int
     abstract fun onBindViewHolder(holder: VH, pos: Int)
 }
