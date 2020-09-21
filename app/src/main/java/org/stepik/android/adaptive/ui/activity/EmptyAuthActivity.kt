@@ -1,6 +1,7 @@
 package org.stepik.android.adaptive.ui.activity
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
@@ -15,11 +16,20 @@ import org.stepik.android.adaptive.util.fromHtmlCompat
 import javax.inject.Inject
 
 class EmptyAuthActivity : AppCompatActivity() {
+    companion object {
+        private const val EXTRA_FROM_QUESTION_PACK = "extra_from_question_pack"
+
+        fun createIntent(context: Context, isFromQuestionPack: Boolean): Intent =
+            Intent(context, EmptyAuthActivity::class.java)
+                .putExtra(EXTRA_FROM_QUESTION_PACK, isFromQuestionPack)
+    }
     @Inject
     lateinit var screenManager: ScreenManager
 
     @Inject
     lateinit var analytics: Analytics
+
+    private val isFromQuestionPack by lazy { intent.getBooleanExtra(EXTRA_FROM_QUESTION_PACK, false) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,6 +52,9 @@ class EmptyAuthActivity : AppCompatActivity() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if ((requestCode == LoginActivity.REQUEST_CODE || requestCode == RegisterActivity.REQUEST_CODE) && resultCode == Activity.RESULT_OK) {
+            if (isFromQuestionPack) {
+                screenManager.showQuestionsPacksScreen(this)
+            }
             finish()
         }
         super.onActivityResult(requestCode, resultCode, data)

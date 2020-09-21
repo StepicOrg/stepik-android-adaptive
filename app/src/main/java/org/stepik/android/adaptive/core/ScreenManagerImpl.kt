@@ -36,10 +36,10 @@ constructor(
         context.startActivity(intent)
     }
 
-    override fun showEmptyAuthScreen(context: Context) {
+    override fun showEmptyAuthScreen(context: Context, isFromQuestionPack: Boolean) {
         analytics.logEvent(Analytics.Login.SHOW_EMPTY_AUTH_SCREEN)
         analytics.logAmplitudeEvent(AmplitudeAnalytics.Auth.AUTH_POPUP_OPENED)
-        val intent = Intent(context, EmptyAuthActivity::class.java)
+        val intent = EmptyAuthActivity.createIntent(context, isFromQuestionPack)
         context.startActivity(intent)
     }
 
