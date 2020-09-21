@@ -19,5 +19,23 @@ jobs:
         with:
           java-version: 1.8
 
+      - name: Fix secrets
+        run: |
+          mv buildsystem/secret.gradle buildsystem/secret.gradle_
+          cat <<EOF >buildsystem/secret.gradle
+          ext {
+              keystore = ""
+              keystorePass = ""
+              oldAlias = ""
+              oldAliasPass = ""
+              alias = ""
+              aliasPass = ""
+              debugKeystore = ""
+              debugKeystorePass = ""
+              debugAlias = ""
+              debugAliasPass = ""
+          }
+          EOF
+
       - name: Run ktlint
         run: bash ./gradlew ktlint --stacktrace
