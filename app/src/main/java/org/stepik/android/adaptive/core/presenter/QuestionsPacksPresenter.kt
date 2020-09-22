@@ -147,6 +147,10 @@ constructor(
                 ?.subscribeOn(mainScheduler)
 
     private fun onPackPressed(sku: Sku, pack: QuestionsPack, isOwned: Boolean) {
+        if (sharedPreferenceHelper.fakeUser != null) {
+            view?.showAuthScreen()
+            return
+        }
         if (isOwned || questionsPacksResolver.isAvailableForFree(pack)) {
             changeCourse(pack)
         } else {

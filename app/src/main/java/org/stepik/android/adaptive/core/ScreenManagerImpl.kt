@@ -39,7 +39,7 @@ constructor(
     override fun showEmptyAuthScreen(context: Context) {
         analytics.logEvent(Analytics.Login.SHOW_EMPTY_AUTH_SCREEN)
         analytics.logAmplitudeEvent(AmplitudeAnalytics.Auth.AUTH_POPUP_OPENED)
-        val intent = Intent(context, EmptyAuthActivity::class.java)
+        val intent = EmptyAuthActivity.createIntent(context)
         context.startActivity(intent)
     }
 
