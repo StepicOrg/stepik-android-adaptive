@@ -123,11 +123,7 @@ class RecommendationsFragment : Fragment(), RecommendationsView {
         binding.questionsPacks.changeVisibillity(isQuestionsPackSupported)
         binding.questionsPacks.setOnClickListener {
             questionsPacksTooltip?.dismiss()
-            if (sharedPreferenceHelper.fakeUser == null) {
-                screenManager.showQuestionsPacksScreen(requireContext())
-            } else {
-                screenManager.showEmptyAuthScreen(requireContext(), isFromQuestionPack = true)
-            }
+            screenManager.showQuestionsPacksScreen(requireContext())
         }
 
         return binding.root
@@ -241,7 +237,7 @@ class RecommendationsFragment : Fragment(), RecommendationsView {
     }
 
     override fun showEmptyAuthScreen() {
-        screenManager.showEmptyAuthScreen(requireContext(), isFromQuestionPack = false)
+        screenManager.showEmptyAuthScreen(requireContext())
     }
 
     override fun showStreakRestoreDialog(streak: Long, withTooltip: Boolean) {

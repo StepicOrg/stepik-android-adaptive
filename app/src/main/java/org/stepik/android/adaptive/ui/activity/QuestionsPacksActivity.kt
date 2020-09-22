@@ -14,6 +14,7 @@ import org.solovyev.android.checkout.Billing
 import org.solovyev.android.checkout.Checkout
 import org.stepik.android.adaptive.App
 import org.stepik.android.adaptive.R
+import org.stepik.android.adaptive.core.ScreenManager
 import org.stepik.android.adaptive.core.presenter.BaseActivity
 import org.stepik.android.adaptive.core.presenter.QuestionsPacksPresenter
 import org.stepik.android.adaptive.core.presenter.contracts.QuestionsPacksView
@@ -25,6 +26,9 @@ class QuestionsPacksActivity : BaseActivity(), QuestionsPacksView {
     companion object {
         const val RESTORE_DIALOG_TAG = "restore_dialog"
     }
+
+    @Inject
+    internal lateinit var screenManager: ScreenManager
 
     @Inject
     internal lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -109,6 +113,10 @@ class QuestionsPacksActivity : BaseActivity(), QuestionsPacksView {
 
     override fun hideProgress() {
         hideProgressDialogFragment(RESTORE_DIALOG_TAG)
+    }
+
+    override fun showAuthScreen() {
+        screenManager.showEmptyAuthScreen(this)
     }
 
     override fun onAdapter(adapter: QuestionsPacksAdapter) {

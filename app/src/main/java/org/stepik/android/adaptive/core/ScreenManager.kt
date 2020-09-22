@@ -6,7 +6,7 @@ import android.content.Context
 interface ScreenManager {
     fun showOnboardingScreen()
     fun startStudy()
-    fun showEmptyAuthScreen(context: Context, isFromQuestionPack: Boolean)
+    fun showEmptyAuthScreen(context: Context)
     fun showImage(context: Context, path: String)
     fun showStatsScreen(context: Context, page: Int)
     fun showQuestionsPacksScreen(context: Context)
