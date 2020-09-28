@@ -35,6 +35,7 @@ ext.versions = [
         material             : '1.1.0',
 
         archComponents       : '2.1.0',
+        domainRx             : '1.0.1',
 
         googleauth           : '16.0.1',
         firebaseAnalytics    : '17.4.3',
@@ -112,6 +113,7 @@ ext.libraries = [
 
         archExtensions       : "androidx.lifecycle:lifecycle-extensions:$versions.archComponents",
         archViewModel        : "androidx.lifecycle:lifecycle-viewmodel:$versions.archComponents",
+        domainRx             : "ru.nobird.android.domain:rx:$versions.domainRx",
 
         googleauth           : "com.google.android.gms:play-services-auth:$versions.googleauth",
         firebaseAnalytics    : "com.google.firebase:firebase-analytics-ktx:$versions.firebaseAnalytics",
