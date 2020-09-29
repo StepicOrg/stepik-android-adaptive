@@ -122,6 +122,8 @@ dependencies {
     implementation libraries.archExtensions
     implementation libraries.archViewModel
     implementation libraries.domainRx
+    implementation libraries.adapterDelegates
+    implementation libraries.adapters
 
     implementation libraries.googleauth
     implementation libraries.firebaseAnalytics

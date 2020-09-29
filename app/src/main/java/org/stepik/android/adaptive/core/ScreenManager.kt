@@ -10,6 +10,7 @@ interface ScreenManager {
     fun showImage(context: Context, path: String)
     fun showStatsScreen(context: Context, page: Int)
     fun showQuestionsPacksScreen(context: Context)
+    fun showQuestionPacksScreen(context: Context)
     fun showGamificationDescription(context: Context)
 
     fun showLoginScreen(activity: Activity)

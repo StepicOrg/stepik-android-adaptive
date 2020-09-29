@@ -3,6 +3,7 @@ package org.stepik.android.adaptive.core
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import org.stepik.android.adaptive.arch.view.question_packs.ui.activity.QuestionPackActivity
 import org.stepik.android.adaptive.data.analytics.AmplitudeAnalytics
 import org.stepik.android.adaptive.data.analytics.Analytics
 import org.stepik.android.adaptive.di.AppSingleton
@@ -60,6 +61,12 @@ constructor(
         analytics.onQuestionsPacksOpened()
         analytics.logAmplitudeEvent(AmplitudeAnalytics.QuestionPacks.SCREEN_OPENED)
         context.startActivity(Intent(context, QuestionsPacksActivity::class.java))
+    }
+
+    override fun showQuestionPacksScreen(context: Context) {
+        analytics.onQuestionsPacksOpened()
+        analytics.logAmplitudeEvent(AmplitudeAnalytics.QuestionPacks.SCREEN_OPENED)
+        context.startActivity(Intent(context, QuestionPackActivity::class.java))
     }
 
     override fun showGamificationDescription(context: Context) {

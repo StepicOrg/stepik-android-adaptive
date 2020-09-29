@@ -15,9 +15,9 @@ constructor(
     val questionsPacks: Array<QuestionsPack>
 ) {
     private val idToPack = questionsPacks.associateBy { it.id }
+    private val courseIdToPack = questionsPacks.associateBy { it.courseId }
 
     val ids = idToPack.keys.toList()
-    val skus = idToPack.values.mapNotNull { it.priceTier }
 
     val currentPackIndex: Int
         get() {
@@ -47,6 +47,9 @@ constructor(
 
     fun getPackById(id: String): QuestionsPack? =
         idToPack[id]
+
+    fun getPackByCourseId(id: Long): QuestionsPack? =
+        courseIdToPack[id]
 
     fun switchPack(pack: QuestionsPack) {
         sharedPreferenceHelper.questionsPackIndex = pack.ordinal

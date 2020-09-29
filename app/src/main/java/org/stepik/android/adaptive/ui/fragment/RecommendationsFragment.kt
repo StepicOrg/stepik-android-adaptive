@@ -123,7 +123,8 @@ class RecommendationsFragment : Fragment(), RecommendationsView {
         binding.questionsPacks.changeVisibillity(isQuestionsPackSupported)
         binding.questionsPacks.setOnClickListener {
             questionsPacksTooltip?.dismiss()
-            screenManager.showQuestionsPacksScreen(requireContext())
+            screenManager.showQuestionPacksScreen(requireContext())
+//            screenManager.showQuestionsPacksScreen(requireContext())
         }
 
         return binding.root

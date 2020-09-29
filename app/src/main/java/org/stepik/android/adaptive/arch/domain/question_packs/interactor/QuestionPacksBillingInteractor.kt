@@ -1,4 +1,4 @@
-package org.stepik.android.adaptive.arch.domain.question_packs
+package org.stepik.android.adaptive.arch.domain.question_packs.interactor
 
 import com.google.gson.Gson
 import io.reactivex.Completable

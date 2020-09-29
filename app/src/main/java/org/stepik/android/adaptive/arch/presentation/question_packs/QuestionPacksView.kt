@@ -1,6 +1,7 @@
 package org.stepik.android.adaptive.arch.presentation.question_packs
 
 import org.solovyev.android.checkout.UiCheckout
+import org.stepik.android.adaptive.arch.domain.question_packs.model.QuestionListItem
 
 interface QuestionPacksView {
     sealed class State {
@@ -9,7 +10,7 @@ interface QuestionPacksView {
         object Error : State()
         object PurchasesNotSupported : State()
 
-        class QuestionPacksLoaded() : State()
+        data class QuestionPacksLoaded(val questionItemList: List<QuestionListItem>) : State()
     }
 
     fun setState(state: State)
