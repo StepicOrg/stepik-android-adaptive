@@ -9,18 +9,22 @@ import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
 import kotlinx.android.synthetic.main.item_questions_pack.view.*
+import org.solovyev.android.checkout.Sku
 import org.stepik.android.adaptive.R
 import org.stepik.android.adaptive.arch.domain.question_packs.model.EnrollmentState
 import org.stepik.android.adaptive.arch.domain.question_packs.model.QuestionListItem
+import org.stepik.android.adaptive.content.questions.QuestionsPack
 import org.stepik.android.adaptive.content.questions.QuestionsPacksResolver
-import org.stepik.android.adaptive.ui.adapter.QuestionsPacksAdapter
 import org.stepik.android.adaptive.ui.helper.setAlpha
 import org.stepik.android.adaptive.util.changeVisibillity
 import org.stepik.android.adaptive.util.fromHtmlCompat
 import ru.nobird.android.ui.adapterdelegates.AdapterDelegate
 import ru.nobird.android.ui.adapterdelegates.DelegateViewHolder
+import ru.nobird.android.ui.adapters.selection.SelectionHelper
 
 class QuestionPackAdapterDelegate(
+    private val selectionHelper: SelectionHelper,
+    private val onPackClicked: (Sku?, QuestionsPack, Boolean) -> Unit,
     private val questionsPacksResolver: QuestionsPacksResolver
 ) : AdapterDelegate<QuestionListItem, DelegateViewHolder<QuestionListItem>>() {
     companion object {
@@ -53,18 +57,19 @@ class QuestionPackAdapterDelegate(
         }
 
         override fun onBind(data: QuestionListItem) {
+            itemView.isSelected = selectionHelper.isSelected(adapterPosition)
             val pack = data.questionPack
             val sku = (data.enrollmentState as? EnrollmentState.NotEnrolledInApp)?.skuWrapper?.sku
             val isOwned = data.enrollmentState == EnrollmentState.Enrolled
             val context = root.context
 
-            title.text = sku?.displayTitle
+            title.text = sku?.displayTitle ?: pack.name
             title.setTextColor(setAlpha(pack.textColor, TITLE_ALPHA))
 
-            description.text = sku?.description
+            description.text = data.course.summary
             description.setTextColor(setAlpha(pack.textColor, TEXT_ALPHA))
 
-            questionsCount.text = fromHtmlCompat(context.getString(R.string.questions_count, pack.size))
+            questionsCount.text = fromHtmlCompat(context.getString(R.string.questions_count, data.course.totalUnits))
             questionsCount.setTextColor(setAlpha(pack.textColor, TEXT_ALPHA))
 
             difficulty.text = fromHtmlCompat(context.getString(R.string.questions_difficulty, context.getString(pack.difficulty)))
@@ -73,11 +78,11 @@ class QuestionPackAdapterDelegate(
             val activeDrawable = DrawableCompat.wrap(ContextCompat.getDrawable(context, R.drawable.ic_correct)!!)
             DrawableCompat.setTint(activeDrawable, setAlpha(pack.textColor, ICON_ALPHA))
             activeIcon.setImageDrawable(activeDrawable)
-//            activeIcon.changeVisibillity(pack.ordinal == selection)
+            activeIcon.changeVisibillity(itemView.isSelected)
 
-//            actionButton.changeVisibillity(pack.ordinal != selection)
+            actionButton.changeVisibillity(!itemView.isSelected)
             actionButton.setOnClickListener {
-//                onPackClicked(sku, pack, isOwned)
+                onPackClicked(sku, pack, isOwned)
             }
 
             packPriceDiscount.changeVisibillity(false)

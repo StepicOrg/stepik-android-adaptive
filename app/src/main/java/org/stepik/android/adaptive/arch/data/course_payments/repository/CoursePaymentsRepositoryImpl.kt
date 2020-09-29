@@ -3,11 +3,10 @@ package org.stepik.android.adaptive.arch.data.course_payments.repository
 import io.reactivex.Single
 import org.solovyev.android.checkout.Purchase
 import org.solovyev.android.checkout.Sku
-import org.stepik.android.adaptive.arch.domain.base.DataSourceType
 import org.stepik.android.adaptive.arch.data.course_payments.source.CoursePaymentsRemoteDataSource
+import org.stepik.android.adaptive.arch.domain.base.DataSourceType
 import org.stepik.android.adaptive.arch.domain.course_payments.model.CoursePayment
 import org.stepik.android.adaptive.arch.domain.course_payments.repository.CoursePaymentsRepository
-import ru.nobird.android.domain.rx.doCompletableOnSuccess
 import javax.inject.Inject
 
 class CoursePaymentsRepositoryImpl

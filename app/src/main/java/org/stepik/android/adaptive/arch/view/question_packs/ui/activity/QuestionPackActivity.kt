@@ -1,7 +1,6 @@
 package org.stepik.android.adaptive.arch.view.question_packs.ui.activity
 
 import android.os.Bundle
-import android.util.Log
 import android.view.MenuItem
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -10,6 +9,7 @@ import kotlinx.android.synthetic.main.app_bar.*
 import kotlinx.android.synthetic.main.state_error.*
 import org.solovyev.android.checkout.Billing
 import org.solovyev.android.checkout.Checkout
+import org.solovyev.android.checkout.Sku
 import org.solovyev.android.checkout.UiCheckout
 import org.stepik.android.adaptive.App
 import org.stepik.android.adaptive.R
@@ -18,10 +18,15 @@ import org.stepik.android.adaptive.arch.presentation.question_packs.QuestionPack
 import org.stepik.android.adaptive.arch.presentation.question_packs.QuestionPacksView
 import org.stepik.android.adaptive.arch.view.question_packs.ui.adapter.QuestionPackAdapterDelegate
 import org.stepik.android.adaptive.arch.view.ui.delegate.ViewStateDelegate
+import org.stepik.android.adaptive.content.questions.QuestionsPack
+import org.stepik.android.adaptive.content.questions.QuestionsPacksManager
 import org.stepik.android.adaptive.content.questions.QuestionsPacksResolver
+import org.stepik.android.adaptive.core.ScreenManager
 import org.stepik.android.adaptive.core.presenter.BaseActivity
-import org.stepik.android.adaptive.ui.activity.QuestionsPacksActivity
+import org.stepik.android.adaptive.data.preference.SharedPreferenceHelper
 import ru.nobird.android.ui.adapters.DefaultDelegateAdapter
+import ru.nobird.android.ui.adapters.selection.SelectionHelper
+import ru.nobird.android.ui.adapters.selection.SingleChoiceSelectionHelper
 import javax.inject.Inject
 
 class QuestionPackActivity : BaseActivity(), QuestionPacksView {
@@ -29,14 +34,25 @@ class QuestionPackActivity : BaseActivity(), QuestionPacksView {
         const val RESTORE_DIALOG_TAG = "restore_dialog"
     }
 
+    private lateinit var selectionHelper: SelectionHelper
+
+    @Inject
+    internal lateinit var screenManager: ScreenManager
+
+    @Inject
+    internal lateinit var sharedPreferenceHelper: SharedPreferenceHelper
+
     @Inject
     internal lateinit var viewModelFactory: ViewModelProvider.Factory
 
     @Inject
-    lateinit var billing: Billing
+    internal lateinit var billing: Billing
 
     @Inject
-    lateinit var questionsPacksResolver: QuestionsPacksResolver
+    internal lateinit var questionsPacksManager: QuestionsPacksManager
+
+    @Inject
+    internal lateinit var questionsPacksResolver: QuestionsPacksResolver
 
     private lateinit var presenter: QuestionPacksPresenter
     private lateinit var questionItemAdapter: DefaultDelegateAdapter<QuestionListItem>
@@ -71,7 +87,8 @@ class QuestionPackActivity : BaseActivity(), QuestionPacksView {
         supportActionBar?.setTitle(R.string.questions_packs)
 
         questionItemAdapter = DefaultDelegateAdapter()
-        questionItemAdapter += QuestionPackAdapterDelegate(questionsPacksResolver)
+        selectionHelper = SingleChoiceSelectionHelper(questionItemAdapter)
+        questionItemAdapter += QuestionPackAdapterDelegate(selectionHelper, ::onPackClicked, questionsPacksResolver)
 
         with(recycler) {
             layoutManager = LinearLayoutManager(this@QuestionPackActivity, LinearLayoutManager.VERTICAL, false)
@@ -104,6 +121,7 @@ class QuestionPackActivity : BaseActivity(), QuestionPacksView {
         when (state) {
             is QuestionPacksView.State.QuestionPacksLoaded -> {
                 questionItemAdapter.items = state.questionItemList
+                selectionHelper.select(questionsPacksManager.currentPackIndex)
             }
         }
     }
@@ -112,10 +130,25 @@ class QuestionPackActivity : BaseActivity(), QuestionPacksView {
         uiCheckout
 
     override fun showProgress() {
-        showProgressDialogFragment(QuestionsPacksActivity.RESTORE_DIALOG_TAG, getString(R.string.loading_message), getString(R.string.processing_your_request))
+        showProgressDialogFragment(RESTORE_DIALOG_TAG, getString(R.string.loading_message), getString(R.string.processing_your_request))
     }
 
     override fun hideProgress() {
-        hideProgressDialogFragment(QuestionsPacksActivity.RESTORE_DIALOG_TAG)
+        hideProgressDialogFragment(RESTORE_DIALOG_TAG)
+    }
+
+    private fun onPackClicked(sku: Sku?, pack: QuestionsPack, isOwned: Boolean) {
+        if (sharedPreferenceHelper.fakeUser != null) {
+            screenManager.showEmptyAuthScreen(this)
+            return
+        }
+        if (isOwned || questionsPacksResolver.isAvailableForFree(pack)) {
+            selectionHelper.select(questionItemAdapter.items.indexOfFirst { it.questionPack.id == pack.id })
+            presenter.changeCourse(pack)
+        } else {
+            if (sku != null) {
+                presenter.purchaseCourse(pack.courseId, sku)
+            }
+        }
     }
 }

@@ -11,7 +11,6 @@ import kotlinx.android.synthetic.main.app_bar.*
 import kotlinx.android.synthetic.main.state_error.*
 import org.solovyev.android.checkout.ActivityCheckout
 import org.solovyev.android.checkout.Billing
-import org.solovyev.android.checkout.Checkout
 import org.solovyev.android.checkout.UiCheckout
 import org.stepik.android.adaptive.App
 import org.stepik.android.adaptive.R

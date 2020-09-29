@@ -11,7 +11,6 @@ import org.stepik.android.adaptive.arch.domain.course_payments.model.CoursePayme
 import org.stepik.android.adaptive.arch.domain.course_payments.repository.CoursePaymentsRepository
 import org.stepik.android.adaptive.arch.domain.question_packs.model.EnrollmentState
 import org.stepik.android.adaptive.arch.domain.question_packs.model.QuestionListItem
-import org.stepik.android.adaptive.content.questions.QuestionsPack
 import org.stepik.android.adaptive.content.questions.QuestionsPacksManager
 import org.stepik.android.adaptive.data.model.Course
 import javax.inject.Inject

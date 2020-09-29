@@ -10,10 +10,10 @@ import org.solovyev.android.checkout.Purchase
 import org.solovyev.android.checkout.Purchases
 import org.solovyev.android.checkout.RequestListener
 import org.solovyev.android.checkout.Sku
-import org.stepik.android.adaptive.arch.domain.billing.extension.consumeRx
-import org.stepik.android.adaptive.arch.domain.billing.extension.onReady
 import org.stepik.android.adaptive.arch.data.billing.source.BillingRemoteDataSource
 import org.stepik.android.adaptive.arch.domain.billing.exception.BillingNotSupportedException
+import org.stepik.android.adaptive.arch.domain.billing.extension.consumeRx
+import org.stepik.android.adaptive.arch.domain.billing.extension.onReady
 import org.stepik.android.adaptive.arch.view.injection.billing.SystemCheckout
 import javax.inject.Inject
 
@@ -51,19 +51,22 @@ constructor(
             billing
                 .newRequestsBuilder()
                 .create()
-                .getAllPurchases(productType, object : RequestListener<Purchases> {
-                    override fun onSuccess(purchases: Purchases) {
-                        if (!emitter.isDisposed) {
-                            emitter.onSuccess(purchases.list)
+                .getAllPurchases(
+                    productType,
+                    object : RequestListener<Purchases> {
+                        override fun onSuccess(purchases: Purchases) {
+                            if (!emitter.isDisposed) {
+                                emitter.onSuccess(purchases.list)
+                            }
                         }
-                    }
 
-                    override fun onError(response: Int, e: Exception) {
-                        if (!emitter.isDisposed)  {
-                            emitter.onError(e)
+                        override fun onError(response: Int, e: Exception) {
+                            if (!emitter.isDisposed)  {
+                                emitter.onError(e)
+                            }
                         }
                     }
-                })
+                )
         }
 
     override fun consumePurchase(purchase: Purchase): Completable =

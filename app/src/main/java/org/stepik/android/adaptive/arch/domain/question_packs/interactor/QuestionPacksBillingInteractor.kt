@@ -16,14 +16,14 @@ import org.stepik.android.adaptive.arch.domain.billing.exception.NoPurchasesToRe
 import org.stepik.android.adaptive.arch.domain.billing.extension.startPurchaseFlowRx
 import org.stepik.android.adaptive.arch.domain.billing.model.CoursePurchasePayload
 import org.stepik.android.adaptive.arch.domain.billing.repository.BillingRepository
-import org.stepik.android.adaptive.data.preference.SharedPreferenceHelper
-import org.stepik.android.adaptive.di.qualifiers.BackgroundScheduler
-import org.stepik.android.adaptive.di.qualifiers.MainScheduler
-import org.stepik.android.adaptive.util.toObject
 import org.stepik.android.adaptive.arch.domain.course_payments.exception.CourseAlreadyOwnedException
 import org.stepik.android.adaptive.arch.domain.course_payments.exception.CoursePurchaseVerificationException
 import org.stepik.android.adaptive.arch.domain.course_payments.model.CoursePayment
 import org.stepik.android.adaptive.arch.domain.course_payments.repository.CoursePaymentsRepository
+import org.stepik.android.adaptive.data.preference.SharedPreferenceHelper
+import org.stepik.android.adaptive.di.qualifiers.BackgroundScheduler
+import org.stepik.android.adaptive.di.qualifiers.MainScheduler
+import org.stepik.android.adaptive.util.toObject
 import retrofit2.HttpException
 import retrofit2.Response
 import ru.nobird.android.domain.rx.maybeFirst
@@ -105,7 +105,7 @@ constructor(
                     Completable.error(CoursePurchaseVerificationException())
                 }
             }
-//            .andThen(updateCourseAfterEnrollment(courseId))
+            .andThen(api.joinCourse(courseId))
             .andThen(billingRepository.consumePurchase(purchase))
 
     private fun getCurrentProfileId(): Single<Long> =

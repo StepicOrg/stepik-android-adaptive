@@ -4,6 +4,8 @@ import com.google.gson.annotations.SerializedName
 
 class Course(
     val id: Long,
+    @SerializedName("summary")
+    val summary: String? = null,
     @SerializedName("total_units")
     val totalUnits: Int,
     @SerializedName("enrollment")

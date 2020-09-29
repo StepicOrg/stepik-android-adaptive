@@ -21,16 +21,17 @@ constructor(
             .createCoursePayment(
                 CoursePaymentRequest(
                     CoursePaymentRequest.Body(
-                    course   = courseId,
-                    provider = CoursePaymentRequest.Body.Provider.GOOGLE,
-                    data     = CoursePaymentRequest.Body.Data(
-                        token       = purchase.token,
-                        packageName = purchase.packageName,
-                        productId   = purchase.sku,
-                        amount      = sku.detailedPrice.amount / 1_000_000f,
-                        currency    = sku.detailedPrice.currency
+                        course   = courseId,
+                        provider = CoursePaymentRequest.Body.Provider.GOOGLE,
+                        data     = CoursePaymentRequest.Body.Data(
+                            token       = purchase.token,
+                            packageName = purchase.packageName,
+                            productId   = purchase.sku,
+                            amount      = sku.detailedPrice.amount / 1_000_000f,
+                            currency    = sku.detailedPrice.currency
+                        )
                     )
-                ))
+                )
             )
             .map { it.coursePayments.first() }
 

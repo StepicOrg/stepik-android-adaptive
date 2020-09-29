@@ -1,8 +1,8 @@
 package org.stepik.android.adaptive.core.presenter
 
 class QuestionsPacksPresenter
-//@Inject
-//constructor(
+// @Inject
+// constructor(
 //    private val api: Api,
 //    private val analytics: Analytics,
 //    @BackgroundScheduler
@@ -17,7 +17,7 @@ class QuestionsPacksPresenter
 //    private val sharedPreferenceHelper: SharedPreferenceHelper,
 //
 //    billing: Billing
-//) : PaidContentPresenterBase<QuestionsPacksView>(billing) {
+// ) : PaidContentPresenterBase<QuestionsPacksView>(billing) {
 //    private val adapter = QuestionsPacksAdapter(this::onPackPressed, questionsPacksResolver)
 //    private val skus = questionsPacksManager.ids
 //    private var isPacksLoaded = false
@@ -170,4 +170,4 @@ class QuestionsPacksPresenter
 //    override fun destroy() {
 //        compositeDisposable.dispose()
 //    }
-//}
+// }

@@ -6,8 +6,10 @@ import io.reactivex.rxkotlin.plusAssign
 import io.reactivex.rxkotlin.subscribeBy
 import org.solovyev.android.checkout.Sku
 import org.solovyev.android.checkout.UiCheckout
+import org.stepik.android.adaptive.api.Api
 import org.stepik.android.adaptive.arch.domain.question_packs.interactor.QuestionPacksBillingInteractor
 import org.stepik.android.adaptive.arch.domain.question_packs.interactor.QuestionPacksInteractor
+import org.stepik.android.adaptive.content.questions.QuestionsPack
 import org.stepik.android.adaptive.content.questions.QuestionsPacksManager
 import org.stepik.android.adaptive.content.questions.QuestionsPacksResolver
 import org.stepik.android.adaptive.core.presenter.PresenterBase
@@ -18,6 +20,7 @@ import javax.inject.Inject
 class QuestionPacksPresenter
 @Inject
 constructor(
+    private val api: Api,
     @BackgroundScheduler
     private val backgroundScheduler: Scheduler,
     @MainScheduler
@@ -28,7 +31,7 @@ constructor(
     private val questionPacksBillingInteractor: QuestionPacksBillingInteractor
 ) : PresenterBase<QuestionPacksView>() {
     private var state: QuestionPacksView.State = QuestionPacksView.State.Idle
-        set (value) {
+        set(value) {
             field = value
             view?.setState(value)
         }
@@ -54,8 +57,8 @@ constructor(
                 .subscribeOn(backgroundScheduler)
                 .observeOn(mainScheduler)
                 .subscribeBy(
-                    onSuccess = {
-                        state = QuestionPacksView.State.QuestionPacksLoaded(it)
+                    onSuccess = { questionListItems ->
+                        state = QuestionPacksView.State.QuestionPacksLoaded(questionListItems.sortedBy { it.questionPack.ordinal })
                     },
                     onError = {
                         state = QuestionPacksView.State.Error
@@ -68,13 +71,15 @@ constructor(
         val checkout = this.uiCheckout
             ?: return
 
+        view?.showProgress()
+
         compositeDisposable += questionPacksBillingInteractor
             .purchaseCourse(checkout, courseId, sku)
             .observeOn(mainScheduler)
             .subscribeOn(backgroundScheduler)
+            .doOnComplete { view?.hideProgress() }
             .subscribeBy(
                 onError = {
-
                 }
             )
     }
@@ -86,7 +91,23 @@ constructor(
             .subscribeOn(backgroundScheduler)
             .subscribeBy(
                 onError = {
+                }
+            )
+    }
 
+    fun changeCourse(pack: QuestionsPack) {
+        view?.showProgress()
+        compositeDisposable += api.joinCourse(pack.courseId).doOnComplete {
+            questionsPacksManager.switchPack(pack)
+        }
+            .observeOn(mainScheduler)
+            .subscribeOn(backgroundScheduler)
+            .subscribe(
+                {
+                    view?.hideProgress()
+                },
+                {
+                    view?.hideProgress()
                 }
             )
     }

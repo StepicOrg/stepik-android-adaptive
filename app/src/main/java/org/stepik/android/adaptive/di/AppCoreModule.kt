@@ -17,6 +17,7 @@ import org.stepik.android.adaptive.R
 import org.stepik.android.adaptive.arch.view.injection.billing.BillingDataModule
 import org.stepik.android.adaptive.arch.view.injection.billing.BillingModule
 import org.stepik.android.adaptive.arch.view.injection.billing.PublicLicenseKey
+import org.stepik.android.adaptive.arch.view.injection.course_payments.CoursePaymentsDataModule
 import org.stepik.android.adaptive.configuration.Config
 import org.stepik.android.adaptive.configuration.ConfigImpl
 import org.stepik.android.adaptive.core.LogoutHelper
@@ -34,16 +35,17 @@ import org.stepik.android.adaptive.di.qualifiers.BackgroundScheduler
 import org.stepik.android.adaptive.di.qualifiers.MainScheduler
 import org.stepik.android.adaptive.gamification.achievements.AchievementEventListener
 import org.stepik.android.adaptive.util.AppConstants
-import org.stepik.android.adaptive.arch.view.injection.course_payments.CoursePaymentsDataModule
 import javax.inject.Named
 
-@Module(includes = [
-    AnalyticsModule::class,
-    PresenterModule::class,
-    BillingModule::class,
-    BillingDataModule::class,
-    CoursePaymentsDataModule::class
-])
+@Module(
+    includes = [
+        AnalyticsModule::class,
+        PresenterModule::class,
+        BillingModule::class,
+        BillingDataModule::class,
+        CoursePaymentsDataModule::class
+    ]
+)
 abstract class AppCoreModule {
 
     @Binds
