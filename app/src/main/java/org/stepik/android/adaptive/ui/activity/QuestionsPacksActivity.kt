@@ -12,10 +12,11 @@ import kotlinx.android.synthetic.main.state_error.*
 import org.solovyev.android.checkout.ActivityCheckout
 import org.solovyev.android.checkout.Billing
 import org.solovyev.android.checkout.Checkout
+import org.solovyev.android.checkout.UiCheckout
 import org.stepik.android.adaptive.App
 import org.stepik.android.adaptive.R
+import org.stepik.android.adaptive.arch.presentation.question_packs.QuestionPacksPresenter
 import org.stepik.android.adaptive.core.presenter.BaseActivity
-import org.stepik.android.adaptive.core.presenter.QuestionsPacksPresenter
 import org.stepik.android.adaptive.core.presenter.contracts.QuestionsPacksView
 import org.stepik.android.adaptive.ui.adapter.QuestionsPacksAdapter
 import org.stepik.android.adaptive.util.changeVisibillity
@@ -32,7 +33,9 @@ class QuestionsPacksActivity : BaseActivity(), QuestionsPacksView {
     @Inject
     lateinit var billing: Billing
 
-    private lateinit var presenter: QuestionsPacksPresenter
+    private lateinit var presenter: QuestionPacksPresenter
+
+    private lateinit var uiCheckout: UiCheckout
 
     private fun injectComponent() {
         App.componentManager().paidContentComponent.inject(this)
@@ -43,19 +46,21 @@ class QuestionsPacksActivity : BaseActivity(), QuestionsPacksView {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_questions_packs)
 
-        presenter = ViewModelProvider(this, viewModelFactory).get(QuestionsPacksPresenter::class.java)
+//        presenter = ViewModelProvider(this, viewModelFactory).get(QuestionPacksPresenter::class.java)
         recycler.layoutManager = LinearLayoutManager(this)
 
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setTitle(R.string.questions_packs)
 
+//        uiCheckout = Checkout.forActivity(this, billing)
+
         restorePurchases.setOnClickListener {
-            presenter.restorePurchases()
+//            presenter.restorePurchases()
         }
 
         tryAgainButton.setOnClickListener {
-            presenter.loadContent()
+//            presenter.loadContent()
         }
     }
 
@@ -66,6 +71,9 @@ class QuestionsPacksActivity : BaseActivity(), QuestionsPacksView {
         }
         return super.onOptionsItemSelected(item)
     }
+
+    override fun createUiCheckout(): UiCheckout =
+        uiCheckout
 
     override fun onPurchaseError() {
         Snackbar.make(root, R.string.purchase_error, Snackbar.LENGTH_LONG).show()
@@ -101,7 +109,7 @@ class QuestionsPacksActivity : BaseActivity(), QuestionsPacksView {
     }
 
     override fun createCheckout(): ActivityCheckout =
-        Checkout.forActivity(this, billing)
+        throw UnsupportedOperationException("Replaced with new code")
 
     override fun showProgress() {
         showProgressDialogFragment(RESTORE_DIALOG_TAG, getString(R.string.loading_message), getString(R.string.processing_your_request))
@@ -117,16 +125,17 @@ class QuestionsPacksActivity : BaseActivity(), QuestionsPacksView {
 
     override fun onStart() {
         super.onStart()
-        presenter.attachView(this)
+//        presenter.attachView(this)
     }
 
     override fun onStop() {
-        presenter.detachView(this)
+//        presenter.detachView(this)
         super.onStop()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        presenter.onActivityResult(requestCode, resultCode, data)
-        super.onActivityResult(requestCode, resultCode, data)
+        if (!uiCheckout.onActivityResult(requestCode, resultCode, data)) {
+            super.onActivityResult(requestCode, resultCode, data)
+        }
     }
 }

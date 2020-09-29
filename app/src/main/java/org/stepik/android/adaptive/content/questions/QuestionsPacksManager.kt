@@ -17,6 +17,7 @@ constructor(
     private val idToPack = questionsPacks.associateBy { it.id }
 
     val ids = idToPack.keys.toList()
+    val skus = idToPack.values.mapNotNull { it.priceTier }
 
     val currentPackIndex: Int
         get() {
