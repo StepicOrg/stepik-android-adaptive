@@ -13,8 +13,7 @@ enum class QuestionsPack(
     @DrawableRes val background: Int,
     @DrawableRes val icon: Int,
     @ColorInt    val textColor: Int = 0xFFFFFF,
-    val hasProgress: Boolean = false,
-    val priceTier: String? = null
+    val hasProgress: Boolean = false
 ) {
     Basic(
         id          = "questions_pack_basic",
@@ -22,8 +21,7 @@ enum class QuestionsPack(
         difficulty  = R.string.questions_difficulty_mixed,
         background  = R.drawable.pack_bg_basic,
         icon        = R.drawable.ic_questions_pack_basic,
-        textColor   = 0x495057,
-        priceTier   = null
+        textColor   = 0x495057
     ),
 
     Medium(
@@ -31,8 +29,7 @@ enum class QuestionsPack(
         courseId    = 6243,
         difficulty  = R.string.questions_difficulty_medium,
         background  = R.drawable.pack_bg_medium,
-        icon        = R.drawable.ic_questions_pack_medium,
-        priceTier   = "3"
+        icon        = R.drawable.ic_questions_pack_medium
     ),
 
     Pro(
@@ -40,8 +37,7 @@ enum class QuestionsPack(
         courseId    = 6312,
         difficulty  = R.string.questions_difficulty_high,
         background  = R.drawable.pack_bg_pro,
-        icon        = R.drawable.ic_questions_pack_pro,
-        priceTier   = "4"
+        icon        = R.drawable.ic_questions_pack_pro
     ),
 
     Full(
@@ -49,8 +45,7 @@ enum class QuestionsPack(
         courseId    = 6315,
         difficulty  = R.string.questions_difficulty_mixed,
         background  = R.drawable.pack_bg_full,
-        icon        = R.drawable.ic_questions_pack_full,
-        priceTier   = "7"
+        icon        = R.drawable.ic_questions_pack_full
     ),
 
     Adjectives(
@@ -59,8 +54,7 @@ enum class QuestionsPack(
         difficulty  = R.string.questions_difficulty_mixed,
         background  = R.drawable.pack_bg_adjectives,
         icon        = R.drawable.ic_questions_pack_adjectives,
-        hasProgress = true,
-        priceTier   = "1"
+        hasProgress = true
     ),
 
     Verbs(
@@ -69,7 +63,6 @@ enum class QuestionsPack(
         difficulty  = R.string.questions_difficulty_mixed,
         background  = R.drawable.pack_bg_verbs,
         icon        = R.drawable.ic_questions_pack_verbs,
-        hasProgress = true,
-        priceTier   =  null
+        hasProgress = true
     );
 }
