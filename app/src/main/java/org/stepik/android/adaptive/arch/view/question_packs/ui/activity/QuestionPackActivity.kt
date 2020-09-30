@@ -1,5 +1,6 @@
 package org.stepik.android.adaptive.arch.view.question_packs.ui.activity
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
 import androidx.lifecycle.ViewModelProvider
@@ -149,6 +150,12 @@ class QuestionPackActivity : BaseActivity(), QuestionPacksView {
             if (sku != null) {
                 presenter.purchaseCourse(pack.courseId, sku)
             }
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (!uiCheckout.onActivityResult(requestCode, resultCode, data)) {
+            super.onActivityResult(requestCode, resultCode, data)
         }
     }
 }

@@ -77,9 +77,10 @@ constructor(
             .purchaseCourse(checkout, courseId, sku)
             .observeOn(mainScheduler)
             .subscribeOn(backgroundScheduler)
-            .doOnComplete { view?.hideProgress() }
+            .doFinally { view?.hideProgress() }
             .subscribeBy(
                 onError = {
+                    it.printStackTrace()
                 }
             )
     }
