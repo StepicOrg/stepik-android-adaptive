@@ -5,6 +5,7 @@ import com.google.gson.GsonBuilder
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
+import dagger.multibindings.ElementsIntoSet
 import dagger.multibindings.IntoSet
 import okhttp3.Interceptor
 import org.stepik.android.adaptive.api.StepikService
@@ -14,7 +15,7 @@ import org.stepik.android.adaptive.data.model.DatasetWrapper
 import org.stepik.android.adaptive.data.preference.AuthPreferences
 import org.stepik.android.adaptive.data.preference.SharedPreferenceHelper
 import org.stepik.android.adaptive.di.AppSingleton
-import org.stepik.android.adaptive.util.StethoHelper
+import org.stepik.android.adaptive.util.DebugToolsHelper
 import org.stepik.android.adaptive.util.json.DatasetWrapperDeserializer
 
 @Module(includes = [AuthModule::class, ProfileModule::class, RatingModule::class, RemoteStorageModule::class, UserModule::class])
@@ -33,9 +34,9 @@ abstract class NetworkModule {
     companion object {
         @Provides
         @JvmStatic
-        @IntoSet
-        internal fun provideStethoInterceptor(): Interceptor =
-            StethoHelper.getInterceptor()
+        @ElementsIntoSet
+        internal fun provideInterceptors(): Set<Interceptor> =
+            DebugToolsHelper.getDebugInterceptors()
 
         @Provides
         @AppSingleton

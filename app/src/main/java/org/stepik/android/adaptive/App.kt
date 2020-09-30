@@ -12,7 +12,7 @@ import org.stepik.android.adaptive.di.ComponentManager
 import org.stepik.android.adaptive.di.DaggerAppCoreComponent
 import org.stepik.android.adaptive.di.storage.DaggerStorageComponent
 import org.stepik.android.adaptive.notifications.NotificationChannelInitializer
-import org.stepik.android.adaptive.util.StethoHelper
+import org.stepik.android.adaptive.util.DebugToolsHelper
 import org.stepik.android.adaptive.util.isMainProcess
 import javax.inject.Inject
 
@@ -64,7 +64,7 @@ class App : Application() {
         YandexMetrica.activate(applicationContext, YandexMetricaConfig.newConfigBuilder(config.appMetricaKey).build())
         YandexMetrica.enableActivityAutoTracking(this)
 
-        StethoHelper.initStetho(this)
+        DebugToolsHelper.initDebugTools(this)
         Branch.getAutoInstance(this)
     }
 }

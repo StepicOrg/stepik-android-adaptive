@@ -157,6 +157,12 @@ dependencies {
     implementation libraries.discreteScrollView
     implementation libraries.flexBox
 
+    debugImplementation libraries.soloader
+    debugImplementation libraries.flipperCore
+    debugImplementation libraries.flipperNetwork
+
+    releaseImplementation libraries.flipperNoop
+
     testImplementation libraries.junit
     testImplementation libraries.robolectric
     testImplementation libraries.mockitoCore

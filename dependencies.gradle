@@ -77,6 +77,9 @@ ext.versions = [
 
         ktlint               : '0.39.0',
         ktlintRules          : '1.0.0',
+
+        flipper              : '0.49.0',
+        soloader             : '0.9.0',
 ]
 
 ext.gradlePlugins = [
@@ -165,4 +168,9 @@ ext.libraries = [
 
         ktlint               : "com.pinterest:ktlint:$versions.ktlint",
         ktlintRules          : "ru.nobird.android.ktlint:rules:$versions.ktlintRules",
+
+        flipperCore          : "com.facebook.flipper:flipper:$versions.flipper",
+        flipperNetwork       : "com.facebook.flipper:flipper-network-plugin:$versions.flipper",
+        flipperNoop          : "com.facebook.flipper:flipper-noop:$versions.flipper",
+        soloader             : "com.facebook.soloader:soloader:$versions.soloader",
 ]
