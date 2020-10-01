@@ -22,9 +22,7 @@ import org.stepik.android.adaptive.arch.presentation.question_packs.QuestionPack
 import org.stepik.android.adaptive.arch.presentation.question_packs.model.EnrollmentError
 import org.stepik.android.adaptive.arch.view.question_packs.ui.adapter.QuestionPackAdapterDelegate
 import org.stepik.android.adaptive.arch.view.ui.delegate.ViewStateDelegate
-import org.stepik.android.adaptive.content.questions.QuestionsPack
 import org.stepik.android.adaptive.content.questions.QuestionsPacksManager
-import org.stepik.android.adaptive.content.questions.QuestionsPacksResolver
 import org.stepik.android.adaptive.core.ScreenManager
 import org.stepik.android.adaptive.core.presenter.BaseActivity
 import org.stepik.android.adaptive.data.preference.SharedPreferenceHelper
@@ -54,9 +52,6 @@ class QuestionPackActivity : BaseActivity(), QuestionPacksView {
 
     @Inject
     internal lateinit var questionsPacksManager: QuestionsPacksManager
-
-    @Inject
-    internal lateinit var questionsPacksResolver: QuestionsPacksResolver
 
     private lateinit var presenter: QuestionPacksPresenter
     private lateinit var questionItemAdapter: DefaultDelegateAdapter<QuestionListItem>
@@ -92,7 +87,7 @@ class QuestionPackActivity : BaseActivity(), QuestionPacksView {
 
         questionItemAdapter = DefaultDelegateAdapter()
         selectionHelper = SingleChoiceSelectionHelper(questionItemAdapter)
-        questionItemAdapter += QuestionPackAdapterDelegate(selectionHelper, ::onPackClicked, questionsPacksResolver)
+        questionItemAdapter += QuestionPackAdapterDelegate(selectionHelper, ::onPackClicked)
 
         with(recycler) {
             layoutManager = LinearLayoutManager(this@QuestionPackActivity, LinearLayoutManager.VERTICAL, false)
@@ -177,17 +172,17 @@ class QuestionPackActivity : BaseActivity(), QuestionPacksView {
         presenter.loadQuestionListItems(forceUpdate = true)
     }
 
-    private fun onPackClicked(sku: Sku?, pack: QuestionsPack, isOwned: Boolean) {
-        if (sharedPreferenceHelper.fakeUser != null) {
+    private fun onPackClicked(sku: Sku?, item: QuestionListItem, isOwned: Boolean) {
+        if (sharedPreferenceHelper.fakeUser != null && item.course.isPaid) {
             screenManager.showEmptyAuthScreen(this)
             return
         }
-        if (isOwned || questionsPacksResolver.isAvailableForFree(pack)) {
-            selectionHelper.select(questionItemAdapter.items.indexOfFirst { it.questionPack.id == pack.id })
-            presenter.changeCourse(pack)
+        if (isOwned || !item.course.isPaid) {
+            selectionHelper.select(questionItemAdapter.items.indexOfFirst { it.questionPack.id == item.questionPack.id })
+            presenter.changeCourse(item.questionPack)
         } else {
             if (sku != null) {
-                presenter.purchaseCourse(pack.courseId, sku)
+                presenter.purchaseCourse(item.questionPack.courseId, sku)
             }
         }
     }

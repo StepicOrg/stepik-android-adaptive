@@ -13,8 +13,6 @@ import org.solovyev.android.checkout.Sku
 import org.stepik.android.adaptive.R
 import org.stepik.android.adaptive.arch.domain.question_packs.model.EnrollmentState
 import org.stepik.android.adaptive.arch.domain.question_packs.model.QuestionListItem
-import org.stepik.android.adaptive.content.questions.QuestionsPack
-import org.stepik.android.adaptive.content.questions.QuestionsPacksResolver
 import org.stepik.android.adaptive.ui.helper.setAlpha
 import org.stepik.android.adaptive.util.changeVisibillity
 import org.stepik.android.adaptive.util.fromHtmlCompat
@@ -24,8 +22,7 @@ import ru.nobird.android.ui.adapters.selection.SelectionHelper
 
 class QuestionPackAdapterDelegate(
     private val selectionHelper: SelectionHelper,
-    private val onPackClicked: (Sku?, QuestionsPack, Boolean) -> Unit,
-    private val questionsPacksResolver: QuestionsPacksResolver
+    private val onPackClicked: (Sku?, QuestionListItem, Boolean) -> Unit
 ) : AdapterDelegate<QuestionListItem, DelegateViewHolder<QuestionListItem>>() {
     companion object {
         private const val TITLE_ALPHA = 0xDD
@@ -82,13 +79,13 @@ class QuestionPackAdapterDelegate(
 
             actionButton.changeVisibillity(!itemView.isSelected)
             actionButton.setOnClickListener {
-                onPackClicked(sku, pack, isOwned)
+                onPackClicked(sku, data, isOwned)
             }
 
             packPriceDiscount.changeVisibillity(false)
             packPriceDiscountDescription.changeVisibillity(false)
 
-            if (isOwned || questionsPacksResolver.isAvailableForFree(pack)) {
+            if (isOwned || !data.course.isPaid) {
                 actionButton.setText(R.string.select)
             } else {
                 actionButton.text = sku?.price
@@ -96,10 +93,6 @@ class QuestionPackAdapterDelegate(
             root.setBackgroundResource(pack.background)
 
             progressDescription.changeVisibillity(false)
-            progressDescription.setTextColor(setAlpha(pack.textColor, TEXT_ALPHA))
-            if (!isOwned && pack.hasProgress) {
-                progressDescription.text = questionsPacksResolver.getProgressDescription(pack)
-            }
         }
     }
 }

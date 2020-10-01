@@ -45,9 +45,6 @@ constructor(
     val unviewedPacksCount: Int
         get() = questionsPacks.count { !sharedPreferenceHelper.isQuestionsPackViewed(it) }
 
-    fun getPackById(id: String): QuestionsPack? =
-        idToPack[id]
-
     fun getPackByCourseId(id: Long): QuestionsPack? =
         courseIdToPack[id]
 

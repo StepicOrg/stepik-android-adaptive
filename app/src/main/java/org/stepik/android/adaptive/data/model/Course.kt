@@ -9,7 +9,9 @@ class Course(
     @SerializedName("total_units")
     val totalUnits: Int,
     @SerializedName("enrollment")
-    var enrollment: Long = 0,
+    val enrollment: Long = 0,
     @SerializedName("price_tier")
-    val priceTier: String? = null
+    val priceTier: String? = null,
+    @SerializedName("is_paid")
+    val isPaid: Boolean = false
 )

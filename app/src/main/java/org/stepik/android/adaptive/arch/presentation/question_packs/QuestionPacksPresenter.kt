@@ -59,7 +59,7 @@ constructor(
                 .observeOn(mainScheduler)
                 .subscribeBy(
                     onSuccess = { questionListItems ->
-                        state = QuestionPacksView.State.QuestionPacksLoaded(questionListItems.sortedBy { it.questionPack.ordinal })
+                        state = QuestionPacksView.State.QuestionPacksLoaded(questionListItems)
                     },
                     onError = {
                         state = QuestionPacksView.State.Error

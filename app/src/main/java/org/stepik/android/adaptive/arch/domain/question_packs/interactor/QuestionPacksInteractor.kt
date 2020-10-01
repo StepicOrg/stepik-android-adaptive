@@ -35,13 +35,15 @@ constructor(
         resolveCoursesEnrollmentStates(courses).map { enrollmentStates ->
             val enrollmentMap = enrollmentStates.toMap()
 
-            courses.map { course ->
-                QuestionListItem(
-                    course = course,
-                    questionPack = questionsPacksManager.getPackByCourseId(course.id) ?: throw IllegalArgumentException(),
-                    enrollmentState = enrollmentMap.getValue(course.id)
-                )
-            }
+            courses
+                .map { course ->
+                    QuestionListItem(
+                        course = course,
+                        questionPack = questionsPacksManager.getPackByCourseId(course.id) ?: throw IllegalArgumentException(),
+                        enrollmentState = enrollmentMap.getValue(course.id)
+                    )
+                }
+                .sortedBy { it.questionPack.ordinal }
         }
 
     private fun resolveCoursesEnrollmentStates(courses: List<Course>): Single<List<Pair<Long, EnrollmentState>>> =
