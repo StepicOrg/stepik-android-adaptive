@@ -5,6 +5,7 @@ import io.reactivex.Completable
 import io.reactivex.Scheduler
 import io.reactivex.Single
 import io.reactivex.rxkotlin.Maybes
+import io.reactivex.rxkotlin.toObservable
 import okhttp3.ResponseBody
 import org.solovyev.android.checkout.ProductTypes
 import org.solovyev.android.checkout.Purchase
@@ -75,7 +76,12 @@ constructor(
                 completePurchase(courseId, sku, purchase)
             }
 
-    fun restorePurchase(sku: Sku): Completable =
+    fun restorePurchases(skus: List<Sku>): Completable =
+        skus
+            .toObservable()
+            .flatMapCompletable { restorePurchase(it) }
+
+    private fun restorePurchase(sku: Sku): Completable =
         Maybes.zip(
             getCurrentProfileId()
                 .toMaybe(),

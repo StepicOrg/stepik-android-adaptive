@@ -61,10 +61,6 @@
 
         <activity
             android:theme="@style/AppTheme.NoActionBar"
-            android:name=".ui.activity.QuestionsPacksActivity" />
-
-        <activity
-            android:theme="@style/AppTheme.NoActionBar"
             android:name=".arch.view.question_packs.ui.activity.QuestionPackActivity" />
 
         <activity

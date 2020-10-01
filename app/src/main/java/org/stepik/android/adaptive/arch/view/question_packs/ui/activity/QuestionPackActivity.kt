@@ -3,8 +3,10 @@ package org.stepik.android.adaptive.arch.view.question_packs.ui.activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
+import androidx.annotation.StringRes
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_questions_packs.*
 import kotlinx.android.synthetic.main.app_bar.*
 import kotlinx.android.synthetic.main.state_error.*
@@ -17,6 +19,7 @@ import org.stepik.android.adaptive.R
 import org.stepik.android.adaptive.arch.domain.question_packs.model.QuestionListItem
 import org.stepik.android.adaptive.arch.presentation.question_packs.QuestionPacksPresenter
 import org.stepik.android.adaptive.arch.presentation.question_packs.QuestionPacksView
+import org.stepik.android.adaptive.arch.presentation.question_packs.model.EnrollmentError
 import org.stepik.android.adaptive.arch.view.question_packs.ui.adapter.QuestionPackAdapterDelegate
 import org.stepik.android.adaptive.arch.view.ui.delegate.ViewStateDelegate
 import org.stepik.android.adaptive.content.questions.QuestionsPack
@@ -96,6 +99,9 @@ class QuestionPackActivity : BaseActivity(), QuestionPacksView {
             adapter = questionItemAdapter
         }
 
+        tryAgainButton.setOnClickListener { presenter.loadQuestionListItems(forceUpdate = true) }
+        restorePurchases.setOnClickListener { presenter.restoreCoursePurchases() }
+
         presenter.loadQuestionListItems()
     }
 
@@ -122,6 +128,7 @@ class QuestionPackActivity : BaseActivity(), QuestionPacksView {
         when (state) {
             is QuestionPacksView.State.QuestionPacksLoaded -> {
                 questionItemAdapter.items = state.questionItemList
+                state.questionItemList.forEach { questionsPacksManager.onQuestionsPackViewed(it.questionPack) }
                 selectionHelper.select(questionsPacksManager.currentPackIndex)
             }
         }
@@ -136,6 +143,38 @@ class QuestionPackActivity : BaseActivity(), QuestionPacksView {
 
     override fun hideProgress() {
         hideProgressDialogFragment(RESTORE_DIALOG_TAG)
+    }
+
+    override fun showEnrollmentError(errorType: EnrollmentError) {
+        @StringRes
+        val errorMessage =
+            when (errorType) {
+                EnrollmentError.NO_CONNECTION ->
+                    R.string.course_error_enroll
+
+                EnrollmentError.SERVER_ERROR ->
+                    R.string.course_purchase_server_error
+
+                EnrollmentError.BILLING_ERROR ->
+                    R.string.course_purchase_billing_error
+
+                EnrollmentError.BILLING_CANCELLED ->
+                    R.string.course_purchase_billing_cancelled
+
+                EnrollmentError.BILLING_NOT_AVAILABLE ->
+                    R.string.course_purchase_billing_not_available
+
+                EnrollmentError.COURSE_ALREADY_OWNED ->
+                    R.string.course_purchase_already_owned
+
+                EnrollmentError.BILLING_NO_PURCHASES_TO_RESTORE ->
+                    R.string.course_purchase_billing_no_purchases_to_restore
+            }
+        Snackbar.make(root, errorMessage, Snackbar.LENGTH_LONG).show()
+    }
+
+    override fun reloadContent() {
+        presenter.loadQuestionListItems(forceUpdate = true)
     }
 
     private fun onPackClicked(sku: Sku?, pack: QuestionsPack, isOwned: Boolean) {

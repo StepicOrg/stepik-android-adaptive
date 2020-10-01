@@ -45,7 +45,7 @@ class QuestionsPacksDialog : DialogFragment() {
         root.actionButton.setOnClickListener {
             analytics.logEvent(Analytics.EVENT_ON_QUESTIONS_DIALOG_ACTION_CLICKED)
             analytics.logAmplitudeEvent(AmplitudeAnalytics.QuestionPacks.POPUP_ACTION_PRESSED)
-            screenManager.showQuestionsPacksScreen(requireActivity())
+            screenManager.showQuestionPacksScreen(requireActivity())
             dismiss()
         }
 

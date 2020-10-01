@@ -13,9 +13,9 @@ import kotlin.math.min
 class QuestionsPacksResolverImpl
 @Inject
 constructor(
-        private val expManager: ExpManager,
-        private val context: Context,
-        firebaseRemoteConfig: FirebaseRemoteConfig
+    private val expManager: ExpManager,
+    private val context: Context,
+    firebaseRemoteConfig: FirebaseRemoteConfig
 ): QuestionsPacksResolver {
     companion object {
         private const val ADJECTIVES_PACK_TARGET_LEVEL = 10
@@ -25,9 +25,9 @@ constructor(
     private val verbsPacksTargetLevelRecounted = if (firebaseRemoteConfig.getBoolean(RemoteConfig.EXP_LEVEL_FORMULA_EXPERIMENT)) 15 else VERBS_PACK_TARGET_LEVEL
 
     override fun isAvailableForFree(pack: QuestionsPack) = when(pack) {
-        QuestionsPack.Basic      -> true
-        QuestionsPack.Adjectives -> expManager.getCurrentLevel(expManager.exp) >= ADJECTIVES_PACK_TARGET_LEVEL
-        QuestionsPack.Verbs      -> expManager.getCurrentLevel(expManager.exp) >= verbsPacksTargetLevelRecounted
+        QuestionsPack.Basic, QuestionsPack.Adjectives, QuestionsPack.Verbs -> true
+//        QuestionsPack.Adjectives -> expManager.getCurrentLevel(expManager.exp) >= ADJECTIVES_PACK_TARGET_LEVEL
+//        QuestionsPack.Verbs      -> expManager.getCurrentLevel(expManager.exp) >= verbsPacksTargetLevelRecounted
         else                     -> false
     }
 

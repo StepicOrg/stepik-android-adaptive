@@ -3,7 +3,6 @@ package org.stepik.android.adaptive.di.paid_content
 import dagger.Subcomponent
 import org.stepik.android.adaptive.arch.view.question_packs.ui.activity.QuestionPackActivity
 import org.stepik.android.adaptive.ui.activity.PaidInventoryItemsActivity
-import org.stepik.android.adaptive.ui.activity.QuestionsPacksActivity
 
 @Subcomponent
 interface PaidContentComponent {
@@ -13,6 +12,5 @@ interface PaidContentComponent {
     }
 
     fun inject(questionPackActivity: QuestionPackActivity)
-    fun inject(questionsPacksActivity: QuestionsPacksActivity)
     fun inject(paidInventoryItemsActivity: PaidInventoryItemsActivity)
 }

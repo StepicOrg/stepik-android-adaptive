@@ -1,5 +1,6 @@
 package org.stepik.android.adaptive.arch.presentation.question_packs
 
+import android.util.Log
 import io.reactivex.Scheduler
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.plusAssign
@@ -9,9 +10,10 @@ import org.solovyev.android.checkout.UiCheckout
 import org.stepik.android.adaptive.api.Api
 import org.stepik.android.adaptive.arch.domain.question_packs.interactor.QuestionPacksBillingInteractor
 import org.stepik.android.adaptive.arch.domain.question_packs.interactor.QuestionPacksInteractor
+import org.stepik.android.adaptive.arch.domain.question_packs.model.EnrollmentState
+import org.stepik.android.adaptive.arch.presentation.question_packs.mapper.toEnrollmentError
 import org.stepik.android.adaptive.content.questions.QuestionsPack
 import org.stepik.android.adaptive.content.questions.QuestionsPacksManager
-import org.stepik.android.adaptive.content.questions.QuestionsPacksResolver
 import org.stepik.android.adaptive.core.presenter.PresenterBase
 import org.stepik.android.adaptive.di.qualifiers.BackgroundScheduler
 import org.stepik.android.adaptive.di.qualifiers.MainScheduler
@@ -26,7 +28,6 @@ constructor(
     @MainScheduler
     private val mainScheduler: Scheduler,
     private val questionsPacksManager: QuestionsPacksManager,
-    private val questionsPacksResolver: QuestionsPacksResolver,
     private val questionPacksInteractor: QuestionPacksInteractor,
     private val questionPacksBillingInteractor: QuestionPacksBillingInteractor
 ) : PresenterBase<QuestionPacksView>() {
@@ -49,7 +50,7 @@ constructor(
     }
 
     fun loadQuestionListItems(forceUpdate: Boolean = false) {
-        if (state == QuestionPacksView.State.Idle || (forceUpdate && state is QuestionPacksView.State.Error)) {
+        if (state == QuestionPacksView.State.Idle || forceUpdate) {
             state = QuestionPacksView.State.Loading
             val ids = questionsPacksManager.questionsPacks.map { it.courseId }
             compositeDisposable += questionPacksInteractor
@@ -77,21 +78,38 @@ constructor(
             .purchaseCourse(checkout, courseId, sku)
             .observeOn(mainScheduler)
             .subscribeOn(backgroundScheduler)
-            .doFinally { view?.hideProgress() }
+            .doFinally {
+                view?.hideProgress()
+                view?.reloadContent()
+            }
             .subscribeBy(
                 onError = {
-                    it.printStackTrace()
+                    Log.d("Error", "Purchase error: $it")
+                    view?.showEnrollmentError(it.toEnrollmentError())
                 }
             )
     }
 
-    fun restoreCoursePurchase(sku: Sku) {
+    fun restoreCoursePurchases() {
+        val skus = (state as? QuestionPacksView.State.QuestionPacksLoaded)
+            ?.questionItemList
+            ?.mapNotNull { (it.enrollmentState as? EnrollmentState.NotEnrolledInApp)?.skuWrapper?.sku }
+            ?.takeIf { it.isNotEmpty() }
+            ?: return
+
+        view?.showProgress()
         compositeDisposable += questionPacksBillingInteractor
-            .restorePurchase(sku)
+            .restorePurchases(skus)
             .observeOn(mainScheduler)
             .subscribeOn(backgroundScheduler)
+            .doFinally {
+                view?.hideProgress()
+                view?.reloadContent()
+            }
             .subscribeBy(
                 onError = {
+                    Log.d("Error", "Restore error: $it")
+                    view?.showEnrollmentError(it.toEnrollmentError())
                 }
             )
     }

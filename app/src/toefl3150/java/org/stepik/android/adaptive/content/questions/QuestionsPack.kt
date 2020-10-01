@@ -33,7 +33,7 @@ enum class QuestionsPack(
     ),
 
     Pro(
-                id          = "questions_pack_pro",
+        id          = "questions_pack_pro",
         courseId    = 6312,
         difficulty  = R.string.questions_difficulty_high,
         background  = R.drawable.pack_bg_pro,

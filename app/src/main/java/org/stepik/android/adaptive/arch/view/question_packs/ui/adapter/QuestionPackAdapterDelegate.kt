@@ -63,7 +63,7 @@ class QuestionPackAdapterDelegate(
             val isOwned = data.enrollmentState == EnrollmentState.Enrolled
             val context = root.context
 
-            title.text = sku?.displayTitle ?: pack.name
+            title.text = pack.name
             title.setTextColor(setAlpha(pack.textColor, TITLE_ALPHA))
 
             description.text = data.course.summary
@@ -95,7 +95,7 @@ class QuestionPackAdapterDelegate(
             }
             root.setBackgroundResource(pack.background)
 
-            progressDescription.changeVisibillity(!isOwned && pack.hasProgress)
+            progressDescription.changeVisibillity(false)
             progressDescription.setTextColor(setAlpha(pack.textColor, TEXT_ALPHA))
             if (!isOwned && pack.hasProgress) {
                 progressDescription.text = questionsPacksResolver.getProgressDescription(pack)

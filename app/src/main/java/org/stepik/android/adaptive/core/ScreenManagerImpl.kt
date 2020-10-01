@@ -12,7 +12,6 @@ import org.stepik.android.adaptive.ui.activity.EmptyAuthActivity
 import org.stepik.android.adaptive.ui.activity.IntroActivity
 import org.stepik.android.adaptive.ui.activity.LoginActivity
 import org.stepik.android.adaptive.ui.activity.PhotoViewActivity
-import org.stepik.android.adaptive.ui.activity.QuestionsPacksActivity
 import org.stepik.android.adaptive.ui.activity.RegisterActivity
 import org.stepik.android.adaptive.ui.activity.StatsActivity
 import org.stepik.android.adaptive.ui.activity.StudyActivity
@@ -55,12 +54,6 @@ constructor(
         val intent = Intent(context, StatsActivity::class.java)
         intent.putExtra(StatsActivity.PAGE_KEY, page)
         context.startActivity(intent)
-    }
-
-    override fun showQuestionsPacksScreen(context: Context) {
-        analytics.onQuestionsPacksOpened()
-        analytics.logAmplitudeEvent(AmplitudeAnalytics.QuestionPacks.SCREEN_OPENED)
-        context.startActivity(Intent(context, QuestionsPacksActivity::class.java))
     }
 
     override fun showQuestionPacksScreen(context: Context) {
