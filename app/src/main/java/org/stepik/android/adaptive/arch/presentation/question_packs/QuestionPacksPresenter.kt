@@ -80,9 +80,23 @@ constructor(
             .subscribeOn(backgroundScheduler)
             .doFinally {
                 view?.hideProgress()
-                view?.reloadContent()
             }
             .subscribeBy(
+                onComplete = {
+                    val oldState = (state as? QuestionPacksView.State.QuestionPacksLoaded)
+                        ?: return@subscribeBy
+
+                    val updatedQuestionItemList = oldState.questionItemList.map {
+                        if (it.course.id == courseId) {
+                            it.copy(enrollmentState = EnrollmentState.Enrolled)
+                        } else {
+                            it
+                        }
+                    }
+
+                    state = QuestionPacksView.State.QuestionPacksLoaded(questionItemList = updatedQuestionItemList)
+                    updatedQuestionItemList.find { it.course.id == courseId }?.let { changeCourse(it.questionPack) }
+                },
                 onError = {
                     Log.d("Error", "Purchase error: $it")
                     view?.showEnrollmentError(it.toEnrollmentError())
@@ -104,7 +118,7 @@ constructor(
             .subscribeOn(backgroundScheduler)
             .doFinally {
                 view?.hideProgress()
-                view?.reloadContent()
+                loadQuestionListItems(forceUpdate = true)
             }
             .subscribeBy(
                 onError = {

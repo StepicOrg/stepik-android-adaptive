@@ -21,5 +21,4 @@ interface QuestionPacksView {
 
     fun createUiCheckout(): UiCheckout
     fun showEnrollmentError(errorType: EnrollmentError)
-    fun reloadContent()
 }

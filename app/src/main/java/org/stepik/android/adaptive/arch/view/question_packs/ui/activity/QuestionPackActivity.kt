@@ -168,10 +168,6 @@ class QuestionPackActivity : BaseActivity(), QuestionPacksView {
         Snackbar.make(root, errorMessage, Snackbar.LENGTH_LONG).show()
     }
 
-    override fun reloadContent() {
-        presenter.loadQuestionListItems(forceUpdate = true)
-    }
-
     private fun onPackClicked(sku: Sku?, item: QuestionListItem, isOwned: Boolean) {
         if (sharedPreferenceHelper.fakeUser != null && item.course.isPaid) {
             screenManager.showEmptyAuthScreen(this)
