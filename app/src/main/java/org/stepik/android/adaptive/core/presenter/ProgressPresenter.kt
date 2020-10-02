@@ -3,7 +3,6 @@ package org.stepik.android.adaptive.core.presenter
 import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineDataSet
 import io.reactivex.Scheduler
-import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.plusAssign
 import org.stepik.android.adaptive.core.presenter.contracts.ProgressView
 import org.stepik.android.adaptive.data.db.DataBaseMgr
@@ -11,7 +10,6 @@ import org.stepik.android.adaptive.di.qualifiers.BackgroundScheduler
 import org.stepik.android.adaptive.di.qualifiers.MainScheduler
 import org.stepik.android.adaptive.gamification.ExpManager
 import org.stepik.android.adaptive.ui.adapter.WeeksAdapter
-import org.stepik.android.adaptive.util.addDisposable
 import ru.nobird.android.presentation.base.PresenterBase
 import javax.inject.Inject
 
