@@ -168,6 +168,11 @@ class QuestionPackActivity : BaseActivity(), QuestionPacksView {
         Snackbar.make(root, errorMessage, Snackbar.LENGTH_LONG).show()
     }
 
+    override fun changeAfterPurchase(questionListItem: QuestionListItem) {
+        selectionHelper.select(questionItemAdapter.items.indexOfFirst { it.id == questionListItem.id })
+        presenter.changeCourse(questionListItem.questionPack)
+    }
+
     private fun onPackClicked(sku: Sku?, item: QuestionListItem, isOwned: Boolean) {
         if (sharedPreferenceHelper.fakeUser != null && item.course.isPaid) {
             screenManager.showEmptyAuthScreen(this)

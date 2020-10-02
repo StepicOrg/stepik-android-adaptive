@@ -21,4 +21,5 @@ interface QuestionPacksView {
 
     fun createUiCheckout(): UiCheckout
     fun showEnrollmentError(errorType: EnrollmentError)
+    fun changeAfterPurchase(questionListItem: QuestionListItem)
 }
