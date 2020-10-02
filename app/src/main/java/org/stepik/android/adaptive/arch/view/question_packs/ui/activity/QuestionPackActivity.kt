@@ -21,7 +21,6 @@ import org.stepik.android.adaptive.arch.presentation.question_packs.QuestionPack
 import org.stepik.android.adaptive.arch.presentation.question_packs.QuestionPacksView
 import org.stepik.android.adaptive.arch.presentation.question_packs.model.EnrollmentError
 import org.stepik.android.adaptive.arch.view.question_packs.ui.adapter.QuestionPackAdapterDelegate
-import org.stepik.android.adaptive.arch.view.ui.delegate.ViewStateDelegate
 import org.stepik.android.adaptive.content.questions.QuestionsPacksManager
 import org.stepik.android.adaptive.core.ScreenManager
 import org.stepik.android.adaptive.core.presenter.BaseActivity
@@ -29,6 +28,7 @@ import org.stepik.android.adaptive.data.preference.SharedPreferenceHelper
 import ru.nobird.android.ui.adapters.DefaultDelegateAdapter
 import ru.nobird.android.ui.adapters.selection.SelectionHelper
 import ru.nobird.android.ui.adapters.selection.SingleChoiceSelectionHelper
+import ru.nobird.android.view.base.ui.delegate.ViewStateDelegate
 import javax.inject.Inject
 
 class QuestionPackActivity : BaseActivity(), QuestionPacksView {
