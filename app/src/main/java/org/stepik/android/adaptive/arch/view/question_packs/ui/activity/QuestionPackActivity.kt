@@ -170,7 +170,6 @@ class QuestionPackActivity : BaseActivity(), QuestionPacksView {
 
     override fun changeAfterPurchase(questionListItem: QuestionListItem) {
         selectionHelper.select(questionItemAdapter.items.indexOfFirst { it.id == questionListItem.id })
-        presenter.changeCourse(questionListItem.questionPack)
     }
 
     private fun onPackClicked(sku: Sku?, item: QuestionListItem, isOwned: Boolean) {

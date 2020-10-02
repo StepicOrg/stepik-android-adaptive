@@ -92,7 +92,10 @@ constructor(
                     }
 
                     state = QuestionPacksView.State.QuestionPacksLoaded(questionItemList = updatedQuestionItemList)
-                    updatedQuestionItemList.find { it.id == courseId }?.let { view?.changeAfterPurchase(it) }
+                    updatedQuestionItemList.find { it.id == courseId }?.let {
+                        view?.changeAfterPurchase(it)
+                        changeCourse(it.questionPack)
+                    }
                 },
                 onError = {
                     Log.d("Error", "Purchase error: $it")
