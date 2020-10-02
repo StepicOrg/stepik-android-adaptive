@@ -12,8 +12,7 @@ enum class QuestionsPack(
     @StringRes   val difficulty: Int,
     @DrawableRes val background: Int,
     @DrawableRes val icon: Int,
-    @ColorInt    val textColor: Int = 0xFFFFFF,
-    val hasProgress: Boolean = false
+    @ColorInt    val textColor: Int = 0xFFFFFF
 ) {
     Basic(
         id          = "questions_pack_basic",
@@ -53,8 +52,7 @@ enum class QuestionsPack(
         courseId    = 3149,
         difficulty  = R.string.questions_difficulty_mixed,
         background  = R.drawable.pack_bg_adjectives,
-        icon        = R.drawable.ic_questions_pack_adjectives,
-        hasProgress = true
+        icon        = R.drawable.ic_questions_pack_adjectives
     ),
 
     Verbs(
@@ -62,7 +60,6 @@ enum class QuestionsPack(
         courseId    = 3124,
         difficulty  = R.string.questions_difficulty_mixed,
         background  = R.drawable.pack_bg_verbs,
-        icon        = R.drawable.ic_questions_pack_verbs,
-        hasProgress = true
+        icon        = R.drawable.ic_questions_pack_verbs
     );
 }
