@@ -9,5 +9,5 @@ object DebugToolsHelper {
     }
 
     fun getDebugInterceptors(): Set<Interceptor> =
-        emptySey()
+        emptySet()
 }
