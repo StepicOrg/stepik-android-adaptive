@@ -98,7 +98,6 @@ constructor(
                     }
                 },
                 onError = {
-                    Log.d("Error", "Purchase error: $it")
                     view?.showEnrollmentError(it.toEnrollmentError())
                 }
             )
@@ -122,7 +121,6 @@ constructor(
             }
             .subscribeBy(
                 onError = {
-                    Log.d("Error", "Restore error: $it")
                     view?.showEnrollmentError(it.toEnrollmentError())
                 }
             )
