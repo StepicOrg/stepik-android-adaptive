@@ -2,7 +2,6 @@ package org.stepik.android.adaptive.core.presenter
 
 import io.reactivex.Scheduler
 import io.reactivex.Single
-import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 import io.reactivex.rxkotlin.plusAssign
 import io.reactivex.rxkotlin.subscribeBy
@@ -28,6 +27,7 @@ import org.stepik.android.adaptive.ui.listener.AnswerListener
 import org.stepik.android.adaptive.util.HtmlUtil
 import org.stepik.android.adaptive.util.addDisposable
 import retrofit2.HttpException
+import ru.nobird.android.presentation.base.PresenterBase
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -36,7 +36,6 @@ class CardPresenter(val card: Card, private val listener: AdaptiveReactionListen
     private var error: Throwable? = null
 
     private var disposable: Disposable? = null
-    private val compositeDisposable = CompositeDisposable()
 
     private var isBookmarked: Boolean? = null
 
@@ -92,7 +91,8 @@ class CardPresenter(val card: Card, private val listener: AdaptiveReactionListen
         }
     }
 
-    override fun destroy() {
+    public override fun onCleared() {
+        super.onCleared()
         card.recycle()
         disposable?.dispose()
     }

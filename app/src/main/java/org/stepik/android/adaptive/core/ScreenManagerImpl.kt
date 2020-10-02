@@ -3,6 +3,7 @@ package org.stepik.android.adaptive.core
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import org.stepik.android.adaptive.arch.view.question_packs.ui.activity.QuestionPackActivity
 import org.stepik.android.adaptive.data.analytics.AmplitudeAnalytics
 import org.stepik.android.adaptive.data.analytics.Analytics
 import org.stepik.android.adaptive.di.AppSingleton
@@ -11,7 +12,6 @@ import org.stepik.android.adaptive.ui.activity.EmptyAuthActivity
 import org.stepik.android.adaptive.ui.activity.IntroActivity
 import org.stepik.android.adaptive.ui.activity.LoginActivity
 import org.stepik.android.adaptive.ui.activity.PhotoViewActivity
-import org.stepik.android.adaptive.ui.activity.QuestionsPacksActivity
 import org.stepik.android.adaptive.ui.activity.RegisterActivity
 import org.stepik.android.adaptive.ui.activity.StatsActivity
 import org.stepik.android.adaptive.ui.activity.StudyActivity
@@ -39,7 +39,7 @@ constructor(
     override fun showEmptyAuthScreen(context: Context) {
         analytics.logEvent(Analytics.Login.SHOW_EMPTY_AUTH_SCREEN)
         analytics.logAmplitudeEvent(AmplitudeAnalytics.Auth.AUTH_POPUP_OPENED)
-        val intent = EmptyAuthActivity.createIntent(context)
+        val intent = Intent(context, EmptyAuthActivity::class.java)
         context.startActivity(intent)
     }
 
@@ -56,10 +56,10 @@ constructor(
         context.startActivity(intent)
     }
 
-    override fun showQuestionsPacksScreen(context: Context) {
+    override fun showQuestionPacksScreen(context: Context) {
         analytics.onQuestionsPacksOpened()
         analytics.logAmplitudeEvent(AmplitudeAnalytics.QuestionPacks.SCREEN_OPENED)
-        context.startActivity(Intent(context, QuestionsPacksActivity::class.java))
+        context.startActivity(Intent(context, QuestionPackActivity::class.java))
     }
 
     override fun showGamificationDescription(context: Context) {

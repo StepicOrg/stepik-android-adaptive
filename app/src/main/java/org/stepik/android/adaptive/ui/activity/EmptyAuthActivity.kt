@@ -1,7 +1,6 @@
 package org.stepik.android.adaptive.ui.activity
 
 import android.app.Activity
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
@@ -16,10 +15,6 @@ import org.stepik.android.adaptive.util.fromHtmlCompat
 import javax.inject.Inject
 
 class EmptyAuthActivity : AppCompatActivity() {
-    companion object {
-        fun createIntent(context: Context): Intent =
-            Intent(context, EmptyAuthActivity::class.java)
-    }
     @Inject
     lateinit var screenManager: ScreenManager
 

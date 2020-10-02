@@ -12,9 +12,12 @@ import dagger.Provides
 import io.reactivex.Scheduler
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
-import org.solovyev.android.checkout.Billing
 import org.stepik.android.adaptive.BuildConfig
 import org.stepik.android.adaptive.R
+import org.stepik.android.adaptive.arch.view.injection.billing.BillingDataModule
+import org.stepik.android.adaptive.arch.view.injection.billing.BillingModule
+import org.stepik.android.adaptive.arch.view.injection.billing.PublicLicenseKey
+import org.stepik.android.adaptive.arch.view.injection.course_payments.CoursePaymentsDataModule
 import org.stepik.android.adaptive.configuration.Config
 import org.stepik.android.adaptive.configuration.ConfigImpl
 import org.stepik.android.adaptive.core.LogoutHelper
@@ -32,9 +35,18 @@ import org.stepik.android.adaptive.di.qualifiers.BackgroundScheduler
 import org.stepik.android.adaptive.di.qualifiers.MainScheduler
 import org.stepik.android.adaptive.gamification.achievements.AchievementEventListener
 import org.stepik.android.adaptive.util.AppConstants
+import ru.nobird.android.view.injection.base.presentation.DaggerViewModelFactory
 import javax.inject.Named
 
-@Module(includes = [AnalyticsModule::class, PresenterModule::class])
+@Module(
+    includes = [
+        AnalyticsModule::class,
+        PresenterModule::class,
+        BillingModule::class,
+        BillingDataModule::class,
+        CoursePaymentsDataModule::class
+    ]
+)
 abstract class AppCoreModule {
 
     @Binds
@@ -80,17 +92,12 @@ abstract class AppCoreModule {
         internal fun provideConfig(configFactory: ConfigImpl.ConfigFactory): Config =
             configFactory.create()
 
-        @JvmStatic
         @Provides
         @AppSingleton
-        internal fun provideBilling(context: Context, config: Config): Billing =
-            Billing(
-                context,
-                object : Billing.DefaultConfiguration() {
-                    override fun getPublicKey(): String =
-                        config.appPublicLicenseKey
-                }
-            )
+        @JvmStatic
+        @PublicLicenseKey
+        internal fun providePublicLicenseKey(config: Config): String =
+            config.appPublicLicenseKey
 
         @JvmStatic
         @Provides

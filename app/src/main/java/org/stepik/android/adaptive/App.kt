@@ -1,6 +1,6 @@
 package org.stepik.android.adaptive
 
-import android.app.Application
+import androidx.multidex.MultiDexApplication
 import com.vk.sdk.VKSdk
 import com.yandex.metrica.YandexMetrica
 import com.yandex.metrica.YandexMetricaConfig
@@ -12,17 +12,18 @@ import org.stepik.android.adaptive.di.ComponentManager
 import org.stepik.android.adaptive.di.DaggerAppCoreComponent
 import org.stepik.android.adaptive.di.storage.DaggerStorageComponent
 import org.stepik.android.adaptive.notifications.NotificationChannelInitializer
-import org.stepik.android.adaptive.util.StethoHelper
+import org.stepik.android.adaptive.util.DebugToolsHelper
 import org.stepik.android.adaptive.util.isMainProcess
 import javax.inject.Inject
 
-class App : Application() {
+class App : MultiDexApplication() {
     companion object {
         lateinit var app: App
             private set
 
         fun component(): AppCoreComponent =
             app.component
+
         fun componentManager(): ComponentManager =
             app.componentManager
     }
@@ -61,10 +62,13 @@ class App : Application() {
     private fun initServices() {
         VKSdk.initialize(applicationContext)
 
-        YandexMetrica.activate(applicationContext, YandexMetricaConfig.newConfigBuilder(config.appMetricaKey).build())
+        YandexMetrica.activate(
+            applicationContext,
+            YandexMetricaConfig.newConfigBuilder(config.appMetricaKey).build()
+        )
         YandexMetrica.enableActivityAutoTracking(this)
 
-        StethoHelper.initStetho(this)
+        DebugToolsHelper.initDebugTools(this)
         Branch.getAutoInstance(this)
     }
 }

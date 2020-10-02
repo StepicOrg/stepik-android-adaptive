@@ -32,7 +32,7 @@ open class QuizCardsAdapter(
     private val presenters = ArrayList<CardPresenter>()
 
     fun destroy() {
-        presenters.forEach(CardPresenter::destroy)
+        presenters.forEach(CardPresenter::onCleared)
     }
 
     /**
@@ -81,7 +81,7 @@ open class QuizCardsAdapter(
         presenters.isEmpty() || presenters.size == 1 && presenters[0].card.lessonId == lesson
 
     override fun poll() {
-        presenters.removeAt(0).destroy()
+        presenters.removeAt(0).onCleared()
     }
 
     fun clear() {

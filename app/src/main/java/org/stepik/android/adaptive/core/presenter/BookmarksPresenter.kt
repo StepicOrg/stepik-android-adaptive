@@ -1,7 +1,7 @@
 package org.stepik.android.adaptive.core.presenter
 
 import io.reactivex.Scheduler
-import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.rxkotlin.plusAssign
 import org.stepik.android.adaptive.core.presenter.contracts.BookmarksView
 import org.stepik.android.adaptive.data.analytics.Analytics
 import org.stepik.android.adaptive.data.db.DataBaseMgr
@@ -9,7 +9,7 @@ import org.stepik.android.adaptive.data.model.Bookmark
 import org.stepik.android.adaptive.di.qualifiers.BackgroundScheduler
 import org.stepik.android.adaptive.di.qualifiers.MainScheduler
 import org.stepik.android.adaptive.ui.adapter.BookmarksAdapter
-import org.stepik.android.adaptive.util.addDisposable
+import ru.nobird.android.presentation.base.PresenterBase
 import javax.inject.Inject
 
 class BookmarksPresenter
@@ -24,10 +24,8 @@ constructor(
 ) : PresenterBase<BookmarksView>() {
     private var isLoading = true
     private val adapter = BookmarksAdapter(::removeFromBookmarks, analytics)
-    private val compositeDisposable = CompositeDisposable()
-
     init {
-        compositeDisposable addDisposable dataBaseMgr.getBookmarks()
+        compositeDisposable += dataBaseMgr.getBookmarks()
             .subscribeOn(backgroundScheduler)
             .observeOn(mainScheduler)
             .subscribe(
@@ -44,7 +42,7 @@ constructor(
 
     private fun removeFromBookmarks(bookmark: Bookmark, pos: Int) {
         analytics.logEvent(Analytics.EVENT_ON_BOOKMARK_REMOVED)
-        compositeDisposable addDisposable dataBaseMgr.removeBookmark(bookmark)
+        compositeDisposable += dataBaseMgr.removeBookmark(bookmark)
             .subscribeOn(backgroundScheduler).observeOn(backgroundScheduler).subscribe()
         adapter.remove(pos)
     }
@@ -64,9 +62,5 @@ constructor(
         if (adapter.itemCount == 0) {
             view?.onNoBookmarks()
         }
-    }
-
-    override fun destroy() {
-        compositeDisposable.dispose()
     }
 }

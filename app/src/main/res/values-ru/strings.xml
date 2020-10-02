@@ -186,4 +186,13 @@
 
     <string name="notification_channel_learning_name">Обучение</string>
     <string name="notification_channel_learning_description">Уведомления о прогрессе в обучении</string>
+
+    <!-- Course enrollment errors -->
+    <string name="course_error_enroll">При загрузке данных произошла ошибка</string>
+    <string name="course_purchase_server_error">При обработке платежа произошла ошибка, попробуйте восстановить покупку и свяжитесь с поддержкой, если ошибка не будет устранена</string>
+    <string name="course_purchase_billing_error">При обработке платежа произошла ошибка</string>
+    <string name="course_purchase_billing_cancelled">Платеж был отменен</string>
+    <string name="course_purchase_billing_not_available">Встроенные покупки не поддерживаются на этой устройстве</string>
+    <string name="course_purchase_billing_no_purchases_to_restore">У вас нет неактивированных покупок этого курса</string>
+    <string name="course_purchase_already_owned">Вы уже владеете этим курсом</string>
 </resources>

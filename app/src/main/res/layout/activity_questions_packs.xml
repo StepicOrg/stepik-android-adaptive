@@ -23,7 +23,6 @@
 
         <ProgressBar
             android:id="@+id/progress"
-            android:visibility="gone"
             android:layout_gravity="center"
             android:layout_width="32dp"
             android:layout_height="32dp" />
@@ -51,5 +50,6 @@
         android:layout_height="wrap_content"
         style="@style/Widget.AppCompat.Button.Borderless"
         android:textColor="@color/borderless_button_text_color"
+        android:visibility="gone"
         android:text="@string/restore_purchases"/>
 </LinearLayout>

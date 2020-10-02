@@ -4,16 +4,17 @@ import androidx.lifecycle.ViewModel
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
+import org.stepik.android.adaptive.arch.presentation.question_packs.QuestionPacksPresenter
 import org.stepik.android.adaptive.core.presenter.AuthPresenter
 import org.stepik.android.adaptive.core.presenter.BookmarksPresenter
 import org.stepik.android.adaptive.core.presenter.EditProfileFieldPresenter
 import org.stepik.android.adaptive.core.presenter.PaidInventoryItemsPresenter
 import org.stepik.android.adaptive.core.presenter.ProfilePresenter
 import org.stepik.android.adaptive.core.presenter.ProgressPresenter
-import org.stepik.android.adaptive.core.presenter.QuestionsPacksPresenter
 import org.stepik.android.adaptive.core.presenter.RatingPresenter
 import org.stepik.android.adaptive.core.presenter.RecommendationsPresenter
 import org.stepik.android.adaptive.core.presenter.RegisterPresenter
+import ru.nobird.android.view.injection.base.presentation.ViewModelKey
 
 @Module
 abstract class PresenterModule {
@@ -50,8 +51,8 @@ abstract class PresenterModule {
 
     @Binds
     @IntoMap
-    @ViewModelKey(QuestionsPacksPresenter::class)
-    internal abstract fun bindQuestionPacksPresenter(questionsPacksPresenter: QuestionsPacksPresenter): ViewModel
+    @ViewModelKey(QuestionPacksPresenter::class)
+    internal abstract fun bindQuestionPacksPresenter(questionPacksPresenter: QuestionPacksPresenter): ViewModel
 
     @Binds
     @IntoMap

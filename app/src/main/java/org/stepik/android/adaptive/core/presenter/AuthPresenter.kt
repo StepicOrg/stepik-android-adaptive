@@ -3,7 +3,7 @@ package org.stepik.android.adaptive.core.presenter
 import io.reactivex.Completable
 import io.reactivex.Scheduler
 import io.reactivex.Single
-import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.rxkotlin.plusAssign
 import org.stepik.android.adaptive.api.Api
 import org.stepik.android.adaptive.api.auth.AuthError
 import org.stepik.android.adaptive.api.auth.AuthRepository
@@ -17,9 +17,9 @@ import org.stepik.android.adaptive.di.qualifiers.BackgroundScheduler
 import org.stepik.android.adaptive.di.qualifiers.MainScheduler
 import org.stepik.android.adaptive.gamification.ExpManager
 import org.stepik.android.adaptive.util.RxOptional
-import org.stepik.android.adaptive.util.addDisposable
 import org.stepik.android.adaptive.util.then
 import retrofit2.HttpException
+import ru.nobird.android.presentation.base.PresenterBase
 import javax.inject.Inject
 
 class AuthPresenter
@@ -40,29 +40,26 @@ constructor(
     private val mainScheduler: Scheduler
 ) : PresenterBase<AuthView>() {
 
-    private val disposable = CompositeDisposable()
-
     private var isSuccess = false
 
     fun authFakeUser() {
         view?.onLoading()
 
-        disposable addDisposable createFakeUserRx()
+        compositeDisposable += createFakeUserRx()
             .andThen(onLoginRx())
             .subscribeOn(backgroundScheduler)
             .observeOn(mainScheduler)
             .subscribe(
-                this::onSuccess,
-                {
-                    onError(AuthError.ConnectionProblem)
-                }
-            )
+                this::onSuccess
+            ) {
+                onError(AuthError.ConnectionProblem)
+            }
     }
 
     fun authWithLoginPassword(login: String, password: String) {
         view?.onLoading()
 
-        disposable addDisposable loginRx(login, password).andThen(onLoginRx())
+        compositeDisposable += loginRx(login, password).andThen(onLoginRx())
             .doOnComplete {
                 profilePreferences.removeFakeUser() // we auth as normal user and can remove fake credentials
                 analytics.logEvent(Analytics.Login.SUCCESS_LOGIN_WITH_PASSWORD)
@@ -138,9 +135,5 @@ constructor(
     override fun attachView(view: AuthView) {
         super.attachView(view)
         if (isSuccess) view.onSuccess()
-    }
-
-    override fun destroy() {
-        disposable.dispose()
     }
 }

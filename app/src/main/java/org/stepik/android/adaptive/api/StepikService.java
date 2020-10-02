@@ -1,6 +1,10 @@
 package org.stepik.android.adaptive.api;
 
 import org.stepik.android.adaptive.data.model.EnrollmentWrapper;
+import org.stepik.android.adaptive.arch.remote.course_payments.model.CoursePaymentRequest;
+import org.stepik.android.adaptive.arch.remote.course_payments.model.CoursePaymentsResponse;
+
+import java.util.List;
 
 import io.reactivex.Completable;
 import io.reactivex.Observable;
@@ -16,7 +20,7 @@ public interface StepikService {
 
     @GET("api/courses")
     Single<CoursesResponse> getCourses(
-            @Query("ids[]") long[] ids
+            @Query("ids[]") List<Long> ids
     );
 
     @Headers("Content-Type: application/json")
@@ -81,5 +85,11 @@ public interface StepikService {
             @Query("attempt") final long attempt_id,
             @Query("order") final String desc
     );
+
+    @POST("api/course-payments")
+    Single<CoursePaymentsResponse> createCoursePayment(@Body CoursePaymentRequest coursePaymentRequest);
+
+    @GET("api/course-payments?order=-id")
+    Single<CoursePaymentsResponse> getCoursePaymentsByCourseId(@Query("course") long course);
 
 }

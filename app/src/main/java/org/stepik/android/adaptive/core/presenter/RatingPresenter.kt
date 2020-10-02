@@ -3,8 +3,8 @@ package org.stepik.android.adaptive.core.presenter
 import io.reactivex.BackpressureStrategy
 import io.reactivex.Scheduler
 import io.reactivex.Single
-import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.functions.BiFunction
+import io.reactivex.rxkotlin.plusAssign
 import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.rxkotlin.zipWith
 import io.reactivex.subjects.PublishSubject
@@ -19,8 +19,8 @@ import org.stepik.android.adaptive.di.qualifiers.MainScheduler
 import org.stepik.android.adaptive.gamification.ExpManager
 import org.stepik.android.adaptive.ui.adapter.RatingAdapter
 import org.stepik.android.adaptive.util.RatingNamesGenerator
-import org.stepik.android.adaptive.util.addDisposable
 import retrofit2.HttpException
+import ru.nobird.android.presentation.base.PresenterBase
 import javax.inject.Inject
 
 class RatingPresenter
@@ -45,7 +45,6 @@ constructor(
 
     private val adapters = RATING_PERIODS.map { RatingAdapter(profilePreferences.profileId) }
 
-    private val compositeDisposable = CompositeDisposable()
     private val retrySubject = PublishSubject.create<Int>()
 
     private var error: Throwable? = null
@@ -55,20 +54,20 @@ constructor(
     private var periodsLoaded = 0
 
     init {
-        compositeDisposable addDisposable
+        compositeDisposable +=
             ExpManager.syncRating(dataBaseMgr, ratingRepository)
                 .subscribeOn(backgroundScheduler)
                 .observeOn(mainScheduler)
                 .doOnError(this::onError)
                 .doOnComplete { initRatingPeriods() }
-                .retryWhen { x -> x.zipWith<Int, Throwable>(retrySubject.toFlowable(BackpressureStrategy.BUFFER), BiFunction { a, _ -> a }) }
+                .retryWhen { x -> x.zipWith(retrySubject.toFlowable(BackpressureStrategy.BUFFER), BiFunction { a, _ -> a }) }
                 .subscribe()
     }
 
     private fun initRatingPeriods() {
         val first = BiFunction<Throwable, Int, Throwable> { a, _ -> a }
         RATING_PERIODS.forEachIndexed { pos, period ->
-            compositeDisposable addDisposable resolveUsers(ratingRepository.getRatingTable(ITEMS_PER_PAGE, period))
+            compositeDisposable += resolveUsers(ratingRepository.getRatingTable(ITEMS_PER_PAGE, period))
                 .subscribeOn(backgroundScheduler)
                 .observeOn(mainScheduler)
                 .doOnError(this::onError)
@@ -134,9 +133,5 @@ constructor(
     fun retry() {
         error = null
         retrySubject.onNext(0)
-    }
-
-    override fun destroy() {
-        compositeDisposable.dispose()
     }
 }

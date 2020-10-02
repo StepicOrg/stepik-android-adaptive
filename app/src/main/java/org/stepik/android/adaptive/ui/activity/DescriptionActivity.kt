@@ -39,7 +39,7 @@ class DescriptionActivity : AppCompatActivity() {
 
         val questionsPacksListener = View.OnClickListener {
             analytics.logAmplitudeEvent(AmplitudeAnalytics.GamificationDescription.QUESTIONS_PACKS_CLICKED)
-            screenManager.showQuestionsPacksScreen(this)
+            screenManager.showQuestionPacksScreen(this)
         }
 
         close.setOnClickListener { finish() }

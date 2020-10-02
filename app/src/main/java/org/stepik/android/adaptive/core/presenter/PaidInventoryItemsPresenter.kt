@@ -2,8 +2,8 @@ package org.stepik.android.adaptive.core.presenter
 
 import io.reactivex.Observable
 import io.reactivex.Scheduler
-import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
+import io.reactivex.rxkotlin.plusAssign
 import org.solovyev.android.checkout.Billing
 import org.solovyev.android.checkout.BillingException
 import org.solovyev.android.checkout.ProductTypes
@@ -16,7 +16,6 @@ import org.stepik.android.adaptive.data.analytics.Analytics
 import org.stepik.android.adaptive.di.qualifiers.MainScheduler
 import org.stepik.android.adaptive.gamification.InventoryManager
 import org.stepik.android.adaptive.ui.adapter.PaidInventoryAdapter
-import org.stepik.android.adaptive.util.addDisposable
 import org.stepik.android.adaptive.util.consumeRx
 import org.stepik.android.adaptive.util.mapNotNull
 import org.stepik.android.adaptive.util.onReady
@@ -35,7 +34,6 @@ constructor(
 ) : PaidContentPresenterBase<PaidInventoryItemsView>(billing) {
     private val skus = InventoryManager.PaidContent.ids.toList()
     private val adapter = PaidInventoryAdapter(this::purchase)
-    private val compositeDisposable = CompositeDisposable()
     private var isInventoryLoaded = false
 
     private fun onRestoreTaskCompleted() {
@@ -52,12 +50,12 @@ constructor(
                 )
             )
         } ?: Observable.empty<Purchase>()
-        compositeDisposable addDisposable consume(purchaseObservable)
+        compositeDisposable += consume(purchaseObservable)
     }
 
     fun restorePurchases() {
         view?.showProgress()
-        compositeDisposable addDisposable consume(getAllPurchases())
+        compositeDisposable += consume(getAllPurchases())
     }
 
     private fun consume(observable: Observable<Purchase> /* , some additional info */): Disposable =
@@ -107,9 +105,5 @@ constructor(
         } else {
             loadInventory()
         }
-    }
-
-    override fun destroy() {
-        compositeDisposable.dispose()
     }
 }

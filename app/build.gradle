@@ -34,6 +34,8 @@ android {
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
         signingConfig signingConfigs.release
+
+        multiDexEnabled true
     }
     buildTypes {
         release {
@@ -118,9 +120,16 @@ dependencies {
     implementation libraries.cardView
     implementation libraries.constraintLayout
     implementation libraries.material
+    implementation libraries.multidex
 
     implementation libraries.archExtensions
     implementation libraries.archViewModel
+    implementation libraries.domainRx
+    implementation libraries.adapterDelegates
+    implementation libraries.adapters
+    implementation libraries.viewUI
+    implementation libraries.viewInjection
+    implementation libraries.presentationBase
 
     implementation libraries.googleauth
     implementation libraries.firebaseAnalytics
@@ -153,6 +162,12 @@ dependencies {
     implementation libraries.gifDrawable
     implementation libraries.discreteScrollView
     implementation libraries.flexBox
+
+    debugImplementation libraries.soloader
+    debugImplementation libraries.flipperCore
+    debugImplementation libraries.flipperNetwork
+
+    releaseImplementation libraries.flipperNoop
 
     testImplementation libraries.junit
     testImplementation libraries.robolectric
