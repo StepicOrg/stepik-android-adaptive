@@ -39,6 +39,9 @@ ext.versions = [
         domainRx             : '1.0.1',
         adapterDelegates     : '1.0.1',
         adapters             : '1.0.1',
+        viewUI               : '1.0.8',
+        viewInjection        : '1.0.1',
+        presentationBase     : '1.1.1',
 
         googleauth           : '16.0.1',
         firebaseAnalytics    : '17.4.3',
@@ -123,6 +126,9 @@ ext.libraries = [
         domainRx             : "ru.nobird.android.domain:rx:$versions.domainRx",
         adapterDelegates     : "ru.nobird.android.ui:AdapterDelegates:$versions.adapterDelegates",
         adapters             : "ru.nobird.android.ui:Adapters:$versions.adapters",
+        viewUI               : "ru.nobird.android.view:ui:$versions.viewUI",
+        viewInjection        : "ru.nobird.android.view:injection:$versions.viewInjection",
+        presentationBase     : "ru.nobird.android.presentation:base:$versions.presentationBase",
 
         googleauth           : "com.google.android.gms:play-services-auth:$versions.googleauth",
         firebaseAnalytics    : "com.google.firebase:firebase-analytics-ktx:$versions.firebaseAnalytics",

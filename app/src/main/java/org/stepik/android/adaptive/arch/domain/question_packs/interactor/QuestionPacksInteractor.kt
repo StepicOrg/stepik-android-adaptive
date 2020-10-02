@@ -27,8 +27,8 @@ constructor(
         private const val COURSE_TIER_PREFIX = "course_tier_"
     }
 
-    fun getQuestionListItems(vararg courseId: Long): Single<List<QuestionListItem>> =
-        api.getCourses(courseId)
+    fun getQuestionListItems(courseIds: List<Long>): Single<List<QuestionListItem>> =
+        api.getCourses(courseIds)
             .flatMap { obtainQuestionListItem(it.courses) }
 
     private fun obtainQuestionListItem(courses: List<Course>): Single<List<QuestionListItem>> =
@@ -56,6 +56,9 @@ constructor(
         when {
             course.enrollment > 0L ->
                 Single.just(course.id to EnrollmentState.Enrolled)
+
+            !course.isPaid ->
+                Single.just(course.id to EnrollmentState.NotEnrolledFree)
 
             else -> {
                 coursePaymentsRepository

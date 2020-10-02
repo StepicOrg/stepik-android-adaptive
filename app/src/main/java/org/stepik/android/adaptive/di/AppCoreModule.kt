@@ -35,6 +35,7 @@ import org.stepik.android.adaptive.di.qualifiers.BackgroundScheduler
 import org.stepik.android.adaptive.di.qualifiers.MainScheduler
 import org.stepik.android.adaptive.gamification.achievements.AchievementEventListener
 import org.stepik.android.adaptive.util.AppConstants
+import ru.nobird.android.view.injection.base.presentation.DaggerViewModelFactory
 import javax.inject.Named
 
 @Module(

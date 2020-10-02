@@ -2,12 +2,12 @@ package org.stepik.android.adaptive.core.presenter
 
 import io.reactivex.Scheduler
 import io.reactivex.Single
-import io.reactivex.disposables.CompositeDisposable
 import org.stepik.android.adaptive.core.presenter.contracts.ProfileView
 import org.stepik.android.adaptive.data.preference.ProfilePreferences
 import org.stepik.android.adaptive.di.qualifiers.BackgroundScheduler
 import org.stepik.android.adaptive.di.qualifiers.MainScheduler
 import org.stepik.android.adaptive.util.addDisposable
+import ru.nobird.android.presentation.base.PresenterBase
 import javax.inject.Inject
 
 class ProfilePresenter
@@ -20,8 +20,6 @@ constructor(
     @MainScheduler
     private val mainScheduler: Scheduler
 ) : PresenterBase<ProfileView>() {
-    private val compositeDisposable = CompositeDisposable()
-
     private var viewState: ProfileView.State = ProfileView.State.Idle
         set(value) {
             field = value
@@ -36,13 +34,13 @@ constructor(
         compositeDisposable addDisposable profilePreferences.isFakeUser()
             .observeOn(mainScheduler)
             .subscribeOn(backgroundScheduler)
-            .subscribe({ isFake: Boolean ->
+            .subscribe { isFake: Boolean ->
                 if (isFake) {
                     viewState = ProfileView.State.EmptyAuth
                 } else {
                     fetchLocalProfile()
                 }
-            })
+            }
     }
 
     private fun fetchLocalProfile() {
@@ -67,9 +65,5 @@ constructor(
         super.attachView(view)
 
         view.setState(viewState)
-    }
-
-    override fun destroy() {
-        compositeDisposable.dispose()
     }
 }

@@ -1,9 +1,9 @@
 package org.stepik.android.adaptive.core.presenter
 
 import io.reactivex.Scheduler
-import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 import io.reactivex.functions.BiFunction
+import io.reactivex.rxkotlin.plusAssign
 import io.reactivex.subjects.PublishSubject
 import org.stepik.android.adaptive.api.Api
 import org.stepik.android.adaptive.api.RecommendationsResponse
@@ -23,8 +23,8 @@ import org.stepik.android.adaptive.ui.helper.CardHelper
 import org.stepik.android.adaptive.ui.listener.AdaptiveReactionListener
 import org.stepik.android.adaptive.ui.listener.AnswerListener
 import org.stepik.android.adaptive.util.RateAppManager
-import org.stepik.android.adaptive.util.addDisposable
 import retrofit2.HttpException
+import ru.nobird.android.presentation.base.PresenterBase
 import java.util.ArrayDeque
 import javax.inject.Inject
 
@@ -52,7 +52,6 @@ constructor(
         private const val MIN_EXP_TO_OFFER_PACKS = 50
     }
 
-    private val compositeDisposable = CompositeDisposable()
     private val retrySubject = PublishSubject.create<Any>()
 
     private val cards = ArrayDeque<Card>()
@@ -95,7 +94,7 @@ constructor(
     }
 
     private fun fetchExp() {
-        compositeDisposable addDisposable expManager.fetchExp()
+        compositeDisposable += expManager.fetchExp()
             .observeOn(mainScheduler)
             .subscribeOn(backgroundScheduler)
             .subscribe {
@@ -154,7 +153,7 @@ constructor(
                     view?.showGamificationDescriptionScreen()
                 }
                 shouldShowEmptyAuthScreen ->
-                    compositeDisposable addDisposable sharedPreferenceHelper.isFakeUser()
+                    compositeDisposable += sharedPreferenceHelper.isFakeUser()
                         .subscribeOn(backgroundScheduler)
                         .observeOn(mainScheduler)
                         .subscribe { isFake ->
@@ -221,7 +220,7 @@ constructor(
             view?.onLoading()
         }
 
-        compositeDisposable addDisposable CardHelper.createReactionObservable(api, sharedPreferenceHelper, lesson, reaction, cards.size + adapter.getItemCount())
+        compositeDisposable += CardHelper.createReactionObservable(api, sharedPreferenceHelper, lesson, reaction, cards.size + adapter.getItemCount())
             .subscribeOn(backgroundScheduler)
             .observeOn(mainScheduler)
             .doOnError(this::onError)
@@ -290,8 +289,8 @@ constructor(
         super.detachView(view)
     }
 
-    override fun destroy() {
-        compositeDisposable.dispose()
+    override fun onCleared() {
+        super.onCleared()
         cards.forEach(Card::recycle)
         adapter.destroy()
     }

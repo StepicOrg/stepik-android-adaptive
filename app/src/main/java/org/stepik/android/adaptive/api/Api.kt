@@ -98,7 +98,7 @@ constructor(
         return tempService.remindPassword(encodedEmail)
     }
 
-    fun getCourses(ids: LongArray): Single<CoursesResponse> =
+    fun getCourses(ids: List<Long>): Single<CoursesResponse> =
         stepikService.getCourses(ids)
 
     fun joinCourse(course: Long): Completable =

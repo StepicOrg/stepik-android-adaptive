@@ -2,7 +2,6 @@ package org.stepik.android.adaptive.arch.presentation.question_packs
 
 import android.util.Log
 import io.reactivex.Scheduler
-import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.plusAssign
 import io.reactivex.rxkotlin.subscribeBy
 import org.solovyev.android.checkout.Sku
@@ -14,9 +13,9 @@ import org.stepik.android.adaptive.arch.domain.question_packs.model.EnrollmentSt
 import org.stepik.android.adaptive.arch.presentation.question_packs.mapper.toEnrollmentError
 import org.stepik.android.adaptive.content.questions.QuestionsPack
 import org.stepik.android.adaptive.content.questions.QuestionsPacksManager
-import org.stepik.android.adaptive.core.presenter.PresenterBase
 import org.stepik.android.adaptive.di.qualifiers.BackgroundScheduler
 import org.stepik.android.adaptive.di.qualifiers.MainScheduler
+import ru.nobird.android.presentation.base.PresenterBase
 import javax.inject.Inject
 
 class QuestionPacksPresenter
@@ -37,8 +36,6 @@ constructor(
             view?.setState(value)
         }
 
-    private val compositeDisposable = CompositeDisposable()
-
     private var uiCheckout: UiCheckout? = null
 
     override fun attachView(view: QuestionPacksView) {
@@ -54,7 +51,7 @@ constructor(
             state = QuestionPacksView.State.Loading
             val ids = questionsPacksManager.questionsPacks.map { it.courseId }
             compositeDisposable += questionPacksInteractor
-                .getQuestionListItems(*ids.toLongArray())
+                .getQuestionListItems(ids)
                 .subscribeOn(backgroundScheduler)
                 .observeOn(mainScheduler)
                 .subscribeBy(
@@ -130,9 +127,11 @@ constructor(
 
     fun changeCourse(pack: QuestionsPack) {
         view?.showProgress()
-        compositeDisposable += api.joinCourse(pack.courseId).doOnComplete {
-            questionsPacksManager.switchPack(pack)
-        }
+        compositeDisposable += api
+            .joinCourse(pack.courseId)
+            .doOnComplete {
+                questionsPacksManager.switchPack(pack)
+            }
             .observeOn(mainScheduler)
             .subscribeOn(backgroundScheduler)
             .subscribe(
@@ -150,9 +149,5 @@ constructor(
 
         uiCheckout?.let(UiCheckout::stop)
         uiCheckout = null
-    }
-
-    override fun destroy() {
-        compositeDisposable.dispose()
     }
 }

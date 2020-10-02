@@ -14,6 +14,7 @@ import org.stepik.android.adaptive.core.presenter.ProgressPresenter
 import org.stepik.android.adaptive.core.presenter.RatingPresenter
 import org.stepik.android.adaptive.core.presenter.RecommendationsPresenter
 import org.stepik.android.adaptive.core.presenter.RegisterPresenter
+import ru.nobird.android.view.injection.base.presentation.ViewModelKey
 
 @Module
 abstract class PresenterModule {

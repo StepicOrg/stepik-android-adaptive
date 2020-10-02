@@ -3,7 +3,7 @@ package org.stepik.android.adaptive.core.presenter
 import com.google.gson.Gson
 import io.reactivex.Scheduler
 import io.reactivex.Single
-import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.rxkotlin.plusAssign
 import org.stepik.android.adaptive.api.profile.ProfileRepository
 import org.stepik.android.adaptive.core.presenter.contracts.EditProfileFieldView
 import org.stepik.android.adaptive.data.analytics.Analytics
@@ -11,9 +11,9 @@ import org.stepik.android.adaptive.data.model.Profile
 import org.stepik.android.adaptive.data.preference.ProfilePreferences
 import org.stepik.android.adaptive.di.qualifiers.BackgroundScheduler
 import org.stepik.android.adaptive.di.qualifiers.MainScheduler
-import org.stepik.android.adaptive.util.addDisposable
 import org.stepik.android.adaptive.util.toObject
 import retrofit2.HttpException
+import ru.nobird.android.presentation.base.PresenterBase
 import javax.inject.Inject
 
 class EditProfileFieldPresenter
@@ -28,7 +28,6 @@ constructor(
     private val mainScheduler: Scheduler,
     private val analytics: Analytics
 ) : PresenterBase<EditProfileFieldView>() {
-    private val compositeDisposable = CompositeDisposable()
     private val gson = Gson()
 
     private var viewState: EditProfileFieldView.State = EditProfileFieldView.State.Loading
@@ -38,7 +37,7 @@ constructor(
         }
 
     init {
-        compositeDisposable addDisposable Single.fromCallable(profilePreferences::profile)
+        compositeDisposable += Single.fromCallable(profilePreferences::profile)
             .observeOn(mainScheduler)
             .subscribeOn(backgroundScheduler)
             .subscribe(
@@ -64,7 +63,7 @@ constructor(
     fun changeName(firstName: String, lastName: String) {
         viewState = EditProfileFieldView.State.Loading
 
-        compositeDisposable addDisposable Single.fromCallable(profilePreferences::profile)
+        compositeDisposable += Single.fromCallable(profilePreferences::profile)
             .flatMapCompletable {
                 it.firstName = firstName
                 it.lastName = lastName
@@ -84,7 +83,7 @@ constructor(
     fun changeEmail(email: String) {
         viewState = EditProfileFieldView.State.Loading
 
-        compositeDisposable addDisposable profileRepository.updateEmail(email)
+        compositeDisposable += profileRepository.updateEmail(email)
             .andThen(syncProfile())
             .observeOn(mainScheduler)
             .subscribeOn(backgroundScheduler)
@@ -99,7 +98,7 @@ constructor(
     fun changePassword(oldPassword: String, newPassword: String) {
         viewState = EditProfileFieldView.State.Loading
 
-        compositeDisposable addDisposable Single.fromCallable(profilePreferences::profileId)
+        compositeDisposable += Single.fromCallable(profilePreferences::profileId)
             .flatMapCompletable {
                 profileRepository.updatePassword(it, oldPassword, newPassword)
             }
@@ -128,9 +127,5 @@ constructor(
     override fun attachView(view: EditProfileFieldView) {
         super.attachView(view)
         view.setState(viewState)
-    }
-
-    override fun destroy() {
-        compositeDisposable.dispose()
     }
 }

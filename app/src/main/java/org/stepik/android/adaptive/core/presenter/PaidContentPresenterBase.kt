@@ -12,6 +12,7 @@ import org.solovyev.android.checkout.Purchase
 import org.solovyev.android.checkout.Sku
 import org.stepik.android.adaptive.core.presenter.contracts.PaidContentView
 import org.stepik.android.adaptive.util.getPurchasesRx
+import ru.nobird.android.presentation.base.PresenterBase
 
 abstract class PaidContentPresenterBase<V : PaidContentView>(
     private val billing: Billing

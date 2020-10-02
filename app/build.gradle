@@ -127,6 +127,9 @@ dependencies {
     implementation libraries.domainRx
     implementation libraries.adapterDelegates
     implementation libraries.adapters
+    implementation libraries.viewUI
+    implementation libraries.viewInjection
+    implementation libraries.presentationBase
 
     implementation libraries.googleauth
     implementation libraries.firebaseAnalytics

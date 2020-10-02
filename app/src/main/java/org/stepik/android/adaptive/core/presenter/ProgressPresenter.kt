@@ -4,6 +4,7 @@ import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineDataSet
 import io.reactivex.Scheduler
 import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.rxkotlin.plusAssign
 import org.stepik.android.adaptive.core.presenter.contracts.ProgressView
 import org.stepik.android.adaptive.data.db.DataBaseMgr
 import org.stepik.android.adaptive.di.qualifiers.BackgroundScheduler
@@ -11,6 +12,7 @@ import org.stepik.android.adaptive.di.qualifiers.MainScheduler
 import org.stepik.android.adaptive.gamification.ExpManager
 import org.stepik.android.adaptive.ui.adapter.WeeksAdapter
 import org.stepik.android.adaptive.util.addDisposable
+import ru.nobird.android.presentation.base.PresenterBase
 import javax.inject.Inject
 
 class ProgressPresenter
@@ -25,10 +27,8 @@ constructor(
 ) : PresenterBase<ProgressView>() {
     private val adapter = WeeksAdapter()
 
-    private val composite = CompositeDisposable()
-
     init {
-        composite addDisposable expManager.fetchExp()
+        compositeDisposable += expManager.fetchExp()
             .subscribeOn(backgroundScheduler)
             .observeOn(mainScheduler)
             .subscribe { exp ->
@@ -36,12 +36,12 @@ constructor(
                 adapter.setHeaderLevelAndTotal(level = level, total = exp)
             }
 
-        composite addDisposable dataBaseMgr.getWeeks()
+        compositeDisposable += dataBaseMgr.getWeeks()
             .subscribeOn(backgroundScheduler)
             .observeOn(mainScheduler)
             .subscribe(adapter::addAll, {})
 
-        composite addDisposable dataBaseMgr.getExpForLast7Days()
+        compositeDisposable += dataBaseMgr.getExpForLast7Days()
             .map {
                 Pair(LineDataSet(it.mapIndexed { index, l -> Entry(index.toFloat(), l.toFloat()) }, ""), it.sum())
             }
@@ -58,9 +58,5 @@ constructor(
     override fun attachView(view: ProgressView) {
         super.attachView(view)
         view.onWeeksAdapter(adapter)
-    }
-
-    override fun destroy() {
-        composite.dispose()
     }
 }

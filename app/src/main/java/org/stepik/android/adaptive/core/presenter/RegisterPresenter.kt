@@ -2,7 +2,7 @@ package org.stepik.android.adaptive.core.presenter
 
 import com.google.gson.Gson
 import io.reactivex.Scheduler
-import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.rxkotlin.plusAssign
 import org.stepik.android.adaptive.api.profile.ProfileRepository
 import org.stepik.android.adaptive.api.profile.model.ProfileCompositeError
 import org.stepik.android.adaptive.core.presenter.contracts.RegisterView
@@ -12,9 +12,9 @@ import org.stepik.android.adaptive.di.AppSingleton
 import org.stepik.android.adaptive.di.qualifiers.BackgroundScheduler
 import org.stepik.android.adaptive.di.qualifiers.MainScheduler
 import org.stepik.android.adaptive.util.ValidateUtil
-import org.stepik.android.adaptive.util.addDisposable
 import org.stepik.android.adaptive.util.then
 import retrofit2.HttpException
+import ru.nobird.android.presentation.base.PresenterBase
 import javax.inject.Inject
 
 @AppSingleton
@@ -30,7 +30,6 @@ constructor(
     private val mainScheduler: Scheduler,
     private val analytics: Analytics
 ) : PresenterBase<RegisterView>() {
-    private val compositeDisposable = CompositeDisposable()
     private val gson = Gson()
 
     private var state: RegisterView.State = RegisterView.State.Idle
@@ -53,7 +52,7 @@ constructor(
 
         state = RegisterView.State.Loading
 
-        compositeDisposable addDisposable profileRepository.fetchProfile().flatMap { profile ->
+        compositeDisposable += profileRepository.fetchProfile().flatMap { profile ->
             profile.firstName = firstName
             profile.lastName = lastName
 
@@ -90,9 +89,5 @@ constructor(
     override fun attachView(view: RegisterView) {
         super.attachView(view)
         view.setState(state)
-    }
-
-    override fun destroy() {
-        compositeDisposable.dispose()
     }
 }
