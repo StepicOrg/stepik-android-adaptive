@@ -76,7 +76,6 @@ constructor(
                             Single.just(course.id to EnrollmentState.NotEnrolledFree)
                         }
                     }
-                    .onErrorReturnItem(course.id to EnrollmentState.NotEnrolledWeb) // if billing not supported on current device or to access paid course offline
             }
         }
 }
