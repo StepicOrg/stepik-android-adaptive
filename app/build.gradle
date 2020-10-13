@@ -71,7 +71,7 @@ android {
             dimension "course"
         }
         toefl3150 {
-            applicationIdSuffix  '.toefl3150'
+            applicationIdSuffix  '.toefl'
             dimension "course"
         }
         toefl3149 {

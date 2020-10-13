@@ -1,12 +1,12 @@
 package org.stepik.android.adaptive.arch.presentation.question_packs
 
-import android.util.Log
 import io.reactivex.Scheduler
 import io.reactivex.rxkotlin.plusAssign
 import io.reactivex.rxkotlin.subscribeBy
 import org.solovyev.android.checkout.Sku
 import org.solovyev.android.checkout.UiCheckout
 import org.stepik.android.adaptive.api.Api
+import org.stepik.android.adaptive.arch.domain.billing.exception.BillingNotSupportedException
 import org.stepik.android.adaptive.arch.domain.question_packs.interactor.QuestionPacksBillingInteractor
 import org.stepik.android.adaptive.arch.domain.question_packs.interactor.QuestionPacksInteractor
 import org.stepik.android.adaptive.arch.domain.question_packs.model.EnrollmentState
@@ -59,7 +59,11 @@ constructor(
                         state = QuestionPacksView.State.QuestionPacksLoaded(questionListItems)
                     },
                     onError = {
-                        state = QuestionPacksView.State.Error
+                        state = if (it is BillingNotSupportedException) {
+                            QuestionPacksView.State.PurchasesNotSupported
+                        } else {
+                            QuestionPacksView.State.Error
+                        }
                     }
                 )
         }
