@@ -21,6 +21,12 @@ android {
             keyAlias globalConf.debugAlias
             keyPassword globalConf.debugAliasPass
         }
+        stage {
+            storeFile file(keystore)
+            storePassword keystorePass
+            keyAlias oldAlias
+            keyPassword oldAliasPass
+        }
     }
     compileSdkVersion versions.compileSdk
     buildToolsVersion versions.buildTools
@@ -46,6 +52,18 @@ android {
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro', 'proguard-rules-dev.pro'
             testCoverageEnabled true
+        }
+        stage {
+            initWith release
+            signingConfig signingConfigs.stage
+            matchingFallbacks = ['release']
+        }
+        stageDebuggable {
+            initWith stage
+            debuggable true
+            signingConfig signingConfigs.stage
+            matchingFallbacks = ['release']
+            versionNameSuffix "-debuggable"
         }
     }
     dataBinding {
@@ -141,6 +159,8 @@ dependencies {
     implementation(libraries.crashlytics) {
         transitive = true
     }
+    stageDebuggableImplementation libraries.stetho
+    stageDebuggableImplementation libraries.stethoOkHttp
     implementation libraries.amplitude
     implementation libraries.appMetrica
     implementation libraries.branch
@@ -166,7 +186,11 @@ dependencies {
     debugImplementation libraries.soloader
     debugImplementation libraries.flipperCore
     debugImplementation libraries.flipperNetwork
+    stageDebuggableImplementation libraries.soloader
+    stageDebuggableImplementation libraries.flipperCore
+    stageDebuggableImplementation libraries.flipperNetwork
 
+    stageImplementation libraries.flipperNoop
     releaseImplementation libraries.flipperNoop
 
     testImplementation libraries.junit
