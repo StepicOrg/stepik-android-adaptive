@@ -96,7 +96,6 @@ constructor(
             .filter { (profileId, _, payload) ->
                 profileId == payload.profileId
             }
-            .switchIfEmpty(Single.error(NoPurchasesToRestoreException()))
             .flatMapCompletable { (_, purchase, payload) ->
                 completePurchase(payload.courseId, sku, purchase)
             }
