@@ -102,6 +102,7 @@ constructor(
                     }
                 },
                 onError = {
+                    view?.hideProgress()
                     view?.showEnrollmentError(it.toEnrollmentError())
                 }
             )
@@ -125,6 +126,7 @@ constructor(
             }
             .subscribeBy(
                 onError = {
+                    view?.hideProgress()
                     view?.showEnrollmentError(it.toEnrollmentError())
                 }
             )
